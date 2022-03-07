@@ -73,6 +73,7 @@ export class Space1889Item extends Item {
 				this.setLangIdAndLabel(item, "Language", false);
 				item.data.origin = game.i18n.localize(CONFIG.SPACE1889.languageOrigins[item.data.originId]);        
 				item.data.family = game.i18n.localize(CONFIG.SPACE1889.familyOflanguages[item.data.familyId]);
+				item.data.dialect = game.i18n.localize(CONFIG.SPACE1889.languages[item.data.isDialectSourceId]);
 				item.data.oldInfo = item.data.old ? game.i18n.localize('SPACE1889.OldLanguageInfo') : "";
 				if (item.img == "icons/svg/item-bag.svg")
 					item.img = "icons/svg/sound.svg";
@@ -218,6 +219,17 @@ export class Space1889Item extends Item {
 			const armor = game.i18n.localize("SPACE1889.Armor") ?? item.type;
 			label = `[${armor}] ${item.data.label}`;
 		}
+		else if (item.type == "language")
+		{
+			const language = game.i18n.localize("SPACE1889.Language") ?? item.type;
+			label = `<h2><strong>${item.data.label}</strong> [${language}]</h2>`;
+			desc = game.i18n.localize("SPACE1889.LanguageOrigin") + ": " + item.data.origin + "<br>"
+				+ game.i18n.localize("SPACE1889.FamilyOfLanguages") + ": " + item.data.family;
+			if (item.data.isDialectSourceId != "no")
+				desc += "<br>" + game.i18n.localize("SPACE1889.IsDialectFrom") + " " + item.data.dialect;
+			if (item.data.old)
+				desc += "<br>" + item.data.oldInfo;
+        }
 		else
 		{
 			desc = game.i18n.localize(item.data.descriptionLangId);

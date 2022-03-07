@@ -1841,7 +1841,14 @@
 	"SPACE1889.PublicationUhAbbr": "UH",
 	"SPACE1889.PublicationSgAbbr": "-",
 
+
 	"SPACE1889.canNotBeAdded": "{item} kann nicht hinzugefügt werden, da die Vorbedingung(en) nicht erfüllt sind.",
-	"SPACE1889.NoLanguageEntry": "Der Eintrag <i>{langId}</i> ist nicht in der Sprach-Datei <i>de.json</i> enthalten."
+	"SPACE1889.NoLanguageEntry": "Der Eintrag <i>{langId}</i> ist nicht in der Sprach-Datei <i>de.json</i> enthalten.",
+
+	"SPACE1889.UseInstinctiveBlockParry": "Sollte bei {attackType1} Angriffen ({rating}) und {attackType2} Angriffen({rating2}) anstelle des Abwehrwertes ({defence}) eingesetzt werden.",
+	"SPACE1889.UseInstinctiveEvasion": "Sollte bei Fernangriffen ({rating}) anstelle des Abwehrwertes ({defence}) eingesetzt werden.",
+	"SPACE1889.UselessInstinctiveBlockParryEvasion": "{talentName} ist nutzlos da der Abwehrwert >= dem {talentName}-Wert ist.",
+	"SPACE1889.UseBlockParryEvasion": "{talentName} sollte anstelle von voller Abwehr ({fullDefence}) eingesetzt werden.",
+	"SPACE1889.UselessBlockParryEvasion": "{talentName} ist sinnlos, da volle Abwehr ( {defence} ) den höheren Wert hat."
 
 }

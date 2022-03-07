@@ -302,17 +302,17 @@ export class Space1889Actor extends Actor
 
         for (let item of actorData.items)
         {
-            if (item.type != "talent")
+            if (item.data.type != "talent")
                 continue;
 
-            if (item.data.id == "blocken")
+            if (item.data.data.id == "blocken")
             {
                 instinctive = true;
-                rating += item.data.level.value;
+                rating += item.data.data.level.value;
             }
-            else if (item.data.id == "gegenschlag" && item.data.level.value > 1)
+            else if (item.data.data.id == "gegenschlag" && item.data.data.level.value > 1)
             {
-                rating += (item.data.level.value * 2);
+                rating += (item.data.data.level.value - 1) * 2;
                 riposte = true;
             }
         }
@@ -320,6 +320,25 @@ export class Space1889Actor extends Actor
         actorData.data.block.value = rating;
         actorData.data.block.instinctive = instinctive;
         actorData.data.block.riposte = riposte;
+        actorData.data.block.info = "";
+        const defence = actorData.data.secondaries.defense.total;
+        const name = game.i18n.format("SPACE1889.Block");
+        const waffenlos = game.i18n.format("SPACE1889.SkillWaffenlos");
+        const nahkampf = game.i18n.format("SPACE1889.SkillNahkampf");
+        if (instinctive)
+        {
+            if (defence < rating)
+                actorData.data.block.info = game.i18n.format("SPACE1889.UseInstinctiveBlockParry", { rating: rating.toString(), rating2: (rating - 2).toString(), attackType1: waffenlos, attackType2: nahkampf, defence: defence.toString()});
+            else
+                actorData.data.block.info = game.i18n.format("SPACE1889.UselessInstinctiveBlockParryEvasion", { talentName: name });
+        }
+        else
+        {
+            if (defence + 4 < rating)
+                actorData.data.block.info = game.i18n.format("SPACE1889.UseBlockParryEvasion", { fullDefence: (defence + 4).toString(), talentName: name });
+            else
+                actorData.data.block.info = game.i18n.format("SPACE1889.UselessBlockParryEvasion", { defence: (defence + 4).toString(), talentName: name });
+        }
     }
 
     CalcAndSetParryData(actorData)
@@ -328,10 +347,10 @@ export class Space1889Actor extends Actor
         let skillRating = 0;
         for (let item of actorData.items)
         {
-            if (item.type != "weapon")
+            if (item.data.type != "weapon")
                 continue;
-            if (item.data.skillId == id && item.data.skillRating > skillRating)
-                skillRating = item.data.skillRating;
+            if (item.data.data.skillId == id && item.data.data.skillRating > skillRating)
+                skillRating = item.data.data.skillRating;
         }
 
         let instinctive = false;
@@ -340,17 +359,17 @@ export class Space1889Actor extends Actor
 
         for (let item of actorData.items)
         {
-            if (item.type != "talent")
+            if (item.data.type != "talent")
                 continue;
 
-            if (item.data.id == "parade")
+            if (item.data.data.id == "parade")
             {
                 instinctive = true;
-                skillRating += item.data.level.value;
+                skillRating += item.data.data.level.value;
             }
-            else if (item.data.id == "riposte" && item.data.level.value > 1)
+            else if (item.data.data.id == "riposte" && item.data.data.level.value > 1)
             {
-                skillRating += (item.data.level.value * 2);
+                skillRating += (item.data.data.level.value-1) * 2;
                 riposte = true;
             }
         }
@@ -358,6 +377,25 @@ export class Space1889Actor extends Actor
         actorData.data.parry.value = skillRating;
         actorData.data.parry.instinctive = instinctive;
         actorData.data.parry.riposte = riposte;
+        actorData.data.parry.info = "";
+        const defence = actorData.data.secondaries.defense.total;
+        const name = game.i18n.format("SPACE1889.Parry");
+        const waffenlos = game.i18n.format("SPACE1889.SkillWaffenlos");
+        const nahkampf = game.i18n.format("SPACE1889.SkillNahkampf");
+        if (instinctive)
+        {
+            if (defence < skillRating)
+                actorData.data.parry.info = game.i18n.format("SPACE1889.UseInstinctiveBlockParry", { rating: skillRating.toString(), rating2: skillRating.toString(), attackType1: nahkampf, attackType2: waffenlos, defence: defence.toString()});
+            else
+                actorData.data.parry.info = game.i18n.format("SPACE1889.UselessInstinctiveBlockParryEvasion", { talentName: name });
+        }
+        else
+        {
+            if (defence + 4 < skillRating)
+                actorData.data.parry.info = game.i18n.format("SPACE1889.UseBlockParryEvasion", { fullDefence: (defence + 4).toString(), talentName: name });
+            else
+                actorData.data.parry.info = game.i18n.format("SPACE1889.UselessBlockParryEvasion", { defence: (defence + 4).toString(), talentName: name });
+        }
     }
 
     CalcAndSetEvasionData(actorData)
@@ -373,19 +411,39 @@ export class Space1889Actor extends Actor
 
         for (let item of actorData.items)
         {
-            if (item.type != "talent")
+            if (item.data.type != "talent")
                 continue;
 
-            if (item.data.id == "ausweichen")
+            if (item.data.data.id == "ausweichen")
             {
                 instinctive = true;
-                rating += item.data.level.value;
+                rating += item.data.data.level.value;
                 break;
             }
         }
 
         actorData.data.evasion.value = rating;
         actorData.data.evasion.instinctive = instinctive;
+
+        actorData.data.evasion.info = "";
+        const defence = actorData.data.secondaries.defense.total;
+        const name = game.i18n.format("SPACE1889.Evasion");
+        const waffenlos = game.i18n.format("SPACE1889.SkillWaffenlos");
+        const nahkampf = game.i18n.format("SPACE1889.SkillNahkampf");
+        if (instinctive)
+        {
+            if (defence < rating)
+                actorData.data.evasion.info = game.i18n.format("SPACE1889.UseInstinctiveEvasion", { rating: rating.toString(), defence: defence.toString()});
+            else
+                actorData.data.evasion.info = game.i18n.format("SPACE1889.UselessInstinctiveBlockParryEvasion", { talentName: name });
+        }
+        else
+        {
+            if (defence + 4 < rating)
+                actorData.data.evasion.info = game.i18n.format("SPACE1889.UseBlockParryEvasion", { fullDefence: (defence + 4).toString(), talentName: name });
+            else
+                actorData.data.evasion.info = game.i18n.format("SPACE1889.UselessBlockParryEvasion", { defence: (defence + 4).toString(), talentName: name });
+        }
     }
 
     CalcAndSetLoad(actorData)
@@ -394,12 +452,12 @@ export class Space1889Actor extends Actor
 
         for (let item of actorData.items)
         {
-            if (item.type != "talent")
+            if (item.data.type != "talent")
                 continue;
 
-            if (item.data.id == "packesel")
+            if (item.data.data.id == "packesel")
             {
-                str += item.data.level.value;
+                str += item.data.data.level.value;
                 break;
             }
         }
@@ -415,15 +473,15 @@ export class Space1889Actor extends Actor
         for (let item of actorData.items)
         {
             if (item.type == "item")
-                itemWeight = item.data.weight * item.data.quantity;
+                itemWeight = item.data.data.weight * item.data.data.quantity;
             else if (item.type == "weapon")
-                itemWeight = item.data.weight;
+                itemWeight = item.data.data.weight;
             else
                 continue;
 
-            if (item.data.location == "koerper")
+            if (item.data.data.location == "koerper")
                 loadBody += itemWeight;
-            else if (item.data.location == "rucksack")
+            else if (item.data.data.location == "rucksack")
                 loadBackpack += itemWeight;
             else
                 loadStorage += itemWeight;
