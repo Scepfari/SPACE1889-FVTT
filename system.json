@@ -1,0 +1,97 @@
+{
+	"name": "space1889",
+	"title": "Space 1889",
+	"description": "The SPACE 1889 Ubiquity system for FoundryVTT!",
+	"version": "0.4.2",
+	"minimumCoreVersion": "0.8.6",
+	"compatibleCoreVersion": "9",
+	"author": "Scepfari",
+	"esmodules": ["module/space1889.mjs"],
+	"styles": ["css/space1889.css"],
+	"scripts": [],
+	"packs": [
+		{
+			"name": "fertigkeiten",
+			"label": "Fertigkeiten",
+			"system": "space1889",
+			"path": "./packs/fertigkeiten.db",
+			"entity": "Item",
+			"type": "Item"
+		},
+		{
+			"name": "ressourcen",
+			"label": "Ressourcen",
+			"system": "space1889",
+			"path": "./packs/ressourcen.db",
+			"entity": "Item",
+			"type": "Item"
+		},
+		{
+			"name": "rustungen",
+			"label": "Ruestungen",
+			"system": "space1889",
+			"path": "./packs/rustungen.db",
+			"entity": "Item",
+			"type": "Item"
+		},
+		{
+			"name": "schwachen",
+			"label": "Schwaechen",
+			"system": "space1889",
+			"path": "./packs/schwachen.db",
+			"entity": "Item",
+			"type": "Item"
+		},
+		{
+			"name": "spezialisierungen",
+			"label": "Spezialisierungen",
+			"system": "space1889",
+			"path": "./packs/spezialisierungen.db",
+			"entity": "Item",
+			"type": "Item"
+		},
+		{
+			"name": "sprachen",
+			"label": "Sprachen",
+			"system": "space1889",
+			"path": "./packs/sprachen.db",
+			"entity": "Item",
+			"type": "Item"
+		},
+		{
+			"name": "talente",
+			"label": "Talente",
+			"system": "space1889",
+			"path": "./packs/talente.db",
+			"entity": "Item",
+			"type": "Item"
+		},
+		{
+			"name": "waffen",
+			"label": "Waffen",
+			"system": "space1889",
+			"path": "./packs/waffen.db",
+			"entity": "Item",
+			"type": "Item"
+		}
+	],
+	"languages": [
+		{
+			"lang":"de",
+			"name":"Deutsch",
+			"path":"lang/de.json"
+		},
+		{
+			"lang": "en",
+			"name": "English",
+			"path": "lang/en.json"
+		}
+	],
+	"gridDistance": 1.5,
+	"gridUnits": "m",
+	"primaryTokenAttribute": "health",
+	"url": "",
+	"manifest": "",
+	"download": "",
+	"license": "LICENSE.txt"
+}

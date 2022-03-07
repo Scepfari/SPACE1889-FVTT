@@ -1,0 +1,202 @@
+{
+	"Actor": {
+		"types": ["character", "npc"],
+		"templates": {
+		"base": {
+			"health": {
+			"value": 10,
+			"min": 0,
+			"max": 10
+			},
+			"style": {
+			"value": 5
+			},
+			"biography": ""
+		}
+		},
+		"character": {
+		"templates": ["base"],
+		"attributes": {
+			"xp": {
+			"value": 0,
+			"used": 0,
+			"available":0
+			},
+			"archetype": {
+			"value": "abenteurer"
+			},
+			"species": {
+			"value": "mensch"
+			},
+			"motivation": {
+			"value": "entdeckung"
+			}
+		},
+		"abilities": {
+			"con": {
+			"value": 1
+			},
+			"dex": {
+			"value": 1
+			},
+			"str": {
+			"value": 1
+			},
+			"cha": {
+			"value": 1
+			},
+			"int": {
+			"value": 1
+			},
+			"wil": {
+			"value": 1
+			}
+		},
+		"secondaries":{
+			"size":{
+				"value": 0
+			},
+			"move":{
+				"value": 0
+			},
+			"perception":{
+				"value": 0
+			},
+			"initiative":{
+				"value": 0
+			},
+			"defense":{
+				"value": 0
+			},
+			"stun":{
+				"value": 0
+			}
+		},
+		"block":{
+			"value": 0,
+			"instinctive": false,
+			"riposte": false
+		},
+		"parry":{
+			"value": 0,
+			"instinctive": false,
+			"riposte": false
+		},
+		"evasion":{
+			"value": 0,
+			"instinctive": false
+		}
+		},
+		"npc": {
+		"templates": ["base"],
+		"cr": 0
+		}
+	},
+	"Item": {
+		"types": [ "item", "talent", "weapon", "skill", "specialization", "weakness", "resource", "language", "armor" ],
+		"templates": {
+			"description": {
+				"description": ""
+			},
+			"skillbase": {
+				"basis": 0,
+				"level": 1,
+				"rating": 0
+			},
+			"id": {
+				"id": ""
+			},
+			"location": {
+				"location": "koerper"
+			},
+			"weight": {
+				"weight": 0
+			},
+			"price": {
+				"price": ""
+			},
+			"source": {
+				"publication": "GRW",
+				"page":  ""
+			}
+		},
+		"item": {
+			"templates": [ "description", "weight", "location", "price" ],
+			"quantity": 1
+		},
+		"talent": {
+			"templates": [ "description", "id", "source"],
+			"level": {
+				"value": 1,
+				"min": 1,
+				"max": 3
+			},
+			"newBase": "",
+			"changedSkill": "",
+			"preconditionType": "nothing",
+			"preconditionName": "",
+			"isGroup": false,
+			"preconditionLevel": 0,
+			"secondPreconditionType": "nothing",
+			"secondPreconditionName": "",
+			"secondPreconditionLevel": 0,
+			"isOrOperator": false,
+			"bonus": 0,
+			"bonusTarget": "",
+			"bonusTargetType": "",
+			"info": ""
+		},
+		"skill": {
+			"templates": [ "description", "skillbase", "id","source" ],
+			"underlyingAttribute": "dex",
+			"talentBonus": 0,
+			"isSkillGroup": false,
+			"skillGroupName": ""
+		},
+		"specialization": {
+			"templates": [ "description", "skillbase", "id" ],
+			"underlyingSkillId": "akrobatik"
+		},
+		"weapon": {
+			"templates": [ "description", "weight", "id", "location", "price" ],
+			"skillId": "none",
+			"specializationId": "none",
+			"damage": 0,
+			"damageType": "lethal",
+			"strengthThreshold": 0,
+			"weight": 0,
+			"range": "",
+			"capacity": 1,
+			"rateOfFire": "",
+			"speed": "",
+			"isAreaDamage": false,
+			"ammunitionType": ""
+		},
+		"weakness": {
+			"templates": [ "description", "id" ],
+			"type": ""
+		},
+		"resource": {
+			"templates": [ "description", "id" ],
+			"level": {
+				"value": 0,
+				"min": 0,
+				"max": 5
+			},
+			"isBase": false
+		},
+		"language": {
+			"templates": [ "id" ],
+			"old": false,
+			"familyId": "",
+			"isDialectSourceId": "no",
+			"originId": ""
+		},
+		"armor": {
+			"templates": [ "description", "id", "location", "weight", "price" ],
+			"defenseBonus": 1,
+			"dexPenalty": 0,
+			"strengthThreshold": 0
+		}
+	}
+}
