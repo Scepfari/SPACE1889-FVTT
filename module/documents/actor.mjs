@@ -96,6 +96,8 @@ export class Space1889Actor extends Actor
         const speciSkills = [];
         const talents = [];
         const weapons = [];
+        const armors = [];
+        const gear = [];
         for (let item of items)
         {
             if (item.data.type === 'skill')
@@ -116,6 +118,14 @@ export class Space1889Actor extends Actor
             else if (item.data.type == 'weapon')
             {
                 weapons.push(item.data);
+            }
+            else if (item.data.type === 'armor')
+            {
+                armors.push(item.data);
+            }
+            else if (item.data.type == 'item')
+            {
+                gear.push(item.data);
             }
         }
         actorData.talents = talents;
@@ -157,6 +167,18 @@ export class Space1889Actor extends Actor
             weapon.data.attackAverage = (weapon.data.attack % 2 == 0 ? "" : "+") + (Math.floor(weapon.data.attack / 2)).toString();
             weapon.data.damageTypeDisplay = game.i18n.localize(CONFIG.SPACE1889.damageTypeAbbreviations[weapon.data.damageType]);
             weapon.data.locationDisplay = game.i18n.localize(CONFIG.SPACE1889.storageLocationAbbreviations[weapon.data.location]);
+        }
+
+        for (let armor of armors)
+        {
+            let langId = CONFIG.SPACE1889.storageLocationAbbreviations[armor.data.location] ?? "";
+            armor.data.display = (langId != "" ? game.i18n.localize(langId) : "?");
+        }
+
+        for (let item of gear)
+        {
+            let langId = CONFIG.SPACE1889.storageLocationAbbreviations[item.data.location] ?? "";
+            item.data.display = (langId != "" ? game.i18n.localize(langId) : "?");
         }
 
         this._CalcThings(actorData);
