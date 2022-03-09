@@ -86,6 +86,7 @@ export class Space1889ActorSheet extends ActorSheet {
 		context.data['motivations'] = CONFIG.SPACE1889.motivations;
 		context.data['resources'] = CONFIG.SPACE1889.resources;
 		context.data['primaereAttribute'] = primaereAttribute;
+		context.data['storageLocationsAbbr'] = CONFIG.SPACE1889.storageLocationAbbreviations;
 
 /*		try
 		{
@@ -515,34 +516,98 @@ export class Space1889ActorSheet extends ActorSheet {
 	{
 		const isPossible1 = this.isPreConditionValid(itemData.data.preconditionType, itemData.data.preconditionName, itemData.data.isGroup, itemData.data.preconditionLevel);
 		const isPossible2 = this.isPreConditionValid(itemData.data.secondPreconditionType, itemData.data.secondPreconditionName, false, itemData.data.secondPreconditionLevel);
-/*		if (itemData.data.isOrOperator && !isPossible && !isPossible2)
+		let info = "";
+		if (itemData.data.isOrOperator && !isPossible1 && !isPossible2)
 		{
-			var text = "Talent " + itemData.name + " kann nicht gewählt werden, da dafür keine der zwei Möglichkeiten " + voraussetzung + talent.nameDerVoraussetzung + " die Stufe " + talent.stufeDerVoraussetzung;
-			text += ",  oder " + voraussetzung2 + talent.nameDerZweitenVoraussetzung + " die Stufe " + talent.stufeDerZweitenVoraussetzung + " erfüllt ist.";
-			app.alert(text);
-		}
-		else if (isPossible == false && talent.oderOperatorZweiteVoraussetzung == false)
-		{
-			if (talent.typDerVoraussetzung != 5)
-				app.alert("Talent " + talentName + " kann nicht gewählt werden, da dafür " + voraussetzung + talent.nameDerVoraussetzung + " die Stufe " + talent.stufeDerVoraussetzung + " benötigt."  );
-			else
-				app.alert("Talent " + talentName + " kann nicht gewählt werden, da dieses Talent ausschließlich der Spezies " + talent.nameDerVoraussetzung + " vorbehalten ist.");
-		}
-		else if (isPossible2 == false && !talent.oderOperatorZweiteVoraussetzung)
-		{
-			if (talent.typDerZweitenVoraussetzung != 5)
-				app.alert("Talent " + talentName + " kann nicht gewählt werden, da dafür " + voraussetzung2 + talent.nameDerZweitenVoraussetzung + " die Stufe " + talent.stufeDerZweitenVoraussetzung + " benötigt."  );
-			else
-				app.alert("Talent " + talentName + " kann nicht gewählt werden, da dieses Talent ausschließlich der Spezies " + talent.nameDerZweitenVoraussetzung + " vorbehalten ist.");
+			const talentName = itemData.name;
+			const preConType = game.i18n.format(CONFIG.SPACE1889.preConditionTypes[itemData.data.preconditionType]);
 
-		}*/
+			const group = itemData.data.isGroup ? "Group" : "";
+
+			const preConNameLangId = "SPACE1889." + this.mapPreconditionTypeToLangIdSubString(itemData.data.preconditionType) + group + this.firstLetterToUpperCase(itemData.data.preconditionName);
+			let preConName = game.i18n.format(preConNameLangId);
+			if (preConName == preConNameLangId)
+				preConName = this.firstLetterToUpperCase(itemData.data.preconditionName);
+			const preConLevel = itemData.data.preconditionLevel.toString();
+
+			const preCon2Type = game.i18n.format(CONFIG.SPACE1889.preConditionTypes[itemData.data.secondPreconditionType]);
+			const preCon2NameLangId = "SPACE1889." + this.mapPreconditionTypeToLangIdSubString(itemData.data.secondPreconditionType) + this.firstLetterToUpperCase(itemData.data.secondPreconditionName);
+			let preCon2Name = game.i18n.format(preCon2NameLangId);
+			if (preCon2Name == preCon2NameLangId)
+				preCon2Name = this.firstLetterToUpperCase(itemData.data.secondPreconditionName);
+			const preCon2Level = itemData.data.secondPreconditionLevel.toString();
+
+			info = game.i18n.format("SPACE1889.CanNotAddTalentTwoPreCons", {
+				talentName: talentName, preConType: preConType, preConName: preConName, preConLevel: preConLevel, preCon2Type: preCon2Type, preCon2Name: preCon2Name, preCon2Level: preCon2Level
+			})
+		}
+		else if (!isPossible1 && !itemData.data.isOrOperator)
+		{
+			const talentName = itemData.name;
+			const preConType = game.i18n.format(CONFIG.SPACE1889.preConditionTypes[itemData.data.preconditionType]);
+
+			const group = itemData.data.isGroup ? "Group" : "";
+
+			const preConNameLangId = "SPACE1889." + this.mapPreconditionTypeToLangIdSubString(itemData.data.preconditionType) + group + this.firstLetterToUpperCase(itemData.data.preconditionName);
+			let preConName = game.i18n.format(preConNameLangId);
+			if (preConName == preConNameLangId)
+				preConName = this.firstLetterToUpperCase(itemData.data.preconditionName);
+			const preConLevel = itemData.data.preconditionLevel.toString();
+
+			if (itemData.data.preconditionType == "species")
+				info = game.i18n.format("SPACE1889.CanNotAddTalentWrongSpecies", { talentName: talentName, preConName: preConName });
+			else
+				info = game.i18n.format("SPACE1889.CanNotAddTalentOnePreCons", { talentName: talentName, preConType: preConType, preConName: preConName, preConLevel: preConLevel });
+		}
+		else if (!isPossible2 && !itemData.data.isOrOperator)
+		{
+			const preCon2Type = game.i18n.format(CONFIG.SPACE1889.preConditionTypes[itemData.data.secondPreconditionType]);
+			const preCon2NameLangId = "SPACE1889." + this.mapPreconditionTypeToLangIdSubString(itemData.data.secondPreconditionType) + this.firstLetterToUpperCase(itemData.data.secondPreconditionName);
+			let preCon2Name = game.i18n.format(preCon2NameLangId);
+			if (preCon2Name == preCon2NameLangId)
+				preCon2Name = this.firstLetterToUpperCase(itemData.data.secondPreconditionName);
+			const preCon2Level = itemData.data.secondPreconditionLevel.toString();
+
+			if (itemData.data.preconditionType == "species")
+				info = game.i18n.format("SPACE1889.CanNotAddTalentWrongSpecies", { talentName: talentName, preConName: preCon2Name });
+			else
+				info = game.i18n.format("SPACE1889.CanNotAddTalentOnePreCons", { talentName: talentName, preConType: preCon2Type, preConName: preCon2Name, preConLevel: preCon2Level });
+		}
 	
 		const isPossible = (itemData.data.isOrOperator ? (isPossible1 || isPossible2) : (isPossible1 && isPossible2));
-		if (!isPossible) // ToDo sinnvolle Meldung einbauen
-			ui.notifications.error(game.i18n.format("SPACE1889.canNotBeAdded", { item: itemData.name }))	
+		if (!isPossible)
+		{
+			if (info != "")
+				ui.notifications.error(info);
+			else
+				ui.notifications.error(game.i18n.format("SPACE1889.canNotBeAdded", { item: itemData.name }));
+		}
 		return isPossible;
 	}
 
+	mapPreconditionTypeToLangIdSubString(preConType)
+	{
+		if (preConType == "primary")
+			return "Ability";
+		if (preConType == "secondary")
+			return "SecondaryAttribute";
+
+		return this.firstLetterToUpperCase(preConType);
+    }
+
+
+	/**
+	 * 
+	 * @param {string} text
+	 * @returns {string}
+	 */
+	firstLetterToUpperCase(text)
+	{
+		return text.replace(/^(.)/, function (b)
+		{
+			return b.toUpperCase();
+		});
+    }
 
 	/**
 	 * Handle creating a new Owned Item for the actor using initial data defined in the HTML dataset

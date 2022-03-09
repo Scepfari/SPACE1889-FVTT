@@ -1843,6 +1843,10 @@
 
 
 	"SPACE1889.canNotBeAdded": "{item} kann nicht hinzugefügt werden, da die Vorbedingung(en) nicht erfüllt sind.",
+	"SPACE1889.CanNotAddTalentTwoPreCons": "Talent {talentName} kann nicht gewählt werden, da dafür keine der zwei möglichen Voraussetzungen: {preConType} {preConName} die Stufe {preConLevel}, bzw {preCon2Type} {preCon2Name} die Stufe {preCon2Level} erfüllt.",
+	"SPACE1889.CanNotAddTalentOnePreCons": "Talent {talentName} kann nicht gewählt werden, da dafür die Voraussetzung: {preConType} {preConName} auf Stufe {preConLevel} benötigt wird.",
+	"SPACE1889.CanNotAddTalentWrongSpecies": "Talent {talentName} kann nicht gewählt werden, da dieses Talent ausschließlich der Spezies {preConName} vorbehalten ist.",
+	
 	"SPACE1889.NoLanguageEntry": "Der Eintrag <i>{langId}</i> ist nicht in der Sprach-Datei <i>de.json</i> enthalten.",
 
 	"SPACE1889.UseInstinctiveBlockParry": "Sollte bei {attackType1} Angriffen ({rating}) und {attackType2} Angriffen({rating2}) anstelle des Abwehrwertes ({defence}) eingesetzt werden.",
