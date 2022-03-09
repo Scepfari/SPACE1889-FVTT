@@ -109,7 +109,7 @@
 	"SPACE1889.MediumLoad": "Mittlere Last",
 	"SPACE1889.HavyLoad": "Schwere Last",
 	"SPACE1889.MaxLoad": "Maximale Last",
-	"SPACE1889.Impossible": "Unmöglich",
+	"SPACE1889.ImpossibleLoad": "Unmöglich",
 	"SPACE1889.Consequence": "Auswirkung",
 	"SPACE1889.LoadingLevelDesc": "Beladung",
 	"SPACE1889.LightLoadDesc": "Es entsteht keine Behinderung bei Bewegung oder anderen Aktionen.",

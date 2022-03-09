@@ -12,10 +12,10 @@
 			<div class="item-name">
 				<h4 class="rollable" data-roll-type="item" title="{{localize item.data.infoLangId}} {{localize item.data.bonusTargetLangId}}">{{item.data.label}} {{#if (eq item.data.id 'begabung')}} ({{localize item.data.bonusTargetLangId}}) {{/if}}</h4>
 			</div>
-			<div class="item-max-with40px">
-				<input class="talent-level" type="text" name="item.data.level.value" value="{{item.data.level.value}}" data-dtype="Number"/>
+			<div class="item-max-with40px resource-label">
+				<a class="increment-click">{{item.data.level.value}}</a>
 			</div>
-			<label class="items-list item-max-with40px resource-label">{{item.data.level.max}}</label>
+			<label class="items-list item-max-with40px">{{item.data.level.max}}</label>
 			<div class="item-controls item-max-with75px">
 				<a class="item-control item-edit" title="Edit Item"><i class="fas fa-edit"></i></a>
 				<a class="item-control item-delete" title="Delete Item"><i class="fas fa-trash"></i></a>
@@ -38,10 +38,10 @@
 			<div class="item-name">
 				<h4 class="rollable" data-roll-type="item" title="{{localize item.data.infoLangId}}">{{item.data.label}} {{#if (eq item.data.isBase true)}} ({{localize "SPACE1889.BaseResource"}}) {{/if}}</h4>
 			</div>
-			<div class="item-max-with40px">
-				<input class="talent-level" type="number" name="item.data.level.value" value="{{item.data.level.value}}" min="{{item.data.level.min}}" max="{{item.data.level.max}}" data-dtype="Number"/>
+			<div class="item-max-with40px resource-label">
+				<a class="increment-click">{{item.data.level.value}}</a>
 			</div>
-			<label class="items-list item-max-with40px resource-label">{{item.data.level.max}}</label>
+			<label class="items-list item-max-with40px">{{item.data.level.max}}</label>
 			<div class="item-controls item-max-with75px">
 				{{#if (eq item.data.isBase false)}}
 				<a class="item-control item-edit" title="Edit Item"><i class="fas fa-edit"></i></a>

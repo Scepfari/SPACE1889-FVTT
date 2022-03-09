@@ -343,6 +343,37 @@ export class Space1889ActorSheet extends ActorSheet {
 		//	this.currentFocus = $(document.activeElement); //.closest('.item-name').attr('data-item-id');
 		});
 
+		html.find('.increment-click').mousedown(ev =>
+		{
+			const itemId = this._getItemId(ev);
+			const item = this.actor.items.get(itemId);
+
+			if (item.data.type == "talent" || item.data.type == "resource")
+			{
+				const newValue = this.incrementValue(ev, item.data.data.level.value, item.data.data.level.min, item.data.data.level.max);
+				this.actor.updateEmbeddedDocuments("Item", [{ _id: itemId, "data.level.value": newValue }]);
+			}
+			else if (item.data.type == "skill" || item.data.type == "specialization")
+			{
+				const newValue = this.incrementValue(ev, item.data.data.level, 0, 5);
+				this.actor.updateEmbeddedDocuments("Item", [{ _id: itemId, "data.level": newValue }]);
+			}
+			else if (item.data.type == "item")
+			{
+				const newValue = this.incrementValue(ev, item.data.data.quantity, 0);
+				this.actor.updateEmbeddedDocuments("Item", [{ _id: itemId, "data.quantity": newValue }]);
+            }
+		});
+
+		html.find('.location-click').mousedown(ev =>
+		{
+			const itemId = this._getItemId(ev);
+			const item = this.actor.items.get(itemId);
+			const newLocation = this.incrementLocation(ev, item.data.data.location);
+			item.update({ 'data.location': newLocation });
+		});
+
+
 		// Active Effect management
 		html.find(".effect-control").click(ev => onManageActiveEffect(ev, this.actor));
 
@@ -595,7 +626,6 @@ export class Space1889ActorSheet extends ActorSheet {
 		return this.firstLetterToUpperCase(preConType);
     }
 
-
 	/**
 	 * 
 	 * @param {string} text
@@ -608,6 +638,47 @@ export class Space1889ActorSheet extends ActorSheet {
 			return b.toUpperCase();
 		});
     }
+
+	/**
+	 * 
+	 * @param {object} ev event
+	 * @param {number} currentValue
+	 * @param {number} min
+	 * @param {number} max
+	 */
+	incrementValue(ev, currentValue, min, max)
+	{
+		const factor = ev.ctrlKey ? 10 : 1
+		const sign = ev.button == 2 ? -1 : 1
+		let newValue = currentValue + (factor * sign);
+		if (sign > 0 && max != undefined)
+			newValue = Math.min(newValue, max);
+		else if (sign < 0)
+			newValue = Math.max(newValue, min);
+
+		return newValue;
+	}
+
+	/**
+	 * 
+	 * @param {object} ev event
+	 * @param {string} currentValue a storage location: 'koerper', 'rucksack' or 'lager'
+	 */
+	incrementLocation(ev, currentValue)
+	{
+		const k = 'koerper';
+		const r = 'rucksack';
+		const l = 'lager';
+
+		const backward = ev.button == 2;
+		if (currentValue == k)
+			return backward ? l : r;
+		else if (currentValue == r)
+			return backward ? k : l;
+		else
+			return backward ? r : k;
+    }
+
 
 	/**
 	 * Handle creating a new Owned Item for the actor using initial data defined in the HTML dataset

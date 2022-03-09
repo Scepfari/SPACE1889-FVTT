@@ -164,7 +164,7 @@ export class Space1889Actor extends Actor
             weapon.data.sizeMod = sizeMod;
             weapon.data.skillRating = this._GetSkillLevel(actorData, weapon.data.skillId, weapon.data.specializationId);
             weapon.data.attack = Math.max(0, weapon.data.damage + weapon.data.skillRating + weapon.data.sizeMod);
-            weapon.data.attackAverage = (weapon.data.attack % 2 == 0 ? "" : "+") + (Math.floor(weapon.data.attack / 2)).toString();
+            weapon.data.attackAverage = (Math.floor(weapon.data.attack / 2)).toString() + (weapon.data.attack % 2 == 0 ? "" : "+");
             weapon.data.damageTypeDisplay = game.i18n.localize(CONFIG.SPACE1889.damageTypeAbbreviations[weapon.data.damageType]);
             weapon.data.locationDisplay = game.i18n.localize(CONFIG.SPACE1889.storageLocationAbbreviations[weapon.data.location]);
         }
@@ -548,7 +548,7 @@ export class Space1889Actor extends Actor
             return "SPACE1889.HavyLoad";
         if (load <= (2 * havyLoad))
             return "SPACE1889.MaxLoad";
-        return "SPACE1889.Impossible";
+        return "SPACE1889.ImpossibleLoad";
     }
 
     /**

@@ -62,9 +62,13 @@
 					<h4 for="" class="rollable" data-roll-type="item" data-label="{{item.name}}">{{item.data.label}}</h4>
 				</div>
 			</div>
-			<label class="items-list item-max-with40px">{{item.data.quantity}}</label>
+			<div class="items-list item-max-with40px">
+				<a class="increment-click">{{item.data.quantity}}</a>
+			</div>
 			<label class="items-list item-max-with60px">{{item.data.weight}}kg</label>
-			<label class="items-list item-max-with40px">{{item.data.display}}</label>
+			<div class="items-list item-max-with40px">
+				<a class="location-click">{{item.data.display}}</a>
+			</div>
 			<div class="item-controls item-max-with60px">
 				<a class="item-control item-edit" title="Edit Item"><i class="fas fa-edit"></i></a>
 				<a class="item-control item-delete" title="Delete Item"><i class="fas fa-trash"></i></a>

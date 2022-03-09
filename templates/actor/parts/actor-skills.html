@@ -6,7 +6,7 @@
 		<div title='{{localize "SPACE1889.Level"}}' class="items-list item-max-with40px">{{localize "SPACE1889.Level"}}</div>
 		<div title='{{localize "SPACE1889.Rating"}}' class="items-list item-max-with42px">{{localize "SPACE1889.Rating"}}</div>
 		<div class="item-controls item-max-with75px">
-			<a class="item-control item-create item-max-with75px" title='{{localize "SPACE1889.CreateItem"}}' data-type="skill"><i class="fas fa-plus"></i> Add item</a>
+			<a class="item-control item-create item-max-with75px" title='{{localize "SPACE1889.CreateItem"}}' data-type="skill"><i class="fas fa-plus"></i> Add</a>
 		</div>
 	</li>
 	{{#each skills as |item id|}}
@@ -28,7 +28,7 @@
 			<label class="items-list item-max-with40px">{{item.data.basis}} ({{item.data.baseAbilityAbbr}})</label>
 			<label class="items-list item-max-with40px">{{item.data.talentBonus}}</label>
 			<div class="item-max-with40px">
-				<input class="skill-level" type="text" name="item.data.level" value="{{item.data.level}}" data-dtype="Number"/>
+				<a class="increment-click">{{item.data.level}}</a>
 			</div>
 			<label class="items-list item-max-with42px resource-label">{{item.data.rating}}</label>
 			<div class="item-controls item-max-with75px">
@@ -44,7 +44,7 @@
 		<div title='{{localize "SPACE1889.Level"}}' class="items-list item-max-with40px">{{localize "SPACE1889.Level"}}</div>
 		<div title='{{localize "SPACE1889.Rating"}}' class="items-list item-max-with42px">{{localize "SPACE1889.Rating"}}</div>
 		<div class="item-controls item-max-with75px">
-			<a class="item-control item-create item-max-with75px" title='{{localize "SPACE1889.CreateItem"}}' data-type="specialization"><i class="fas fa-plus"></i> Add item</a>
+			<a class="item-control item-create item-max-with75px" title='{{localize "SPACE1889.CreateItem"}}' data-type="specialization"><i class="fas fa-plus"></i> Add</a>
 		</div>
 	</li>
 	{{#each speciSkills as |item id|}}
@@ -60,10 +60,9 @@
 			<label class="items-list item-max-with40px">{{item.data.basis}}</label>
 			<label class="items-list item-max-with40px">{{item.data.talentBonus}}</label>
 			<div class="item-max-with40px">
-				<input class="skill-level" type="text" name="item.data.level" value="{{item.data.level}}" data-dtype="Number"/>
+				<a class="increment-click">{{item.data.level}}</a>
 			</div>
 			<label class="items-list item-max-with42px resource-label">{{item.data.rating}}</label>
-
 			<div class="item-controls item-max-with75px">
 				<a class="item-control item-edit" title="Edit Item"><i class="fas fa-edit"></i></a>
 				<a class="item-control item-delete" title="Delete Item"><i class="fas fa-trash"></i></a>

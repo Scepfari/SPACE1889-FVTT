@@ -109,7 +109,7 @@
 	"SPACE1889.MediumLoad": "Medium load",
 	"SPACE1889.HavyLoad": "Havy load",
 	"SPACE1889.MaxLoad": "Maximum load",
-	"SPACE1889.Impossible": "Impossible",
+	"SPACE1889.ImpossibleLoad": "Impossible",
 	"SPACE1889.Consequence": "Consequence",
 	"SPACE1889.LoadingLevelDesc": "Beladung",
 	"SPACE1889.LightLoadDesc": "Es entsteht keine Behinderung bei Bewegung oder anderen Aktionen.",
