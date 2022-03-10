@@ -121,7 +121,7 @@
 			}
 		},
 		"item": {
-			"templates": [ "description", "weight", "location", "price" ],
+			"templates": [ "description", "weight", "location", "price", "id" ],
 			"quantity": 1
 		},
 		"talent": {
