@@ -10,7 +10,7 @@
 	{{#each talents as |item id|}}
 		<li class="item flexrow" data-item-id="{{item._id}}">
 			<div class="item-name">
-				<h4 class="rollable" data-roll-type="item" title="{{localize item.data.infoLangId}} {{localize item.data.bonusTargetLangId}}">{{item.data.label}} {{#if (eq item.data.id 'begabung')}} ({{localize item.data.bonusTargetLangId}}) {{/if}}</h4>
+				<h4 class="rollable" data-roll-type="item" title="{{localize item.data.infoLangId}} {{#if (eq item.data.bonusTargetType 'skill')}} {{localize item.data.bonusTargetLangId}} {{/if}}">{{item.data.label}} {{#if (eq item.data.id 'begabung')}} ({{localize item.data.bonusTargetLangId}}) {{/if}}</h4>
 			</div>
 			<div class="item-max-with40px resource-label">
 				<a class="increment-click">{{item.data.level.value}}</a>

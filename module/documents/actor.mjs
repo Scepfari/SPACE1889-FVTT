@@ -6,6 +6,29 @@ export class Space1889Actor extends Actor
 {
 
     /** @override */
+    async _preCreate(data, options, user)
+    {
+        await super._preCreate(data, options, user);
+
+        const actorData = this.data;
+
+        if (data.type === "character")
+        {
+            let resourcePack = game.packs.get("space1889.ressourcen");
+            let resources = await resourcePack.getDocuments();
+            let toAddItems = [];
+            for (let item of resources)
+            {
+                if (item.data.data.isBase && actorData.items.find(e => e.data.data.id == item.data.data.id) == undefined)
+                    toAddItems.push(item.toObject());
+            }
+
+            if (toAddItems.length > 0)
+                actorData.update({ "items": toAddItems });
+        }
+    }
+
+    /** @override */
     prepareData()
     {
         // Prepare data for the actor. Calling the super version of this executes
@@ -609,6 +632,7 @@ export class Space1889Actor extends Actor
     CalcAndSetEP(actorData)
     {
         let xp = 0;
+        const baseXp = 15; //talent, resource
 
         let primaryBaseXp = this.UseHouseRules() ? 10 : 5;
 
@@ -631,14 +655,28 @@ export class Space1889Actor extends Actor
             }
             else if (item.data.type == "talent")
             {
-                xp += item.data.data.level.value * 15;
+                xp += item.data.data.level.value * baseXp;
             }
             else if (item.data.type == "resource")
             {
-                if (item.data.data.level.value == 0 && !item.data.data.isBase)
-                    xp += 7;
+                if (item.data.data.isBase)
+                {
+                    if (item.data.data.level.value >= 1)
+                    {
+                        xp += 8 + ((item.data.data.level.value - 1) * baseXp);
+                    }
+                    else if (item.data.data.level.value <= -1)
+                    {
+                        xp += -8 + ((item.data.data.level.value + 1) * baseXp);
+                    }
+                }
                 else
-                    xp += (item.data.data.level.value * 15);
+                {
+                    if (item.data.data.level.value == 0)
+                        xp += 7;
+                    else
+                        xp += (item.data.data.level.value * baseXp);
+                }
             }
         }
 
