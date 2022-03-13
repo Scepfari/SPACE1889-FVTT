@@ -4,12 +4,12 @@
 		"templates": {
 			"base": {
 				"health": {
-				"value": 10,
-				"min": 0,
-				"max": 10
+					"value": 10,
+					"min": 0,
+					"max": 10
 				},
 				"style": {
-				"value": 5
+					"value": 5
 				}
 			},
 			"biography": {

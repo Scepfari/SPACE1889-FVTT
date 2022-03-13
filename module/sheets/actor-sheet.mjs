@@ -446,10 +446,74 @@ export class Space1889ActorSheet extends ActorSheet {
 		}
 		if (itemData.type == "talent")
 		{
-			return this.isTalentPossible(itemData);
+			const isValid = this.isTalentPossible(itemData);
+			if (isValid && itemData.data.id == "begabung")
+			{
+				this.showBegabungDialog(itemData);
+            }
+			return isValid;
 		}
 		return true;		
 	}
+
+
+	showBegabungDialog(itemData)
+	{
+		let optionen = '';
+		let actor = this.actor.data;
+
+		for (let item of actor.skills)
+		{
+			optionen += '<option value="' + item.data.id + '" selected="selected">' + item.data.label + '</option>';
+		}
+
+		let begabung = game.i18n.localize("SPACE1889.TalentBegabung");
+		let text = game.i18n.localize("SPACE1889.ChooseSkill") + " " + begabung;
+		let choices = game.i18n.localize("SPACE1889.Choices");
+		let selectedOption;
+		let dialog = new Dialog({
+			title: `${actor.name} : ${begabung}`,
+			content: `
+				<form>
+				  <p>${text}:</p>
+				  <div class="form-group">
+					<label>${choices}:</label>
+					<select id="choices" name="choices">
+					  ${optionen}
+					</select>
+				  </div>
+				</form>
+			`,
+			buttons: {
+				yes: {
+					icon: '<i class="fas fa-check"></i>',
+					label: "Submit",
+					callback: () =>
+					{
+						selectedOption = document.getElementById('choices').value;
+					},
+				},
+				no: {
+					icon: '<i class="fas fa-times"></i>',
+					label: "Cancel",
+				}
+			},
+			default: "yes",
+			close: () =>
+			{
+				if (selectedOption) 
+				{
+					let newTalent = actor.talents.find(e => e.data.id == "begabung" && e.data.bonusTarget == "");
+					if (newTalent != undefined)
+						this.actor.updateEmbeddedDocuments("Item", [{ _id: newTalent._id, "data.bonusTarget": selectedOption }]);
+
+					console.log("set data.bonusTarget to: " + selectedOption);
+				}
+			}
+		});
+		dialog.render(true);
+    }
+
 
 /**
  * 

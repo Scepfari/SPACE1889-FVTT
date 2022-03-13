@@ -72,6 +72,7 @@
 	"SPACE1889.Age":"Alter",
 	"SPACE1889.DateOfBirth": "Geburtsdatum",
 	"SPACE1889.Height": "Größe",
+	"SPACE1889.Choices": "Auswahl",
 	"SPACE1889.Id": "Id",
 	"SPACE1889.Max": "Max",
 	"SPACE1889.Min": "Min",
@@ -1936,6 +1937,9 @@
 	"SPACE1889.UseInstinctiveEvasion": "Sollte bei Fernangriffen ({rating}) anstelle des Abwehrwertes ({defence}) eingesetzt werden.",
 	"SPACE1889.UselessInstinctiveBlockParryEvasion": "{talentName} ist nutzlos da der Abwehrwert >= dem {talentName}-Wert ist.",
 	"SPACE1889.UseBlockParryEvasion": "{talentName} sollte anstelle von voller Abwehr ({fullDefence}) eingesetzt werden.",
-	"SPACE1889.UselessBlockParryEvasion": "{talentName} ist sinnlos, da volle Abwehr ( {defence} ) den höheren Wert hat."
+	"SPACE1889.UselessBlockParryEvasion": "{talentName} ist sinnlos, da volle Abwehr ( {defence} ) den höheren Wert hat.",
+	
+	"SPACE1889.ChooseSkill": "Fertigkeitsauswahl für das Talent"
+
 
 }
