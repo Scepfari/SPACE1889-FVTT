@@ -109,7 +109,7 @@ export class Space1889Actor extends Actor
         data.secondaries.stun.total = data.secondaries.stun.value + data.secondaries.stun.talentBonus;
         data.secondaries.size.talentBonus = this.getBonusFromTalents("size", "secondary", items);
         data.secondaries.size.total = data.secondaries.size.value + data.secondaries.size.talentBonus;
-        data.secondaries.defense.value = data.abilities.con.total + data.abilities.dex.total - data.secondaries.size.total;
+        data.secondaries.defense.value = this.getPassiveDefence(actorData) + this.getActiveDefence(actorData) - data.secondaries.size.total;
         data.secondaries.defense.talentBonus = this.getBonusFromTalents("defense", "secondary", items);
         data.secondaries.defense.armorBonus = armorData.bonus;
         data.secondaries.defense.total = data.secondaries.defense.value + data.secondaries.defense.talentBonus + data.secondaries.defense.armorBonus;
@@ -226,6 +226,42 @@ export class Space1889Actor extends Actor
         }
 
         return bonus;
+    }
+
+    getActiveDefence(actorData)
+    {
+        let active = actorData.data.abilities.dex.total;
+
+        for (let item of actorData.items)
+        {
+            if (item.data.type != 'talent')
+                continue;
+
+            if (item.data.data.id == 'berechneteAbwehr')
+                active = actorData.data.abilities.int.total;
+            else if (item.data.data.id == 'strahlendeAbwehr')
+                active = actorData.data.abilities.cha.total;
+        }
+
+        return active;
+    }
+
+    getPassiveDefence(actorData)
+    {
+        let passive = actorData.data.abilities.con.total;
+
+        for (let item of actorData.items)
+        {
+            if (item.data.type != 'talent')
+                continue;
+
+            if (item.data.data.id == 'kraftvolleAbwehr')
+                passive = actorData.data.abilities.str.total;
+            else if (item.data.data.id == 'ueberzeugteAbwehr')
+                passive = actorData.data.abilities.wil.total;
+        }
+
+        return passive;
     }
 
     getArmorBonusMalus(items)

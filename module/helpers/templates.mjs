@@ -14,5 +14,6 @@
 		"systems/space1889/templates/actor/parts/actor-weakness.html",
 		"systems/space1889/templates/actor/parts/actor-language.html",
 		"systems/space1889/templates/actor/parts/actor-effects.html",
+		"systems/space1889/templates/actor/parts/actor-biography.html",
 	]);
 };

@@ -2,20 +2,26 @@
 	"Actor": {
 		"types": ["character", "npc"],
 		"templates": {
-		"base": {
-			"health": {
-			"value": 10,
-			"min": 0,
-			"max": 10
+			"base": {
+				"health": {
+				"value": 10,
+				"min": 0,
+				"max": 10
+				},
+				"style": {
+				"value": 5
+				}
 			},
-			"style": {
-			"value": 5
-			},
-			"biography": ""
-		}
+			"biography": {
+				"biography": "",
+				"age":"",
+				"dateOfBirth": "",
+				"height": "",
+				"weight ":""
+			}
 		},
 		"character": {
-		"templates": ["base"],
+		"templates": ["base","biography"],
 		"attributes": {
 			"xp": {
 			"value": 0,
