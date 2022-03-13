@@ -349,7 +349,7 @@ export class Space1889Actor extends Actor
         let underlyingAbility = "int";
         let rating = this.GetSkillRating(actorData, linguistikId, underlyingAbility);
 
-        var isHausregel = this.UseHouseRules();
+        var isHausregel = game.settings.get("space1889", "improvedForeignLanguageCountCalculation");
 
         if (rating >= 10)
             return 16;
@@ -669,8 +669,8 @@ export class Space1889Actor extends Actor
     {
         let xp = 0;
         const baseXp = 15; //talent, resource
-
-        let primaryBaseXp = this.UseHouseRules() ? 10 : 5;
+        const houseRoule = this.IsHouseRouleXpCalculationActive();
+        let primaryBaseXp = houseRoule ? 10 : 5;
 
         xp += this.CalcPartialSum(actorData.data.abilities["con"].value) * primaryBaseXp;
         xp += this.CalcPartialSum(actorData.data.abilities["dex"].value) * primaryBaseXp;
@@ -687,7 +687,10 @@ export class Space1889Actor extends Actor
             }
             else if (item.data.type == "specialization")
             {
-                xp += this.CalcPartialSum(item.data.data.level);
+                if (houseRoule)
+                    xp += this.CalcPartialSum(item.data.data.level);
+                else
+                    xp += item.data.data.level * 3;
             }
             else if (item.data.type == "talent")
             {
@@ -732,12 +735,11 @@ export class Space1889Actor extends Actor
         return (n * (n + 1)) / 2
     }
 
-    UseHouseRules()
+    IsHouseRouleXpCalculationActive()
     {
-        // ToDo: Soll das am Charakter hängen oder eine globale Einstellung sein?
-        // wie definiert man die Nulllinie für EP mit der Punktregel bei der Charaktererzeugung
-        // daher erstmal ausschließlich die Hausregeln.
-        return true;
+        // ToDo:  wie definiert man die Nulllinie für EP mit der Punktregel bei der Charaktererzeugung?
+
+        return game.settings.get("space1889", "improvedEpCalculation");
     }
 
 

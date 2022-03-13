@@ -7,6 +7,7 @@ import { Space1889ItemSheet } from "./sheets/item-sheet.mjs";
 // Import helper/utility classes and constants.
 import { preloadHandlebarsTemplates } from "./helpers/templates.mjs";
 import { SPACE1889 } from "./helpers/config.mjs";
+import { registerSystemSettings } from "./settings.mjs";
 
 /* -------------------------------------------- */
 /*  Init Hook                                   */
@@ -43,6 +44,9 @@ Hooks.once('init', async function() {
 	Actors.registerSheet("space1889", Space1889ActorSheet, { makeDefault: true });
 	Items.unregisterSheet("core", ItemSheet);
 	Items.registerSheet("space1889", Space1889ItemSheet, { makeDefault: true });
+
+	// Register System Settings
+	registerSystemSettings();
 
 	// Preload Handlebars templates.
 	return preloadHandlebarsTemplates();

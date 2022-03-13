@@ -355,7 +355,8 @@ export class Space1889ActorSheet extends ActorSheet {
 			}
 			else if (item.data.type == "skill" || item.data.type == "specialization")
 			{
-				const newValue = this.incrementValue(ev, item.data.data.level, 0, 5);
+				const min = item.data.type == "skill" ? 0 : 1;
+				const newValue = this.incrementValue(ev, item.data.data.level, min, 5);
 				this.actor.updateEmbeddedDocuments("Item", [{ _id: itemId, "data.level": newValue }]);
 			}
 			else if (item.data.type == "item")
