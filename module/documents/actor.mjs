@@ -26,6 +26,25 @@ export class Space1889Actor extends Actor
             if (toAddItems.length > 0)
                 actorData.update({ "items": toAddItems });
         }
+
+        if (data.type === "creature" && actorData.items.size == 0)
+        {
+            let skillPack = game.packs.get("space1889.fertigkeiten");
+            let skills = await skillPack.getDocuments();
+            let toAddItems = [];
+            for (let item of skills)
+            {
+                if (item.data.data.id == "waffenlos")
+                    toAddItems.push(item.toObject());
+                else if (item.data.data.id == "heimlichkeit")
+                    toAddItems.push(item.toObject());
+                else if (item.data.data.id == "ueberleben")
+                    toAddItems.push(item.toObject());
+            }
+
+            if (toAddItems.length > 0)
+                actorData.update({ "items": toAddItems });
+        }
     }
 
     /** @override */
@@ -71,8 +90,10 @@ export class Space1889Actor extends Actor
      */
     _prepareCharacterData(actorData)
     {
-        if (actorData.type !== 'character')
+        if (actorData.type !== 'character' && actorData.type !== 'creature')
             return;
+
+        const isCreature = actorData.type == 'creature';
 
         // Make modifications to data here. For example:
         const data = actorData.data;
@@ -162,9 +183,19 @@ export class Space1889Actor extends Actor
                 let underlyingAttribute = this._GetAttributeBase(actorData, skl);
                 skl.data.basis = actorData.data.abilities[underlyingAttribute].total;
                 skl.data.baseAbilityAbbr = game.i18n.localize(CONFIG.SPACE1889.abilityAbbreviations[underlyingAttribute]);
-                skl.data.rating = skl.data.basis + skl.data.level + skl.data.talentBonus;
+                let sizeMod = 0;
+                if (skl.data.id == 'heimlichkeit' && data.secondaries.size.total != 0)
+                    sizeMod = data.secondaries.size.total;
+
+                skl.data.rating = Math.max(0, skl.data.basis + skl.data.level + skl.data.talentBonus - sizeMod);
                 if (skl.data.isSkillGroup && skl.data.skillGroupName.length > 0)
                     skl.data.skillGroup = game.i18n.localize(CONFIG.SPACE1889.skillGroups[skl.data.skillGroupName]);
+
+                if (skl.data.id == 'sportlichkeit' && skl.data.rating > data.secondaries.move.value)
+                {
+                    data.secondaries.move.value = skl.data.rating;
+                    data.secondaries.move.total = skl.data.rating + data.secondaries.move.talentBonus;
+                }
 
                 for (let spe of speciSkills)
                 {
@@ -189,22 +220,26 @@ export class Space1889Actor extends Actor
             weapon.data.attack = Math.max(0, weapon.data.damage + weapon.data.skillRating + weapon.data.sizeMod);
             weapon.data.attackAverage = (Math.floor(weapon.data.attack / 2)).toString() + (weapon.data.attack % 2 == 0 ? "" : "+");
             weapon.data.damageTypeDisplay = game.i18n.localize(CONFIG.SPACE1889.damageTypeAbbreviations[weapon.data.damageType]);
-            weapon.data.locationDisplay = game.i18n.localize(CONFIG.SPACE1889.storageLocationAbbreviations[weapon.data.location]);
+            if (!isCreature)
+                weapon.data.locationDisplay = game.i18n.localize(CONFIG.SPACE1889.storageLocationAbbreviations[weapon.data.location]);
         }
 
-        for (let armor of armors)
+        if (!isCreature)
         {
-            let langId = CONFIG.SPACE1889.storageLocationAbbreviations[armor.data.location] ?? "";
-            armor.data.display = (langId != "" ? game.i18n.localize(langId) : "?");
-        }
+            for (let armor of armors)
+            {
+                let langId = CONFIG.SPACE1889.storageLocationAbbreviations[armor.data.location] ?? "";
+                armor.data.display = (langId != "" ? game.i18n.localize(langId) : "?");
+            }
 
-        for (let item of gear)
-        {
-            let langId = CONFIG.SPACE1889.storageLocationAbbreviations[item.data.location] ?? "";
-            item.data.display = (langId != "" ? game.i18n.localize(langId) : "?");
-        }
+            for (let item of gear)
+            {
+                let langId = CONFIG.SPACE1889.storageLocationAbbreviations[item.data.location] ?? "";
+                item.data.display = (langId != "" ? game.i18n.localize(langId) : "?");
+            }
 
-        this._CalcThings(actorData);
+            this._CalcThings(actorData);
+        }
     }
 
     /**

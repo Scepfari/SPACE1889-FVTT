@@ -455,6 +455,15 @@ font-size: 12px;
 	margin: 5px;
 }
 
+.space1889 .item-marginlr5px {
+	margin-left: 5px;
+	margin-right: 5px;
+}
+
+.space1889 .item-right{
+	text-align: right;
+}
+
 .space1889.sheet.actor .item-max-with40px input {
 	align-items: right;
 	vertical-align: center;

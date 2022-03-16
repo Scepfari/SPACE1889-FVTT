@@ -1,101 +1,113 @@
 {
 	"Actor": {
-		"types": ["character", "npc"],
+		"types": [ "character", "npc", "creature" ],
 		"templates": {
-			"base": {
+			"health": {
 				"health": {
 					"value": 10,
-					"min": 0,
+					"min": -20,
 					"max": 10
-				},
+				}
+			},
+			"style": {
 				"style": {
 					"value": 5
 				}
 			},
 			"biography": {
 				"biography": "",
-				"age":"",
+				"age": "",
 				"dateOfBirth": "",
 				"height": "",
-				"weight ":""
+				"weight ": ""
+			},
+			"primaries": {
+				"abilities": {
+					"con": {
+						"value": 1
+					},
+					"dex": {
+						"value": 1
+					},
+					"str": {
+						"value": 1
+					},
+					"cha": {
+						"value": 1
+					},
+					"int": {
+						"value": 1
+					},
+					"wil": {
+						"value": 1
+					}
+				}
+			},
+			"secondaries": {
+				"secondaries": {
+					"size": {
+						"value": 0
+					},
+					"move": {
+						"value": 0
+					},
+					"perception": {
+						"value": 0
+					},
+					"initiative": {
+						"value": 0
+					},
+					"defense": {
+						"value": 0
+					},
+					"stun": {
+						"value": 0
+					}
+				}
 			}
 		},
 		"character": {
-		"templates": ["base","biography"],
-		"attributes": {
-			"xp": {
-			"value": 0,
-			"used": 0,
-			"available":0
+			"templates": [ "health", "style", "primaries", "secondaries", "biography" ],
+			"attributes": {
+				"xp": {
+					"value": 0,
+					"used": 0,
+					"available": 0
+				},
+				"archetype": {
+					"value": "abenteurer"
+				},
+				"species": {
+					"value": "mensch"
+				},
+				"motivation": {
+					"value": "entdeckung"
+				}
 			},
-			"archetype": {
-			"value": "abenteurer"
+			"block": {
+				"value": 0,
+				"instinctive": false,
+				"riposte": false
 			},
-			"species": {
-			"value": "mensch"
+			"parry": {
+				"value": 0,
+				"instinctive": false,
+				"riposte": false
 			},
-			"motivation": {
-			"value": "entdeckung"
+			"evasion": {
+				"value": 0,
+				"instinctive": false
 			}
 		},
-		"abilities": {
-			"con": {
-			"value": 1
-			},
-			"dex": {
-			"value": 1
-			},
-			"str": {
-			"value": 1
-			},
-			"cha": {
-			"value": 1
-			},
-			"int": {
-			"value": 1
-			},
-			"wil": {
-			"value": 1
-			}
-		},
-		"secondaries":{
-			"size":{
-				"value": 0
-			},
-			"move":{
-				"value": 0
-			},
-			"perception":{
-				"value": 0
-			},
-			"initiative":{
-				"value": 0
-			},
-			"defense":{
-				"value": 0
-			},
-			"stun":{
-				"value": 0
-			}
-		},
-		"block":{
-			"value": 0,
-			"instinctive": false,
-			"riposte": false
-		},
-		"parry":{
-			"value": 0,
-			"instinctive": false,
-			"riposte": false
-		},
-		"evasion":{
-			"value": 0,
-			"instinctive": false
-		}
+		"creature": {
+			"templates": [ "health", "primaries", "secondaries" ],
+			"archetype": "animal",
+			"animalCompanionLevel": 0,
+			"movementType": "manylegged"
 		},
 		"npc": {
-		"templates": ["base"],
-		"cr": 0
+			"templates": [ "base" ],
+			"cr": 0
 		}
 	},
 	"Item": {
@@ -123,7 +135,7 @@
 			},
 			"source": {
 				"publication": "GRW",
-				"page":  ""
+				"page": ""
 			}
 		},
 		"item": {
@@ -131,7 +143,7 @@
 			"quantity": 1
 		},
 		"talent": {
-			"templates": [ "description", "id", "source"],
+			"templates": [ "description", "id", "source" ],
 			"level": {
 				"value": 1,
 				"min": 1,
@@ -153,7 +165,7 @@
 			"info": ""
 		},
 		"skill": {
-			"templates": [ "description", "skillbase", "id","source" ],
+			"templates": [ "description", "skillbase", "id", "source" ],
 			"underlyingAttribute": "dex",
 			"talentBonus": 0,
 			"isSkillGroup": false,

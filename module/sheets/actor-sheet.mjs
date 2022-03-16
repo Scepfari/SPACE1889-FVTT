@@ -50,6 +50,12 @@ export class Space1889ActorSheet extends ActorSheet {
 			this._prepareItems(context);
 		}
 
+		if (actorData.type == 'creature')
+		{
+			this._prepareItems(context);
+			this._prepareCreatureData(context);
+		}
+
 		// Add roll data for TinyMCE editors.
 		context.rollData = context.actor.getRollData();
 
@@ -69,6 +75,24 @@ export class Space1889ActorSheet extends ActorSheet {
 	_prepareCharacterData(context) 
 	{
 		// Handle ability scores.
+		this._prepareAttributes(context);
+
+		context.data['archetypes'] = CONFIG.SPACE1889.archetypes;
+		context.data['species'] = CONFIG.SPACE1889.species;
+		context.data['motivations'] = CONFIG.SPACE1889.motivations;
+		context.data['resources'] = CONFIG.SPACE1889.resources;
+		context.data['storageLocationsAbbr'] = CONFIG.SPACE1889.storageLocationAbbreviations;
+	}
+
+	_prepareCreatureData(context)
+	{
+		this._prepareAttributes(context);
+		context.data['archetypes'] = CONFIG.SPACE1889.creatureArchetypes;
+		context.data['movementTypes'] = CONFIG.SPACE1889.creatureMovementType;
+	}
+
+	_prepareAttributes(context)
+	{
 		let primaereAttribute = [];
 
 		for (let [k, v] of Object.entries(context.data.abilities)) 
@@ -80,105 +104,8 @@ export class Space1889ActorSheet extends ActorSheet {
 		{
 			element.label = game.i18n.localize(CONFIG.SPACE1889.secondaries[key]) ?? key;
 		}
-
-		context.data['archetypes'] = CONFIG.SPACE1889.archetypes;
-		context.data['species'] = CONFIG.SPACE1889.species;
-		context.data['motivations'] = CONFIG.SPACE1889.motivations;
-		context.data['resources'] = CONFIG.SPACE1889.resources;
 		context.data['primaereAttribute'] = primaereAttribute;
-		context.data['storageLocationsAbbr'] = CONFIG.SPACE1889.storageLocationAbbreviations;
-
-/*		try
-		{
-			for(let skl of context.skills)
-			{
-				let underlyingAttribute = this._GetAttributeBase(context, skl);
-				skl.data.basis = context.data.abilities[underlyingAttribute].total;
-				skl.data.baseAbilityAbbr = game.i18n.localize(CONFIG.SPACE1889.abilityAbbreviations[underlyingAttribute]);
-				skl.data.rating = skl.data.basis + skl.data.level + skl.data.talentBonus;
-				if (skl.data.isSkillGroup && skl.data.skillGroupName.length > 0)
-					skl.data.skillGroup = game.i18n.localize(CONFIG.SPACE1889.skillGroups[skl.data.skillGroupName]);
-
-				for(let spe of context.speciSkills)
-				{
-					if (spe.data.underlyingSkillId == skl.data.id)
-					{
-						spe.data.basis = skl.data.rating;
-						spe.data.rating = spe.data.basis + spe.data.level + spe.data.talentBonus;
-					}
-				} 
-			}
-		}
-		catch(error) 
-		{
-			console.error(error);
-		}
-
-		let sizeMod = (-1) * context.data.secondaries.size.total;
-		for (let weapon of context.weapons)
-		{
-			weapon.data.sizeMod = sizeMod;
-			weapon.data.skillRating = this._GetSkillLevel(context, weapon.data.skillId, weapon.data.specializationId);
-			weapon.data.attack = Math.max(0, weapon.data.damage + weapon.data.skillRating + weapon.data.sizeMod);
-			weapon.data.attackAverage = (weapon.data.attack % 2 == 0 ? "" : "+") + (Math.floor(weapon.data.attack / 2)).toString();
-			weapon.data.damageTypeDisplay = game.i18n.localize(CONFIG.SPACE1889.damageTypeAbbreviations[weapon.data.damageType]);
-			weapon.data.locationDisplay = game.i18n.localize(CONFIG.SPACE1889.storageLocationAbbreviations[weapon.data.location]);
-		}
-
-		for (let armor of context.armors)
-		{
-			let langId = CONFIG.SPACE1889.storageLocationAbbreviations[armor.data.location] ?? "";
-			armor.data.display = (langId != "" ? game.i18n.localize(langId) : "?");
-		}
-
-		for (let item of context.gear)
-		{
-			let langId = CONFIG.SPACE1889.storageLocationAbbreviations[item.data.location] ?? "";
-			item.data.display = (langId != "" ? game.i18n.localize(langId) : "?");
-		}
-
-		this._CalcThings(context);*/
-
-	}
-
-	/**
-	 * 
-	 * @param {Object} context 
-	 * @param {Object} skill
-	 * @returns {string} abilityKey
-	 */
-	/*_GetAttributeBase(context, skill)
-	{
-		for (let talent of context.talents)
-		{
-			if (talent.data.changedSkill == skill.data.id && talent.data.newBase != "") //besser prüfen obs eine der 6 primären Attribute ist
-				return talent.data.newBase;
-		}
-		return skill.data.underlyingAttribute
-	}*/
-
-
-	/**
-	 * 
-	 * @param {Object} context 
-	 * @param {string} skillId 
-	 * @param {string} specializationId
-	 * @returns {number}
-	 */
-	/*_GetSkillLevel(context, skillId, specializationId)
-	{
-		for (let speci of context.speciSkills)
-		{
-			if (specializationId == speci.data.id)
-				return speci.data.rating;
-		}
-		for (let skill of context.skills)
-		{
-			if (skillId == skill.data.id)
-				return skill.data.rating;
-		}
-		return this.GetSkillRating(context, skillId, "");
-	}*/
+    }
 
 	/**
 	 * Organize and classify Items for Character sheets.
@@ -355,8 +282,9 @@ export class Space1889ActorSheet extends ActorSheet {
 			}
 			else if (item.data.type == "skill" || item.data.type == "specialization")
 			{
+				const max = this.actor.data.type == "character" ? 5 : 10;
 				const min = item.data.type == "skill" ? 0 : 1;
-				const newValue = this.incrementValue(ev, item.data.data.level, min, 5);
+				const newValue = this.incrementValue(ev, item.data.data.level, min, max);
 				this.actor.updateEmbeddedDocuments("Item", [{ _id: itemId, "data.level": newValue }]);
 			}
 			else if (item.data.type == "item")
@@ -374,6 +302,54 @@ export class Space1889ActorSheet extends ActorSheet {
 			item.update({ 'data.location': newLocation });
 		});
 
+		html.find('.increment-con-click').mousedown(ev =>
+		{
+			const newValue = this.incrementValue(ev, this.actor.data.data.abilities.con.value, 0, undefined);
+			this.actor.update({ 'data.abilities.con.value': newValue });
+		});
+		html.find('.increment-dex-click').mousedown(ev =>
+		{
+			const newValue = this.incrementValue(ev, this.actor.data.data.abilities.dex.value, 0, undefined);
+			this.actor.update({ 'data.abilities.dex.value': newValue });
+		});
+		html.find('.increment-str-click').mousedown(ev =>
+		{
+			const newValue = this.incrementValue(ev, this.actor.data.data.abilities.str.value, 0, undefined);
+			this.actor.update({ 'data.abilities.str.value': newValue });
+		});
+		html.find('.increment-cha-click').mousedown(ev =>
+		{
+			const newValue = this.incrementValue(ev, this.actor.data.data.abilities.cha.value, 0, undefined);
+			this.actor.update({ 'data.abilities.cha.value': newValue });
+		});
+		html.find('.increment-int-click').mousedown(ev =>
+		{
+			const newValue = this.incrementValue(ev, this.actor.data.data.abilities.int.value, 0, undefined);
+			this.actor.update({ 'data.abilities.int.value': newValue });
+		});
+		html.find('.increment-wil-click').mousedown(ev =>
+		{
+			const newValue = this.incrementValue(ev, this.actor.data.data.abilities.wil.value, 0, undefined);
+			this.actor.update({ 'data.abilities.wil.value': newValue });
+		});
+
+		html.find('.increment-animalcompanionlevel-click').mousedown(ev =>
+		{
+			const newValue = this.incrementValue(ev, this.actor.data.data.animalCompanionLevel, 0, 5);
+			this.actor.update({ 'data.animalCompanionLevel': newValue });
+		});
+
+		html.find('.increment-creaturesize-click').mousedown(ev =>
+		{
+			const newValue = this.incrementValue(ev, this.actor.data.data.secondaries.size.value, -5, 20);
+			this.actor.update({ 'data.secondaries.size.value': newValue });
+		});
+
+		html.find('.increment-creatureHealth-click').mousedown(ev =>
+		{
+			const newValue = this.incrementValue(ev, this.actor.data.data.health.value, this.actor.data.data.health.min, this.actor.data.data.health.max);
+			this.actor.update({ 'data.health.value': newValue });
+		});
 
 		// Active Effect management
 		html.find(".effect-control").click(ev => onManageActiveEffect(ev, this.actor));
@@ -428,6 +404,11 @@ export class Space1889ActorSheet extends ActorSheet {
 	isItemDropAllowed(itemData)
 	{
 		const actor = this.actor.data;
+
+		if (actor.type == 'creature' &&
+			(itemData.type == "specialization" || itemData.type == "resource" || itemData.type == "language"))
+			return false;
+
 		if (itemData.type == "weapon")
 		{
 			if (itemData.data.strengthThreshold > actor.data.abilities["str"].total)
@@ -451,7 +432,9 @@ export class Space1889ActorSheet extends ActorSheet {
 			if (isValid && itemData.data.id == "begabung")
 			{
 				this.showBegabungDialog(itemData);
-            }
+			}
+			if (isValid && itemData.data.id == "geschaerfterSinn")
+				this.showGeschaerfterSinnDialog(itemData);
 			return isValid;
 		}
 		return true;		
@@ -515,6 +498,63 @@ export class Space1889ActorSheet extends ActorSheet {
 		dialog.render(true);
     }
 
+	showGeschaerfterSinnDialog(itemData)
+	{
+		
+		let actor = this.actor.data;
+
+		let optionen = '<option value="hearing" selected="selected">' + game.i18n.localize("SPACE1889.SenseHearing") + '</option>';
+		optionen += '<option value="smell" selected="selected">' + game.i18n.localize("SPACE1889.SenseSmell") + '</option>';
+		optionen += '<option value="taste" selected="selected">' + game.i18n.localize("SPACE1889.SenseTaste") + '</option>';
+		optionen += '<option value="vision" selected="selected">' + game.i18n.localize("SPACE1889.SenseVision") + '</option>';
+		optionen += '<option value="touch" selected="selected">' + game.i18n.localize("SPACE1889.SenseTouch") + '</option>';
+
+		let begabung = game.i18n.localize("SPACE1889.TalentGeschaerfterSinn");
+		let text = game.i18n.localize("SPACE1889.ChooseSense") + " " + begabung;
+		let choices = game.i18n.localize("SPACE1889.Choices");
+		let selectedOption;
+		let dialog = new Dialog({
+			title: `${actor.name} : ${begabung}`,
+			content: `
+				<form>
+				  <p>${text}:</p>
+				  <div class="form-group">
+					<label>${choices}:</label>
+					<select id="choices" name="choices">
+					  ${optionen}
+					</select>
+				  </div>
+				</form>
+			`,
+			buttons: {
+				yes: {
+					icon: '<i class="fas fa-check"></i>',
+					label: "Submit",
+					callback: () =>
+					{
+						selectedOption = document.getElementById('choices').value;
+					},
+				},
+				no: {
+					icon: '<i class="fas fa-times"></i>',
+					label: "Cancel",
+				}
+			},
+			default: "yes",
+			close: () =>
+			{
+				if (selectedOption) 
+				{
+					let newTalent = actor.talents.find(e => e.data.id == "geschaerfterSinn" && e.data.bonusTarget == "");
+					if (newTalent != undefined)
+						this.actor.updateEmbeddedDocuments("Item", [{ _id: newTalent._id, "data.bonusTarget": selectedOption, "data.bonusTargetType": "sense" }]);
+
+					console.log("set data.bonusTarget to: " + selectedOption);
+				}
+			}
+		});
+		dialog.render(true);
+	}
 
 /**
  * 
@@ -800,6 +840,30 @@ export class Space1889ActorSheet extends ActorSheet {
 					return item.roll();
 				} 
 			}
+			else if (dataset.rollType == "talent")
+			{
+				const itemId = element.closest('.item').dataset.itemId;
+				const item = this.actor.items.get(itemId);
+				if (item && item.data.type == "talent" && item.data.data.isRollable)
+				{
+					const showDialog = (event.shiftKey || event.ctrlKey);
+					if (item.data.data.id == "geschaerfterSinn")
+					{
+						const dieCount = Math.max(this.actor.data.data.secondaries.perception.total + Number(item.data.data.bonus), 0);
+						return item.rollSpecialTalent(dieCount, showDialog)
+					}
+					else if (item.data.data.id == "paralysierenderSchlag")
+					{
+						const skillItem = this.actor.items.find(e => e.data.data.id == "waffenlos");
+						if (skillItem != undefined)
+						{
+							const dieCount = Math.max(0, skillItem.data.data.rating + ((item.data.data.level.value - 1) * 2));
+							return item.rollSpecialTalent(dieCount, showDialog);
+                        }
+					}
+					return item.roll();
+                }
+            }
 			else if (dataset.rollType == 'actor' && dataset.rollDiecount && dataset.rollKey)
 			{
 					const actor = this.actor;

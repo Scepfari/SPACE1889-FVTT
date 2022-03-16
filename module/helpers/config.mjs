@@ -600,6 +600,24 @@ SPACE1889.publicationsAbbreviations = {
 };
 
 
+SPACE1889.creatureArchetypes = {
+    "dinosaur": "SPACE1889.CreatureTypeDinosaur",
+    "insect": "SPACE1889.CreatureTypeInsect",
+    "animal": "SPACE1889.CreatureTypeAnimal",
+    "plant": "SPACE1889.CreatureTypePlant"
+};
+
+SPACE1889.creatureMovementType = {
+	"amphibious": "SPACE1889.CreatureMovementTypeAmphibious",
+	"flying": "SPACE1889.CreatureMovementTypeFlying",
+	"fossorial": "SPACE1889.CreatureMovementTypeFossorial",
+	"ground": "SPACE1889.CreatureMovementTypeNormal",
+	"swimming": "SPACE1889.CreatureMovementTypeSwimming",
+	"immobile": "SPACE1889.CreatureMovementTypeImmobile",
+	"manylegged": "SPACE1889.CreatureMovementTypeManyLegged"
+};
+
+
 SPACE1889.umlautMap = {
 	'\u00dc': 'UE',
 	'\u00c4': 'AE',
