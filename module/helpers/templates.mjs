@@ -18,5 +18,6 @@
 		"systems/space1889/templates/actor/parts/actor-creature-skills.html",
 		"systems/space1889/templates/actor/parts/actor-creature-talents.html",
 		"systems/space1889/templates/actor/parts/actor-creature-weapons.html",
+		"systems/space1889/templates/actor/parts/actor-creature-weakness.html",
 	]);
 };

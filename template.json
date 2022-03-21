@@ -103,7 +103,9 @@
 			"templates": [ "health", "primaries", "secondaries" ],
 			"archetype": "animal",
 			"animalCompanionLevel": 0,
-			"movementType": "manylegged"
+			"movementType": "manylegged",
+			"biography": "",
+			"origin": "merkur"
 		},
 		"npc": {
 			"templates": [ "base" ],

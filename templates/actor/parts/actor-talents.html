@@ -15,7 +15,7 @@
 			</div>
 			{{/if}}
 			<div class="item-name">
-				<h4 class="rollable" data-roll-type="item" title="{{localize item.data.infoLangId}} {{#if (eq item.data.bonusTargetType 'skill')}} {{localize item.data.bonusTargetLangId}} {{/if}}">{{item.data.label}}</h4>
+				<h4 class="rollable" data-roll-type="item" title="{{localize item.data.infoLangId}} {{#if item.data.showDetail}} {{localize item.data.bonusTargetLangId}} {{/if}}">{{item.data.label}}	</h4>
 			</div>
 			<div class="item-max-with40px resource-label">
 				<a class="increment-click">{{item.data.level.value}}</a>

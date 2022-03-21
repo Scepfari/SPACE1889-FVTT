@@ -41,7 +41,12 @@ export class Space1889Item extends Item {
 				{
 					item.data.bonusTargetLangId = 'SPACE1889.' + item.data.bonusTargetType.replace(/^(.)/, function (c) { return c.toUpperCase(); }) + item.data.bonusTarget.replace(/^(.)/, function (b) { return b.toUpperCase(); });
 					if (this.ShowTalentDetail(item))
-						item.data.label += " (" + game.i18n.localize(item.data.bonusTargetLangId) + ")";
+					{
+						item.data.showDetail = true;
+						const bonusTarget = game.i18n.localize(item.data.bonusTargetLangId);
+						if (bonusTarget != item.data.bonusTargetLangId)
+							item.data.label += " (" + bonusTarget + ")";
+					}
 				}
 
 				if (this.IsTalentRollable(item))
@@ -102,7 +107,8 @@ export class Space1889Item extends Item {
 	IsTalentRollable(itemData)
 	{
 		if (itemData.data.id == "geschaerfterSinn"
-			|| itemData.data.id == "paralysierenderSchlag")
+			|| itemData.data.id == "paralysierenderSchlag"
+			|| itemData.data.id == "assassine")
 		{
 			return true;
 		}
@@ -141,7 +147,15 @@ export class Space1889Item extends Item {
 		if (setDescription)
 			item.data.descriptionLangId = 'SPACE1889.' + base + 'Desc' + upperCaseId;
 		if (setInfo)
+		{
 			item.data.infoLangId = 'SPACE1889.' + base + 'Info' + upperCaseId;
+			if (base == "Talent")
+			{
+				const toolTip = game.i18n.localize(item.data.infoLangId);
+				item.data.toolTip = item.data.info != "" && toolTip == item.data.infoLangId ? item.data.info : toolTip;
+            }
+		}
+
 		item.data.label = game.i18n.localize(item.data.nameLangId) ?? item.name;
 		if (item.data.label == item.data.nameLangId)
 			item.data.label = item.name;
@@ -232,6 +246,8 @@ export class Space1889Item extends Item {
 		else if (item.type == "talent")
 		{
 			desc = game.i18n.localize(item.data.descriptionLangId);
+			if (desc == item.data.descriptionLangId && item.data.description != "")
+				desc = item.data.description;
 			const talent = game.i18n.localize("SPACE1889.Talent") ?? item.type;
 			label = `<h2><strong>${item.data.label}</strong> [${talent}]</h2>`;
 		}
@@ -337,8 +353,9 @@ export class Space1889Item extends Item {
 
 		if (item.type == "talent")
 		{
-			const info = item.data.id == "paralysierenderSchlag" ? game.i18n.localize("SPACE1889.Attack") ?? "Attack" : game.i18n.localize("SPACE1889.Probe") ?? "Probe";
-			this.rollSubSpecial(dieCount, showDialog, info);
+			const isAttack = item.data.id != "geschaerfterSinn";
+			const info = isAttack ? game.i18n.localize("SPACE1889.Attack") ?? "Attack" : game.i18n.localize("SPACE1889.Probe") ?? "Probe";
+			this.rollSubSpecial(dieCount, showDialog, info, true);
 		}
 	}
     /**
@@ -347,10 +364,11 @@ export class Space1889Item extends Item {
 	 * @param {boolean} showDialog
 	 * @param {string} titelInfo
 	*/
-	async rollSubSpecial(dieCount, showDialog, titelInfo)
+	async rollSubSpecial(dieCount, showDialog, titelInfo, withExtraInfo = false)
 	{
         const item = this.data;
-        const theActor = this.actor;
+		const theActor = this.actor;
+		const extraInfo = withExtraInfo ? game.i18n.localize(item.data.infoLangId) : "";
 
         let info = titelInfo + ":";
         if (showDialog)
@@ -393,7 +411,9 @@ export class Space1889Item extends Item {
         function getChatData(wurfelAnzahl)
         {
             const von = game.i18n.localize("SPACE1889.Of");
-            let messageContent = `<div><h2>${item.data.label}</h2></div>`;
+			let messageContent = `<div><h2>${item.data.label}</h2></div>`;
+			if (withExtraInfo)
+				messageContent += `${extraInfo} <br>`;
             messageContent += `${info} <b>[[${wurfelAnzahl}d6odd]] ${von}  ${wurfelAnzahl}</b> <br>`;
             let chatData =
             {

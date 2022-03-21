@@ -1,3 +1,15 @@
+{{#if data.movementType}}
+<div class="resource">
+	<label class="resource-label">{{ localize "SPACE1889.LanguageOrigin" }}: </label>
+	<select name="data.origin" data-dtype="String">
+		{{#select data.origin}}
+		{{#each data.origins as |ch char|}}
+		<option value="{{char}}">{{localize ch}}</option>
+		{{/each}}
+		{{/select}}
+	</select>
+</div>
+{{else}}
 <div class="item flex-group-center flexrow">
 	<label class="resource-label">{{localize "SPACE1889.Height"}}</label>
 	<div class="resource-content flex-center flex-between">
@@ -7,22 +19,22 @@
 <div class="item flex-group-center flexrow">
 	<label class="resource-label">{{localize "SPACE1889.Weight"}}</label>
 	<div class="resource-content flex-center flex-between">
-		<input type="text" name="data.weight" value="{{data.weight}}"/>
+		<input type="text" name="data.weight" value="{{data.weight}}" />
 	</div>
 </div>
 <div class="item flex-group-center flexrow">
 	<label class="resource-label">{{localize "SPACE1889.Age"}}</label>
 	<div class="resource-content flex-center flex-between">
-		<input type="text" name="data.age" value="{{data.age}}"/>
+		<input type="text" name="data.age" value="{{data.age}}" />
 	</div>
 </div>
 <div class="item flex-group-center flexrow">
 	<label class="resource-label">{{localize "SPACE1889.DateOfBirth"}}</label>
 	<div class="resource-content flex-center flex-between">
-		<input type="text" name="data.dateOfBirth" value="{{data.dateOfBirth}}"/>
+		<input type="text" name="data.dateOfBirth" value="{{data.dateOfBirth}}" />
 	</div>
 </div>
-
+{{/if}}
 
 <div class="tab" data-group="primary" data-tab="biography">
 	{{editor content=data.biography target="data.biography" rollData=rollData button=true owner=owner editable=editable}}

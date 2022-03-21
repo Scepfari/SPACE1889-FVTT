@@ -89,6 +89,7 @@ export class Space1889ActorSheet extends ActorSheet {
 		this._prepareAttributes(context);
 		context.data['archetypes'] = CONFIG.SPACE1889.creatureArchetypes;
 		context.data['movementTypes'] = CONFIG.SPACE1889.creatureMovementType;
+		context.data['origins'] = CONFIG.SPACE1889.creatureOrigins;
 	}
 
 	_prepareAttributes(context)
@@ -287,6 +288,11 @@ export class Space1889ActorSheet extends ActorSheet {
 				const newValue = this.incrementValue(ev, item.data.data.level, min, max);
 				this.actor.updateEmbeddedDocuments("Item", [{ _id: itemId, "data.level": newValue }]);
 			}
+			else if (item.data.type == "weapon")
+			{
+				const newValue = this.incrementValue(ev, item.data.data.damage, -10, undefined);
+				this.actor.updateEmbeddedDocuments("Item", [{ _id: itemId, "data.damage": newValue }]);
+            }
 			else if (item.data.type == "item")
 			{
 				const newValue = this.incrementValue(ev, item.data.data.quantity, 0);
@@ -406,7 +412,7 @@ export class Space1889ActorSheet extends ActorSheet {
 		const actor = this.actor.data;
 
 		if (actor.type == 'creature' &&
-			(itemData.type == "specialization" || itemData.type == "resource" || itemData.type == "language"))
+			(itemData.type == "resource" || itemData.type == "language"))
 			return false;
 
 		if (itemData.type == "weapon")
@@ -571,7 +577,12 @@ export class Space1889ActorSheet extends ActorSheet {
 
 		const actor = this.actor.data;
 
-		if (type == "primary")
+		if (type == "actor")
+		{
+			if (id == actor.type)
+				return true;
+        }
+		else if (type == "primary")
 		{
 			if (threshold <= actor.data.abilities[id].total)
 				return true;
@@ -630,7 +641,7 @@ export class Space1889ActorSheet extends ActorSheet {
 		}
 		else if (type == "species")
 		{
-			if (actor.data.attributes.species.value == id)
+			if (actor.type == "creature" || actor.data.attributes?.species?.value == id)
 				return true;
 		}
 		else if (type == "weakness")
@@ -753,7 +764,7 @@ export class Space1889ActorSheet extends ActorSheet {
 	 */
 	incrementValue(ev, currentValue, min, max)
 	{
-		const factor = ev.ctrlKey ? 10 : 1
+		const factor = ev.ctrlKey ? 10 : (ev.shiftKey ? 5 : 1);
 		const sign = ev.button == 2 ? -1 : 1
 		let newValue = currentValue + (factor * sign);
 		if (sign > 0 && max != undefined)
@@ -859,8 +870,17 @@ export class Space1889ActorSheet extends ActorSheet {
 						{
 							const dieCount = Math.max(0, skillItem.data.data.rating + ((item.data.data.level.value - 1) * 2));
 							return item.rollSpecialTalent(dieCount, showDialog);
-                        }
+						}
 					}
+					else if (item.data.data.id == "assassine")
+					{
+						const skillItem = this.actor.items.find(e => e.data.data.id == "heimlichkeit");
+						if (skillItem != undefined)
+						{
+							const dieCount = Math.max(0, skillItem.data.data.rating + ((item.data.data.level.value - 1) * 2));
+							return item.rollSpecialTalent(dieCount, showDialog);
+						}
+                    }
 					return item.roll();
                 }
             }

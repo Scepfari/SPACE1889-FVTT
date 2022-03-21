@@ -189,6 +189,7 @@ SPACE1889.damageTypeAbbreviations ={
 
 SPACE1889.preConditionTypes = {
 	"nothing": "-",
+	"actor": "SPACE1889.PreConTypeActor",
 	"primary": "SPACE1889.PreConTypePrimary",
 	"secondary": "SPACE1889.PreConTypeSecondary",
 	"skill": "SPACE1889.Skill",
@@ -599,6 +600,14 @@ SPACE1889.publicationsAbbreviations = {
 	"sg": "SPACE1889.PublicationSgAbbr"
 };
 
+SPACE1889.creatureOrigins = {
+	"erde": "SPACE1889.LanguageOriginErde",
+	"luna": "SPACE1889.LanguageOriginLuna",
+	"mars": "SPACE1889.LanguageOriginMars",
+	"merkur": "SPACE1889.LanguageOriginMerkur",
+	"phaeton": "SPACE1889.LanguageOriginPhaeton",
+	"venus": "SPACE1889.LanguageOriginVenus" 
+}
 
 SPACE1889.creatureArchetypes = {
     "dinosaur": "SPACE1889.CreatureTypeDinosaur",
@@ -613,6 +622,7 @@ SPACE1889.creatureMovementType = {
 	"fossorial": "SPACE1889.CreatureMovementTypeFossorial",
 	"ground": "SPACE1889.CreatureMovementTypeNormal",
 	"swimming": "SPACE1889.CreatureMovementTypeSwimming",
+	"jumper": "SPACE1889.CreatureMovementTypeJumper",
 	"immobile": "SPACE1889.CreatureMovementTypeImmobile",
 	"manylegged": "SPACE1889.CreatureMovementTypeManyLegged"
 };

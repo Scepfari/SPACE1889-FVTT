@@ -215,10 +215,20 @@ export class Space1889Actor extends Actor
         let sizeMod = (-1) * actorData.data.secondaries.size.total;
         for (let weapon of weapons)
         {
-            weapon.data.sizeMod = sizeMod;
-            weapon.data.skillRating = this._GetSkillLevel(actorData, weapon.data.skillId, weapon.data.specializationId);
-            weapon.data.attack = Math.max(0, weapon.data.damage + weapon.data.skillRating + weapon.data.sizeMod);
-            weapon.data.attackAverage = (Math.floor(weapon.data.attack / 2)).toString() + (weapon.data.attack % 2 == 0 ? "" : "+");
+            if (weapon.data.skillId == "none" && weapon.data.isAreaDamage)
+            {
+                weapon.data.sizeMod = "-";
+                weapon.data.skillRating = "-";
+                weapon.data.attack = weapon.data.damage;
+                weapon.data.attackAverage = (Math.floor(weapon.data.attack / 2)).toString() + (weapon.data.attack % 2 == 0 ? "" : "+");
+            }
+            else
+            {
+                weapon.data.sizeMod = sizeMod;
+                weapon.data.skillRating = this._GetSkillLevel(actorData, weapon.data.skillId, weapon.data.specializationId);
+                weapon.data.attack = Math.max(0, weapon.data.damage + weapon.data.skillRating + weapon.data.sizeMod);
+                weapon.data.attackAverage = (Math.floor(weapon.data.attack / 2)).toString() + (weapon.data.attack % 2 == 0 ? "" : "+");
+            }
             weapon.data.damageTypeDisplay = game.i18n.localize(CONFIG.SPACE1889.damageTypeAbbreviations[weapon.data.damageType]);
             if (!isCreature)
                 weapon.data.locationDisplay = game.i18n.localize(CONFIG.SPACE1889.storageLocationAbbreviations[weapon.data.location]);
