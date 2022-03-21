@@ -308,34 +308,39 @@ export class Space1889ActorSheet extends ActorSheet {
 			item.update({ 'data.location': newLocation });
 		});
 
+		const isCharacter = this.actor.data.type == "character";
+		const primaryMin = isCharacter ? 1 : 0;
+		const primaryMax = isCharacter ? 9 : undefined;
+
 		html.find('.increment-con-click').mousedown(ev =>
 		{
-			const newValue = this.incrementValue(ev, this.actor.data.data.abilities.con.value, 0, undefined);
+			const newValue = this.incrementValue(ev, this.actor.data.data.abilities.con.value, primaryMin, primaryMax);
 			this.actor.update({ 'data.abilities.con.value': newValue });
 		});
+
 		html.find('.increment-dex-click').mousedown(ev =>
 		{
-			const newValue = this.incrementValue(ev, this.actor.data.data.abilities.dex.value, 0, undefined);
+			const newValue = this.incrementValue(ev, this.actor.data.data.abilities.dex.value, primaryMin, primaryMax);
 			this.actor.update({ 'data.abilities.dex.value': newValue });
 		});
 		html.find('.increment-str-click').mousedown(ev =>
 		{
-			const newValue = this.incrementValue(ev, this.actor.data.data.abilities.str.value, 0, undefined);
+			const newValue = this.incrementValue(ev, this.actor.data.data.abilities.str.value, primaryMin, primaryMax);
 			this.actor.update({ 'data.abilities.str.value': newValue });
 		});
 		html.find('.increment-cha-click').mousedown(ev =>
 		{
-			const newValue = this.incrementValue(ev, this.actor.data.data.abilities.cha.value, 0, undefined);
+			const newValue = this.incrementValue(ev, this.actor.data.data.abilities.cha.value, primaryMin, primaryMax);
 			this.actor.update({ 'data.abilities.cha.value': newValue });
 		});
 		html.find('.increment-int-click').mousedown(ev =>
 		{
-			const newValue = this.incrementValue(ev, this.actor.data.data.abilities.int.value, 0, undefined);
+			const newValue = this.incrementValue(ev, this.actor.data.data.abilities.int.value, primaryMin, primaryMax);
 			this.actor.update({ 'data.abilities.int.value': newValue });
 		});
 		html.find('.increment-wil-click').mousedown(ev =>
 		{
-			const newValue = this.incrementValue(ev, this.actor.data.data.abilities.wil.value, 0, undefined);
+			const newValue = this.incrementValue(ev, this.actor.data.data.abilities.wil.value, primaryMin, primaryMax);
 			this.actor.update({ 'data.abilities.wil.value': newValue });
 		});
 

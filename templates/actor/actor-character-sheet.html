@@ -110,9 +110,9 @@
 					</li>
 					{{#each data.abilities as |ability key|}}
 					<li class="flexrow">
-						<label for="data.abilities.{{key}}.value" class="resource-label rollable flexlarge align-left" data-roll-key="{{key}}" data-roll-type="actor" data-roll-diecount="{{ability.total}}" data-label="{{ability.label}}">{{ability.label}}</label>
+						<label for="data.abilities.{{key}}.value" class="rollable flexlarge align-left" data-roll-key="{{key}}" data-roll-type="actor" data-roll-diecount="{{ability.total}}" data-label="{{ability.label}}">{{ability.label}}</label>
 						<div class="item-max-with40px">
-							<input type="text" name="data.abilities.{{key}}.value" value="{{ability.value}}" data-dtype="Number"/>
+							<a class="increment-{{key}}-click">{{ability.value}}</a>
 						</div>
 						<label class="items-list item-max-with40px">{{ability.talentBonus}}</label>
 						<label class="items-list item-max-with42px resource-label">{{ability.total}}</label>

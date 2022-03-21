@@ -2,7 +2,7 @@
 	"name": "space1889",
 	"title": "Space 1889",
 	"description": "The SPACE 1889 Ubiquity system for FoundryVTT!",
-	"version": "0.4.4",
+	"version": "0.5.0",
 	"minimumCoreVersion": "0.8.6",
 	"compatibleCoreVersion": "9",
 	"author": "Scepfari",
@@ -89,6 +89,46 @@
 			"path": "./packs/beispielcharaktere.db",
 			"entity": "Actor",
 			"type": "Actor"
+		},
+		{
+			"name": "kreaturenerde",
+			"label": "Kreaturen-Erde",
+			"system": "space1889",
+			"path": "./packs/kreaturen-erde.db",
+			"entity": "Actor",
+			"type": "Actor"
+		},
+		{
+			"name": "kreaturenluna",
+			"label": "Kreaturen-Luna",
+			"system": "space1889",
+			"path": "./packs/kreaturen-luna.db",
+			"entity": "Actor",
+			"type": "Actor"
+		},
+		{
+			"name": "kreaturenmars",
+			"label": "Kreaturen-Mars",
+			"system": "space1889",
+			"path": "./packs/kreaturen-mars.db",
+			"entity": "Actor",
+			"type": "Actor"
+		},
+		{
+			"name": "kreaturenvenus",
+			"label": "Kreaturen-Venus",
+			"system": "space1889",
+			"path": "./packs/kreaturen-venus.db",
+			"entity": "Actor",
+			"type": "Actor"
+		},
+		{
+			"name": "kreaturenmerkur",
+			"label": "Kreaturen-Merkur",
+			"system": "space1889",
+			"path": "./packs/kreaturen-merkur.db",
+			"entity": "Actor",
+			"type": "Actor"
 		}
 	],
 	"languages": [
@@ -108,6 +148,6 @@
 	"primaryTokenAttribute": "health",
 	"url": "https://github.com/Scepfari/SPACE1889-FVTT",
 	"manifest": "https://raw.githubusercontent.com/Scepfari/SPACE1889-FVTT/main/system.json",
-	"download": "https://github.com/Scepfari/SPACE1889-FVTT/releases/download/v0.4.4/space1889-foundry-0.4.4.zip",
+	"download": "https://github.com/Scepfari/SPACE1889-FVTT/releases/download/v0.5.0/space1889-foundry-0.5.0.zip",
 	"license": "LICENSE.txt"
 }

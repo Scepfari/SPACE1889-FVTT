@@ -234,7 +234,35 @@ export class Space1889Actor extends Actor
                 weapon.data.locationDisplay = game.i18n.localize(CONFIG.SPACE1889.storageLocationAbbreviations[weapon.data.location]);
         }
 
-        if (!isCreature)
+        if (isCreature)
+        {
+            let movement = "";
+            let secondaryMovement = "";
+            switch (data.movementType)
+            {
+                case "amphibious":
+                case "flying":
+                    movement = data.secondaries.move.total.toString() + " (" + Math.floor(data.secondaries.move.total / 2).toString() + ")";
+                    break;
+                case "fossorial":
+                case "jumper":
+                case "manylegged":
+                    movement = data.secondaries.move.total.toString() + " (" + (data.secondaries.move.total * 2).toString() + ")";
+                    break;
+                case "swimming":
+                    movement = (data.secondaries.move.total * 2).toString() + " (0)";
+                    break;
+                case "immobile":
+                    movement = "0";
+                    break;
+                default:
+                    movement = data.secondaries.move.total.toString();
+                    break;
+            }
+
+            data.secondaries.move.display = movement;
+        }
+        else
         {
             for (let armor of armors)
             {
