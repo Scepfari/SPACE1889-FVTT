@@ -1,4 +1,5 @@
 import {onManageActiveEffect, prepareActiveEffectCategories} from "../helpers/effects.mjs";
+import SPACE1889Helper from "../helpers/helper.mjs";
 
 /**
  * Extend the basic ActorSheet with some very simple modifications
@@ -974,7 +975,7 @@ export class Space1889ActorSheet extends ActorSheet {
 				else if (actor.items.get(item.data._id) != undefined)
 				{
 					this.actor.deleteEmbeddedDocuments("Item", [item.data._id]);
-					ui.notifications.info(game.i18n.format("SPACE1889.InfoUndoDamage", { name: actor.name }));
+					ui.notifications.info(game.i18n.format("SPACE1889.ChatInfoUndoDamage", { name: actor.name }));
                 }
 			}
 		});
@@ -992,32 +993,32 @@ export class Space1889ActorSheet extends ActorSheet {
 		const isCharakter = actor.data.type == "character"
 		let stun = actor.data.data.secondaries.stun.total;
 		let str = actor.data.data.abilities.str.total;
-		let rückstoss = 0;
+		let recoil = 0;
 		let liegend = false;
-		let betäubt = false;
-		let bewusstlos = 0;
+		let stunned = false;
+		let unconsciousStrike = 0;
 		
 
 		if (dmg > str)
 		{
 			liegend = dmg > (2 * str);
-			rückstoss = (dmg - str) * 1.5;
+			recoil = (dmg - str) * 1.5;
         }
 
 		if (dmg > (2 * stun))
-			bewusstlos = dmg - stun;
+			unconsciousStrike = dmg - (2 * stun);
 		if (dmg > stun)
-			betäubt = true;
+			stunned = true;
 
 		let trefferInfo = "";
-		if (rückstoss > 0)
-			trefferInfo += "<b>" + game.i18n.localize("SPACE1889.Recoil") + ":</b> " + rückstoss.toString() + "m<br>";
+		if (recoil > 0)
+			trefferInfo += "<b>" + game.i18n.localize("SPACE1889.Recoil") + ":</b> " + recoil.toString() + "m<br>";
 		if (liegend)
-			trefferInfo += "<b>" + game.i18n.localize("SPACE1889.Knockdown") + ":</b> " + actor.data.name + " geht zu Boden<br>";
-		if (bewusstlos > 0)
-			trefferInfo += "<b>" + game.i18n.localize("SPACE1889.Unconscious") + ":</b> für " + bewusstlos.toString() + "min <br>"
-		else if (betäubt)
-			trefferInfo += "<b>" + game.i18n.localize("SPACE1889.Stunned") + ":</b> verliert die nächste Handlung<br>";
+			trefferInfo += "<b>" + game.i18n.localize("SPACE1889.Knockdown") + ":</b> " + game.i18n.format("SPACE1889.ChatInfoKnockdown", { actorName: actor.data.name }) + "<br>";
+		if (unconsciousStrike > 0)
+			trefferInfo += "<b>" + game.i18n.localize("SPACE1889.Unconscious") + ":</b> " + game.i18n.format("SPACE1889.ChatInfoDuration", { count: unconsciousStrike.toString() }) + "<br>";
+		else if (stunned)
+			trefferInfo += "<b>" + game.i18n.localize("SPACE1889.Stunned") + ":</b> " + game.i18n.localize("SPACE1889.ChatInfoStunned") + "<br>";
 
 		let damageTuple = this.GetDamageTuple(itemId);
 		if (dmgType == "lethal")
@@ -1027,50 +1028,71 @@ export class Space1889ActorSheet extends ActorSheet {
 
 		const maxHealth = actor.data.data.health.max;
 		const newHealth = maxHealth - damageTuple.lethal - damageTuple.nonLethal;
-		const lethalValue = maxHealth - damageTuple.lethal;
-		const nonLethalValue = lethalValue - damageTuple.nonLethal;
-		const deathTreshold = -5; //ToDo: Talente Auswerten! reduziert um stufe Zäher Hund * 2
-		//const kampfunfähigGrenze = -1; //ToDo Talent Schmerzresistenz auswerten reduziert um Stufe * 2
+		let lethalValue = maxHealth - damageTuple.lethal;
+		let nonLethalValue = lethalValue - damageTuple.nonLethal;
+		const deathThreshold = SPACE1889Helper.getDeathThreshold(actor);
+		if (lethalValue > deathThreshold && nonLethalValue < deathThreshold)
+		{
+			const transformedNonLethal = nonLethalValue - deathThreshold;
+			nonLethalValue -= transformedNonLethal;
+			lethalValue += transformedNonLethal;
+        }
+
+
+		const autoStabilize = SPACE1889Helper.isAutoStabilize(actor);
+		const incapacitateThreshold = SPACE1889Helper.getIncapacitateThreshold(actor);
+		let unconscious = damageTuple.nonLethal > 0 && nonLethalValue < incapacitateThreshold && lethalValue > deathThreshold;
 		let gesamtInfo = "";
 
 		if (isCharakter)
 		{
-			if (lethalValue == 0)
+			if (lethalValue == incapacitateThreshold)
 			{
-				gesamtInfo += "<b>Kampfunfähig:</b> nur eine der drei Aktionen (Angriff/Verteidigen/Bewegen) möglich, oder 1T Schaden pro Runde<br>";
+				gesamtInfo += "<b>" + game.i18n.localize("SPACE1889.Incapacitate") + ":</b> " + game.i18n.format("SPACE1889.ChatInfoIncapacitate", { damageTypeAbbr: game.i18n.localize("SPACE1889.LethalAbbr") }) + "<br>";
 			}
-			else if (lethalValue < 0 && lethalValue > deathTreshold)
+			if (lethalValue < 0 && lethalValue > deathThreshold)
 			{
-				gesamtInfo += "<b>Lebensgefahr:</b> muss stabilisieren, sonst pro Runde 1T Schaden<br>";
+				gesamtInfo += "<b>" + game.i18n.localize("SPACE1889.DangerOfDeath") + ":</b> ";
+				if (autoStabilize)
+					gesamtInfo += game.i18n.localize("SPACE1889.ChatInfoDangerOfDeathAutoSuccess") + "<br>";
+				else
+					gesamtInfo += game.i18n.localize("SPACE1889.ChatInfoDangerOfDeath") + "<br>";
+				if (lethalValue < incapacitateThreshold)
+					unconscious = true;
 			}
-			else if (lethalValue <= deathTreshold)
+			if (unconscious)
 			{
-				gesamtInfo += "<b>Tot:</b> kann durch schnelle medizinische Hilfe ggf. wiederbelebt werden<br>";
+				gesamtInfo += "<b>" + game.i18n.localize("SPACE1889.Unconscious") + ":</b> ";
+				gesamtInfo += game.i18n.format("SPACE1889.ChatInfoDuration", { count: (-1 * newHealth).toString()}) + "<br>";
+            }
+			if (lethalValue <= deathThreshold)
+			{
+				gesamtInfo += "<b>" + game.i18n.localize("SPACE1889.Dead") + ":</b> ";
+				gesamtInfo += game.i18n.localize("SPACE1889.ChatInfoDead") + "<br>";
 			}
 			if (damageTuple.nonLethal > 0)
 			{
-				if (nonLethalValue == 0)
+				if (nonLethalValue == incapacitateThreshold)
 				{
-					gesamtInfo += "<b>Erschöpft:</b> nur eine der drei Aktionen (Angriff/Verteidigen/Bewegen) möglich, oder 1N Schaden pro Runde<br>";
-				}
-				else if (nonLethalValue < 0 && nonLethalValue > deathTreshold)
-				{
-					gesamtInfo += "<b>Bewusstlos:</b> für " + (-1 * nonLethalValue).toString() + "Minuten <br>";
+					gesamtInfo += "<b>" + game.i18n.localize("SPACE1889.Exhausted") + ":</b> " + game.i18n.format("SPACE1889.ChatInfoIncapacitate", { damageTypeAbbr: game.i18n.localize("SPACE1889.NonLethalAbbr") }) + "<br>";
 				}
 			}
 		}
 		else if (newHealth <= 0)
 			gesamtInfo += "<b>" + game.i18n.localize("SPACE1889.Vanquished") + "!</b>";
 
-
 		let info = "<small>" + (dmgName != "" ? "durch <i>" + dmgName + "</i> und " : "");
-		info += "Gesundheit sinkt auf " + (isCharakter ? newHealth.toString() : Math.round(100 * newHealth / maxHealth).toString() + "%") + "</small><br>";
-		if (trefferInfo != "")
-			info += "<b>Schadenswirkung:</b> <br>" + trefferInfo;
-		if (gesamtInfo != "")
-			info += (trefferInfo != "" ? "<br>" : "") + "<b>Gesamtwirkung:</b> <br>" + gesamtInfo;
+		info += game.i18n.format("SPACE1889.ChatInfoHealth", { health: (isCharakter ? newHealth.toString() : Math.round(100 * newHealth / maxHealth).toString() + "%") });
+		if (damageTuple.nonLethal > 0)
+			info += " " + game.i18n.format("SPACE1889.ChatInfoHealthLethalDamageOnly", { lethalHealth: lethalValue.toString() });
+		info += "</small><br>";
 
-		const titel = game.i18n.format("SPACE1889.InfoDamage", { damage: dmg.toString(), damageType: dmgTypeLabel });
+		if (trefferInfo != "")
+			info += "<b>" + game.i18n.localize("SPACE1889.StrikeEffect") + ":</b> <br>" + trefferInfo;
+		if (gesamtInfo != "")
+			info += (trefferInfo != "" ? "<br>" : "") + "<b>" + game.i18n.localize("SPACE1889.OverallEffect") +  ":</b> <br>" + gesamtInfo;
+
+		const titel = game.i18n.format("SPACE1889.ChatInfoDamage", { damage: dmg.toString(), damageType: dmgTypeLabel });
 		let messageContent = `<div><h2>${titel}</h2></div>`;
 		messageContent += `${info}`;
 		let chatData =
