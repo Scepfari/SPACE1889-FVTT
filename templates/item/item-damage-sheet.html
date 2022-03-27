@@ -1,0 +1,65 @@
+<form class="{{cssClass}}" autocomplete="off">
+	<header class="sheet-header">
+		<img class="profile-img" src="{{item.img}}" data-edit="img" title="{{item.name}}" />
+		<div class="header-fields">
+			<h1 class="charname"><input name="name" type="text" value="{{item.name}}" placeholder="Eventname" /></h1>
+		</div>
+	</header>
+
+	<ol>
+		<li class="item flexrow items-header">
+			<label class="resource-label">{{ localize "SPACE1889.Damage"}}</label>
+			<label class="resource-label">{{ localize "SPACE1889.DamageType"}}</label>
+		</li>
+		<li class="item flex-group-center flexrow">
+			<div class="resource">
+				<input type="text" name="data.damage" value="{{data.damage}}" data-dtype="Number" />
+			</div>
+			<div class="resource">
+				<select name="data.damageType" data-dtype="String">
+					{{#select data.damageType}}
+					{{#each data.damageTypes as |ch char|}}
+					<option value="{{char}}">{{localize ch}}</option>
+					{{/each}}
+					{{/select}}
+				</select>
+			</div>
+		</li>
+	</ol>
+	<hr />
+	<ol>
+		<li class="item flexrow items-header-height40">
+			<label class="resource-label">{{localize "SPACE1889.DataOfTheEvent"}}</label>
+			<label class="resource-label">{{ localize "SPACE1889.HealingFactor"}}</label>
+			<label class="resource-label">{{localize "SPACE1889.TimeToNextCure"}}</label>
+		</li>
+		<li class="item flex-group-center flexrow">
+			<div class="resource-content flex-center flex-between">
+				<input type="text" name="data.dataOfTheEvent" value="{{data.dataOfTheEvent}}" />
+			</div>
+			<div class="resource-content flex-center flex-between">
+				<input type="text" name="data.healingFactor" value="{{data.healingFactor}}" data-dtype="Number" />
+			</div>
+			<div class="resource-content flex-center flex-between">
+				<input type="text" name="data.timeToNextCure" value="{{data.timeToNextCure}}" />
+			</div>
+		</li>
+
+	</ol>
+
+	{{!-- Sheet Tab Navigation --}}
+	<nav class="sheet-tabs tabs" data-group="primary">
+		<a class="item" data-tab="description">{{localize "SPACE1889.Description"}}</a>
+	</nav>
+
+	{{!-- Sheet Body --}}
+	<section class="sheet-body">
+
+		{{!-- Description Tab --}}
+		<div class="tab description" data-group="primary" data-tab="description">
+			{{editor content=data.description target="data.description" rollData=rollData button=true owner=owner editable=editable}}
+		</div>
+
+	</section>
+
+</form>

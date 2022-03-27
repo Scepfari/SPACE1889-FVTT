@@ -113,7 +113,7 @@
 		}
 	},
 	"Item": {
-		"types": [ "item", "talent", "weapon", "skill", "specialization", "weakness", "resource", "language", "armor" ],
+		"types": [ "item", "talent", "weapon", "skill", "specialization", "weakness", "resource", "language", "armor", "damage" ],
 		"templates": {
 			"description": {
 				"description": ""
@@ -217,6 +217,14 @@
 			"defenseBonus": 1,
 			"dexPenalty": 0,
 			"strengthThreshold": 0
+		},
+		"damage": {
+			"templates": [ "description" ],
+			"damage": 1,
+			"damageType": "lethal",
+			"healingFactor": 1,
+			"timeToNextCure": "",
+			"dataOfTheEvent": ""
 		}
 	}
 }

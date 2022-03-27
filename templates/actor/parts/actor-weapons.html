@@ -57,6 +57,7 @@
 
 </ol>
 <br>
+{{#if armors}}
 <ol class="items-list ">
 	<li class="item flexrow items-header-height40">
 		<div class="item-name item-height50px">{{localize "SPACE1889.ArmorPl"}}</div>
@@ -65,7 +66,7 @@
 		<div title='{{localize "SPACE1889.Weight"}}  {{localize "SPACE1889.Mod"}}' class="items-name item-max-with60px ">{{localize "SPACE1889.Weight"}}</div>
 		<div title='{{localize "SPACE1889.StorageLocation"}}' class="items-name item-max-with40px ">{{localize "SPACE1889.StorageLocation"}}</div>
 		<div class="item-controls item-max-with60px">
-			<a class="item-control item-create item-max-with60px" title='{{localize "SPACE1889.CreateItem"}}' data-type="weapon"><i class="fas fa-plus"></i> Add item</a>
+			<a class="item-control item-create item-max-with60px" title='{{localize "SPACE1889.CreateItem"}}' data-type="armor"><i class="fas fa-plus"></i> Add item</a>
 		</div>
 	</li>
 	{{#each armors as |item id|}}
@@ -92,3 +93,8 @@
 	{{/each}}
 
 </ol>
+{{/if}}
+
+<div>
+	{{> "systems/space1889/templates/actor/parts/actor-damage.html"}}
+</div>

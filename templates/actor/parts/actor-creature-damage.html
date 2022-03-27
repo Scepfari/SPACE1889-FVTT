@@ -1,0 +1,24 @@
+{{#if injuries}}
+<ol class="items-list">
+	<li class="item flexrow items-header">
+		<div class="item-name">{{localize "SPACE1889.InjuryPl"}}</div>
+		<div title='{{localize "SPACE1889.Damage"}}' class="items-list item-max-with75px">{{localize "SPACE1889.Damage"}}</div>
+		<div class="item-controls item-max-with60px">
+			<a class="item-control item-create item-max-with60px damage-lethal" title='{{localize "SPACE1889.CreateItem"}}' data-type="damage"><i class="fas fa-plus"></i> Add</a>
+		</div>
+	</li>
+	{{#each injuries as |item id|}}
+	<li class="item row-section flexrow" data-item-id="{{item._id}}">
+		<div class="item-name">{{item.name}}</div>
+		<div class="resource-label items-list item-max-with75px">
+			<a class="increment-click items-list item-max-with75px">{{item.data.damage}} {{item.data.damageTypeDisplay}}</a>
+		</div>
+		<div class="item-controls item-max-with60px">
+			<a class="item-control item-edit" title="Edit Item"><i class="fas fa-edit"></i></a>
+			<a class="item-control item-delete" title="Delete Item"><i class="fas fa-trash"></i></a>
+		</div>
+	</li>
+	{{/each}}
+
+</ol>
+{{/if}}

@@ -20,7 +20,7 @@
 				<li class="item flexrow">
 					<div class="resource-content flexrow flex-center flex-between item-max-with75px">
 						<div class="flex-group-center item-margin5px">
-							<a class="increment-creatureHealth-click">{{data.health.value}}</a>
+							<a class="item-control item-create item-margin5px" title='{{localize "SPACE1889.InfoAddDamage"}}' data-type="damage">{{data.health.value}}</a>
 						</div>
 						<div class="resource flex-group-center item-margin5px"> / </div>
 						<div class="resource flex-group-center item-margin5px">{{data.health.max}}</div>
@@ -132,6 +132,9 @@
 			</div>
  			<div>
 				{{> "systems/space1889/templates/actor/parts/actor-creature-weakness.html"}}
+			</div>
+			<div>
+				{{> "systems/space1889/templates/actor/parts/actor-creature-damage.html"}}
 			</div>
 		</div>
 

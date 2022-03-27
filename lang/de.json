@@ -1,4 +1,18 @@
 {
+	"ACTOR.TypeCharacter": "Charakter",
+    "ACTOR.TypeNpc": "Nichtspielercharakter",
+    "ACTOR.TypeCreature": "Kreatur",
+	"ITEM.TypeItem": "Gegenstand",
+	"ITEM.TypeTalent": "Talent",
+	"ITEM.TypeWeapon": "Waffe",
+	"ITEM.TypeSkill": "Fertigkeit",
+	"ITEM.TypeSpecialization": "Spezialisierung",
+	"ITEM.TypeWeakness": "Schwäche",
+	"ITEM.TypeResource": "Ressource",
+	"ITEM.TypeLanguage": "Sprache",
+	"ITEM.TypeArmor": "Rüstung",
+	"ITEM.TypeDamage": "Schaden",
+	
 	"SPACE1889.AbilityCon": "Konstitution",
 	"SPACE1889.AbilityDex": "Geschicklichkeit",
 	"SPACE1889.AbilityStr": "Stärke",
@@ -109,6 +123,16 @@
 	"SPACE1889.Average": "Durchschnitt",
 	"SPACE1889.AverageAbbr": "Ø",
 	"SPACE1889.Attack": "Angriff",
+	"SPACE1889.Injury": "Verletzung",
+	"SPACE1889.InjuryPl": "Verletzungen",
+	"SPACE1889.HealingFactor": "Heilfaktor",
+	"SPACE1889.HealingFactorAbbr": "Faktor",
+	"SPACE1889.TimeToNextCure": "Zeit bis zur nächsten Heilung",
+	"SPACE1889.TimeToNextCureAbbr": "Nächste",
+	"SPACE1889.HealingDuration": "Heildauer",
+	"SPACE1889.HealingDurationAbbr": "Dauer",
+	"SPACE1889.DataOfTheEvent": "Ereigniszeitpunkt",
+	"SPACE1889.DataOfTheEventAbbr": "Zeitpunkt",
 	"SPACE1889.Probe": "Probe",
 	"SPACE1889.Resource": "Ressource",
 	"SPACE1889.ResourcePl": "Ressourcen",
@@ -1984,6 +2008,7 @@
 	"SPACE1889.CanNotAddTalentTwoPreCons": "Talent {talentName} kann nicht gewählt werden, da dafür keine der zwei möglichen Voraussetzungen: {preConType} {preConName} die Stufe {preConLevel}, bzw {preCon2Type} {preCon2Name} die Stufe {preCon2Level} erfüllt.",
 	"SPACE1889.CanNotAddTalentOnePreCons": "Talent {talentName} kann nicht gewählt werden, da dafür die Voraussetzung: {preConType} {preConName} auf Stufe {preConLevel} benötigt wird.",
 	"SPACE1889.CanNotAddTalentWrongSpecies": "Talent {talentName} kann nicht gewählt werden, da dieses Talent ausschließlich der Spezies {preConName} vorbehalten ist.",
+	"SPACE1889.CanNotIncrementAttributeSkill": "Das Maximum von {level} ist erreicht, mehr geht nicht; außer der Spielleiter erhöht global die Heldenstufe (aktuell: {currentHeroLevel}) aller Spielercharaktere",
 	
 	"SPACE1889.NoLanguageEntry": "Der Eintrag <i>{langId}</i> ist nicht in der Sprach-Datei <i>de.json</i> enthalten.",
 
@@ -1998,7 +2023,31 @@
 	"SPACE1889.ImprovedForeignLanguageCountCalculation": "feinere Fremdsprachenanzahl",
 	"SPACE1889.ImprovedForeignLanguageCountCalculationInfo": "Berechung der Maximalen Fremdsprachenanzahl erhält zusätzliche Zwischenstufen (Linguistik: Stufe 5 => 3, Stufe 7 => 6 und Stufe 9 => 12 Sprachen)",
 	"SPACE1889.ImprovedEpCalculation": "Hausregeln für die EP Berechnung",
-	"SPACE1889.ImprovedEpCalculationInfo": "geänderte Steigerungskosten für Primäre Attribute (Stufe * 10EP statt Stufe * 5EP) sowie für die Spezialisierungen (1=1EP, 2=2EP, 3=3EP, 4=4EP, 5=5EP anstelle von 3EP pro Stufe)"
-
+	"SPACE1889.ImprovedEpCalculationInfo": "geänderte Steigerungskosten für Primäre Attribute (Stufe * 10EP statt Stufe * 5EP) sowie für die Spezialisierungen (1=1EP, 2=2EP, 3=3EP, 4=4EP, 5=5EP anstelle von 3EP pro Stufe)",
+	"SPACE1889.ConfigHeroLevel": "Heldenstufe",
+	"SPACE1889.ConfigHeroLevelInfo": "Definiert die maximale Stufe für Attributs- und Fertigkeitswerte von Spielercharakteren(Pechvogel: A4/F3, Durchschnittsbürger: A5/F4, Vielversprechend: A6/F5,Veteran: A7/F6, Weltspitze: A8/F7, Übermensch: A9/F8)",
+	"SPACE1889.HeroLevelPechvogel": "Pechvogel",
+	"SPACE1889.HeroLevelDurchschnittsbuerger": "Durchschnittsbürger",
+	"SPACE1889.HeroLevelVielversprechend": "Vielversprechend",
+	"SPACE1889.HeroLevelVeteran": "Veteran",
+	"SPACE1889.HeroLevelWeltspitze": "Weltspitze",
+	"SPACE1889.HeroLevelUebermensch": "Übermensch",
+	"SPACE1889.InfoUndoDamage": "Das Hinzufügen des Schadens bei Charakter {name} wurde wieder zurückgenommen.",
+	"SPACE1889.InfoAddDamage": "Linksklick, zum Hinzufügen von Schaden",
+	"SPACE1889.InfoDamage": "Nimmt {damage}{damageType} Schaden",
+	"SPACE1889.Recoil": "Rückstoß",
+	"SPACE1889.Knockdown": "Niederschlag",
+	"SPACE1889.Stunned": "Betäubt",
+	"SPACE1889.Unconscious": "Bewusstlos",
+	"SPACE1889.Exhausted": "Erschöpft",
+	"SPACE1889.Incapacitate": "Kampfunfähig",
+	"SPACE1889.DangerOfDeath": "Lebensgefahr",
+	"SPACE1889.Dead": "Tot",
+	"SPACE1889.Vanquished": "Besiegt",
+	
+	"SPACE1889.Submit": "Bestätigen",
+	"SPACE1889.Cancel": "Abbrechen",
+	"SPACE1889.Ok": "Ok"
+	
 
 }
