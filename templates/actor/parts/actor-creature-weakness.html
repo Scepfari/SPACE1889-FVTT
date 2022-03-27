@@ -1,0 +1,40 @@
+{{#if weaknessLeft}}
+<ol class="items-list">
+	<li class="item flexrow items-header">
+		<div class="item-name">{{localize "SPACE1889.WeaknessPl"}}</div>
+		<div class="item-controls item-max-with60px">
+			<a class="item-control item-create item-max-with60px" title="Create item" data-type="weakness"><i class="fas fa-plus"></i> Add</a>
+		</div>
+	</li>
+
+	<section class="grid grid-2col">
+		<div class="left flexcol">
+			{{#each weaknessLeft as |item id|}}
+			<li class="item flexrow" data-item-id="{{item._id}}">
+				<div class="item-name">
+					<h4 class="rollable" data-roll-type="item" title="{{#if (eq item.data.descriptionLangId (localize item.data.descriptionLangId))}} {{item.data.description}} {{else}} {{localize item.data.descriptionLangId}} {{/if}}">{{item.data.label}}</h4>
+				</div>
+				<div class="item-controls item-max-with60px">
+					<a class="item-control item-edit" title="Edit Item"><i class="fas fa-edit"></i></a>
+					<a class="item-control item-delete" title="Delete Item"><i class="fas fa-trash"></i></a>
+				</div>
+			</li>
+		{{/each}}
+		</div>
+		<div class="right flexcol">
+			{{#each weaknessRight as |item id|}}
+			<li class="item flexrow" data-item-id="{{item._id}}">
+				<div class="item-name">
+					<h4 class="rollable" data-roll-type="item" title="{{#if (eq item.data.descriptionLangId (localize item.data.descriptionLangId))}} {{item.data.description}} {{else}} {{localize item.data.descriptionLangId}} {{/if}}">{{item.data.label}}</h4>
+				</div>
+				<div class="item-controls item-max-with60px">
+					<a class="item-control item-edit" title="Edit Item"><i class="fas fa-edit"></i></a>
+					<a class="item-control item-delete" title="Delete Item"><i class="fas fa-trash"></i></a>
+				</div>
+			</li>
+		{{/each}}
+		</div>
+	</section>
+
+</ol>
+{{/if}}

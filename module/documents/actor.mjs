@@ -26,6 +26,25 @@ export class Space1889Actor extends Actor
             if (toAddItems.length > 0)
                 actorData.update({ "items": toAddItems });
         }
+
+        if (data.type === "creature" && actorData.items.size == 0)
+        {
+            let skillPack = game.packs.get("space1889.fertigkeiten");
+            let skills = await skillPack.getDocuments();
+            let toAddItems = [];
+            for (let item of skills)
+            {
+                if (item.data.data.id == "waffenlos")
+                    toAddItems.push(item.toObject());
+                else if (item.data.data.id == "heimlichkeit")
+                    toAddItems.push(item.toObject());
+                else if (item.data.data.id == "ueberleben")
+                    toAddItems.push(item.toObject());
+            }
+
+            if (toAddItems.length > 0)
+                actorData.update({ "items": toAddItems });
+        }
     }
 
     /** @override */
@@ -71,8 +90,10 @@ export class Space1889Actor extends Actor
      */
     _prepareCharacterData(actorData)
     {
-        if (actorData.type !== 'character')
+        if (actorData.type !== 'character' && actorData.type !== 'creature')
             return;
+
+        const isCreature = actorData.type == 'creature';
 
         // Make modifications to data here. For example:
         const data = actorData.data;
@@ -121,6 +142,7 @@ export class Space1889Actor extends Actor
         const weapons = [];
         const armors = [];
         const gear = [];
+        const injuries = [];
         for (let item of items)
         {
             if (item.data.type === 'skill')
@@ -150,10 +172,13 @@ export class Space1889Actor extends Actor
             {
                 gear.push(item.data);
             }
+            else if (item.data.type == 'damage')
+                injuries.push(item.data);
         }
         actorData.talents = talents;
         actorData.skills = skills;
         actorData.speciSkills = speciSkills;
+        actorData.injuries = injuries;
 
         try
         {
@@ -162,9 +187,19 @@ export class Space1889Actor extends Actor
                 let underlyingAttribute = this._GetAttributeBase(actorData, skl);
                 skl.data.basis = actorData.data.abilities[underlyingAttribute].total;
                 skl.data.baseAbilityAbbr = game.i18n.localize(CONFIG.SPACE1889.abilityAbbreviations[underlyingAttribute]);
-                skl.data.rating = skl.data.basis + skl.data.level + skl.data.talentBonus;
+                let sizeMod = 0;
+                if (skl.data.id == 'heimlichkeit' && data.secondaries.size.total != 0)
+                    sizeMod = data.secondaries.size.total;
+
+                skl.data.rating = Math.max(0, skl.data.basis + skl.data.level + skl.data.talentBonus - sizeMod);
                 if (skl.data.isSkillGroup && skl.data.skillGroupName.length > 0)
                     skl.data.skillGroup = game.i18n.localize(CONFIG.SPACE1889.skillGroups[skl.data.skillGroupName]);
+
+                if (skl.data.id == 'sportlichkeit' && skl.data.rating > data.secondaries.move.value)
+                {
+                    data.secondaries.move.value = skl.data.rating;
+                    data.secondaries.move.total = skl.data.rating + data.secondaries.move.talentBonus;
+                }
 
                 for (let spe of speciSkills)
                 {
@@ -184,27 +219,79 @@ export class Space1889Actor extends Actor
         let sizeMod = (-1) * actorData.data.secondaries.size.total;
         for (let weapon of weapons)
         {
-            weapon.data.sizeMod = sizeMod;
-            weapon.data.skillRating = this._GetSkillLevel(actorData, weapon.data.skillId, weapon.data.specializationId);
-            weapon.data.attack = Math.max(0, weapon.data.damage + weapon.data.skillRating + weapon.data.sizeMod);
-            weapon.data.attackAverage = (Math.floor(weapon.data.attack / 2)).toString() + (weapon.data.attack % 2 == 0 ? "" : "+");
+            if (weapon.data.skillId == "none" && weapon.data.isAreaDamage)
+            {
+                weapon.data.sizeMod = "-";
+                weapon.data.skillRating = "-";
+                weapon.data.attack = weapon.data.damage;
+                weapon.data.attackAverage = (Math.floor(weapon.data.attack / 2)).toString() + (weapon.data.attack % 2 == 0 ? "" : "+");
+            }
+            else
+            {
+                weapon.data.sizeMod = sizeMod;
+                weapon.data.skillRating = this._GetSkillLevel(actorData, weapon.data.skillId, weapon.data.specializationId);
+                weapon.data.attack = Math.max(0, weapon.data.damage + weapon.data.skillRating + weapon.data.sizeMod);
+                weapon.data.attackAverage = (Math.floor(weapon.data.attack / 2)).toString() + (weapon.data.attack % 2 == 0 ? "" : "+");
+            }
             weapon.data.damageTypeDisplay = game.i18n.localize(CONFIG.SPACE1889.damageTypeAbbreviations[weapon.data.damageType]);
-            weapon.data.locationDisplay = game.i18n.localize(CONFIG.SPACE1889.storageLocationAbbreviations[weapon.data.location]);
+            if (!isCreature)
+                weapon.data.locationDisplay = game.i18n.localize(CONFIG.SPACE1889.storageLocationAbbreviations[weapon.data.location]);
         }
 
-        for (let armor of armors)
+        for (let injury of injuries)
         {
-            let langId = CONFIG.SPACE1889.storageLocationAbbreviations[armor.data.location] ?? "";
-            armor.data.display = (langId != "" ? game.i18n.localize(langId) : "?");
+            const isLethal = injury.data.damageType == "lethal";
+            const healingDurationInDays = (isLethal ? 7 : 1) * injury.data.damage / injury.data.healingFactor;
+            injury.data.damageTypeDisplay = game.i18n.localize(CONFIG.SPACE1889.damageTypeAbbreviations[injury.data.damageType]);
+            injury.data.healingDuration = this.FormatHealingDuration(healingDurationInDays);
+            injury.data.timeToNextCure = this.FormatHealingDuration(healingDurationInDays / injury.data.damage);
         }
 
-        for (let item of gear)
+        if (isCreature)
         {
-            let langId = CONFIG.SPACE1889.storageLocationAbbreviations[item.data.location] ?? "";
-            item.data.display = (langId != "" ? game.i18n.localize(langId) : "?");
-        }
+            let movement = "";
+            let secondaryMovement = "";
+            switch (data.movementType)
+            {
+                case "amphibious":
+                case "flying":
+                    movement = data.secondaries.move.total.toString() + " (" + Math.floor(data.secondaries.move.total / 2).toString() + ")";
+                    break;
+                case "fossorial":
+                case "jumper":
+                case "manylegged":
+                    movement = data.secondaries.move.total.toString() + " (" + (data.secondaries.move.total * 2).toString() + ")";
+                    break;
+                case "swimming":
+                    movement = (data.secondaries.move.total * 2).toString() + " (0)";
+                    break;
+                case "immobile":
+                    movement = "0";
+                    break;
+                default:
+                    movement = data.secondaries.move.total.toString();
+                    break;
+            }
 
-        this._CalcThings(actorData);
+            data.secondaries.move.display = movement;
+            this.CalcAndSetHealth(actorData);
+        }
+        else
+        {
+            for (let armor of armors)
+            {
+                let langId = CONFIG.SPACE1889.storageLocationAbbreviations[armor.data.location] ?? "";
+                armor.data.display = (langId != "" ? game.i18n.localize(langId) : "?");
+            }
+
+            for (let item of gear)
+            {
+                let langId = CONFIG.SPACE1889.storageLocationAbbreviations[item.data.location] ?? "";
+                item.data.display = (langId != "" ? game.i18n.localize(langId) : "?");
+            }
+
+            this._CalcThings(actorData);
+        }
     }
 
     /**
@@ -333,7 +420,8 @@ export class Space1889Actor extends Actor
         this.CalcAndSetParryData(actorData);
         this.CalcAndSetEvasionData(actorData);
         this.CalcAndSetLoad(actorData);
-        this.CalcAndSetEP(actorData)
+        this.CalcAndSetEP(actorData);
+        this.CalcAndSetHealth(actorData);
     }
 
     _GetId(item)
@@ -742,6 +830,49 @@ export class Space1889Actor extends Actor
         return game.settings.get("space1889", "improvedEpCalculation");
     }
 
+    CalcAndSetHealth(actorData)
+    {
+        let damage = 0;
+        for (const injury of actorData.injuries)
+        {
+            damage += injury.data.damage;
+        }
+        const newHealth = actorData.data.health.max - damage;
+
+        if (actorData.data.health.value != newHealth && this.isEditable)
+            this.update({ "data.health.value": actorData.data.health.max - damage });
+
+        actorData.data.health.value = newHealth;
+    }
+
+    /**
+     * 
+     * @param {number} healingDurationInDays
+     * @returns {string}
+     */
+    FormatHealingDuration(healingDurationInDays)
+    {
+        const days = Math.floor(healingDurationInDays);
+        const hours = (healingDurationInDays - days) * 24;
+        const completeHours = Math.floor(hours);
+        const minutes = Math.floor((hours - completeHours) * 60);
+        let duration = "";
+
+        if (days > 0)
+        {
+            duration = days.toString() + "d ";
+        }
+        if (completeHours > 0)
+        {
+            duration += completeHours.toString() + "h ";
+        }
+        if (minutes > 0)
+        {
+            duration += minutes.toString() + "m ";
+        }
+
+        return duration;
+    }
 
     /**
      * Prepare NPC type specific data.

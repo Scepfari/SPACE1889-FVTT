@@ -329,6 +329,7 @@
 	border: 2px groove #eeede0;
 	font-weight: bold;
 	vertical-align: center;
+	text-align: center;
 	font-size: 12px;
 }
 
@@ -453,6 +454,15 @@ font-size: 12px;
 
 .space1889 .item-margin5px{
 	margin: 5px;
+}
+
+.space1889 .item-marginlr5px {
+	margin-left: 5px;
+	margin-right: 5px;
+}
+
+.space1889 .item-right{
+	text-align: right;
 }
 
 .space1889.sheet.actor .item-max-with40px input {

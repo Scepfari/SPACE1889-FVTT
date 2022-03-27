@@ -189,6 +189,7 @@ SPACE1889.damageTypeAbbreviations ={
 
 SPACE1889.preConditionTypes = {
 	"nothing": "-",
+	"actor": "SPACE1889.PreConTypeActor",
 	"primary": "SPACE1889.PreConTypePrimary",
 	"secondary": "SPACE1889.PreConTypeSecondary",
 	"skill": "SPACE1889.Skill",
@@ -597,6 +598,33 @@ SPACE1889.publicationsAbbreviations = {
 	"aeds": "SPACE1889.PublicationAedsAbbr",
 	"uh": "SPACE1889.PublicationUhAbbr",
 	"sg": "SPACE1889.PublicationSgAbbr"
+};
+
+SPACE1889.creatureOrigins = {
+	"erde": "SPACE1889.LanguageOriginErde",
+	"luna": "SPACE1889.LanguageOriginLuna",
+	"mars": "SPACE1889.LanguageOriginMars",
+	"merkur": "SPACE1889.LanguageOriginMerkur",
+	"phaeton": "SPACE1889.LanguageOriginPhaeton",
+	"venus": "SPACE1889.LanguageOriginVenus" 
+}
+
+SPACE1889.creatureArchetypes = {
+    "dinosaur": "SPACE1889.CreatureTypeDinosaur",
+    "insect": "SPACE1889.CreatureTypeInsect",
+    "animal": "SPACE1889.CreatureTypeAnimal",
+    "plant": "SPACE1889.CreatureTypePlant"
+};
+
+SPACE1889.creatureMovementType = {
+	"amphibious": "SPACE1889.CreatureMovementTypeAmphibious",
+	"flying": "SPACE1889.CreatureMovementTypeFlying",
+	"fossorial": "SPACE1889.CreatureMovementTypeFossorial",
+	"ground": "SPACE1889.CreatureMovementTypeNormal",
+	"swimming": "SPACE1889.CreatureMovementTypeSwimming",
+	"jumper": "SPACE1889.CreatureMovementTypeJumper",
+	"immobile": "SPACE1889.CreatureMovementTypeImmobile",
+	"manylegged": "SPACE1889.CreatureMovementTypeManyLegged"
 };
 
 

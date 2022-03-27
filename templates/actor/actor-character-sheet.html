@@ -16,7 +16,9 @@
 				<div class="resource flex-group-center">
 					<label for="data.health.value" class="resource-label rollable" data-roll-key="health" data-roll-type="actorinfo" data-label='{{localize "SPACE1889.Health"}}'>{{localize "SPACE1889.Health"}}</label>
 					<div class="resource-content flexrow flex-center flex-between">
-						<input type="text" name="data.health.value" value="{{data.health.value}}" data-dtype="Number"/>
+						<div class="item-controls item-margin5px">
+							<a class="item-control item-create item-margin5px" title='{{localize "SPACE1889.InfoAddDamage"}}' data-type="damage">{{data.health.value}}</a>
+						</div>
 						<div class="resource flex-group-center item-margin5px"> / </div>
 						<div class="resource flex-group-center item-margin5px">{{data.health.max}}</div>
 					</div>
@@ -110,9 +112,9 @@
 					</li>
 					{{#each data.abilities as |ability key|}}
 					<li class="flexrow">
-						<label for="data.abilities.{{key}}.value" class="resource-label rollable flexlarge align-left" data-roll-key="{{key}}" data-roll-type="actor" data-roll-diecount="{{ability.total}}" data-label="{{ability.label}}">{{ability.label}}</label>
+						<label for="data.abilities.{{key}}.value" class="rollable flexlarge align-left" data-roll-key="{{key}}" data-roll-type="actor" data-roll-diecount="{{ability.total}}" data-label="{{ability.label}}">{{ability.label}}</label>
 						<div class="item-max-with40px">
-							<input type="text" name="data.abilities.{{key}}.value" value="{{ability.value}}" data-dtype="Number"/>
+							<a class="increment-{{key}}-click">{{ability.value}}</a>
 						</div>
 						<label class="items-list item-max-with40px">{{ability.talentBonus}}</label>
 						<label class="items-list item-max-with42px resource-label">{{ability.total}}</label>
