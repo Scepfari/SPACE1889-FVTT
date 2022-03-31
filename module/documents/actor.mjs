@@ -654,7 +654,7 @@ export class Space1889Actor extends Actor
         {
             if (item.type == "item")
                 itemWeight = item.data.data.weight * item.data.data.quantity;
-            else if (item.type == "weapon")
+            else if (item.type == "weapon" || item.type == "armor")
                 itemWeight = item.data.data.weight;
             else
                 continue;
