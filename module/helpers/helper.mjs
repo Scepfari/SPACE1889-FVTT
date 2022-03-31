@@ -39,4 +39,41 @@ export default class SPACE1889Helper
 
         return threshold;
     }
+
+    static getDamageTuple(actorData, ignoreThisItemId = "")
+    {
+        let lethal = 0;
+        let nonLethal = 0;
+        for (const item of actorData.items)
+        {
+            if (item.data.type != "damage")
+                continue;
+
+            if (item.data._id == ignoreThisItemId)
+                continue;
+
+            if (item.data.data.damageType == "lethal")
+                lethal += item.data.data.damage;
+            else
+                nonLethal += item.data.data.damage;
+        }
+
+        return { lethal: lethal, nonLethal: nonLethal };
+    }
+
+    /**
+     * sortiert das übergebene Liste nach Namen
+     * @param objectArray 
+     */
+    static sortByName(objectArray)
+    {
+        objectArray.sort((a, b) =>
+        {
+            if (a.name < b.name)
+                return -1;
+            if (a.name > b.name)
+                return 1;
+            return 0;
+        });
+    }
 }

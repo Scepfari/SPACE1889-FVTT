@@ -1,3 +1,6 @@
+import SPACE1889Helper from "../helpers/helper.mjs";
+import SPACE1889RollHelper from "../helpers/roll-helper.mjs";
+
 /**
  * Extend the base Actor document by defining a custom roll data structure which is ideal for the Simple system.
  * @extends {Actor}
@@ -175,6 +178,11 @@ export class Space1889Actor extends Actor
             else if (item.data.type == 'damage')
                 injuries.push(item.data);
         }
+
+        SPACE1889Helper.sortByName(skills);
+        SPACE1889Helper.sortByName(speciSkills);
+        SPACE1889Helper.sortByName(talents);
+
         actorData.talents = talents;
         actorData.skills = skills;
         actorData.speciSkills = speciSkills;
@@ -237,6 +245,9 @@ export class Space1889Actor extends Actor
             if (!isCreature)
                 weapon.data.locationDisplay = game.i18n.localize(CONFIG.SPACE1889.storageLocationAbbreviations[weapon.data.location]);
         }
+
+        SPACE1889Helper.sortByName(weapons);
+        actorData.weapons = weapons;
 
         for (let injury of injuries)
         {
@@ -996,6 +1007,105 @@ export class Space1889Actor extends Actor
         }
         return false;
     }
+
+    async addDamage(key)
+    {
+        const data = [{ name: 'Wunde in Bearbeitung', type: 'damage' }];
+        const items = await Item.create(data, { parent: this });
+        const item = items.shift();
+
+        SPACE1889RollHelper.showDamageDialog(this, item, key == 'lethal')
+
+        //ui.notifications.info(`Sorry, noch nicht implementiert. Kommt hoffentlich bald.`);
+	}
+
+    rollPrimary(key, event)
+    {
+        const dieCount = this.data.data.abilities[key]?.total;
+        const evaluation = SPACE1889RollHelper.getEventEvaluation(event);
+        if (evaluation.showInfoOnly)
+            return this.showAttributeInfo(game.i18n.localize(CONFIG.SPACE1889.abilities[key]), key);
+
+        return this.rollAttribute(dieCount, evaluation.showDialog, key);
+	}
+
+    rollSecondary(key, event)
+    {
+        const dieCount = this.data.data.secondaries[key]?.total;
+        const evaluation = SPACE1889RollHelper.getEventEvaluation(event);
+        if (evaluation.showInfoOnly)
+            return this.showAttributeInfo(game.i18n.localize(CONFIG.SPACE1889.secondaries[key]), key);
+
+        return this.rollAttribute(dieCount, evaluation.showDialog, key);
+    }
+
+    rollSkill(key, event)
+    {
+        const item = this.data.skills.find(e => e.data.id == key);
+        if (item != undefined)
+        {
+            SPACE1889RollHelper.rollItem(item, this, event);
+		}
+    }
+
+    rollSpecialization(key, event)
+    {
+        const item = this.data.speciSkills.find(e => e.data.id == key);
+        if (item != undefined)
+        {
+            SPACE1889RollHelper.rollItem(item, this, event);
+        }
+    }
+
+    rollAttack(key, event)
+    {
+        const item = this.data.weapons.find(e => e.data.id == key);
+        if (item != undefined)
+        {
+            SPACE1889RollHelper.rollItem(item, this, event);
+        }
+    }
+
+    rollTalent(key, event)
+    {
+        const item = this.data.talents.find(e => e.data.id == key);
+        if (item != undefined)
+        {
+            SPACE1889RollHelper.rollItem(item, this, event);
+		}
+	}
+
+    rollDefence(key, event)
+    {
+        let dieCount = 0;
+        let label = "";
+        switch (key)
+        {
+            case 'block':
+                dieCount = this.data.data.block.value;
+                label = game.i18n.localize("SPACE1889.Block");
+                break;
+            case 'parry':
+                dieCount = this.data.data.parry.value;
+                label = game.i18n.localize("SPACE1889.Parry");
+                break;
+            case 'evasion':
+                dieCount = this.data.data.evasion.value;
+                label = game.i18n.localize("SPACE1889.Evasion");
+                break;
+            case 'defense':
+                dieCount = this.data.data.secondaries.defense.total;
+                label = game.i18n.localize("SPACE1889.SecondaryAttributeDef");
+                break;
+		}
+
+        const evaluation = SPACE1889RollHelper.getEventEvaluation(event);
+        if (evaluation.showInfoOnly)
+            return this.showAttributeInfo(label, key);
+
+        return this.rollAttribute(dieCount, evaluation.showDialog, key);
+	}
+
 
     /**
      * 
