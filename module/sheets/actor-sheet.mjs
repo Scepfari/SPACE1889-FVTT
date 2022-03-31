@@ -118,103 +118,48 @@ export class Space1889ActorSheet extends ActorSheet {
 	 * @return {undefined}
 	 */
 	_prepareItems(context) {
-		// Initialize containers.
-		const gear = [];
-		const talents = [];
-		const skills = [];
-		const speciSkills = [];
-		const resources = [];
-		const weapons = [];
-		const armors = [];
-		const weakness = [];
-		const language = [];
-		const injuries = [];
 
-		// Iterate through items, allocating to containers
+		// Iterate through items, set default image
 		for (let i of context.items) {
 			i.img = i.img || DEFAULT_TOKEN;
-			// Append to gear.
-			if (i.type === 'item') {
-				gear.push(i);
-			}
-			// Append to talents.
-			else if (i.type === 'talent') {
-				talents.push(i);
-			}
-			// Append to skills.
-			else if (i.type === 'skill') {
-				skills.push(i);
-			}
-			// Append to specialization.
-			else if (i.type === 'specialization') {
-				speciSkills.push(i);
-			}
-			else if (i.type === 'resource') {
-				resources.push(i);
-			}
-			else if (i.type === 'weapon'){
-				weapons.push(i);
-			}
-			else if (i.type === 'armor'){
-				armors.push(i);
-			}
-			else if (i.type === 'weakness'){
-				weakness.push(i);
-			}
-			else if (i.type === 'language'){
-				language.push(i);
-			}
-			else if (i.type === 'damage')
-			{
-				injuries.push(i);
-			}
 		}
 
-		SPACE1889Helper.sortByName(skills);
-		SPACE1889Helper.sortByName(speciSkills);
-		SPACE1889Helper.sortByName(talents);
-		SPACE1889Helper.sortByName(weapons);
-		SPACE1889Helper.sortByName(armors);
-		SPACE1889Helper.sortByName(resources);
-
-		SPACE1889Helper.sortByName(weakness);
 		let weaknessLeft = [];
 		let weaknessRight = [];
-		for (let i = 0; i <weakness.length; ++i)
+		for (let i = 0; i < this.actor.data.weakness.length; ++i)
 		{
 			if (i%2 == 0)
-				weaknessLeft.push(weakness[i]);
+				weaknessLeft.push(this.actor.data.weakness[i]);
 			else 
-				weaknessRight.push(weakness[i]);
+				weaknessRight.push(this.actor.data.weakness[i]);
 		}
 
-		SPACE1889Helper.sortByName(language);
 		let languageLeft = [];
 		let languageRight = [];
-		for (let i = 0; i <language.length; ++i)
+		for (let i = 0; i < this.actor.data.language.length; ++i)
 		{
 			if (i%2 == 0)
-				languageLeft.push(language[i]);
+				languageLeft.push(this.actor.data.language[i]);
 			else 
-				languageRight.push(language[i]);
+				languageRight.push(this.actor.data.language[i]);
 		}
 
 
 		// Assign and return
-		context.gear = gear;
-		context.talents = talents;
-		context.skills = skills;
-		context.speciSkills = speciSkills;
-		context.resources = resources;
-		context.weapons = weapons;
-		context.armors = armors;
-		context.weakness = weakness;
+		context.gear = this.actor.data.gear;
+		context.talents = this.actor.data.talents;
+		context.skills = this.actor.data.skills;
+		context.speciSkills = this.actor.data.speciSkills;
+		context.resources = this.actor.data.resources;
+		context.weapons = this.actor.data.weapons;
+		context.armors = this.actor.data.armors;
+		context.weakness = this.actor.data.weakness;
 		context.weaknessLeft = weaknessLeft;
 		context.weaknessRight = weaknessRight;
-		context.language = language;
+		context.language = this.actor.data.language;
 		context.languageLeft = languageLeft;
 		context.languageRight = languageRight;
-		context.injuries = injuries;
+		context.injuries = this.actor.data.injuries;
 	}
 
 

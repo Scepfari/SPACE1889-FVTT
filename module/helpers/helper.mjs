@@ -61,6 +61,11 @@ export default class SPACE1889Helper
         return { lethal: lethal, nonLethal: nonLethal };
     }
 
+    static isCreature(actorData)
+    {
+        return actorData.type == 'creature';
+	}
+
     /**
      * sortiert das übergebene Liste nach Namen
      * @param objectArray 

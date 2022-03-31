@@ -82,10 +82,12 @@ export class Space1889Actor extends Actor
         const data = actorData.data;
         const flags = actorData.flags.space1889 || {};
 
-        // Make separate methods for each Actor type (character, npc, etc.) to keep
-        // things organized.
+        // Was unterscheidet einen NSC von einem SC?
+        // vermutlich nichts, außer dass er in der Summe nicht so viele Fertigkeiten, Talente usw. hat
+        // und somit einen kompakteren NSC Bogen ähnlich dem Kreaturen bekommen kann
+        // damit kann alle Akteure in einem prepare verarbeitet werden.
+        // ToDo: NSC Bogen erstellen und beschränkungen rausnehmen
         this._prepareCharacterData(actorData);
-        this._prepareNpcData(actorData);
     }
 
     /**
@@ -96,18 +98,14 @@ export class Space1889Actor extends Actor
         if (actorData.type !== 'character' && actorData.type !== 'creature')
             return;
 
-        const isCreature = actorData.type == 'creature';
-
         // Make modifications to data here. For example:
         const data = actorData.data;
         const items = actorData.items;
 
         let primaereAttribute = [];
 
-        // Loop through ability scores, and add their modifiers to our sheet output.
         for (let [key, ability] of Object.entries(data.abilities))
         {
-            // Calculate the modifier using d20 rules.
             ability.talentBonus = this.getBonusFromTalents(key, "ability", items);
             ability.total = ability.value + ability.talentBonus;
             primaereAttribute.push(key);
@@ -119,24 +117,7 @@ export class Space1889Actor extends Actor
             data.abilities["dex"].total -= armorData.malus;
         data.armorTotal = armorData;
 
-        data.secondaries.move.value = data.abilities.str.total + data.abilities.dex.total;
-        data.secondaries.move.talentBonus = this.getBonusFromTalents("move", "secondary", items);
-        data.secondaries.move.total = data.secondaries.move.value + data.secondaries.move.talentBonus;
-        data.secondaries.perception.value = data.abilities.int.total + data.abilities.wil.total;
-        data.secondaries.perception.talentBonus = this.getBonusFromTalents("perception", "secondary", items);
-        data.secondaries.perception.total = data.secondaries.perception.value + data.secondaries.perception.talentBonus;
-        data.secondaries.initiative.value = data.abilities.dex.total + data.abilities.int.total;
-        data.secondaries.initiative.talentBonus = this.getBonusFromTalents("initiative", "secondary", items);
-        data.secondaries.initiative.total = data.secondaries.initiative.value + data.secondaries.initiative.talentBonus;
-        data.secondaries.stun.value = data.abilities.con.total;
-        data.secondaries.stun.talentBonus = this.getBonusFromTalents("stun", "secondary", items);
-        data.secondaries.stun.total = data.secondaries.stun.value + data.secondaries.stun.talentBonus;
-        data.secondaries.size.talentBonus = this.getBonusFromTalents("size", "secondary", items);
-        data.secondaries.size.total = data.secondaries.size.value + data.secondaries.size.talentBonus;
-        data.secondaries.defense.value = this.getPassiveDefence(actorData) + this.getActiveDefence(actorData) - data.secondaries.size.total;
-        data.secondaries.defense.talentBonus = this.getBonusFromTalents("defense", "secondary", items);
-        data.secondaries.defense.armorBonus = armorData.bonus;
-        data.secondaries.defense.total = data.secondaries.defense.value + data.secondaries.defense.talentBonus + data.secondaries.defense.armorBonus;
+        this.calcAndSetSecondaries(actorData)
         data.health.max = data.abilities.con.total + data.abilities.wil.total + data.secondaries.size.total + this.getBonusFromTalents("max", "health", items);
 
         const skills = [];
@@ -145,6 +126,9 @@ export class Space1889Actor extends Actor
         const weapons = [];
         const armors = [];
         const gear = [];
+        const resources = [];
+        const weakness = [];
+        const language = [];
         const injuries = [];
         for (let item of items)
         {
@@ -160,93 +144,44 @@ export class Space1889Actor extends Actor
                 speciSkills.push(item.data);
             }
             else if (item.data.type === 'talent')
-            {
                 talents.push(item.data);
-            }
-            else if (item.data.type == 'weapon')
-            {
+            else if (item.data.type === 'weapon')
                 weapons.push(item.data);
-            }
             else if (item.data.type === 'armor')
-            {
                 armors.push(item.data);
-            }
-            else if (item.data.type == 'item')
-            {
+            else if (item.data.type === 'item')
                 gear.push(item.data);
-            }
-            else if (item.data.type == 'damage')
+            else if (item.data.type === 'damage')
                 injuries.push(item.data);
+            else if (item.data.type === 'resource')
+                resources.push(item.data);
+            else if (item.data.type === 'weakness')
+                weakness.push(item.data);
+            else if (item.data.type === 'language')
+                language.push(item.data);
         }
 
         SPACE1889Helper.sortByName(skills);
         SPACE1889Helper.sortByName(speciSkills);
         SPACE1889Helper.sortByName(talents);
+        SPACE1889Helper.sortByName(resources);
+        SPACE1889Helper.sortByName(weakness);
+        SPACE1889Helper.sortByName(language);
 
         actorData.talents = talents;
         actorData.skills = skills;
         actorData.speciSkills = speciSkills;
         actorData.injuries = injuries;
+        actorData.armors = armors;
+        actorData.gear = gear;
+        actorData.resources = resources;
+        actorData.weakness = weakness;
+        actorData.language = language;
 
-        try
-        {
-            for (let skl of skills)
-            {
-                let underlyingAttribute = this._GetAttributeBase(actorData, skl);
-                skl.data.basis = actorData.data.abilities[underlyingAttribute].total;
-                skl.data.baseAbilityAbbr = game.i18n.localize(CONFIG.SPACE1889.abilityAbbreviations[underlyingAttribute]);
-                let sizeMod = 0;
-                if (skl.data.id == 'heimlichkeit' && data.secondaries.size.total != 0)
-                    sizeMod = data.secondaries.size.total;
 
-                skl.data.rating = Math.max(0, skl.data.basis + skl.data.level + skl.data.talentBonus - sizeMod);
-                if (skl.data.isSkillGroup && skl.data.skillGroupName.length > 0)
-                    skl.data.skillGroup = game.i18n.localize(CONFIG.SPACE1889.skillGroups[skl.data.skillGroupName]);
+        this.calcAndSetSkillsAndSpecializations(actorData)
 
-                if (skl.data.id == 'sportlichkeit' && skl.data.rating > data.secondaries.move.value)
-                {
-                    data.secondaries.move.value = skl.data.rating;
-                    data.secondaries.move.total = skl.data.rating + data.secondaries.move.talentBonus;
-                }
-
-                for (let spe of speciSkills)
-                {
-                    if (spe.data.underlyingSkillId == skl.data.id)
-                    {
-                        spe.data.basis = skl.data.rating;
-                        spe.data.rating = spe.data.basis + spe.data.level + spe.data.talentBonus;
-                    }
-                }
-            }
-        }
-        catch (error)
-        {
-            console.error(error);
-        }
-
-        let sizeMod = (-1) * actorData.data.secondaries.size.total;
-        for (let weapon of weapons)
-        {
-            if (weapon.data.skillId == "none" && weapon.data.isAreaDamage)
-            {
-                weapon.data.sizeMod = "-";
-                weapon.data.skillRating = "-";
-                weapon.data.attack = weapon.data.damage;
-                weapon.data.attackAverage = (Math.floor(weapon.data.attack / 2)).toString() + (weapon.data.attack % 2 == 0 ? "" : "+");
-            }
-            else
-            {
-                weapon.data.sizeMod = sizeMod;
-                weapon.data.skillRating = this._GetSkillLevel(actorData, weapon.data.skillId, weapon.data.specializationId);
-                weapon.data.attack = Math.max(0, weapon.data.damage + weapon.data.skillRating + weapon.data.sizeMod);
-                weapon.data.attackAverage = (Math.floor(weapon.data.attack / 2)).toString() + (weapon.data.attack % 2 == 0 ? "" : "+");
-            }
-            weapon.data.damageTypeDisplay = game.i18n.localize(CONFIG.SPACE1889.damageTypeAbbreviations[weapon.data.damageType]);
-            if (!isCreature)
-                weapon.data.locationDisplay = game.i18n.localize(CONFIG.SPACE1889.storageLocationAbbreviations[weapon.data.location]);
-        }
-
-        SPACE1889Helper.sortByName(weapons);
+        this.prepareWeapons(actorData, weapons);
         actorData.weapons = weapons;
 
         for (let injury of injuries)
@@ -258,33 +193,9 @@ export class Space1889Actor extends Actor
             injury.data.timeToNextCure = this.FormatHealingDuration(healingDurationInDays / injury.data.damage);
         }
 
-        if (isCreature)
+        if (SPACE1889Helper.isCreature(actorData))
         {
-            let movement = "";
-            let secondaryMovement = "";
-            switch (data.movementType)
-            {
-                case "amphibious":
-                case "flying":
-                    movement = data.secondaries.move.total.toString() + " (" + Math.floor(data.secondaries.move.total / 2).toString() + ")";
-                    break;
-                case "fossorial":
-                case "jumper":
-                case "manylegged":
-                    movement = data.secondaries.move.total.toString() + " (" + (data.secondaries.move.total * 2).toString() + ")";
-                    break;
-                case "swimming":
-                    movement = (data.secondaries.move.total * 2).toString() + " (0)";
-                    break;
-                case "immobile":
-                    movement = "0";
-                    break;
-                default:
-                    movement = data.secondaries.move.total.toString();
-                    break;
-            }
-
-            data.secondaries.move.display = movement;
+            this.setCreatureMovementDisplay(actorData);
             this.CalcAndSetHealth(actorData);
         }
         else
@@ -304,6 +215,140 @@ export class Space1889Actor extends Actor
             this._CalcThings(actorData);
         }
     }
+
+    /**
+     * 
+     * @param {object} actorData
+     */
+    calcAndSetSecondaries(actorData)
+    {
+        const data = actorData.data;
+        data.secondaries.move.value = data.abilities.str.total + data.abilities.dex.total;
+        data.secondaries.move.talentBonus = this.getBonusFromTalents("move", "secondary", actorData.items);
+        data.secondaries.move.total = data.secondaries.move.value + data.secondaries.move.talentBonus;
+        data.secondaries.perception.value = data.abilities.int.total + data.abilities.wil.total;
+        data.secondaries.perception.talentBonus = this.getBonusFromTalents("perception", "secondary", actorData.items);
+        data.secondaries.perception.total = data.secondaries.perception.value + data.secondaries.perception.talentBonus;
+        data.secondaries.initiative.value = data.abilities.dex.total + data.abilities.int.total;
+        data.secondaries.initiative.talentBonus = this.getBonusFromTalents("initiative", "secondary", actorData.items);
+        data.secondaries.initiative.total = data.secondaries.initiative.value + data.secondaries.initiative.talentBonus;
+        data.secondaries.stun.value = data.abilities.con.total;
+        data.secondaries.stun.talentBonus = this.getBonusFromTalents("stun", "secondary", actorData.items);
+        data.secondaries.stun.total = data.secondaries.stun.value + data.secondaries.stun.talentBonus;
+        data.secondaries.size.talentBonus = this.getBonusFromTalents("size", "secondary", actorData.items);
+        data.secondaries.size.total = data.secondaries.size.value + data.secondaries.size.talentBonus;
+        data.secondaries.defense.value = this.getPassiveDefence(actorData) + this.getActiveDefence(actorData) - data.secondaries.size.total;
+        data.secondaries.defense.talentBonus = this.getBonusFromTalents("defense", "secondary", actorData.items);
+        data.secondaries.defense.armorBonus = data.armorTotal.bonus;
+        data.secondaries.defense.total = data.secondaries.defense.value + data.secondaries.defense.talentBonus + data.secondaries.defense.armorBonus;
+	}
+
+
+	/**
+	 *
+	 * @param {object} actorData
+	 */
+    calcAndSetSkillsAndSpecializations(actorData)
+    {
+        for (let skl of actorData.skills)
+        {
+            let underlyingAttribute = this._GetAttributeBase(actorData, skl);
+            skl.data.basis = actorData.data.abilities[underlyingAttribute].total;
+            skl.data.baseAbilityAbbr = game.i18n.localize(CONFIG.SPACE1889.abilityAbbreviations[underlyingAttribute]);
+            let sizeMod = 0;
+            if (skl.data.id == 'heimlichkeit' && actorData.data.secondaries.size.total != 0)
+                sizeMod = actorData.data.secondaries.size.total;
+
+            skl.data.rating = Math.max(0, skl.data.basis + skl.data.level + skl.data.talentBonus - sizeMod);
+            if (skl.data.isSkillGroup && skl.data.skillGroupName.length > 0)
+                skl.data.skillGroup = game.i18n.localize(CONFIG.SPACE1889.skillGroups[skl.data.skillGroupName]);
+
+            if (skl.data.id == 'sportlichkeit' && skl.data.rating > actorData.data.secondaries.move.value)
+            {
+                actorData.data.secondaries.move.value = skl.data.rating;
+                actorData.data.secondaries.move.total = skl.data.rating + actorData.data.secondaries.move.talentBonus;
+            }
+
+            for (let spe of actorData.speciSkills)
+            {
+                if (spe.data.underlyingSkillId == skl.data.id)
+                {
+                    spe.data.basis = skl.data.rating;
+                    spe.data.rating = spe.data.basis + spe.data.level + spe.data.talentBonus;
+                }
+            }
+        }
+
+    }
+
+    /**
+     * 
+     * @param {object} actorData
+     * @param {Array<object>} weapons
+     */
+    prepareWeapons(actorData, weapons)
+    {
+        let sizeMod = (-1) * actorData.data.secondaries.size.total;
+        for (let weapon of weapons)
+        {
+            if (weapon.data.skillId == "none" && weapon.data.isAreaDamage)
+            {
+                weapon.data.sizeMod = "-";
+                weapon.data.skillRating = "-";
+                weapon.data.attack = weapon.data.damage;
+                weapon.data.attackAverage = (Math.floor(weapon.data.attack / 2)).toString() + (weapon.data.attack % 2 == 0 ? "" : "+");
+            }
+            else
+            {
+                weapon.data.sizeMod = sizeMod;
+                weapon.data.skillRating = this._GetSkillLevel(actorData, weapon.data.skillId, weapon.data.specializationId);
+                weapon.data.attack = Math.max(0, weapon.data.damage + weapon.data.skillRating + weapon.data.sizeMod);
+                weapon.data.attackAverage = (Math.floor(weapon.data.attack / 2)).toString() + (weapon.data.attack % 2 == 0 ? "" : "+");
+            }
+            weapon.data.damageTypeDisplay = game.i18n.localize(CONFIG.SPACE1889.damageTypeAbbreviations[weapon.data.damageType]);
+            if (!SPACE1889Helper.isCreature(actorData))
+                weapon.data.locationDisplay = game.i18n.localize(CONFIG.SPACE1889.storageLocationAbbreviations[weapon.data.location]);
+        }
+
+        SPACE1889Helper.sortByName(weapons);
+    }
+
+
+    /**
+     * 
+     * @param {object} actorData
+     */
+    setCreatureMovementDisplay(actorData)
+    {
+        if (actorData.type != "creature")
+            return;
+
+        const data = actorData.data;
+        let movement = "";
+        switch (data.movementType)
+        {
+            case "amphibious":
+            case "flying":
+                movement = data.secondaries.move.total.toString() + " (" + Math.floor(data.secondaries.move.total / 2).toString() + ")";
+                break;
+            case "fossorial":
+            case "jumper":
+            case "manylegged":
+                movement = data.secondaries.move.total.toString() + " (" + (data.secondaries.move.total * 2).toString() + ")";
+                break;
+            case "swimming":
+                movement = (data.secondaries.move.total * 2).toString() + " (0)";
+                break;
+            case "immobile":
+                movement = "0";
+                break;
+            default:
+                movement = data.secondaries.move.total.toString();
+                break;
+        }
+
+        data.secondaries.move.display = movement;
+	}
 
     /**
      * @param {string} whatId
@@ -885,17 +930,6 @@ export class Space1889Actor extends Actor
         return duration;
     }
 
-    /**
-     * Prepare NPC type specific data.
-     */
-    _prepareNpcData(actorData)
-    {
-        if (actorData.type !== 'npc') return;
-
-        // Make modifications to data here. For example:
-        const data = actorData.data;
-        data.xp = (data.cr * data.cr) * 100;
-    }
 
     /**
      * Override getRollData() that's supplied to rolls.
