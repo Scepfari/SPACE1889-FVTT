@@ -82,7 +82,7 @@ export class Space1889ItemSheet extends ItemSheet {
 		{
 			context.data['damageTypes'] = CONFIG.SPACE1889.damageTypes;
 			context.data['damageTypeAbbr'] = CONFIG.SPACE1889.damageTypeAbbreviations;
-        }
+		}
 
 		if (itemData.type == "weapon" || itemData.type == "armor" || itemData.type == "item")
 		{

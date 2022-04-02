@@ -145,13 +145,13 @@ export class Space1889Item extends Item {
 		return false;
 	}
 
-    /**
-     *
-     * @param {object} item
-     * @param {string} base
-     * @param {boolean} setDescription
-     * @param {boolean} setInfo
-     */
+	/**
+	 *
+	 * @param {object} item
+	 * @param {string} base
+	 * @param {boolean} setDescription
+	 * @param {boolean} setInfo
+	 */
 	setLangIdAndLabel(item, base, setDescription, setInfo = false)
 	{
 		if (item == undefined || item.data.id == undefined || item.data.id == "")
@@ -168,7 +168,7 @@ export class Space1889Item extends Item {
 			{
 				const toolTip = game.i18n.localize(item.data.infoLangId);
 				item.data.toolTip = item.data.info != "" && toolTip == item.data.infoLangId ? item.data.info : toolTip;
-            }
+			}
 		}
 
 		item.data.label = game.i18n.localize(item.data.nameLangId) ?? item.name;

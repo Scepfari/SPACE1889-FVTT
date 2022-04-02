@@ -108,7 +108,7 @@ export class Space1889ActorSheet extends ActorSheet {
 			element.label = game.i18n.localize(CONFIG.SPACE1889.secondaries[key]) ?? key;
 		}
 		context.data['primaereAttribute'] = primaereAttribute;
-    }
+	}
 
 	/**
 	 * Organize and classify Items for Character sheets.
@@ -180,7 +180,7 @@ export class Space1889ActorSheet extends ActorSheet {
 
 		//Uebermensch
 		return 8;
-    }
+	}
 
 	GetMaxPrimaryAttributeLevel()
 	{
@@ -217,7 +217,7 @@ export class Space1889ActorSheet extends ActorSheet {
 		else
 			id = "SPACE1889.HeroLevelUebermensch";
 		return game.i18n.localize(id);
-    }
+	}
 
 
 	/* -------------------------------------------- */
@@ -526,7 +526,7 @@ export class Space1889ActorSheet extends ActorSheet {
 			}
 		});
 		dialog.render(true);
-    }
+	}
 
 	showGeschaerfterSinnDialog(itemData)
 	{
@@ -605,7 +605,7 @@ export class Space1889ActorSheet extends ActorSheet {
 		{
 			if (id == actor.type)
 				return true;
-        }
+		}
 		else if (type == "primary")
 		{
 			if (threshold <= actor.data.abilities[id].total)
@@ -764,7 +764,7 @@ export class Space1889ActorSheet extends ActorSheet {
 			return "SecondaryAttribute";
 
 		return this.firstLetterToUpperCase(preConType);
-    }
+	}
 
 	/**
 	 * 
@@ -777,7 +777,7 @@ export class Space1889ActorSheet extends ActorSheet {
 		{
 			return b.toUpperCase();
 		});
-    }
+	}
 
 	/**
 	 * 
@@ -801,7 +801,7 @@ export class Space1889ActorSheet extends ActorSheet {
 		{
 			const info = game.i18n.format("SPACE1889.CanNotIncrementAttributeSkill", { level: max, currentHeroLevel: this.GetHeroLevelName() });
 			ui.notifications.info(info);
-        }
+		}
 			
 
 		return newValue;
@@ -825,7 +825,7 @@ export class Space1889ActorSheet extends ActorSheet {
 			return backward ? k : l;
 		else
 			return backward ? r : k;
-    }
+	}
 
 
 	/**
@@ -858,7 +858,7 @@ export class Space1889ActorSheet extends ActorSheet {
 		{
 			let isLethal = !(event.originalEvent.altKey || event.originalEvent.shiftKey || event.originalEvent.ctrKey);
 			SPACE1889RollHelper.showDamageDialog(this.actor, newItem, isLethal);
-        }
+		}
 
 		return newItem;
 	}
@@ -920,10 +920,10 @@ export class Space1889ActorSheet extends ActorSheet {
 							const dieCount = Math.max(0, skillItem.data.data.rating + ((item.data.data.level.value - 1) * 2));
 							return item.rollSpecialTalent(dieCount, showDialog);
 						}
-                    }
+					}
 					return item.roll();
-                }
-            }
+				}
+			}
 			else if (dataset.rollType == 'actor' && dataset.rollDiecount && dataset.rollKey)
 			{
 					const actor = this.actor;
