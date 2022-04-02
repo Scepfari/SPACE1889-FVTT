@@ -1,4 +1,5 @@
 import SPACE1889RollHelper from "../helpers/roll-helper.mjs";
+import SPACE1889Helper from "../helpers/helper.mjs";
 
 /**
  * Extend the basic Item with some very simple modifications.
@@ -23,18 +24,18 @@ export class Space1889Item extends Item {
 			if (item.name.length > 0 && item.data.id == "")
 				item.data.id = this.createId(item.name);
 			
-			if (item.type == "skill" && item.data.id !=="")
+			if (item.type == "skill" && item.data.id !== "")
 			{
 				this.setLangIdAndLabel(item, "Skill", true);
 				this.setFightingSkill(item);
 			}
-			else if (item.type == "specialization" && item.data.id !=="")
+			else if (item.type == "specialization" && item.data.id !== "")
 			{
 				this.setLangIdAndLabel(item, "SpeciSkill", true);
 			}
 			else if (item.type == "talent")
 			{
-				if (item.data.id !=="")
+				if (item.data.id !== "")
 				{
 					this.setLangIdAndLabel(item, "Talent", true, true);
 				}
@@ -55,25 +56,25 @@ export class Space1889Item extends Item {
 					item.data.isRollable = true;
 
 			}
-			else if (item.type == "weakness" && item.data.id !=="")
+			else if (item.type == "weakness" && item.data.id !== "")
 			{
 				this.setLangIdAndLabel(item, "Weakness", true);
 				if (item.img == "icons/svg/item-bag.svg")
 					item.img = "icons/svg/paralysis.svg";
 			}
-			else if (item.type == "resource" && item.data.id !=="")
+			else if (item.type == "resource" && item.data.id !== "")
 			{
 				this.setLangIdAndLabel(item, "Resource", true, true);
 				if (item.img == "icons/svg/item-bag.svg")
 					item.img = "icons/svg/card-joker.svg";
 			}
-			else if (item.type == "weapon" && item.data.id !=="")
+			else if (item.type == "weapon" && item.data.id !== "")
 			{
 				this.setLangIdAndLabel(item, "Weapon", true);
 				if (item.img == "icons/svg/item-bag.svg")
 					item.img = "icons/svg/sword.svg";
 			}
-			else if (item.type == "armor" && item.data.id !=="")
+			else if (item.type == "armor" && item.data.id !== "")
 			{
 				this.setLangIdAndLabel(item, "Armor", true);
 				if (item.img == "icons/svg/item-bag.svg")
@@ -83,15 +84,27 @@ export class Space1889Item extends Item {
 			{
 				this.setLangIdAndLabel(item, "Item", true);
 			}
-			else if (item.type == "language" && item.data.id !=="")
+			else if (item.type == "language" && item.data.id !== "")
 			{
 				this.setLangIdAndLabel(item, "Language", false);
-				item.data.origin = game.i18n.localize(CONFIG.SPACE1889.languageOrigins[item.data.originId]);        
+				item.data.origin = game.i18n.localize(CONFIG.SPACE1889.languageOrigins[item.data.originId]);
 				item.data.family = game.i18n.localize(CONFIG.SPACE1889.familyOflanguages[item.data.familyId]);
 				item.data.dialect = game.i18n.localize(CONFIG.SPACE1889.languages[item.data.isDialectSourceId]);
 				item.data.oldInfo = item.data.old ? game.i18n.localize('SPACE1889.OldLanguageInfo') : "";
 				if (item.img == "icons/svg/item-bag.svg")
 					item.img = "icons/svg/sound.svg";
+			}
+			else if (item.type == "currency")
+			{
+				this.setLangIdAndLabel(item, "Currency", false, false);
+				const abbrLangId = item.data.nameLangId + "Abbr";
+				item.data.abbr = game.i18n.localize(abbrLangId);
+				if (item.data.abbr == abbrLangId)
+					item.data.abbr = item.name;
+				if (item.img == "icons/svg/item-bag.svg")
+					item.img = "icons/svg/coins.svg";
+
+				item.data.exchangeValue = SPACE1889Helper.getExchangeValue(item);
 			}
 			
 		}

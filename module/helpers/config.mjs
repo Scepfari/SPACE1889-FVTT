@@ -627,6 +627,14 @@ SPACE1889.creatureMovementType = {
 	"manylegged": "SPACE1889.CreatureMovementTypeManyLegged"
 };
 
+SPACE1889.moneyTypes = {
+	"money": "SPACE1889.MoneyTypeMoney",
+	"chainMoney": "SPACE1889.MoneyTypeChainMoney",
+	"manascha": "SPACE1889.MoneyTypeManascha",
+	"valkaarra": "SPACE1889.MoneyTypeValkaarra",
+	"burkach": "SPACE1889.MoneyTypeBurkach",
+	"aahaarimi": "SPACE1889.MoneyTypeAahaarimi"
+};
 
 SPACE1889.umlautMap = {
 	'\u00dc': 'UE',

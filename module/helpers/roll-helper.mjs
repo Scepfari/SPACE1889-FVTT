@@ -235,6 +235,14 @@ export default class SPACE1889RollHelper
             if (item.data.old)
                 desc += "<br>" + item.data.oldInfo;
         }
+        else if (item.type == "currency")
+        {
+            const currency = game.i18n.localize("ITEM.TypeCurrency") ?? item.type;
+            label = `[${currency}] ${item.data.label}`;
+            desc = item.data.quantity.toString() + " " + item.data.abbr + " ~ " + item.data.exchangeValue + "<br>";
+            desc += game.i18n.localize("SPACE1889.ExchangeRate") + ": ";
+            desc += "1 " + game.i18n.localize("SPACE1889.CurrencyBritishPoundsAbbr") + " = " + item.data.exchangeRateForOnePound.toString() + " " + item.data.abbr;
+        }
         else
         {
             desc = game.i18n.localize(item.data.descriptionLangId);

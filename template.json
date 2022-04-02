@@ -113,7 +113,7 @@
 		}
 	},
 	"Item": {
-		"types": [ "item", "talent", "weapon", "skill", "specialization", "weakness", "resource", "language", "armor", "damage" ],
+		"types": [ "item", "talent", "weapon", "skill", "specialization", "weakness", "resource", "language", "armor", "damage", "currency" ],
 		"templates": {
 			"description": {
 				"description": ""
@@ -225,6 +225,12 @@
 			"healingFactor": 1,
 			"timeToNextCure": "",
 			"dataOfTheEvent": ""
+		},
+		"currency": {
+			"templates": [ "description", "id" ],
+			"quantity": 1,
+			"type": "money",
+			"exchangeRateForOnePound": 1.0
 		}
 	}
 }

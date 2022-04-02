@@ -66,8 +66,32 @@ export default class SPACE1889Helper
         return actorData.type == 'creature';
 	}
 
+    static getExchangeValue(itemData)
+    {
+        const exchangeRatio = 20 / itemData.data.exchangeRateForOnePound;
+        if (exchangeRatio == 0)
+            return "?";
+
+        const sumShilling = Number(itemData.data.quantity) * exchangeRatio;
+
+        const pound = Math.floor(sumShilling / 20);
+        const shilling = Math.round(sumShilling - (pound * 20));
+
+        let value = "";
+        if (pound > 0)
+            value = pound.toString() + game.i18n.localize("SPACE1889.CurrencyBritishPoundsAbbr") + " ";
+        if (shilling > 0)
+            value += shilling.toString() + game.i18n.localize("SPACE1889.CurrencyBritishShillingAbbr");
+
+        if (value == "")
+            value = "<< 1" + game.i18n.localize("SPACE1889.CurrencyBritishShillingAbbr");
+
+        return value;
+	}
+
+
     /**
-     * sortiert das übergebene Liste nach Namen
+     * sortiert die uebergebene Liste nach Namen
      * @param objectArray 
      */
     static sortByName(objectArray)

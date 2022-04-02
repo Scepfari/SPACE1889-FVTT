@@ -68,6 +68,10 @@ export class Space1889ItemSheet extends ItemSheet {
 		{
 			context.data['weaknessTypes'] = CONFIG.SPACE1889.weaknessTypes;
 		}
+		else if (itemData.type == "currency")
+		{
+			context.data['moneyTypes'] = CONFIG.SPACE1889.moneyTypes;
+		}
 		else if (itemData.type == "language")
 		{
 			context.data['origins'] = CONFIG.SPACE1889.languageOrigins;

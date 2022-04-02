@@ -130,6 +130,7 @@ export class Space1889Actor extends Actor
         const weakness = [];
         const language = [];
         const injuries = [];
+        const money = [];
         for (let item of items)
         {
             if (item.data.type === 'skill')
@@ -159,6 +160,8 @@ export class Space1889Actor extends Actor
                 weakness.push(item.data);
             else if (item.data.type === 'language')
                 language.push(item.data);
+            else if (item.data.type === 'currency')
+                money.push(item.data);
         }
 
         SPACE1889Helper.sortByName(skills);
@@ -177,6 +180,7 @@ export class Space1889Actor extends Actor
         actorData.resources = resources;
         actorData.weakness = weakness;
         actorData.language = language;
+        actorData.money = money;
 
 
         this.calcAndSetSkillsAndSpecializations(actorData)

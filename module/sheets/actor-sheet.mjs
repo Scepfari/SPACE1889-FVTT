@@ -160,6 +160,7 @@ export class Space1889ActorSheet extends ActorSheet {
 		context.languageLeft = languageLeft;
 		context.languageRight = languageRight;
 		context.injuries = this.actor.data.injuries;
+		context.money = this.actor.data.money;
 	}
 
 
@@ -291,6 +292,15 @@ export class Space1889ActorSheet extends ActorSheet {
 			else if (item.data.type == "item")
 			{
 				const newValue = this.incrementValue(ev, item.data.data.quantity, 0);
+				this.actor.updateEmbeddedDocuments("Item", [{ _id: itemId, "data.quantity": newValue }]);
+			}
+			else if (item.data.type == "currency")
+			{
+				let newValue = this.incrementValue(ev, item.data.data.quantity, 0);
+				if (newValue != Math.round(newValue))
+				{
+					newValue = +(newValue.toFixed(2));
+				}
 				this.actor.updateEmbeddedDocuments("Item", [{ _id: itemId, "data.quantity": newValue }]);
 			}
 			else if (item.data.type == "damage")
@@ -778,7 +788,7 @@ export class Space1889ActorSheet extends ActorSheet {
 	 */
 	incrementValue(ev, currentValue, min, max, showNotification = false)
 	{
-		const factor = ev.ctrlKey ? 10 : (ev.shiftKey ? 5 : 1);
+		const factor = (ev.ctrlKey && ev.shiftKey) ? 100 : (ev.ctrlKey ? 10 : (ev.shiftKey ? 5 : 1));
 		const sign = ev.button == 2 ? -1 : 1;
 		const wantedValue = currentValue + (factor * sign);
 		let newValue = wantedValue;
