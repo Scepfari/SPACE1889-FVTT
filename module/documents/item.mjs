@@ -99,8 +99,8 @@ export class Space1889Item extends Item {
 				this.setLangIdAndLabel(item, "Currency", false, false);
 				const abbrLangId = item.data.nameLangId + "Abbr";
 				item.data.abbr = game.i18n.localize(abbrLangId);
-				if (item.data.abbr == abbrLangId)
-					item.data.abbr = item.name;
+				if (item.data.abbr == "" || item.data.abbr == abbrLangId)
+					item.data.abbr = item.data.label;
 				if (item.img == "icons/svg/item-bag.svg")
 					item.img = "icons/svg/coins.svg";
 
