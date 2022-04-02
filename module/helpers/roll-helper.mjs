@@ -106,14 +106,16 @@ export default class SPACE1889RollHelper
 	static rollSubSpecial(itemData, actor, dieCount, showDialog, titelInfo, withExtraInfo = false)
 	{
 		const extraInfo = withExtraInfo ? game.i18n.localize(itemData.data.infoLangId) : "";
+		const titelPartOne = game.i18n.localize("SPACE1889.ModifiedRoll");
+		const inputDesc = game.i18n.localize("SPACE1889.NumberOfModificationDice");
 
 		let info = titelInfo + ":";
 		if (showDialog)
 		{
 			let dialogue = new Dialog(
 				{
-					title: `Modifizierter Wurf: ${itemData.data.label}`,
-					content: `<p>Anzahl der Modifikations-Würfel: <input type="number" id="anzahlDerWuerfel" value = "0"></p>`,
+					title: `${titelPartOne}: ${itemData.data.label}`,
+					content: `<p>${inputDesc}: <input type="number" id="anzahlDerWuerfel" value = "0"></p>`,
 					buttons:
 					{
 						ok:

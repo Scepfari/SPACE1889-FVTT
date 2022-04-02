@@ -2129,6 +2129,8 @@
 	"SPACE1889.Dead": "Dead",
 	"SPACE1889.Vanquished": "Vanquished",
 
+	"SPACE1889.ModifiedRoll": "Modified Roll",
+	"SPACE1889.NumberOfModificationDice": "Number of modification dice",
 	"SPACE1889.Submit": "Submit",
 	"SPACE1889.Cancel": "Cancel",
 	"SPACE1889.Ok": "Ok"

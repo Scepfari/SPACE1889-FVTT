@@ -2127,6 +2127,8 @@
 	"SPACE1889.StrikeEffect": "Trefferwirkung",
 	"SPACE1889.OverallEffect": "Gesamtwirkung",
 
+	"SPACE1889.ModifiedRoll": "Modifizierter Wurf",
+	"SPACE1889.NumberOfModificationDice": "Anzahl der Modifikations-Würfel",
 	"SPACE1889.Submit": "Bestätigen",
 	"SPACE1889.Cancel": "Abbrechen",
 	"SPACE1889.Ok": "Ok"

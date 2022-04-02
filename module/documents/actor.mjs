@@ -1155,6 +1155,9 @@ export class Space1889Actor extends Actor
 		const theActor = this;
 		const langId = this.getLangId(key);
 		const name = game.i18n.localize(langId) ?? "unbekannt";
+		const titelPartOne = game.i18n.localize("SPACE1889.ModifiedRoll");
+		const inputDesc = game.i18n.localize("SPACE1889.NumberOfModificationDice");
+
 		let info = game.i18n.localize("SPACE1889.Probe") ?? "Probe";
 		info += ":";
 
@@ -1165,8 +1168,8 @@ export class Space1889Actor extends Actor
 		{
 			let dialogue = new Dialog(
 				{
-					title: `Modifizierter Wurf: ${name}`,
-					content: `<p>Anzahl der Modifikations-Würfel: <input type="number" id="anzahlDerWuerfel" value = "0"></p>`,
+					title: `${titelPartOne}: ${name}`,
+					content: `<p>${inputDesc}: <input type="number" id="anzahlDerWuerfel" value = "0"></p>`,
 					buttons:
 					{
 						ok:
