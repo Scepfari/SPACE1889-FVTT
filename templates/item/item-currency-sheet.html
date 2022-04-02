@@ -20,7 +20,7 @@
 		<div class="resource-content flex-center flex-between">
 			<input type="text" name="data.quantity" value="{{data.quantity}}" data-dtype="Number" />
 		</div>
-		<select name="data.location" data-dtype="String">
+		<select name="data.type" data-dtype="String">
 			{{#select data.type}}
 			{{#each data.moneyTypes as |ch char|}}
 			<option value="{{char}}">{{localize ch}}</option>

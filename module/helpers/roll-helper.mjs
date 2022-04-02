@@ -217,7 +217,7 @@ export default class SPACE1889RollHelper
         else if (item.type == "weapon")
         {
             const weapon = game.i18n.localize("SPACE1889.Weapon") ?? item.type;
-            label = `[${weapon}] ${item.data.label}`;
+            label = `<h2><strong>${item.data.label}</strong> [${weapon}]</h2>`;
         }
         else if (item.type == "armor")
         {
@@ -238,8 +238,20 @@ export default class SPACE1889RollHelper
         else if (item.type == "currency")
         {
             const currency = game.i18n.localize("ITEM.TypeCurrency") ?? item.type;
-            label = `[${currency}] ${item.data.label}`;
-            desc = item.data.quantity.toString() + " " + item.data.abbr + " ~ " + item.data.exchangeValue + "<br>";
+            label = `<h2><strong>${item.data.label}</strong> [${currency}]</h2>`;
+            desc = "";
+            if (item.data.type != "money")
+            {
+                const typeId = CONFIG.SPACE1889.moneyTypes[item.data.type];
+                if (typeId != undefined)
+                {
+                    const typename = game.i18n.localize(typeId);
+                    if (typename != "" && typename != typeId)
+                        desc = "<small>" + typename + "</small><br>";
+                }
+            }
+
+            desc += item.data.quantity.toString() + " " + item.data.abbr + " ~ " + item.data.exchangeValue + "<br>";
             desc += game.i18n.localize("SPACE1889.ExchangeRate") + ": ";
             desc += "1 " + game.i18n.localize("SPACE1889.CurrencyBritishPoundsAbbr") + " = " + item.data.exchangeRateForOnePound.toString() + " " + item.data.abbr;
         }
