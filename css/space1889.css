@@ -158,6 +158,12 @@
 	grid-column-end: span 12;
 }
 
+.flex-fix-height {
+	height: 130px;
+	width: 100%;
+	overflow: scroll;
+}
+
 .flex-group-center,
 .flex-group-left,
 .flex-group-right {

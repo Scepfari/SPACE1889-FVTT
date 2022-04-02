@@ -572,15 +572,15 @@ SPACE1889.weaknessTypes = {
 };
 
 SPACE1889.publications = {
-    "grw": "SPACE1889.PublicationGrw",
+	"grw": "SPACE1889.PublicationGrw",
 	"ee": "SPACE1889.PublicationEe",
 	"luna": "SPACE1889.PublicationLuna",
-    "mars": "SPACE1889.PublicationMars",
-    "merkur": "SPACE1889.PublicationMerkur",
-    "venus": "SPACE1889.PublicationVenus",
-    "aev1": "SPACE1889.PublicationAev1",
-    "aev2": "SPACE1889.PublicationAev2",
-    "aeds": "SPACE1889.PublicationAeds",
+	"mars": "SPACE1889.PublicationMars",
+	"merkur": "SPACE1889.PublicationMerkur",
+	"venus": "SPACE1889.PublicationVenus",
+	"aev1": "SPACE1889.PublicationAev1",
+	"aev2": "SPACE1889.PublicationAev2",
+	"aeds": "SPACE1889.PublicationAeds",
 	"uh": "SPACE1889.PublicationUh",
 	"sg": "SPACE1889.PublicationSg"
 };
@@ -610,10 +610,10 @@ SPACE1889.creatureOrigins = {
 }
 
 SPACE1889.creatureArchetypes = {
-    "dinosaur": "SPACE1889.CreatureTypeDinosaur",
-    "insect": "SPACE1889.CreatureTypeInsect",
-    "animal": "SPACE1889.CreatureTypeAnimal",
-    "plant": "SPACE1889.CreatureTypePlant"
+	"dinosaur": "SPACE1889.CreatureTypeDinosaur",
+	"insect": "SPACE1889.CreatureTypeInsect",
+	"animal": "SPACE1889.CreatureTypeAnimal",
+	"plant": "SPACE1889.CreatureTypePlant"
 };
 
 SPACE1889.creatureMovementType = {
@@ -627,6 +627,14 @@ SPACE1889.creatureMovementType = {
 	"manylegged": "SPACE1889.CreatureMovementTypeManyLegged"
 };
 
+SPACE1889.moneyTypes = {
+	"money": "SPACE1889.MoneyTypeMoney",
+	"chainMoney": "SPACE1889.MoneyTypeChainMoney",
+	"manascha": "SPACE1889.MoneyTypeManascha",
+	"valkaarra": "SPACE1889.MoneyTypeValkaarra",
+	"burkach": "SPACE1889.MoneyTypeBurkach",
+	"aahaarimi": "SPACE1889.MoneyTypeAahaarimi"
+};
 
 SPACE1889.umlautMap = {
 	'\u00dc': 'UE',

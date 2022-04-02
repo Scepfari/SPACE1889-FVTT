@@ -1,3 +1,6 @@
+import SPACE1889RollHelper from "../helpers/roll-helper.mjs";
+import SPACE1889Helper from "../helpers/helper.mjs";
+
 /**
  * Extend the basic Item with some very simple modifications.
  * @extends {Item}
@@ -21,18 +24,18 @@ export class Space1889Item extends Item {
 			if (item.name.length > 0 && item.data.id == "")
 				item.data.id = this.createId(item.name);
 			
-			if (item.type == "skill" && item.data.id !=="")
+			if (item.type == "skill" && item.data.id !== "")
 			{
 				this.setLangIdAndLabel(item, "Skill", true);
 				this.setFightingSkill(item);
 			}
-			else if (item.type == "specialization" && item.data.id !=="")
+			else if (item.type == "specialization" && item.data.id !== "")
 			{
 				this.setLangIdAndLabel(item, "SpeciSkill", true);
 			}
 			else if (item.type == "talent")
 			{
-				if (item.data.id !=="")
+				if (item.data.id !== "")
 				{
 					this.setLangIdAndLabel(item, "Talent", true, true);
 				}
@@ -53,25 +56,25 @@ export class Space1889Item extends Item {
 					item.data.isRollable = true;
 
 			}
-			else if (item.type == "weakness" && item.data.id !=="")
+			else if (item.type == "weakness" && item.data.id !== "")
 			{
 				this.setLangIdAndLabel(item, "Weakness", true);
 				if (item.img == "icons/svg/item-bag.svg")
 					item.img = "icons/svg/paralysis.svg";
 			}
-			else if (item.type == "resource" && item.data.id !=="")
+			else if (item.type == "resource" && item.data.id !== "")
 			{
 				this.setLangIdAndLabel(item, "Resource", true, true);
 				if (item.img == "icons/svg/item-bag.svg")
 					item.img = "icons/svg/card-joker.svg";
 			}
-			else if (item.type == "weapon" && item.data.id !=="")
+			else if (item.type == "weapon" && item.data.id !== "")
 			{
 				this.setLangIdAndLabel(item, "Weapon", true);
 				if (item.img == "icons/svg/item-bag.svg")
 					item.img = "icons/svg/sword.svg";
 			}
-			else if (item.type == "armor" && item.data.id !=="")
+			else if (item.type == "armor" && item.data.id !== "")
 			{
 				this.setLangIdAndLabel(item, "Armor", true);
 				if (item.img == "icons/svg/item-bag.svg")
@@ -81,15 +84,27 @@ export class Space1889Item extends Item {
 			{
 				this.setLangIdAndLabel(item, "Item", true);
 			}
-			else if (item.type == "language" && item.data.id !=="")
+			else if (item.type == "language" && item.data.id !== "")
 			{
 				this.setLangIdAndLabel(item, "Language", false);
-				item.data.origin = game.i18n.localize(CONFIG.SPACE1889.languageOrigins[item.data.originId]);        
+				item.data.origin = game.i18n.localize(CONFIG.SPACE1889.languageOrigins[item.data.originId]);
 				item.data.family = game.i18n.localize(CONFIG.SPACE1889.familyOflanguages[item.data.familyId]);
 				item.data.dialect = game.i18n.localize(CONFIG.SPACE1889.languages[item.data.isDialectSourceId]);
 				item.data.oldInfo = item.data.old ? game.i18n.localize('SPACE1889.OldLanguageInfo') : "";
 				if (item.img == "icons/svg/item-bag.svg")
 					item.img = "icons/svg/sound.svg";
+			}
+			else if (item.type == "currency")
+			{
+				this.setLangIdAndLabel(item, "Currency", false, false);
+				const abbrLangId = item.data.nameLangId + "Abbr";
+				item.data.abbr = game.i18n.localize(abbrLangId);
+				if (item.data.abbr == "" || item.data.abbr == abbrLangId)
+					item.data.abbr = item.data.label;
+				if (item.img == "icons/svg/item-bag.svg")
+					item.img = "icons/svg/coins.svg";
+
+				item.data.exchangeValue = SPACE1889Helper.getExchangeValue(item);
 			}
 			
 		}
@@ -130,13 +145,13 @@ export class Space1889Item extends Item {
 		return false;
 	}
 
-    /**
-     *
-     * @param {object} item
-     * @param {string} base
-     * @param {boolean} setDescription
-     * @param {boolean} setInfo
-     */
+	/**
+	 *
+	 * @param {object} item
+	 * @param {string} base
+	 * @param {boolean} setDescription
+	 * @param {boolean} setInfo
+	 */
 	setLangIdAndLabel(item, base, setDescription, setInfo = false)
 	{
 		if (item == undefined || item.data.id == undefined || item.data.id == "")
@@ -153,7 +168,7 @@ export class Space1889Item extends Item {
 			{
 				const toolTip = game.i18n.localize(item.data.infoLangId);
 				item.data.toolTip = item.data.info != "" && toolTip == item.data.infoLangId ? item.data.info : toolTip;
-            }
+			}
 		}
 
 		item.data.label = game.i18n.localize(item.data.nameLangId) ?? item.name;
@@ -219,97 +234,20 @@ export class Space1889Item extends Item {
 	async roll() {
 		const item = this.data;
 
-		// Initialize chat data.
-		const speaker = ChatMessage.getSpeaker({ actor: this.actor });
-		const rollMode = game.settings.get('core', 'rollMode');
-		let label = `[${item.type}] ${item.name}`;
-		let desc = item.data.description;
-		if (item.type == "skill")
+		if (!this.data.data.formula)
 		{
-			const fertigkeit = game.i18n.localize("SPACE1889.Skill") ?? item.type;
-			desc = game.i18n.localize(item.data.descriptionLangId);
-			if (item.data.isSkillGroup)
-			{
-				const gruppe = game.i18n.localize(CONFIG.SPACE1889.skillGroups[item.data.skillGroupName]);
-				label = `<h2><strong>${item.data.label}</strong></h2> <h3>${gruppe} [${fertigkeit}]</h3>`;
-			}
-			else
-				label = `<h2><strong>${item.data.label}</strong> [${fertigkeit}]</h2>`;
-		}
-		else if (item.type == "specialization")
-		{
-			desc = game.i18n.localize(item.data.descriptionLangId);
-			const skillName = game.i18n.localize(item.data.nameLangId = 'SPACE1889.Skill' + item.data.underlyingSkillId.replace(/^(.)/, function(b){return b.toUpperCase();}));
-			const specialization = game.i18n.localize("SPACE1889.Specialization") ?? item.type;
-			label = `<h2><strong>${item.data.label}</strong></h2> <h3>[${skillName} ${specialization}]</h3>`;
-		}
-		else if (item.type == "talent")
-		{
-			desc = game.i18n.localize(item.data.descriptionLangId);
-			if (desc == item.data.descriptionLangId && item.data.description != "")
-				desc = item.data.description;
-			const talent = game.i18n.localize("SPACE1889.Talent") ?? item.type;
-			label = `<h2><strong>${item.data.label}</strong> [${talent}]</h2>`;
-		}
-		else if (item.type == "weakness")
-		{
-			desc = game.i18n.localize(item.data.descriptionLangId);
-			const weakness = game.i18n.localize("SPACE1889.Weakness") ?? item.type;
-			label = `<h2><strong>${item.data.label}</strong> [${weakness}]</h2>`;
-		}
-		else if (item.type == "resource")
-		{
-			desc = game.i18n.localize(item.data.descriptionLangId);
-			const weakness = game.i18n.localize("SPACE1889.Resource") ?? item.type;
-			label = `<h2><strong>${item.data.label}</strong> [${weakness}]</h2>`;
-		}
-		else if (item.type == "weapon")
-		{
-			const weapon = game.i18n.localize("SPACE1889.Weapon") ?? item.type;
-			label = `[${weapon}] ${item.data.label}`;
-		}
-		else if (item.type == "armor")
-		{
-			const armor = game.i18n.localize("SPACE1889.Armor") ?? item.type;
-			label = `[${armor}] ${item.data.label}`;
-		}
-		else if (item.type == "language")
-		{
-			const language = game.i18n.localize("SPACE1889.Language") ?? item.type;
-			label = `<h2><strong>${item.data.label}</strong> [${language}]</h2>`;
-			desc = game.i18n.localize("SPACE1889.LanguageOrigin") + ": " + item.data.origin + "<br>"
-				+ game.i18n.localize("SPACE1889.FamilyOfLanguages") + ": " + item.data.family;
-			if (item.data.isDialectSourceId != "no")
-				desc += "<br>" + game.i18n.localize("SPACE1889.IsDialectFrom") + " " + item.data.dialect;
-			if (item.data.old)
-				desc += "<br>" + item.data.oldInfo;
-        }
-		else
-		{
-			desc = game.i18n.localize(item.data.descriptionLangId);
-			if (desc == item.data.descriptionLangId)
-			{
-				if (item.data.description != "")
-					desc = item.data.description;
-				else
-					desc = game.i18n.format("SPACE1889.NoLanguageEntry", { langId: item.data.descriptionLangId });
-			}
-			const type = game.i18n.localize("SPACE1889.Item") ?? item.type;
-			label = `<h2><strong>${item.data.label}</strong> [${type}]</h2>`;
+			SPACE1889RollHelper.rollItemInfo(item, this.actor);
+			return;
 		}
 
 
-		// If there's no roll data, send a chat message.
-		if (!this.data.data.formula) {
-			ChatMessage.create({
-				speaker: speaker,
-				rollMode: rollMode,
-				flavor: label,
-				content: desc ?? ''
-			});
-		}
-		// Otherwise, create a roll and send a chat message from it.
-		else {
+		if (this.data.data.formula)
+		{
+			// Initialize chat data.
+			const speaker = ChatMessage.getSpeaker({ actor: this.actor });
+			const rollMode = game.settings.get('core', 'rollMode');
+			let label = `[${item.type}] ${item.name}`;
+			let desc = item.data.description;
 			// Retrieve roll data.
 			const rollData = this.getRollData();
 
@@ -333,13 +271,7 @@ export class Space1889Item extends Item {
 	*/
 	async rollSpecial(dieCount, showDialog) 
 	{
-		const item = this.data;
-
-		if (item.type == "weapon" || item.type == "skill" || item.type == "specialization")
-		{
-			const info = item.type == "weapon" ? game.i18n.localize("SPACE1889.Attack") ?? "Attack" : game.i18n.localize("SPACE1889.Probe") ?? "Probe";
-			this.rollSubSpecial(dieCount, showDialog, info);
-		}
+		SPACE1889RollHelper.rollSpecial(this.data, this.actor, dieCount, showDialog);
 	}
 
 	/**
@@ -349,80 +281,7 @@ export class Space1889Item extends Item {
 	*/
 	async rollSpecialTalent(dieCount, showDialog) 
 	{
-		const item = this.data;
-
-		if (item.type == "talent")
-		{
-			const isAttack = item.data.id != "geschaerfterSinn";
-			const info = isAttack ? game.i18n.localize("SPACE1889.Attack") ?? "Attack" : game.i18n.localize("SPACE1889.Probe") ?? "Probe";
-			this.rollSubSpecial(dieCount, showDialog, info, true);
-		}
-	}
-    /**
-	 *
-	 * @param {number} dieCount
-	 * @param {boolean} showDialog
-	 * @param {string} titelInfo
-	*/
-	async rollSubSpecial(dieCount, showDialog, titelInfo, withExtraInfo = false)
-	{
-        const item = this.data;
-		const theActor = this.actor;
-		const extraInfo = withExtraInfo ? game.i18n.localize(item.data.infoLangId) : "";
-
-        let info = titelInfo + ":";
-        if (showDialog)
-        {
-            let dialogue = new Dialog(
-                {
-                    title: `Modifizierter Wurf: ${item.data.label}`,
-                    content: `<p>Anzahl der Modifikations-Würfel: <input type="number" id="anzahlDerWuerfel" value = "0"></p>`,
-                    buttons:
-                    {
-                        ok:
-                        {
-                            icon: '',
-                            label: 'Los!',
-                            callback: (html) => myCallback(html)
-                        },
-                        abbruch:
-                        {
-                            label: 'Abbrechen',
-                            callback: () => { ui.notifications.info("Auch gut, dann wird nicht gewürfelt...") },
-                            icon: `<i class="fas fa-times"></i>`
-                        }
-                    },
-                    default: "ok"
-                }).render(true);
-
-            function myCallback(html)
-            {
-                const input = html.find('#anzahlDerWuerfel').val();
-                let anzahl = input ? parseInt(input) : 0;
-                anzahl += dieCount;
-                ChatMessage.create(getChatData(anzahl), {});
-            }
-        }
-        else
-        {
-            ChatMessage.create(getChatData(dieCount), {});
-        }
-
-        function getChatData(wurfelAnzahl)
-        {
-            const von = game.i18n.localize("SPACE1889.Of");
-			let messageContent = `<div><h2>${item.data.label}</h2></div>`;
-			if (withExtraInfo)
-				messageContent += `${extraInfo} <br>`;
-            messageContent += `${info} <b>[[${wurfelAnzahl}d6odd]] ${von}  ${wurfelAnzahl}</b> <br>`;
-            let chatData =
-            {
-                user: game.user.id,
-                speaker: ChatMessage.getSpeaker({ actor: theActor }),
-                content: messageContent
-            };
-            return chatData;
-        }
+		SPACE1889RollHelper.rollSpecialTalent(this.data, this.actor, dieCount, showDialog);
 	}
 }
 

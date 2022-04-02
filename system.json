@@ -2,7 +2,7 @@
 	"name": "space1889",
 	"title": "Space 1889",
 	"description": "The SPACE 1889 Ubiquity system for FoundryVTT!",
-	"version": "0.5.0",
+	"version": "0.5.1",
 	"minimumCoreVersion": "0.8.6",
 	"compatibleCoreVersion": "9",
 	"author": "Scepfari",
@@ -129,6 +129,22 @@
 			"path": "./packs/kreaturen-merkur.db",
 			"entity": "Actor",
 			"type": "Actor"
+		},
+		{
+			"name": "gelderde",
+			"label": "Geld-Erde",
+			"system": "space1889",
+			"path": "./packs/geld-erde.db",
+			"entity": "Item",
+			"type": "Item"
+		},
+		{
+			"name": "geldmars",
+			"label": "Geld-Mars",
+			"system": "space1889",
+			"path": "./packs/geld-mars.db",
+			"entity": "Item",
+			"type": "Item"
 		}
 	],
 	"languages": [
@@ -148,6 +164,6 @@
 	"primaryTokenAttribute": "health",
 	"url": "https://github.com/Scepfari/SPACE1889-FVTT",
 	"manifest": "https://raw.githubusercontent.com/Scepfari/SPACE1889-FVTT/main/system.json",
-	"download": "https://github.com/Scepfari/SPACE1889-FVTT/releases/download/v0.5.0/space1889-foundry-0.5.0.zip",
+	"download": "https://github.com/Scepfari/SPACE1889-FVTT/releases/download/v0.5.0/space1889-foundry-0.5.1.zip",
 	"license": "LICENSE.txt"
 }

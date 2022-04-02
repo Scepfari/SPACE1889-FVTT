@@ -20,7 +20,8 @@ Hooks.once('init', async function() {
 	game.space1889 = {
 		Space1889Actor,
 		Space1889Item,
-		rollItemMacro
+		rollItemMacro,
+		config: SPACE1889,
 	};
 
 	// Add custom constants for configuration.

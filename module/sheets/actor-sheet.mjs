@@ -1,5 +1,6 @@
 import {onManageActiveEffect, prepareActiveEffectCategories} from "../helpers/effects.mjs";
 import SPACE1889Helper from "../helpers/helper.mjs";
+import SPACE1889RollHelper from "../helpers/roll-helper.mjs";
 
 /**
  * Extend the basic ActorSheet with some very simple modifications
@@ -107,7 +108,7 @@ export class Space1889ActorSheet extends ActorSheet {
 			element.label = game.i18n.localize(CONFIG.SPACE1889.secondaries[key]) ?? key;
 		}
 		context.data['primaereAttribute'] = primaereAttribute;
-    }
+	}
 
 	/**
 	 * Organize and classify Items for Character sheets.
@@ -117,120 +118,51 @@ export class Space1889ActorSheet extends ActorSheet {
 	 * @return {undefined}
 	 */
 	_prepareItems(context) {
-		// Initialize containers.
-		const gear = [];
-		const talents = [];
-		const skills = [];
-		const speciSkills = [];
-		const resources = [];
-		const weapons = [];
-		const armors = [];
-		const weakness = [];
-		const language = [];
-		const injuries = [];
 
-		// Iterate through items, allocating to containers
+		// Iterate through items, set default image
 		for (let i of context.items) {
 			i.img = i.img || DEFAULT_TOKEN;
-			// Append to gear.
-			if (i.type === 'item') {
-				gear.push(i);
-			}
-			// Append to talents.
-			else if (i.type === 'talent') {
-				talents.push(i);
-			}
-			// Append to skills.
-			else if (i.type === 'skill') {
-				skills.push(i);
-			}
-			// Append to specialization.
-			else if (i.type === 'specialization') {
-				speciSkills.push(i);
-			}
-			else if (i.type === 'resource') {
-				resources.push(i);
-			}
-			else if (i.type === 'weapon'){
-				weapons.push(i);
-			}
-			else if (i.type === 'armor'){
-				armors.push(i);
-			}
-			else if (i.type === 'weakness'){
-				weakness.push(i);
-			}
-			else if (i.type === 'language'){
-				language.push(i);
-			}
-			else if (i.type === 'damage')
-			{
-				injuries.push(i);
-			}
 		}
 
-		this.SortByName(skills);
-		this.SortByName(speciSkills);
-		this.SortByName(talents);
-		this.SortByName(weapons);
-		this.SortByName(armors);
-		this.SortByName(resources);
-
-		this.SortByName(weakness);
 		let weaknessLeft = [];
 		let weaknessRight = [];
-		for (let i = 0; i <weakness.length; ++i)
+		for (let i = 0; i < this.actor.data.weakness.length; ++i)
 		{
 			if (i%2 == 0)
-				weaknessLeft.push(weakness[i]);
+				weaknessLeft.push(this.actor.data.weakness[i]);
 			else 
-				weaknessRight.push(weakness[i]);
+				weaknessRight.push(this.actor.data.weakness[i]);
 		}
 
-		this.SortByName(language);
 		let languageLeft = [];
 		let languageRight = [];
-		for (let i = 0; i <language.length; ++i)
+		for (let i = 0; i < this.actor.data.language.length; ++i)
 		{
 			if (i%2 == 0)
-				languageLeft.push(language[i]);
+				languageLeft.push(this.actor.data.language[i]);
 			else 
-				languageRight.push(language[i]);
+				languageRight.push(this.actor.data.language[i]);
 		}
 
 
 		// Assign and return
-		context.gear = gear;
-		context.talents = talents;
-		context.skills = skills;
-		context.speciSkills = speciSkills;
-		context.resources = resources;
-		context.weapons = weapons;
-		context.armors = armors;
-		context.weakness = weakness;
+		context.gear = this.actor.data.gear;
+		context.talents = this.actor.data.talents;
+		context.skills = this.actor.data.skills;
+		context.speciSkills = this.actor.data.speciSkills;
+		context.resources = this.actor.data.resources;
+		context.weapons = this.actor.data.weapons;
+		context.armors = this.actor.data.armors;
+		context.weakness = this.actor.data.weakness;
 		context.weaknessLeft = weaknessLeft;
 		context.weaknessRight = weaknessRight;
-		context.language = language;
+		context.language = this.actor.data.language;
 		context.languageLeft = languageLeft;
 		context.languageRight = languageRight;
-		context.injuries = injuries;
+		context.injuries = this.actor.data.injuries;
+		context.money = this.actor.data.money;
 	}
 
-	/**
-	 * sortiert das übergebene Liste nach Namen
-	 * @param objectArray 
-	 */
-	SortByName(objectArray)
-	{
-		objectArray.sort((a, b) =>
-		{
-			if (a.name < b.name)
-				return -1;
-			if (a.name > b.name)
-				return 1;
-			return 0;
-		});
-	}
 
 	GetMaxSkillLevel()
 	{
@@ -248,7 +180,7 @@ export class Space1889ActorSheet extends ActorSheet {
 
 		//Uebermensch
 		return 8;
-    }
+	}
 
 	GetMaxPrimaryAttributeLevel()
 	{
@@ -285,7 +217,7 @@ export class Space1889ActorSheet extends ActorSheet {
 		else
 			id = "SPACE1889.HeroLevelUebermensch";
 		return game.i18n.localize(id);
-    }
+	}
 
 
 	/* -------------------------------------------- */
@@ -360,6 +292,15 @@ export class Space1889ActorSheet extends ActorSheet {
 			else if (item.data.type == "item")
 			{
 				const newValue = this.incrementValue(ev, item.data.data.quantity, 0);
+				this.actor.updateEmbeddedDocuments("Item", [{ _id: itemId, "data.quantity": newValue }]);
+			}
+			else if (item.data.type == "currency")
+			{
+				let newValue = this.incrementValue(ev, item.data.data.quantity, 0);
+				if (newValue != Math.round(newValue))
+				{
+					newValue = +(newValue.toFixed(2));
+				}
 				this.actor.updateEmbeddedDocuments("Item", [{ _id: itemId, "data.quantity": newValue }]);
 			}
 			else if (item.data.type == "damage")
@@ -585,7 +526,7 @@ export class Space1889ActorSheet extends ActorSheet {
 			}
 		});
 		dialog.render(true);
-    }
+	}
 
 	showGeschaerfterSinnDialog(itemData)
 	{
@@ -664,7 +605,7 @@ export class Space1889ActorSheet extends ActorSheet {
 		{
 			if (id == actor.type)
 				return true;
-        }
+		}
 		else if (type == "primary")
 		{
 			if (threshold <= actor.data.abilities[id].total)
@@ -823,7 +764,7 @@ export class Space1889ActorSheet extends ActorSheet {
 			return "SecondaryAttribute";
 
 		return this.firstLetterToUpperCase(preConType);
-    }
+	}
 
 	/**
 	 * 
@@ -836,7 +777,7 @@ export class Space1889ActorSheet extends ActorSheet {
 		{
 			return b.toUpperCase();
 		});
-    }
+	}
 
 	/**
 	 * 
@@ -847,7 +788,7 @@ export class Space1889ActorSheet extends ActorSheet {
 	 */
 	incrementValue(ev, currentValue, min, max, showNotification = false)
 	{
-		const factor = ev.ctrlKey ? 10 : (ev.shiftKey ? 5 : 1);
+		const factor = (ev.ctrlKey && ev.shiftKey) ? 100 : (ev.ctrlKey ? 10 : (ev.shiftKey ? 5 : 1));
 		const sign = ev.button == 2 ? -1 : 1;
 		const wantedValue = currentValue + (factor * sign);
 		let newValue = wantedValue;
@@ -860,7 +801,7 @@ export class Space1889ActorSheet extends ActorSheet {
 		{
 			const info = game.i18n.format("SPACE1889.CanNotIncrementAttributeSkill", { level: max, currentHeroLevel: this.GetHeroLevelName() });
 			ui.notifications.info(info);
-        }
+		}
 			
 
 		return newValue;
@@ -884,250 +825,7 @@ export class Space1889ActorSheet extends ActorSheet {
 			return backward ? k : l;
 		else
 			return backward ? r : k;
-    }
-
-	async showDamageDialog(item, isLethal)
-	{
-		let optionen = '';
-		let actor = this.actor.data;
-
-		optionen += '<option value="lethal"' + (isLethal ? ' selected="selected">' : '>') + game.i18n.localize("SPACE1889.Lethal") + '</option>';
-		optionen += '<option value="nonLethal"' + (!isLethal ? ' selected="selected">' : '>') + game.i18n.localize("SPACE1889.NonLethal") + '</option>';
-
-		let damageLabel = game.i18n.localize("SPACE1889.Damage");
-		let nameLabel = game.i18n.localize("SPACE1889.Name");
-		let damageType = game.i18n.localize("SPACE1889.DamageType");
-		let submit = game.i18n.localize("SPACE1889.Submit")
-		let cancel = game.i18n.localize("SPACE1889.Cancel")
-		let selectedOption;
-		let userInputName;
-		let damageAmount = 1;
-		const imgPath = isLethal ? "icons/skills/wounds/blood-drip-droplet-red.webp" : "icons/skills/wounds/injury-pain-body-orange.webp";
-
-		let dialog = new Dialog({
-			title: `${actor.name} : ${damageLabel}`,
-			content: `
-				<form class="flexcol">
-					<div class="resources grid grid-4col">
-						<img class="profile-img" src="${imgPath}" height="90" width="90"/>
-						<div class="header-fields grid-span-3">
-							<div>
-								<label>${nameLabel}:</label>
-								<input type="text" placeholder="böser Papierschnitt" value="" id="damageName">
-							</div>
-
-							<div class="grid grid-2col">
-								<div>
-									<label>${damageLabel}:</label>
-									<input class="resource flex-group-center" type="text" data-dtype="Number" value="1" id="damage">
-								</div>
-								<div>
-									<label>${damageType}:</label>
-									<div>
-										<select id="damageType" name="damageType">
-											${optionen}
-										</select>
-									</div>
-								</div>
-							</div>
-						</div>
-					</div>
-				</form>
-			`,
-			buttons: {
-				yes: {
-					icon: '<i class="fas fa-check"></i>',
-					label: `${submit}`,
-					callback: () =>
-					{
-						selectedOption = document.getElementById('damageType').value;
-						userInputName = document.getElementById('damageName').value;
-						damageAmount = document.getElementById('damage').value;
-					},
-				},
-				no: {
-					icon: '<i class="fas fa-times"></i>',
-					label: `${cancel}`,
-				}
-			},
-			default: "yes",
-			close: () =>
-			{
-				if (selectedOption && actor.items.get(item.data._id) != undefined)
-				{
-					let useInputName = actor.type != "creature";
-					if (userInputName == "")
-					{
-						useInputName = false;
-						userInputName = selectedOption == "lethal" ? game.i18n.localize("SPACE1889.Lethal") : game.i18n.localize("SPACE1889.NonLethal");
-					}
-
-					const path = selectedOption == "lethal" ? "icons/skills/wounds/blood-drip-droplet-red.webp" : "icons/skills/wounds/injury-pain-body-orange.webp";
-
-					let damageAmountInt = parseInt(damageAmount);
-					if (damageAmountInt == NaN)
-						damageAmountInt = 1;
-					damageAmountInt = Math.max(1, damageAmountInt);
-
-					this.actor.updateEmbeddedDocuments("Item", [{ _id: item.data._id, "data.damageType": selectedOption, "name": userInputName, "img": path, "data.damage": damageAmountInt }]);
-					this.DoDamageChatMessage(item.data._id, damageAmountInt, selectedOption, (useInputName ? userInputName : ""));
-				}
-				else if (actor.items.get(item.data._id) != undefined)
-				{
-					this.actor.deleteEmbeddedDocuments("Item", [item.data._id]);
-					ui.notifications.info(game.i18n.format("SPACE1889.ChatInfoUndoDamage", { name: actor.name }));
-                }
-			}
-		});
-		dialog.render(true);
 	}
-
-	DoDamageChatMessage(itemId, dmg, dmgType, dmgName = "")
-	{
-		let actor = this.actor;
-		const item = actor.items.get(itemId);
-		if (item == undefined)
-			return;
-
-		const dmgTypeLabel = dmgType == "lethal" ? game.i18n.localize("SPACE1889.LethalAbbr") : game.i18n.localize("SPACE1889.NonLethalAbbr");
-		const isCharakter = actor.data.type == "character"
-		let stun = actor.data.data.secondaries.stun.total;
-		let str = actor.data.data.abilities.str.total;
-		let recoil = 0;
-		let liegend = false;
-		let stunned = false;
-		let unconsciousStrike = 0;
-		
-
-		if (dmg > str)
-		{
-			liegend = dmg > (2 * str);
-			recoil = (dmg - str) * 1.5;
-        }
-
-		if (dmg > (2 * stun))
-			unconsciousStrike = dmg - (2 * stun);
-		if (dmg > stun)
-			stunned = true;
-
-		let trefferInfo = "";
-		if (recoil > 0)
-			trefferInfo += "<b>" + game.i18n.localize("SPACE1889.Recoil") + ":</b> " + recoil.toString() + "m<br>";
-		if (liegend)
-			trefferInfo += "<b>" + game.i18n.localize("SPACE1889.Knockdown") + ":</b> " + game.i18n.format("SPACE1889.ChatInfoKnockdown", { actorName: actor.data.name }) + "<br>";
-		if (unconsciousStrike > 0)
-			trefferInfo += "<b>" + game.i18n.localize("SPACE1889.Unconscious") + ":</b> " + game.i18n.format("SPACE1889.ChatInfoDuration", { count: unconsciousStrike.toString() }) + "<br>";
-		else if (stunned)
-			trefferInfo += "<b>" + game.i18n.localize("SPACE1889.Stunned") + ":</b> " + game.i18n.localize("SPACE1889.ChatInfoStunned") + "<br>";
-
-		let damageTuple = this.GetDamageTuple(itemId);
-		if (dmgType == "lethal")
-			damageTuple.lethal += dmg;
-		else
-			damageTuple.nonLethal += dmg;
-
-		const maxHealth = actor.data.data.health.max;
-		const newHealth = maxHealth - damageTuple.lethal - damageTuple.nonLethal;
-		let lethalValue = maxHealth - damageTuple.lethal;
-		let nonLethalValue = lethalValue - damageTuple.nonLethal;
-		const deathThreshold = SPACE1889Helper.getDeathThreshold(actor);
-		if (lethalValue > deathThreshold && nonLethalValue < deathThreshold)
-		{
-			const transformedNonLethal = nonLethalValue - deathThreshold;
-			nonLethalValue -= transformedNonLethal;
-			lethalValue += transformedNonLethal;
-        }
-
-
-		const autoStabilize = SPACE1889Helper.isAutoStabilize(actor);
-		const incapacitateThreshold = SPACE1889Helper.getIncapacitateThreshold(actor);
-		let unconscious = damageTuple.nonLethal > 0 && nonLethalValue < incapacitateThreshold && lethalValue > deathThreshold;
-		let gesamtInfo = "";
-
-		if (isCharakter)
-		{
-			if (lethalValue == incapacitateThreshold)
-			{
-				gesamtInfo += "<b>" + game.i18n.localize("SPACE1889.Incapacitate") + ":</b> " + game.i18n.format("SPACE1889.ChatInfoIncapacitate", { damageTypeAbbr: game.i18n.localize("SPACE1889.LethalAbbr") }) + "<br>";
-			}
-			if (lethalValue < 0 && lethalValue > deathThreshold)
-			{
-				gesamtInfo += "<b>" + game.i18n.localize("SPACE1889.DangerOfDeath") + ":</b> ";
-				if (autoStabilize)
-					gesamtInfo += game.i18n.localize("SPACE1889.ChatInfoDangerOfDeathAutoSuccess") + "<br>";
-				else
-					gesamtInfo += game.i18n.localize("SPACE1889.ChatInfoDangerOfDeath") + "<br>";
-				if (lethalValue < incapacitateThreshold)
-					unconscious = true;
-			}
-			if (unconscious)
-			{
-				gesamtInfo += "<b>" + game.i18n.localize("SPACE1889.Unconscious") + ":</b> ";
-				gesamtInfo += game.i18n.format("SPACE1889.ChatInfoDuration", { count: (-1 * newHealth).toString()}) + "<br>";
-            }
-			if (lethalValue <= deathThreshold)
-			{
-				gesamtInfo += "<b>" + game.i18n.localize("SPACE1889.Dead") + ":</b> ";
-				gesamtInfo += game.i18n.localize("SPACE1889.ChatInfoDead") + "<br>";
-			}
-			if (damageTuple.nonLethal > 0)
-			{
-				if (nonLethalValue == incapacitateThreshold)
-				{
-					gesamtInfo += "<b>" + game.i18n.localize("SPACE1889.Exhausted") + ":</b> " + game.i18n.format("SPACE1889.ChatInfoIncapacitate", { damageTypeAbbr: game.i18n.localize("SPACE1889.NonLethalAbbr") }) + "<br>";
-				}
-			}
-		}
-		else if (newHealth <= 0)
-			gesamtInfo += "<b>" + game.i18n.localize("SPACE1889.Vanquished") + "!</b>";
-
-		let info = "<small>" + (dmgName != "" ? "durch <i>" + dmgName + "</i> und " : "");
-		info += game.i18n.format("SPACE1889.ChatInfoHealth", { health: (isCharakter ? newHealth.toString() : Math.round(100 * newHealth / maxHealth).toString() + "%") });
-		if (damageTuple.nonLethal > 0)
-			info += " " + game.i18n.format("SPACE1889.ChatInfoHealthLethalDamageOnly", { lethalHealth: lethalValue.toString() });
-		info += "</small><br>";
-
-		if (trefferInfo != "")
-			info += "<b>" + game.i18n.localize("SPACE1889.StrikeEffect") + ":</b> <br>" + trefferInfo;
-		if (gesamtInfo != "")
-			info += (trefferInfo != "" ? "<br>" : "") + "<b>" + game.i18n.localize("SPACE1889.OverallEffect") +  ":</b> <br>" + gesamtInfo;
-
-		const titel = game.i18n.format("SPACE1889.ChatInfoDamage", { damage: dmg.toString(), damageType: dmgTypeLabel });
-		let messageContent = `<div><h2>${titel}</h2></div>`;
-		messageContent += `${info}`;
-		let chatData =
-		{
-			user: game.user.id,
-			speaker: ChatMessage.getSpeaker({ actor: actor }),
-			content: messageContent
-		};
-
-
-		ChatMessage.create(chatData, {});
-    }
-
-
-	GetDamageTuple(ignoreThisItemId = "")
-	{
-		const actor = this.actor.data;
-		let lethal = 0;
-		let nonLethal = 0;
-		for (const item of actor.items)
-		{
-			if (item.data.type != "damage")
-				continue;
-
-			if (item.data._id == ignoreThisItemId)
-				continue;
-
-			if (item.data.data.damageType == "lethal")
-				lethal += item.data.data.damage;
-			else
-				nonLethal += item.data.data.damage;
-		}
-
-		return { lethal: lethal, nonLethal: nonLethal };
-    }
 
 
 	/**
@@ -1159,8 +857,8 @@ export class Space1889ActorSheet extends ActorSheet {
 		if (newItem.data.type == "damage")
 		{
 			let isLethal = !(event.originalEvent.altKey || event.originalEvent.shiftKey || event.originalEvent.ctrKey);
-			this.showDamageDialog(newItem, isLethal);
-        }
+			SPACE1889RollHelper.showDamageDialog(this.actor, newItem, isLethal);
+		}
 
 		return newItem;
 	}
@@ -1222,10 +920,10 @@ export class Space1889ActorSheet extends ActorSheet {
 							const dieCount = Math.max(0, skillItem.data.data.rating + ((item.data.data.level.value - 1) * 2));
 							return item.rollSpecialTalent(dieCount, showDialog);
 						}
-                    }
+					}
 					return item.roll();
-                }
-            }
+				}
+			}
 			else if (dataset.rollType == 'actor' && dataset.rollDiecount && dataset.rollKey)
 			{
 					const actor = this.actor;
