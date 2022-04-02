@@ -164,6 +164,6 @@
 	"primaryTokenAttribute": "health",
 	"url": "https://github.com/Scepfari/SPACE1889-FVTT",
 	"manifest": "https://raw.githubusercontent.com/Scepfari/SPACE1889-FVTT/main/system.json",
-	"download": "https://github.com/Scepfari/SPACE1889-FVTT/releases/download/v0.5.0/space1889-foundry-0.5.1.zip",
+	"download": "https://github.com/Scepfari/SPACE1889-FVTT/releases/download/v0.5.1/space1889-foundry-0.5.1.zip",
 	"license": "LICENSE.txt"
 }
