@@ -1,13 +1,13 @@
 export default class SPACE1889Helper
 {
-	static getTalentData(actor, talentId)
+	static getTalentData(actorData, talentId)
 	{
-		return actor.data.talents?.find(entry => entry.data.id == talentId);
+		return actorData.talents?.find(entry => entry.data.id == talentId);
 	}
 
-	static getTalentLevel(actor, talentId)
+	static getTalentLevel(actorData, talentId)
 	{
-		const talent = this.getTalentData(actor, talentId);
+		const talent = this.getTalentData(actorData, talentId);
 		if (talent != undefined)
 		{
 			return talent.data.level.value;
@@ -18,7 +18,7 @@ export default class SPACE1889Helper
 	static getDeathThreshold(actor)
 	{
 		let threshold = -5;
-		const level = this.getTalentLevel(actor, "zaeherHund");
+		const level = this.getTalentLevel(actor.data, "zaeherHund");
 		if (level > 0)
 			threshold -= (2 * level);
 
@@ -27,13 +27,13 @@ export default class SPACE1889Helper
 
 	static isAutoStabilize(actor)
 	{
-		return (this.getTalentLevel(actor, "zaeherHund") > 0);
+		return (this.getTalentLevel(actor.data, "zaeherHund") > 0);
 	}
 
 	static getIncapacitateThreshold(actor)
 	{
 		let threshold = 0;
-		const level = this.getTalentLevel(actor, "schmerzresistenz");
+		const level = this.getTalentLevel(actor.data, "schmerzresistenz");
 		if (level > 0)
 			threshold -= (2 * level);
 

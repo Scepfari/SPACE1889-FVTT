@@ -117,9 +117,6 @@ export class Space1889Actor extends Actor
 			data.abilities["dex"].total -= armorData.malus;
 		data.armorTotal = armorData;
 
-		this.calcAndSetSecondaries(actorData)
-		data.health.max = data.abilities.con.total + data.abilities.wil.total + data.secondaries.size.total + this.getBonusFromTalents("max", "health", items);
-
 		const skills = [];
 		const speciSkills = [];
 		const talents = [];
@@ -182,6 +179,8 @@ export class Space1889Actor extends Actor
 		actorData.language = language;
 		actorData.money = money;
 
+		this.calcAndSetSecondaries(actorData)
+		data.health.max = data.abilities.con.total + data.abilities.wil.total + data.secondaries.size.total + this.getBonusFromTalents("max", "health", items);
 
 		this.calcAndSetSkillsAndSpecializations(actorData)
 
@@ -236,7 +235,7 @@ export class Space1889Actor extends Actor
 		data.secondaries.initiative.value = data.abilities.dex.total + data.abilities.int.total;
 		data.secondaries.initiative.talentBonus = this.getBonusFromTalents("initiative", "secondary", actorData.items);
 		data.secondaries.initiative.total = data.secondaries.initiative.value + data.secondaries.initiative.talentBonus;
-		data.secondaries.stun.value = data.abilities.con.total;
+		data.secondaries.stun.value = Math.max(data.abilities.con.total, SPACE1889Helper.getTalentLevel(actorData, "dickkopf") > 0 ? data.abilities.wil.total : 0);
 		data.secondaries.stun.talentBonus = this.getBonusFromTalents("stun", "secondary", actorData.items);
 		data.secondaries.stun.total = data.secondaries.stun.value + data.secondaries.stun.talentBonus;
 		data.secondaries.size.talentBonus = this.getBonusFromTalents("size", "secondary", actorData.items);
