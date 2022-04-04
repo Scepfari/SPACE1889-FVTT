@@ -95,7 +95,7 @@ export class Space1889Actor extends Actor
 	 */
 	_prepareCharacterData(actorData)
 	{
-		if (actorData.type !== 'character' && actorData.type !== 'creature')
+		if (actorData.type !== 'character' && actorData.type !== 'npc' && actorData.type !== 'creature')
 			return;
 
 		// Make modifications to data here. For example:
@@ -200,6 +200,7 @@ export class Space1889Actor extends Actor
 		{
 			this.setCreatureMovementDisplay(actorData);
 			this.CalcAndSetHealth(actorData);
+			this.CalcAndSetEP(actorData);
 		}
 		else
 		{
@@ -866,8 +867,13 @@ export class Space1889Actor extends Actor
 			}
 		}
 
-		actorData.data.attributes.xp.used = xp;
-		actorData.data.attributes.xp.available = actorData.data.attributes.xp.value - xp;
+		if (actorData.type == 'character')
+		{
+			actorData.data.attributes.xp.used = xp;
+			actorData.data.attributes.xp.available = actorData.data.attributes.xp.value - xp;
+		}
+		else 
+			actorData.data.powerEquivalentInXp  = xp;
 	}
 
 

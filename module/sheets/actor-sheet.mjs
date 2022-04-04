@@ -50,6 +50,7 @@ export class Space1889ActorSheet extends ActorSheet {
 		// Prepare NPC data and items.
 		if (actorData.type == 'npc') {
 			this._prepareItems(context);
+			this._prepareCharacterData(context);
 		}
 
 		if (actorData.type == 'creature')
@@ -328,7 +329,8 @@ export class Space1889ActorSheet extends ActorSheet {
 		});
 
 		const isCharacter = this.actor.data.type == "character";
-		const primaryMin = isCharacter ? 1 : 0;
+		const isNpc = this.actor.data.type == "npc"
+		const primaryMin = (isCharacter || isNpc) ? 1 : 0;
 		const primaryMax = isCharacter ? this.GetMaxPrimaryAttributeLevel() : undefined;
 
 		html.find('.increment-con-click').mousedown(ev =>
@@ -361,6 +363,12 @@ export class Space1889ActorSheet extends ActorSheet {
 		{
 			const newValue = this.incrementValue(ev, this.actor.data.data.abilities.wil.value, primaryMin, primaryMax, true);
 			this.actor.update({ 'data.abilities.wil.value': newValue });
+		});
+
+		html.find('.increment-style-click').mousedown(ev =>
+		{
+			const newValue = this.incrementValue(ev, this.actor.data.data.style.value, 0, undefined);
+			this.actor.update({ 'data.style.value': newValue });
 		});
 
 		html.find('.increment-animalcompanionlevel-click').mousedown(ev =>

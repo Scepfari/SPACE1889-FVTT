@@ -17,10 +17,14 @@
 		"systems/space1889/templates/actor/parts/actor-biography.html",
 		"systems/space1889/templates/actor/parts/actor-damage.html",
 		"systems/space1889/templates/actor/parts/actor-currency.html",
+		"systems/space1889/templates/actor/parts/actor-load.html",
+		"systems/space1889/templates/actor/parts/actor-sub-items.html",
 		"systems/space1889/templates/actor/parts/actor-creature-skills.html",
 		"systems/space1889/templates/actor/parts/actor-creature-talents.html",
 		"systems/space1889/templates/actor/parts/actor-creature-weapons.html",
 		"systems/space1889/templates/actor/parts/actor-creature-weakness.html",
 		"systems/space1889/templates/actor/parts/actor-creature-damage.html",
+		"systems/space1889/templates/actor/parts/npc-resources.html",
+		"systems/space1889/templates/actor/parts/npc-items.html",
 	]);
 };

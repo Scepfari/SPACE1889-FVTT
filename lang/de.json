@@ -160,6 +160,8 @@
 	"SPACE1889.HavyLoadConsequence": "Geschicklichkeit - 2 und Bewegung -2",
 	"SPACE1889.MaxLoadConsequence": "Ge-2; Bewegung-2; 1N Schaden pro h bzw. Kampfrunde",
 	"SPACE1889.ImpossibleLoadConsequence": "Der Charakter kann das nicht tragen!",
+	"SPACE1889.PowerEquivalentInXp": "Machtäquivalent in EP",
+	"SPACE1889.PowerEquivalentInXpAbbr": "Macht",
 	"SPACE1889.MovementType": "Bewegungsart",
 	"SPACE1889.CreatureMovementTypeAmphibious": "amphibisch",
 	"SPACE1889.CreatureMovementTypeFlying": "fliegend",

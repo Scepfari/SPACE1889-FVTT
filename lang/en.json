@@ -160,6 +160,8 @@
 	"SPACE1889.HavyLoadConsequence": "Dexterity - 2 and Move -2",
 	"SPACE1889.MaxLoadConsequence": "Dex-2; Move-2; 1N Damage per h resp. combat round",
 	"SPACE1889.ImpossibleLoadConsequence": "The character cannot bear the weight!",
+	"SPACE1889.PowerEquivalentInXp": "Power equivalent in XP",
+	"SPACE1889.PowerEquivalentInXpAbbr": "Power",
 	"SPACE1889.MovementType": "Movement Type",
 	"SPACE1889.CreatureMovementTypeAmphibious": "Amphibious",
 	"SPACE1889.CreatureMovementTypeFlying": "Flying",
