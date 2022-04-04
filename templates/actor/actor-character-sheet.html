@@ -15,13 +15,17 @@
 				center all of its child elements content and text. --}}
 				<div class="resource flex-group-center">
 					<label for="data.health.value" class="resource-label rollable" data-roll-key="health" data-roll-type="actorinfo" data-label='{{localize "SPACE1889.Health"}}'>{{localize "SPACE1889.Health"}}</label>
-					<div class="resource-content flexrow flex-center flex-between">
-						<div class="item-controls item-margin5px">
-							<a class="item-control item-create item-margin5px" title='{{localize "SPACE1889.InfoAddDamage"}}' data-type="damage">{{data.health.value}}</a>
+					<div class="resource-content flexrow item-max-with75px">
+						<div style="display: grid; grid-template-columns: 40% 20% 40%; grid-template-rows: 100%;">
+							<div class="item-margintb4px item-right">
+								<a class="item-create item-margintb4px" align="right" title='{{localize "SPACE1889.InfoAddDamage"}}' data-type="damage">{{data.health.value}}</a>
+							</div>
+							<div class="item-margintb4px"> / </div>
+							<div class="item-margintb4px item-left">{{data.health.max}}</div>
 						</div>
-						<div class="resource flex-group-center item-margin5px"> / </div>
-						<div class="resource flex-group-center item-margin5px">{{data.health.max}}</div>
 					</div>
+
+
 				</div>
 
 				<div class="resource flex-group-center">
@@ -131,7 +135,7 @@
 					</li>
 					{{#each data.secondaries as |secondary key|}}
 					<li class="secondary flexrow">
-						<label for="data.secondaries.{{key}}.value" class="resource-label rollable flexlarge align-left" data-roll-key="{{key}}" data-roll-type="actor" data-roll-diecount="{{secondary.total}}" data-label="{{secondary.label}}">{{secondary.label}}</label>
+						<label for="data.secondaries.{{key}}.value" class="rollable flexlarge align-left" data-roll-key="{{key}}" data-roll-type="actor" data-roll-diecount="{{secondary.total}}" data-label="{{secondary.label}}">{{secondary.label}}</label>
 						<label class="items-list item-max-with40px">{{secondary.value}}</label>
 						<label class="items-list item-max-with40px">{{secondary.talentBonus}}</label>
 						<label class="items-list item-max-with40px resource-label">{{secondary.total}}</label>

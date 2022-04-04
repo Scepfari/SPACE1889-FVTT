@@ -8,6 +8,8 @@
 			<li class="flexrow">
 				<label for="data.style.value" class="resource-label item-right">{{localize "SPACE1889.ResourceTiergefaehrte"}}</label>
 				<a class="increment-animalcompanionlevel-click resource-label item-name item-marginlr5px">{{data.animalCompanionLevel}}</a>
+				<div title="{{localize "SPACE1889.PowerEquivalentInXp"}}" class="item-small item-max-with40px item-margintb2px">{{localize "SPACE1889.PowerEquivalentInXpAbbr"}}:</div>
+				<div class="item-small item-margintb2px">{{data.powerEquivalentInXp}} {{localize "SPACE1889.Xp"}}</div>
 			</li>
 
 
@@ -18,12 +20,14 @@
 					<div class="items-list">{{localize "SPACE1889.MovementType"}}</div>
 				</li>
 				<li class="item flexrow">
-					<div class="resource-content flexrow flex-center flex-between item-max-with75px">
-						<div class="flex-group-center item-margin5px">
-							<a class="item-control item-create item-margin5px" title='{{localize "SPACE1889.InfoAddDamage"}}' data-type="damage">{{data.health.value}}</a>
+					<div class="flexrow item-max-with75px">
+						<div style="display: grid; grid-template-columns: 47% 5% 48%; grid-template-rows: 100%;">
+							<div class="item-margintb2px item-right">
+								<a class="item-create item-margintb2px" align="right" title='{{localize "SPACE1889.InfoAddDamage"}}' data-type="damage">{{data.health.value}}</a>
+							</div>
+							<div class="item-margintb2px"> / </div>
+							<div class="item-margintb2px item-left">{{data.health.max}}</div>
 						</div>
-						<div class="resource flex-group-center item-margin5px"> / </div>
-						<div class="resource flex-group-center item-margin5px">{{data.health.max}}</div>
 					</div>
 					<div class="resource-content flexrow flex-center flex-between item-marginlr5px">
 						<select name="data.archetype" data-dtype="String">

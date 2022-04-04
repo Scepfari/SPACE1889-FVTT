@@ -6,8 +6,9 @@
 		</div>
 	</li>
 
-	<section class="grid grid-2col">
-		<div class="left flexcol">
+
+	<div style="display: grid; grid-template-columns: 49% 2% 49%;">
+		<div class="left flexcol" style="grid-column: 1 / span 1">
 			{{#each weaknessLeft as |item id|}}
 			<li class="item flexrow" data-item-id="{{item._id}}">
 				<div class="item-name">
@@ -20,7 +21,7 @@
 			</li>
 		{{/each}}
 		</div>
-		<div class="right flexcol">
+		<div class="right flexcol" style="grid-column: 3 / span 1">
 			{{#each weaknessRight as |item id|}}
 			<li class="item flexrow" data-item-id="{{item._id}}">
 				<div class="item-name">
@@ -33,6 +34,6 @@
 			</li>
 		{{/each}}
 		</div>
-	</section>
+	</div>
 
 </ol>
