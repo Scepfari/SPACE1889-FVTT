@@ -636,6 +636,16 @@ SPACE1889.moneyTypes = {
 	"aahaarimi": "SPACE1889.MoneyTypeAahaarimi"
 };
 
+SPACE1889.weaponCapacityTypes = {
+	"default": "",
+	"belt": "SPACE1889.WeaponCapacityTypeBelt",
+	"strip": "SPACE1889.WeaponCapacityTypeStrip",
+	"internal": "SPACE1889.WeaponCapacityTypeInternal",
+	"magazine": "SPACE1889.WeaponCapacityTypeMagazine",
+	"revolver": "SPACE1889.WeaponCapacityTypeRevolver",
+	"powercell": "SPACE1889.WeaponCapacityTypePowercell"
+}
+
 SPACE1889.umlautMap = {
 	'\u00dc': 'UE',
 	'\u00c4': 'AE',

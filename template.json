@@ -203,6 +203,7 @@
 			"weight": 0,
 			"range": "",
 			"capacity": 1,
+			"capacityType": "default",
 			"rateOfFire": "",
 			"speed": "",
 			"isAreaDamage": false,
