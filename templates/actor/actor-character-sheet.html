@@ -135,7 +135,11 @@
 					</li>
 					{{#each data.secondaries as |secondary key|}}
 					<li class="secondary flexrow">
-						<label for="data.secondaries.{{key}}.value" class="rollable flexlarge align-left" data-roll-key="{{key}}" data-roll-type="actor" data-roll-diecount="{{secondary.total}}" data-label="{{secondary.label}}">{{secondary.label}}</label>
+						{{#if (eq key 'move')}}
+							<label for="data.secondaries.{{key}}.value" class="rollable flexlarge align-left" data-roll-key="{{key}}" data-roll-type="actor" data-roll-diecount="{{secondary.total}}" data-label="{{secondary.label}}"  title="{{secondary.inSiUnits}}">{{secondary.label}}</label>
+						{{else}}
+							<label for="data.secondaries.{{key}}.value" class="rollable flexlarge align-left" data-roll-key="{{key}}" data-roll-type="actor" data-roll-diecount="{{secondary.total}}" data-label="{{secondary.label}}">{{secondary.label}}</label>
+						{{/if}}
 						<label class="items-list item-max-with40px">{{secondary.value}}</label>
 						<label class="items-list item-max-with40px">{{secondary.talentBonus}}</label>
 						<label class="items-list item-max-with40px resource-label">{{secondary.total}}</label>

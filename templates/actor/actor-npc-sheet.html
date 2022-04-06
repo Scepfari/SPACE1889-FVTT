@@ -119,7 +119,11 @@
 					{{#each data.secondaries as |secondary key|}}
 					{{#if (ne key 'size')}}
 					<li class="secondary item flexrow">
+						{{#if (eq key 'move')}}
+						<label for="data.secondaries.{{key}}.value" class="rollable item-name" data-roll-key="{{key}}" data-roll-type="actor" data-roll-diecount="{{secondary.total}}" data-label="{{secondary.label}}" title="{{secondary.inSiUnits}}">{{secondary.label}}</label>
+						{{else}}
 						<label for="data.secondaries.{{key}}.value" class="rollable item-name" data-roll-key="{{key}}" data-roll-type="actor" data-roll-diecount="{{secondary.total}}" data-label="{{secondary.label}}">{{secondary.label}}</label>
+						{{/if}}
 						<label class="items-list item-max-with40px">{{secondary.value}}</label>
 						<label class="items-list item-max-with40px">{{secondary.talentBonus}}</label>
 						<label class="items-list item-max-with60px resource-label">{{secondary.total}}</label>

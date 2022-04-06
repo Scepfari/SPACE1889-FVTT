@@ -247,6 +247,19 @@ export class Space1889Actor extends Actor
 		data.secondaries.defense.total = data.secondaries.defense.value + data.secondaries.defense.talentBonus + data.secondaries.defense.armorBonus;
 	}
 
+	calcAndSetCharacterNpcSiMoveUnits(actorData)
+	{
+		const siMoveDistance = actorData.data.secondaries.move.total * 1.5;
+		const meter = "m";
+		const meterWithSeparator = "m; ";
+		const runFactor = SPACE1889Helper.getTalentLevel(actorData, "sprinter") > 0 ?  4 : 2;
+		const sprintFactor = 4;
+		let info =  game.i18n.localize("SPACE1889.Move") + ": " + siMoveDistance.toString() + meterWithSeparator;
+		info += game.i18n.localize("SPACE1889.Run") + ": " + (siMoveDistance * runFactor).toString() + meterWithSeparator;
+		info += game.i18n.localize("SPACE1889.Sprint") + ": " + (siMoveDistance * sprintFactor).toString() + meter;
+		actorData.data.secondaries.move.inSiUnits = info;
+	}
+
 
 	/**
 	 *
@@ -329,29 +342,53 @@ export class Space1889Actor extends Actor
 
 		const data = actorData.data;
 		let movement = "";
+		let siUnits = "";
+		const siMoveDistance = data.secondaries.move.total * 1.5;
+		const meter = "m";
+		const meterWithSeparator = "m; ";
 		switch (data.movementType)
 		{
 			case "amphibious":
 			case "flying":
-				movement = data.secondaries.move.total.toString() + " (" + Math.floor(data.secondaries.move.total / 2).toString() + ")";
+				const second = Math.floor(data.secondaries.move.total / 2);
+				movement = data.secondaries.move.total.toString() + " (" + second.toString() + ")";
+				siUnits = game.i18n.localize(CONFIG.SPACE1889.creatureMovementType[data.movementType]) + ": ";
+				siUnits += siMoveDistance.toString() + meterWithSeparator;
+				siUnits += (data.movementType == "flying") ? game.i18n.localize("SPACE1889.OnTheGround") : game.i18n.localize("SPACE1889.OnLand");
+				siUnits += (siMoveDistance/2).toString() + meter;
 				break;
 			case "fossorial":
+				movement = data.secondaries.move.total.toString() + " (" + (data.secondaries.move.total * 2).toString() + ")";
+				siUnits = game.i18n.localize("SPACE1889.Move") + ": " + siMoveDistance.toString() + meterWithSeparator;
+				siUnits += game.i18n.localize("SPACE1889.Run") + ": " + (siMoveDistance * 2).toString() + meterWithSeparator;
+				siUnits += game.i18n.localize(CONFIG.SPACE1889.creatureMovementType[data.movementType]) + ": ";
+				siUnits += (data.secondaries.move.total * 2 * 0.3).toString() + "m/h";
+				break;
 			case "jumper":
 			case "manylegged":
 				movement = data.secondaries.move.total.toString() + " (" + (data.secondaries.move.total * 2).toString() + ")";
+				siUnits = game.i18n.localize("SPACE1889.Move") + ": " + siMoveDistance.toString() + meterWithSeparator;
+				siUnits += game.i18n.localize("SPACE1889.Run") + ": " + (siMoveDistance * 4).toString() + meter;
 				break;
 			case "swimming":
 				movement = (data.secondaries.move.total * 2).toString() + " (0)";
+				siUnits = game.i18n.localize(CONFIG.SPACE1889.creatureMovementType[data.movementType]) + ": ";
+				siUnits += (siMoveDistance * 2).toString() + meterWithSeparator;
+				siUnits += game.i18n.localize("SPACE1889.OnLand") + ": 0m";
 				break;
 			case "immobile":
 				movement = "0";
+				siUnits += game.i18n.localize("SPACE1889.CreatureMovementTypeImmobile") + ": 0m";
 				break;
 			default:
 				movement = data.secondaries.move.total.toString();
+				this.calcAndSetCharacterNpcSiMoveUnits(actorData)
 				break;
 		}
 
 		data.secondaries.move.display = movement;
+		if (data.movementType != "ground")
+			data.secondaries.move.inSiUnits = siUnits;
 	}
 
 	/**
@@ -482,6 +519,7 @@ export class Space1889Actor extends Actor
 		this.CalcAndSetLoad(actorData);
 		this.CalcAndSetEP(actorData);
 		this.CalcAndSetHealth(actorData);
+		this.calcAndSetCharacterNpcSiMoveUnits(actorData);
 	}
 
 	_GetId(item)
