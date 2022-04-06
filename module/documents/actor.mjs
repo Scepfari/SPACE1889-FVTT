@@ -354,7 +354,7 @@ export class Space1889Actor extends Actor
 				movement = data.secondaries.move.total.toString() + " (" + second.toString() + ")";
 				siUnits = game.i18n.localize(CONFIG.SPACE1889.creatureMovementType[data.movementType]) + ": ";
 				siUnits += siMoveDistance.toString() + meterWithSeparator;
-				siUnits += (data.movementType == "flying") ? game.i18n.localize("SPACE1889.OnTheGround") : game.i18n.localize("SPACE1889.OnLand");
+				siUnits += (data.movementType == "flying") ? game.i18n.localize("SPACE1889.OnTheGround") : game.i18n.localize("SPACE1889.OnLand") + ": ";
 				siUnits += (siMoveDistance/2).toString() + meter;
 				break;
 			case "fossorial":
