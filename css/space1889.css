@@ -161,7 +161,9 @@
 .flex-fix-height {
 	height: 130px;
 	width: 100%;
-	overflow: scroll;
+	overflow-x: hidden;
+	overflow-y: auto;
+	scrollbar-width: none;
 }
 
 .flex-group-center,
@@ -494,6 +496,11 @@ font-size: 12px;
 
 .space1889 .item-left{
 	text-align: left;
+}
+
+.space1889.sheet.actor .character 
+{
+	scrollbar-width: thin;
 }
 
 .space1889.sheet.actor .item-max-with40px input {
