@@ -829,6 +829,11 @@ export class Space1889Actor extends Actor
 	 */
 	FindUnderlyingAbility(actorData, skillId)
 	{
+		//Talente überprüfen ob ein rerouting auf ein anderes Attribut aktiv ist
+		const talent = actorData.talents.find(t => t.data.changedSkill == skillId && t.data.newBase != "");
+		if (talent != undefined)
+			return talent.data.newBase;
+
 		const element = CONFIG.SPACE1889.skillUnderlyingAttribute.find(e => e[0] === skillId);
 		if (element != undefined)
 			return element[1];
