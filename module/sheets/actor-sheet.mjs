@@ -673,8 +673,15 @@ export class Space1889ActorSheet extends ActorSheet {
 		}
 		else if (type == "species")
 		{
-			if (actor.type == "creature" || actor.data.attributes?.species?.value == id)
+			if (actor.type == "creature")
 				return true;
+
+			var ids = id.split(";");
+			for (let i of ids)
+			{
+				if (actor.data.attributes?.species?.value == i)
+					return true;
+			}
 		}
 		else if (type == "weakness")
 		{
@@ -695,18 +702,31 @@ export class Space1889ActorSheet extends ActorSheet {
 	{
 		const isPossible1 = this.isPreConditionValid(itemData.data.preconditionType, itemData.data.preconditionName, itemData.data.isGroup, itemData.data.preconditionLevel);
 		const isPossible2 = this.isPreConditionValid(itemData.data.secondPreconditionType, itemData.data.secondPreconditionName, false, itemData.data.secondPreconditionLevel);
+		const isPossible = (itemData.data.isOrOperator ? (isPossible1 || isPossible2) : (isPossible1 && isPossible2));
+		if (isPossible)
+			return true;
+
+		const talentName = itemData.name;
+		const preConType = game.i18n.format(CONFIG.SPACE1889.preConditionTypes[itemData.data.preconditionType]);
+		const preCon2Type = game.i18n.format(CONFIG.SPACE1889.preConditionTypes[itemData.data.secondPreconditionType]);
+		const group = itemData.data.isGroup ? "Group" : "";
+		const preConNameList = itemData.data.preconditionName.split(";");
+
+		let preConNames = "";
+
+		for (const preCon of preConNameList)
+		{
+			const preConNameLangId = "SPACE1889." + this.mapPreconditionTypeToLangIdSubString(itemData.data.preconditionType) + group + this.firstLetterToUpperCase(preCon);
+			let preConName = game.i18n.format(preConNameLangId);
+			if (preConName == preConNameLangId)
+				preConName = this.firstLetterToUpperCase(preCon);
+			preConNames += (preConNames == "" ? preConName : ", " + preConName);
+		}
+
+
 		let info = "";
 		if (itemData.data.isOrOperator && !isPossible1 && !isPossible2)
 		{
-			const talentName = itemData.name;
-			const preConType = game.i18n.format(CONFIG.SPACE1889.preConditionTypes[itemData.data.preconditionType]);
-
-			const group = itemData.data.isGroup ? "Group" : "";
-
-			const preConNameLangId = "SPACE1889." + this.mapPreconditionTypeToLangIdSubString(itemData.data.preconditionType) + group + this.firstLetterToUpperCase(itemData.data.preconditionName);
-			let preConName = game.i18n.format(preConNameLangId);
-			if (preConName == preConNameLangId)
-				preConName = this.firstLetterToUpperCase(itemData.data.preconditionName);
 			const preConLevel = itemData.data.preconditionLevel.toString();
 
 			const preCon2Type = game.i18n.format(CONFIG.SPACE1889.preConditionTypes[itemData.data.secondPreconditionType]);
@@ -717,30 +737,20 @@ export class Space1889ActorSheet extends ActorSheet {
 			const preCon2Level = itemData.data.secondPreconditionLevel.toString();
 
 			info = game.i18n.format("SPACE1889.CanNotAddTalentTwoPreCons", {
-				talentName: talentName, preConType: preConType, preConName: preConName, preConLevel: preConLevel, preCon2Type: preCon2Type, preCon2Name: preCon2Name, preCon2Level: preCon2Level
+				talentName: talentName, preConType: preConType, preConName: preConNames, preConLevel: preConLevel, preCon2Type: preCon2Type, preCon2Name: preCon2Name, preCon2Level: preCon2Level
 			})
 		}
 		else if (!isPossible1 && !itemData.data.isOrOperator)
 		{
-			const talentName = itemData.name;
-			const preConType = game.i18n.format(CONFIG.SPACE1889.preConditionTypes[itemData.data.preconditionType]);
-
-			const group = itemData.data.isGroup ? "Group" : "";
-
-			const preConNameLangId = "SPACE1889." + this.mapPreconditionTypeToLangIdSubString(itemData.data.preconditionType) + group + this.firstLetterToUpperCase(itemData.data.preconditionName);
-			let preConName = game.i18n.format(preConNameLangId);
-			if (preConName == preConNameLangId)
-				preConName = this.firstLetterToUpperCase(itemData.data.preconditionName);
 			const preConLevel = itemData.data.preconditionLevel.toString();
 
 			if (itemData.data.preconditionType == "species")
-				info = game.i18n.format("SPACE1889.CanNotAddTalentWrongSpecies", { talentName: talentName, preConName: preConName });
+				info = game.i18n.format("SPACE1889.CanNotAddTalentWrongSpecies", { talentName: talentName, preConName: preConNames });
 			else
-				info = game.i18n.format("SPACE1889.CanNotAddTalentOnePreCons", { talentName: talentName, preConType: preConType, preConName: preConName, preConLevel: preConLevel });
+				info = game.i18n.format("SPACE1889.CanNotAddTalentOnePreCons", { talentName: talentName, preConType: preConType, preConName: preConNames, preConLevel: preConLevel });
 		}
 		else if (!isPossible2 && !itemData.data.isOrOperator)
 		{
-			const preCon2Type = game.i18n.format(CONFIG.SPACE1889.preConditionTypes[itemData.data.secondPreconditionType]);
 			const preCon2NameLangId = "SPACE1889." + this.mapPreconditionTypeToLangIdSubString(itemData.data.secondPreconditionType) + this.firstLetterToUpperCase(itemData.data.secondPreconditionName);
 			let preCon2Name = game.i18n.format(preCon2NameLangId);
 			if (preCon2Name == preCon2NameLangId)
@@ -753,15 +763,12 @@ export class Space1889ActorSheet extends ActorSheet {
 				info = game.i18n.format("SPACE1889.CanNotAddTalentOnePreCons", { talentName: talentName, preConType: preCon2Type, preConName: preCon2Name, preConLevel: preCon2Level });
 		}
 	
-		const isPossible = (itemData.data.isOrOperator ? (isPossible1 || isPossible2) : (isPossible1 && isPossible2));
-		if (!isPossible)
-		{
-			if (info != "")
-				ui.notifications.error(info);
-			else
-				ui.notifications.error(game.i18n.format("SPACE1889.canNotBeAdded", { item: itemData.name }));
-		}
-		return isPossible;
+		if (info != "")
+			ui.notifications.error(info);
+		else
+			ui.notifications.error(game.i18n.format("SPACE1889.canNotBeAdded", { item: itemData.name }));
+
+		return false;
 	}
 
 	mapPreconditionTypeToLangIdSubString(preConType)
