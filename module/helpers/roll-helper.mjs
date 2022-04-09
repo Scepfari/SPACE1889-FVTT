@@ -218,8 +218,23 @@ export default class SPACE1889RollHelper
 		}
 		else if (item.type == "weapon")
 		{
+			desc = "";
 			const weapon = game.i18n.localize("SPACE1889.Weapon") ?? item.type;
 			label = `<h2><strong>${item.data.label}</strong> [${weapon}]</h2>`;
+			if (item.data.specializationId != "none")
+				desc += game.i18n.localize("SPACE1889.CombatSpecialization") + ": " + game.i18n.localize(CONFIG.SPACE1889.combatSpecializations[item.data.specializationId]) + "<br>";
+			desc +=  game.i18n.localize("SPACE1889.Damage") + ": " + item.data.damage.toString() + " " + item.data.damageTypeDisplay;
+			if (item.data.range != "")
+		{
+				desc += "<br>" + game.i18n.localize("SPACE1889.Range") + ": " + item.data.range;
+				desc += "<br>" + game.i18n.localize("SPACE1889.Capacity") + ": " + item.data.capacity + " " + game.i18n.localize(CONFIG.SPACE1889.weaponCapacityTypes[item.data.capacityType] + "Abbr");
+			}
+
+			desc += "<br>" + game.i18n.localize("SPACE1889.Weight") + ": " + item.data.weight.toString() + "kg";
+			desc += "<br>" + game.i18n.localize("SPACE1889.Price") + ": " + item.data.price;
+			if (item.data.description != "")
+				desc += "<br>" + game.i18n.localize("SPACE1889.Description") + ": " + jQuery(item.data.description).text();
+			console.log(item.data.description);
 		}
 		else if (item.type == "armor")
 		{

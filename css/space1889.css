@@ -161,7 +161,9 @@
 .flex-fix-height {
 	height: 130px;
 	width: 100%;
-	overflow: scroll;
+	overflow-x: hidden;
+	overflow-y: auto;
+	scrollbar-width: none;
 }
 
 .flex-group-center,
@@ -312,6 +314,13 @@
 	font-weight: bold;
 }
 
+.space1889.sheet.actor select {
+	height: calc(100% - 2px);
+	border: 1px solid #7a7971;
+	font-size: 12px;
+	background: transparent;
+}
+
 .space1889 .items-header {
 	height: 28px;
 	margin: 2px 0;
@@ -421,6 +430,10 @@
 	margin: 0 6px;
 }
 
+.space1889 .items-list .item-control a {
+	text-align: right;
+}
+
 .space1889 .items-list .item {
 	-webkit-box-align: center;
 	-ms-flex-align: center;
@@ -462,6 +475,16 @@ font-size: 12px;
 	margin: 5px;
 }
 
+.space1889 .item-margintb2px {
+	margin-top: 3px;
+	margin-bottom: 3px;
+}
+
+.space1889 .item-margintb4px {
+	margin-top: 4px;
+	margin-bottom: 4px;
+}
+
 .space1889 .item-marginlr5px {
 	margin-left: 5px;
 	margin-right: 5px;
@@ -469,6 +492,15 @@ font-size: 12px;
 
 .space1889 .item-right{
 	text-align: right;
+}
+
+.space1889 .item-left{
+	text-align: left;
+}
+
+.space1889.sheet.actor .character 
+{
+	scrollbar-width: thin;
 }
 
 .space1889.sheet.actor .item-max-with40px input {
@@ -567,4 +599,13 @@ font-size: 12px;
 
 .space1889 .dice-image {
 	background-image: url("../../icons/svg/dice-target.svg");
+}
+
+.space1889 .item-small{
+	font-size: 10px;
+}
+
+.space1889 .item-bold13{
+	font-size: 13px;
+	font-weight: bold;
 }

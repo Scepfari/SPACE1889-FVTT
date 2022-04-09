@@ -95,7 +95,7 @@ export class Space1889Actor extends Actor
 	 */
 	_prepareCharacterData(actorData)
 	{
-		if (actorData.type !== 'character' && actorData.type !== 'creature')
+		if (actorData.type !== 'character' && actorData.type !== 'npc' && actorData.type !== 'creature')
 			return;
 
 		// Make modifications to data here. For example:
@@ -116,9 +116,6 @@ export class Space1889Actor extends Actor
 		if (armorData.malus > 0)
 			data.abilities["dex"].total -= armorData.malus;
 		data.armorTotal = armorData;
-
-		this.calcAndSetSecondaries(actorData)
-		data.health.max = data.abilities.con.total + data.abilities.wil.total + data.secondaries.size.total + this.getBonusFromTalents("max", "health", items);
 
 		const skills = [];
 		const speciSkills = [];
@@ -182,6 +179,8 @@ export class Space1889Actor extends Actor
 		actorData.language = language;
 		actorData.money = money;
 
+		this.calcAndSetSecondaries(actorData)
+		data.health.max = data.abilities.con.total + data.abilities.wil.total + data.secondaries.size.total + this.getBonusFromTalents("max", "health", items);
 
 		this.calcAndSetSkillsAndSpecializations(actorData)
 
@@ -201,6 +200,7 @@ export class Space1889Actor extends Actor
 		{
 			this.setCreatureMovementDisplay(actorData);
 			this.CalcAndSetHealth(actorData);
+			this.CalcAndSetEP(actorData);
 		}
 		else
 		{
@@ -236,7 +236,7 @@ export class Space1889Actor extends Actor
 		data.secondaries.initiative.value = data.abilities.dex.total + data.abilities.int.total;
 		data.secondaries.initiative.talentBonus = this.getBonusFromTalents("initiative", "secondary", actorData.items);
 		data.secondaries.initiative.total = data.secondaries.initiative.value + data.secondaries.initiative.talentBonus;
-		data.secondaries.stun.value = data.abilities.con.total;
+		data.secondaries.stun.value = Math.max(data.abilities.con.total, SPACE1889Helper.getTalentLevel(actorData, "dickkopf") > 0 ? data.abilities.wil.total : 0);
 		data.secondaries.stun.talentBonus = this.getBonusFromTalents("stun", "secondary", actorData.items);
 		data.secondaries.stun.total = data.secondaries.stun.value + data.secondaries.stun.talentBonus;
 		data.secondaries.size.talentBonus = this.getBonusFromTalents("size", "secondary", actorData.items);
@@ -245,6 +245,19 @@ export class Space1889Actor extends Actor
 		data.secondaries.defense.talentBonus = this.getBonusFromTalents("defense", "secondary", actorData.items);
 		data.secondaries.defense.armorBonus = data.armorTotal.bonus;
 		data.secondaries.defense.total = data.secondaries.defense.value + data.secondaries.defense.talentBonus + data.secondaries.defense.armorBonus;
+	}
+
+	calcAndSetCharacterNpcSiMoveUnits(actorData)
+	{
+		const siMoveDistance = actorData.data.secondaries.move.total * 1.5;
+		const meter = "m";
+		const meterWithSeparator = "m; ";
+		const runFactor = SPACE1889Helper.getTalentLevel(actorData, "sprinter") > 0 ?  4 : 2;
+		const sprintFactor = 4;
+		let info =  game.i18n.localize("SPACE1889.Move") + ": " + siMoveDistance.toString() + meterWithSeparator;
+		info += game.i18n.localize("SPACE1889.Run") + ": " + (siMoveDistance * runFactor).toString() + meterWithSeparator;
+		info += game.i18n.localize("SPACE1889.Sprint") + ": " + (siMoveDistance * sprintFactor).toString() + meter;
+		actorData.data.secondaries.move.inSiUnits = info;
 	}
 
 
@@ -329,29 +342,53 @@ export class Space1889Actor extends Actor
 
 		const data = actorData.data;
 		let movement = "";
+		let siUnits = "";
+		const siMoveDistance = data.secondaries.move.total * 1.5;
+		const meter = "m";
+		const meterWithSeparator = "m; ";
 		switch (data.movementType)
 		{
 			case "amphibious":
 			case "flying":
-				movement = data.secondaries.move.total.toString() + " (" + Math.floor(data.secondaries.move.total / 2).toString() + ")";
+				const second = Math.floor(data.secondaries.move.total / 2);
+				movement = data.secondaries.move.total.toString() + " (" + second.toString() + ")";
+				siUnits = game.i18n.localize(CONFIG.SPACE1889.creatureMovementType[data.movementType]) + ": ";
+				siUnits += siMoveDistance.toString() + meterWithSeparator;
+				siUnits += (data.movementType == "flying") ? game.i18n.localize("SPACE1889.OnTheGround") : game.i18n.localize("SPACE1889.OnLand") + ": ";
+				siUnits += (siMoveDistance/2).toString() + meter;
 				break;
 			case "fossorial":
+				movement = data.secondaries.move.total.toString() + " (" + (data.secondaries.move.total * 2).toString() + ")";
+				siUnits = game.i18n.localize("SPACE1889.Move") + ": " + siMoveDistance.toString() + meterWithSeparator;
+				siUnits += game.i18n.localize("SPACE1889.Run") + ": " + (siMoveDistance * 2).toString() + meterWithSeparator;
+				siUnits += game.i18n.localize(CONFIG.SPACE1889.creatureMovementType[data.movementType]) + ": ";
+				siUnits += (data.secondaries.move.total * 2 * 0.3).toString() + "m/h";
+				break;
 			case "jumper":
 			case "manylegged":
 				movement = data.secondaries.move.total.toString() + " (" + (data.secondaries.move.total * 2).toString() + ")";
+				siUnits = game.i18n.localize("SPACE1889.Move") + ": " + siMoveDistance.toString() + meterWithSeparator;
+				siUnits += game.i18n.localize("SPACE1889.Run") + ": " + (siMoveDistance * 4).toString() + meter;
 				break;
 			case "swimming":
 				movement = (data.secondaries.move.total * 2).toString() + " (0)";
+				siUnits = game.i18n.localize(CONFIG.SPACE1889.creatureMovementType[data.movementType]) + ": ";
+				siUnits += (siMoveDistance * 2).toString() + meterWithSeparator;
+				siUnits += game.i18n.localize("SPACE1889.OnLand") + ": 0m";
 				break;
 			case "immobile":
 				movement = "0";
+				siUnits += game.i18n.localize("SPACE1889.CreatureMovementTypeImmobile") + ": 0m";
 				break;
 			default:
 				movement = data.secondaries.move.total.toString();
+				this.calcAndSetCharacterNpcSiMoveUnits(actorData)
 				break;
 		}
 
 		data.secondaries.move.display = movement;
+		if (data.movementType != "ground")
+			data.secondaries.move.inSiUnits = siUnits;
 	}
 
 	/**
@@ -482,6 +519,7 @@ export class Space1889Actor extends Actor
 		this.CalcAndSetLoad(actorData);
 		this.CalcAndSetEP(actorData);
 		this.CalcAndSetHealth(actorData);
+		this.calcAndSetCharacterNpcSiMoveUnits(actorData);
 	}
 
 	_GetId(item)
@@ -791,6 +829,11 @@ export class Space1889Actor extends Actor
 	 */
 	FindUnderlyingAbility(actorData, skillId)
 	{
+		//Talente überprüfen ob ein rerouting auf ein anderes Attribut aktiv ist
+		const talent = actorData.talents.find(t => t.data.changedSkill == skillId && t.data.newBase != "");
+		if (talent != undefined)
+			return talent.data.newBase;
+
 		const element = CONFIG.SPACE1889.skillUnderlyingAttribute.find(e => e[0] === skillId);
 		if (element != undefined)
 			return element[1];
@@ -867,8 +910,13 @@ export class Space1889Actor extends Actor
 			}
 		}
 
-		actorData.data.attributes.xp.used = xp;
-		actorData.data.attributes.xp.available = actorData.data.attributes.xp.value - xp;
+		if (actorData.type == 'character')
+		{
+			actorData.data.attributes.xp.used = xp;
+			actorData.data.attributes.xp.available = actorData.data.attributes.xp.value - xp;
+		}
+		else 
+			actorData.data.powerEquivalentInXp  = xp;
 	}
 
 

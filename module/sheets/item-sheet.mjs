@@ -63,6 +63,7 @@ export class Space1889ItemSheet extends ItemSheet {
 			context.data['combatSpecializations'] = CONFIG.SPACE1889.combatSpecializations;
 			context.data['damageTypes'] = CONFIG.SPACE1889.damageTypes;
 			context.data['damageTypeAbbr'] = CONFIG.SPACE1889.damageTypeAbbreviations;
+			context.data['capacityTypes'] = CONFIG.SPACE1889.weaponCapacityTypes;
 		}
 		else if (itemData.type == "weakness")
 		{

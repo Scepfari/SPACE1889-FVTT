@@ -64,10 +64,30 @@
 						"value": 0
 					}
 				}
+			},
+			"block": {
+				"block": {
+					"value": 0,
+					"instinctive": false,
+					"riposte": false
+				}
+			},
+			"parry": {
+				"parry": {
+					"value": 0,
+					"instinctive": false,
+					"riposte": false
+				}
+			},
+			"evasion": {
+				"evasion": {
+					"value": 0,
+					"instinctive": false
+				}
 			}
 		},
 		"character": {
-			"templates": [ "health", "style", "primaries", "secondaries", "biography" ],
+			"templates": [ "health", "style", "primaries", "secondaries", "biography", "block", "parry", "evasion" ],
 			"attributes": {
 				"xp": {
 					"value": 0,
@@ -83,20 +103,6 @@
 				"motivation": {
 					"value": "entdeckung"
 				}
-			},
-			"block": {
-				"value": 0,
-				"instinctive": false,
-				"riposte": false
-			},
-			"parry": {
-				"value": 0,
-				"instinctive": false,
-				"riposte": false
-			},
-			"evasion": {
-				"value": 0,
-				"instinctive": false
 			}
 		},
 		"creature": {
@@ -108,8 +114,18 @@
 			"origin": "merkur"
 		},
 		"npc": {
-			"templates": [ "base" ],
-			"cr": 0
+			"templates": [ "health", "style", "primaries", "secondaries", "biography", "block", "parry", "evasion" ],
+			"attributes": {
+				"archetype": {
+					"value": "arbeiter"
+				},
+				"species": {
+					"value": "mensch"
+				},
+				"motivation": {
+					"value": "ueberleben"
+				}
+			}
 		}
 	},
 	"Item": {
@@ -187,6 +203,7 @@
 			"weight": 0,
 			"range": "",
 			"capacity": 1,
+			"capacityType": "default",
 			"rateOfFire": "",
 			"speed": "",
 			"isAreaDamage": false,
