@@ -371,6 +371,12 @@ export class Space1889ActorSheet extends ActorSheet {
 			this.actor.update({ 'data.style.value': newValue });
 		});
 
+		html.find('.increment-xp-click').mousedown(ev =>
+		{
+			const newValue = this.incrementValue(ev, this.actor.data.data.attributes.xp.value, 0, undefined);
+			this.actor.update({ 'data.attributes.xp.value': newValue });
+		});
+
 		html.find('.increment-animalcompanionlevel-click').mousedown(ev =>
 		{
 			const newValue = this.incrementValue(ev, this.actor.data.data.animalCompanionLevel, 0, 5);
