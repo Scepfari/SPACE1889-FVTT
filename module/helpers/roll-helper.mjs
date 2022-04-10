@@ -58,6 +58,11 @@ export default class SPACE1889RollHelper
 					return Math.max(0, skillItem.data.data.rating + ((itemData.data.level.value - 1) * 2));
 				}
 			}
+			else if (itemData.data.id == "eigenartigerKampfstil")
+			{
+				const defense = actor.data.data.secondaries.defense.total;
+				return (defense + (Number(itemData.data.level.value) * 2));
+			}
 			return 0;
 		}
 	}
@@ -90,11 +95,15 @@ export default class SPACE1889RollHelper
 	{
 		if (itemData.type == "talent")
 		{
-			const isAttack = itemData.data.id != "geschaerfterSinn";
-			const info = isAttack ? game.i18n.localize("SPACE1889.Attack") ?? "Attack" : game.i18n.localize("SPACE1889.Probe") ?? "Probe";
+			let info = game.i18n.localize("SPACE1889.Attack") ?? "Attack";
+			if (itemData.data.id == "geschaerfterSinn")
+				info = game.i18n.localize("SPACE1889.Probe") ?? "Probe";
+			else if (itemData.data.id == "eigenartigerKampfstil")
+				info = game.i18n.localize("SPACE1889.SecondaryAttributeDef");
 			this.rollSubSpecial(itemData, actor, dieCount, showDialog, info, true);
 		}
 	}
+
 	/**
 	 *
 	 * @param {object} itemData

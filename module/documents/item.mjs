@@ -124,7 +124,8 @@ export class Space1889Item extends Item {
 	{
 		if (itemData.data.id == "geschaerfterSinn"
 			|| itemData.data.id == "paralysierenderSchlag"
-			|| itemData.data.id == "assassine")
+			|| itemData.data.id == "assassine"
+			|| itemData.data.id == "eigenartigerKampfstil")
 		{
 			return true;
 		}

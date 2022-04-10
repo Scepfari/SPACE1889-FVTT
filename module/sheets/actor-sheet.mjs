@@ -944,6 +944,15 @@ export class Space1889ActorSheet extends ActorSheet {
 							return item.rollSpecialTalent(dieCount, showDialog);
 						}
 					}
+					else if (item.data.data.id == "eigenartigerKampfstil")
+					{
+						const skillItem = this.actor.items.find(e => e.data.data.id == item.data.data.bonusTarget);
+						if (skillItem != undefined)
+						{
+							const dieCount = SPACE1889RollHelper.getTalentDieCount(item.data, this.actor);
+							return item.rollSpecialTalent(dieCount, showDialog);
+						}
+					}
 					return item.roll();
 				}
 			}
