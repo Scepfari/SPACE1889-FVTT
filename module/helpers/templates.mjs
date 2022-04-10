@@ -18,6 +18,7 @@
 		"systems/space1889/templates/actor/parts/actor-damage.html",
 		"systems/space1889/templates/actor/parts/actor-currency.html",
 		"systems/space1889/templates/actor/parts/actor-load.html",
+		"systems/space1889/templates/actor/parts/actor-defenseblock.html",
 		"systems/space1889/templates/actor/parts/actor-sub-items.html",
 		"systems/space1889/templates/actor/parts/actor-creature-skills.html",
 		"systems/space1889/templates/actor/parts/actor-creature-talents.html",
