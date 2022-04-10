@@ -475,17 +475,19 @@ export class Space1889ActorSheet extends ActorSheet {
 			const isValid = this.isTalentPossible(itemData);
 			if (isValid && itemData.data.id == "begabung")
 			{
-				this.showBegabungDialog(itemData);
+				this.showTalentSkillSelectionDialog(itemData);
 			}
 			if (isValid && itemData.data.id == "geschaerfterSinn")
 				this.showGeschaerfterSinnDialog(itemData);
+			if (isValid && itemData.data.id == "eigenartigerKampfstil")
+				this.showTalentSkillSelectionDialog(itemData);
 			return isValid;
 		}
 		return true;		
 	}
 
 
-	showBegabungDialog(itemData)
+	showTalentSkillSelectionDialog(itemData)
 	{
 		let optionen = '';
 		let actor = this.actor.data;
@@ -495,12 +497,12 @@ export class Space1889ActorSheet extends ActorSheet {
 			optionen += '<option value="' + item.data.id + '" selected="selected">' + item.data.label + '</option>';
 		}
 
-		let begabung = game.i18n.localize("SPACE1889.TalentBegabung");
-		let text = game.i18n.localize("SPACE1889.ChooseSkill") + " " + begabung;
+		let talentName = game.i18n.localize(itemData.data.nameLangId);;
+		let text = game.i18n.localize("SPACE1889.ChooseSkill") + " " + talentName;
 		let choices = game.i18n.localize("SPACE1889.Choices");
 		let selectedOption;
 		let dialog = new Dialog({
-			title: `${actor.name} : ${begabung}`,
+			title: `${actor.name} : ${talentName}`,
 			content: `
 				<form>
 				  <p>${text}:</p>
@@ -531,7 +533,7 @@ export class Space1889ActorSheet extends ActorSheet {
 			{
 				if (selectedOption) 
 				{
-					let newTalent = actor.talents.find(e => e.data.id == "begabung" && e.data.bonusTarget == "");
+					let newTalent = actor.talents.find(e => e.data.id == itemData.data.id && e.data.bonusTarget == "");
 					if (newTalent != undefined)
 						this.actor.updateEmbeddedDocuments("Item", [{ _id: newTalent._id, "data.bonusTarget": selectedOption }]);
 
@@ -553,12 +555,12 @@ export class Space1889ActorSheet extends ActorSheet {
 		optionen += '<option value="vision" selected="selected">' + game.i18n.localize("SPACE1889.SenseVision") + '</option>';
 		optionen += '<option value="touch" selected="selected">' + game.i18n.localize("SPACE1889.SenseTouch") + '</option>';
 
-		let begabung = game.i18n.localize("SPACE1889.TalentGeschaerfterSinn");
-		let text = game.i18n.localize("SPACE1889.ChooseSense") + " " + begabung;
+		let sense = game.i18n.localize("SPACE1889.TalentGeschaerfterSinn");
+		let text = game.i18n.localize("SPACE1889.ChooseSense") + " " + sense;
 		let choices = game.i18n.localize("SPACE1889.Choices");
 		let selectedOption;
 		let dialog = new Dialog({
-			title: `${actor.name} : ${begabung}`,
+			title: `${actor.name} : ${sense}`,
 			content: `
 				<form>
 				  <p>${text}:</p>

@@ -40,9 +40,10 @@ export class Space1889Item extends Item {
 					this.setLangIdAndLabel(item, "Talent", true, true);
 				}
 
-				if (item.data.bonusTargetLangId != "" && item.data.bonusTarget != "" && item.data.bonusTargetType != "")
+				if (item.data.bonusTarget != "")
 				{
-					item.data.bonusTargetLangId = 'SPACE1889.' + item.data.bonusTargetType.replace(/^(.)/, function (c) { return c.toUpperCase(); }) + item.data.bonusTarget.replace(/^(.)/, function (b) { return b.toUpperCase(); });
+					const base = item.data.bonusTargetType != "" ? item.data.bonusTargetType.replace(/^(.)/, function (c) { return c.toUpperCase(); }) : "Skill";
+					item.data.bonusTargetLangId = 'SPACE1889.' + base + item.data.bonusTarget.replace(/^(.)/, function (b) { return b.toUpperCase(); });
 					if (this.ShowTalentDetail(item))
 					{
 						item.data.showDetail = true;
@@ -138,7 +139,8 @@ export class Space1889Item extends Item {
 	ShowTalentDetail(itemData)
 	{
 		if (itemData.data.id == "geschaerfterSinn"
-			|| itemData.data.id == "begabung")
+			|| itemData.data.id == "begabung"
+			|| itemData.data.id == "eigenartigerKampfstil")
 		{
 			return true;
 		}
