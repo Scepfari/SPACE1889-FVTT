@@ -1299,7 +1299,8 @@
 	"SPACE1889.WeaknessDescXenophob": "Hasst Fremde und Fremdes.",
 	"SPACE1889.WeaknessDescZerbrechlich": "Geht schneller KO.",
 	"SPACE1889.WeaknessDescZwerg": "Kleiner und schwächer als der Durchschnitt ",
-
+	"SPACE1889.WeaknessDescAmmoniakmetabolismus": "Der Verzehr vom Fleisch irdischer Wesen fügt der Kreatur pro Runde 4 T Giftschaden zu. Er muss dafür jedoch ein Opfer bereits ganz verschlungen haben.)",
+	"SPACE1889.WeaknessDescPlasmametabolismus": "Wird bei Verlassen des ihn erhaltenden Plasmafeldes vernichtet; regeneriert sich bei Zerstörung innerhalb des Plasmafeldes bis zu 3 mal und erhöht dabei jedes Mal für 6 Stunden die Temperatur innerhalb des Feldes um 1 Stufe.",
 
 
 	"SPACE1889.AbilityConDesc": "Die Konstitution beschreibt den körperlichen Zustand des Charakters und seine physische Widerstandskraft. Von ihrem Wert hängt ab, wie viel Schaden der Charakter aushält und ab wann er Einschränkungen durch Verletzungen erleidet. Auch die Zeit, die er ohne Nahrung und Wasser übersteht, ist eine Frage der Konstitution. Charaktere mit hoher Konstitution sind robust und zäh, ein niedriger Wert bedeutet Zerbrechlichkeit und Krankheitsanfälligkeit.<br><i>Anmerkung:</i> Die Größe des Charakters begrenzt seine maximale Konstitution: Eine Größe von 1 erlaubt ein Maximum von 6, während die Größe –1 das Maximum auf 4 senkt.<br><b>Konstitutionsproben</b><br>Eine Konstitutionsprobe ist fällig, wenn Ihr Charakter versucht, gegen eine Krankheit anzukämpfen, oder den Auswirkungen einer Droge oder eines Gifts widerstehen muss, und sie kann auch bestimmen, wie lange er die Luft anhalten kann.",
@@ -1750,8 +1751,6 @@
 	"SPACE1889.TalentDescBlutsaugen": "Wenn ein Angriff gelingt, setzt sich das Wesen auf der Haut fest. Jedes so festgesetzte Wesen saugt dem Opfer von da an einen Gesundheitspunkt pro Kampfrunde aus",
 	"SPACE1889.TalentDescSchwarm": "Dies ist nicht eine Kreatur, sondern sehr viele die zusammen einen Schwarm bilden. Nur Waffen mit Flächenwirkung zählen beim Kampf gegen einen Schwarm. Alle anderen Waffen erzeugen maximal einen Punkt Schaden pro Angriff.",
 
-	"SPACE1889.WeaknessDescAmmoniakmetabolismus": "Der Verzehr vom Fleisch irdischer Wesen fügt der Kreatur pro Runde 4 T Giftschaden zu. Er muss dafür jedoch ein Opfer bereits ganz verschlungen haben.)",
-
 	"SPACE1889.TalentInfoAbgehaertetElektrizitaet": "+2 je Stufe Passive Abwehr bei Elektrizität",
 	"SPACE1889.TalentInfoAbgehaertetFeuer": "+2 je Stufe Passive Abwehr bei Feuer",
 	"SPACE1889.TalentInfoAbgehaertetGift": "+2 je Stufe Passive Abwehr bei Gift",
@@ -1950,6 +1949,7 @@
 	"SPACE1889.TalentInfoZivilisiert": "kein Abzug bei modernen / technikbezogenen Fertigkeiten",
 	"SPACE1889.TalentInfoSchwarm": "Nur Waffen mit Flächenwirkung zählen beim Kampf gegen einen Schwarm. Alle anderen Waffen erzeugen maximal einen Punkt Schaden pro Angriff.)",
 
+
 	"SPACE1889.ResourceDescAbstammung": "Die Abstammung eines Charakters definiert seinen gesellschaftlichen Status und die Klasse, der er angehört. Ein hoher Status kann das Ergebnis von Erfolg in einem angesehenen Beruf sein (zum Beispiel als Arzt, Jurist oder Professor), die Herkunft aus einer adligen Familie oder aber die Zugehörigkeit zu einer berüchtigten Organisation, wie beispielsweise der Mafia. Auf jeden Fall wird der Charakter aufgrund seines Status respektiert, er kann seine Mitmenschen beeindrucken und mitunter dazu bringen, ihm besondere Gefallen zu tun. Immer, wenn die Position des Charakters zu der Situation passt, erhalten Sie Zusatzwürfel zu sozialen Proben. Außerdem können Sie für jede zweite Stufe in dieser Ressource eine Bonus-Ressource wählen, die sich aus seinen Freunden und Beziehungen ergibt. Wenn Sie weitere Status-Stufen erwerben, steigen das Ansehen und die gesellschaftlichen Möglichkeiten ihres Charakters.",
 	"SPACE1889.ResourceDescArtefakt": "Artefakte sind seltene und mächtige Gegenstände, auf die der Charakter Zugriff hat. Das kann etwas sein, was er selbst erfunden hat, aber auch ein Erbstück oder etwas, das ihm zur sicheren Verwahrung anvertraut wurde. Vielleicht hat er es irgendwo gefunden, vielleicht aber auch gestohlen. Und möglicherweise weiß der Charakter noch nicht einmal, was sich da in seinem Besitz befindet.<br>Es gibt Artefakte in ganz unterschiedlichen Größen und Formen und mit sehr unterschiedlichen Funktionen. Bei einem einfachen Artefakt könnte es sich um ein Nahrungsextrakt handeln, das, in Pillenform eingenommen, normale Nahrungsaufnahme überflüssig macht, oder ein Universalwerkzeug. Auf einer höheren Stufe kann es ein handlicher Astrogations-Rechner sein, der Navigation im All erleichtert, oder ein Hitze-Strahler, der als Waffe verwendbar ist. Ein Tiefsee-U-Boot oder ein Relikt marsianischer Hochtechnologie wären die größten und mächtigsten aller Artefakte.<br>Wer die Stufe dieser Ressource steigert, kann ein weiteres Artefakt erhalten oder die Wirksamkeit eines vorhandenen erweitern. Natürlich ist der Wert eines Artefakts von Kampagne zu Kampagne unterschiedlich. So mag eine Kiemenmaske während einer Ätherfahrt nutzlos sein, aber das ist auch der Raketenrucksack auf der Venus. Das letzte Wort sollte daher immer der Spielleiter haben.",
 	"SPACE1889.ResourceDescBeziehungen": "Die Beziehungen eines Charakters stellen sein Netzwerk an Freunden und Kontaktpersonen dar. Diese Leute sind nicht unbedingt loyal, und sie helfen nur dann, wenn es sich für sie auch irgendwie lohnt. Dennoch kann der Charakter mit ihrer Hilfe nützliche Informationen erhalten und Gegenstände auftreiben, die anderweitig nur schwer zu erhalten sind. Ein solches Netzwerk erstreckt sich nur über einen bestimmten Bereich, beispielsweise in Wissenschaftskreisen, der Unterwelt oder der Polizei. Jedes Mal, wenn der Charakter Informationen oder Ausrüstung benötigt und deswegen seine Beziehungen spielen lässt, erhält der Spieler Zusatzwürfel für die entsprechende Fertigkeitsprobe. Außerdem kann er für jeweils zwei Stufen, die der Charakter in Beziehungen hat, vorübergehend eine Bonus-Ressource erhalten.<br>Der Erwerb weiterer Beziehungs-Stufen ermöglicht ein zusätzliches Netzwerk in einem anderen Bereich oder aber eine Ausweitung eines vorhandenen Netzwerks.",
@@ -2054,6 +2054,7 @@
 	"SPACE1889.ItemZielfernrohr": "Zielfernrohr",
 	"SPACE1889.ItemZuendschnur3M": "Zündschnur, 3 m",
 
+
 	"SPACE1889.ItemDescArzttasche": "Eine Arzttasche enthält die wichtigsten Dinge für eine Wundbehandlung. Hierzu gehören Skalpelle, Verbände, Desinfektionsmittel, ein Fläschchen Äther, Verbandsmull und andere medizinische Ausrüstung. Dies gewährt einen +1-Bonus für Würfe auf Medizin und reicht für zehn Benutzungen.",
 	"SPACE1889.ItemDescChirurgenset": "Ein Chirurgenset enthält alles, was benötigt wird, um Notoperationen im Feld durchführen zu können. Hierzu gehören Skalpelle, Zangen, Verbände, Desinfektionsmittel, Äther, Verbandsmull und spezielle medizinische Ausrüstung.<br>Dies gewährt einen +2-Bonus für Würfe auf Medizin und reicht für zehn Benutzungen.",
 	"SPACE1889.ItemDescEinbruchswerkzeug": "Dieser Satz enthält speziell geformte Werkzeuge, Zangen, Pinzetten, Dietriche und andere Hilfsmittel, die für das Öffnen von Schlössern benötigt werden. Das Werkzeug gewährt einen +2-Bonus für Würfe auf Schlösser öffnen.",
@@ -2151,7 +2152,11 @@
 	"SPACE1889.NumberOfModificationDice": "Anzahl der Modifikations-Würfel",
 	"SPACE1889.Submit": "Bestätigen",
 	"SPACE1889.Cancel": "Abbrechen",
-	"SPACE1889.Ok": "Ok"
-
+	"SPACE1889.Ok": "Ok",
+	"SPACE1889.SpaceRoll": "SPACE 1889 Wurf",
+	"SPACE1889.NumberOfDice": "Würfelanzahl",
+	"SPACE1889.ReasonForThrowingTheDice": "Grund des Würfelwurfes",
+	"SPACE1889.MakePaperPlanes": "z.B. Papierflieger basteln...",
+	"SPACE1889.CancelRoll": "Auch gut, dann wird nicht gewürfelt"
 
 }
