@@ -1032,7 +1032,7 @@ export class Space1889Actor extends Actor
 	}
 
 
-	showAttributeInfo(name, key)
+	showAttributeInfo(name, key, whisper)
 	{
 		const speaker = ChatMessage.getSpeaker({ actor: this.actor });
 		const rollMode = game.settings.get('core', 'rollMode');
@@ -1046,6 +1046,7 @@ export class Space1889Actor extends Actor
 			speaker: speaker,
 			rollMode: rollMode,
 			flavor: label,
+			whisper: whisper ? [game.user.id] : [],
 			content: desc ?? ''
 		});
 
@@ -1110,7 +1111,7 @@ export class Space1889Actor extends Actor
 		const dieCount = this.data.data.abilities[key]?.total;
 		const evaluation = SPACE1889RollHelper.getEventEvaluation(event);
 		if (evaluation.showInfoOnly)
-			return this.showAttributeInfo(game.i18n.localize(CONFIG.SPACE1889.abilities[key]), key);
+			return this.showAttributeInfo(game.i18n.localize(CONFIG.SPACE1889.abilities[key]), key, evaluation.whisperInfo);
 
 		return this.rollAttribute(dieCount, evaluation.showDialog, key);
 	}
@@ -1120,7 +1121,7 @@ export class Space1889Actor extends Actor
 		const dieCount = this.data.data.secondaries[key]?.total;
 		const evaluation = SPACE1889RollHelper.getEventEvaluation(event);
 		if (evaluation.showInfoOnly)
-			return this.showAttributeInfo(game.i18n.localize(CONFIG.SPACE1889.secondaries[key]), key);
+			return this.showAttributeInfo(game.i18n.localize(CONFIG.SPACE1889.secondaries[key]), key, evaluation.whisperInfo);
 
 		return this.rollAttribute(dieCount, evaluation.showDialog, key);
 	}
@@ -1187,7 +1188,7 @@ export class Space1889Actor extends Actor
 
 		const evaluation = SPACE1889RollHelper.getEventEvaluation(event);
 		if (evaluation.showInfoOnly)
-			return this.showAttributeInfo(label, key);
+			return this.showAttributeInfo(label, key, evaluation.whisperInfo);
 
 		return this.rollAttribute(dieCount, evaluation.showDialog, key);
 	}

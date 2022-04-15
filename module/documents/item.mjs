@@ -234,12 +234,12 @@ export class Space1889Item extends Item {
 	 * @param {Event} event   The originating click event
 	 * @private
 	 */
-	async roll() {
+	async roll(event) {
 		const item = this.data;
 
 		if (!this.data.data.formula)
 		{
-			SPACE1889RollHelper.rollItemInfo(item, this.actor);
+			SPACE1889RollHelper.rollItemInfo(item, this.actor, !event?.shiftKey && !event?.ctrlKey);
 			return;
 		}
 

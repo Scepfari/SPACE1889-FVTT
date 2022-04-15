@@ -4,9 +4,10 @@ export default class SPACE1889RollHelper
 {
 	static getEventEvaluation(event)
 	{
-		const showDialog = (event?.shiftKey || event?.ctrlKey);
-		const showInfoOnly = !showDialog && event?.altKey;
-		return { showDialog: showDialog, showInfoOnly: showInfoOnly };
+		const showInfoOnly = event?.altKey;
+		const showDialog = !showInfoOnly && (event?.shiftKey || event?.ctrlKey);
+		const doNotWhisperInfo = event?.shiftKey || event?.ctrlKey;
+		return { showDialog: showDialog, showInfoOnly: showInfoOnly, whisperInfo: !doNotWhisperInfo };
 	}
 
 	static rollItem(itemData, actor, event)
@@ -17,7 +18,7 @@ export default class SPACE1889RollHelper
 		const evaluation = this.getEventEvaluation(event);
 		const dieCount = this.getDieCount(itemData, actor);
 		if (evaluation.showInfoOnly)
-			return this.rollItemInfo(itemData, actor);
+			return this.rollItemInfo(itemData, actor, evaluation.whisperInfo);
 
 		if (itemData.type == 'talent')
 			return this.rollSpecialTalent(itemData, actor, dieCount, evaluation.showDialog)
@@ -177,9 +178,9 @@ export default class SPACE1889RollHelper
 	 * 
 	 * @param {object} item itemData
 	 * @param {object} actor
-	 * @param {object} rollData
+	 * @param {boolean} whisper
 	 */
-	static rollItemInfo(item, actor)
+	static rollItemInfo(item, actor, whisper)
 	{
 		// Initialize chat data.
 		const speaker = ChatMessage.getSpeaker({ actor: actor });
@@ -295,14 +296,13 @@ export default class SPACE1889RollHelper
 			label = `<h2><strong>${item.data.label}</strong> [${type}]</h2>`;
 		}
 
-
 		ChatMessage.create({
 			speaker: speaker,
 			rollMode: rollMode,
 			flavor: label,
+			whisper: whisper ? [game.user.id] : [],
 			content: desc ?? ''
 		});
-
 	}
 
 

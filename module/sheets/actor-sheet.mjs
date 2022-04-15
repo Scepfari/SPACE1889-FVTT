@@ -911,7 +911,7 @@ export class Space1889ActorSheet extends ActorSheet {
 						const showDialog = (event.shiftKey || event.ctrlKey);
 						return item.rollSpecial(dieCount, showDialog);
 					}
-					return item.roll();
+					return item.roll(event);
 				} 
 			}
 			else if (dataset.rollType == "talent")
@@ -958,19 +958,20 @@ export class Space1889ActorSheet extends ActorSheet {
 			}
 			else if (dataset.rollType == 'actor' && dataset.rollDiecount && dataset.rollKey)
 			{
-					const actor = this.actor;
-					const dieCount = Math.max(Number(dataset.rollDiecount),0);
-					const showDialog = (event.shiftKey || event.ctrlKey);
-					const showInfoOnly = !showDialog && event.altKey;
-					if (showInfoOnly)
-						return actor.showAttributeInfo(dataset.label, dataset.rollKey);
-					
-					return actor.rollAttribute(dieCount, showDialog, dataset.rollKey);
+				const actor = this.actor;
+				const dieCount = Math.max(Number(dataset.rollDiecount),0);
+				const evaluation = SPACE1889RollHelper.getEventEvaluation(event);
+
+				if (evaluation.showInfoOnly)
+					return actor.showAttributeInfo(dataset.label, dataset.rollKey, evaluation.whisperInfo);
+
+				return actor.rollAttribute(dieCount, evaluation.showDialog, dataset.rollKey);
 			}
 			else if (dataset.rollType == 'actorinfo' &&  dataset.rollKey)
 			{
 				const actor = this.actor;
-				return actor.showAttributeInfo(dataset.label, dataset.rollKey);
+				const evaluation = SPACE1889RollHelper.getEventEvaluation(event);
+				return actor.showAttributeInfo(dataset.label, dataset.rollKey, evaluation.whisperInfo);
 			}
 		}
 
