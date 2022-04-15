@@ -39,4 +39,14 @@ export const registerSystemSettings = function ()
             default: true,
             type: Boolean
         });
+
+    game.settings.register("space1889", "usePercentForNpcAndCreatureDamageInfo",
+	    {
+            name: "SPACE1889.UsePercentForNpcAndCreatureDamageInfo",
+            hint: "SPACE1889.UsePercentForNpcAndCreatureDamageInfoInfo",
+		    scope: "world",
+		    config: true,
+		    default: false,
+		    type: Boolean
+	    });
 }

@@ -501,10 +501,12 @@ export default class SPACE1889RollHelper
 		else if (newHealth <= 0)
 			gesamtInfo += "<b>" + game.i18n.localize("SPACE1889.Vanquished") + "!</b>";
 
+		const usePercentage = !isCharakter && this.usePercentForNpcAndCreatureDamageInfo();
+
 		let info = "<small>" + (dmgName != "" ? "durch <i>" + dmgName + "</i> und " : "");
-		info += game.i18n.format("SPACE1889.ChatInfoHealth", { health: (isCharakter ? newHealth.toString() : Math.round(100 * newHealth / maxHealth).toString() + "%") });
+		info += game.i18n.format("SPACE1889.ChatInfoHealth", { health: (!usePercentage ? newHealth.toString() : Math.round(100 * newHealth / maxHealth).toString() + "%") });
 		if (damageTuple.nonLethal > 0)
-			info += " " + game.i18n.format("SPACE1889.ChatInfoHealthLethalDamageOnly", { lethalHealth: lethalValue.toString() });
+			info += " " + game.i18n.format("SPACE1889.ChatInfoHealthLethalDamageOnly", { lethalHealth: (!usePercentage ? lethalValue.toString() : Math.round(100 * lethalValue / maxHealth).toString() + "%") });
 		info += "</small><br>";
 
 		if (trefferInfo != "")
@@ -512,7 +514,7 @@ export default class SPACE1889RollHelper
 		if (gesamtInfo != "")
 			info += (trefferInfo != "" ? "<br>" : "") + "<b>" + game.i18n.localize("SPACE1889.OverallEffect") + ":</b> <br>" + gesamtInfo;
 
-		const titel = game.i18n.format("SPACE1889.ChatInfoDamage", { damage: dmg.toString(), damageType: dmgTypeLabel });
+		const titel = game.i18n.format("SPACE1889.ChatInfoDamage", { damage: (!usePercentage ? dmg.toString() : Math.round(100 * dmg / maxHealth).toString() + "%"), damageType: dmgTypeLabel });
 		let messageContent = `<div><h2>${titel}</h2></div>`;
 		messageContent += `${info}`;
 		let chatData =
@@ -525,4 +527,10 @@ export default class SPACE1889RollHelper
 
 		ChatMessage.create(chatData, {});
 	}
+
+	static usePercentForNpcAndCreatureDamageInfo()
+	{
+		return game.settings.get("space1889", "usePercentForNpcAndCreatureDamageInfo");
+	}
+	
 }

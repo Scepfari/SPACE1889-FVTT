@@ -2123,6 +2123,8 @@
 	"SPACE1889.HeroLevelVeteran": "Veteran",
 	"SPACE1889.HeroLevelWeltspitze": "World-Leader",
 	"SPACE1889.HeroLevelUebermensch": "Superman",
+	"SPACE1889.UsePercentForNpcAndCreatureDamageInfo": "NPC health percentage",
+	"SPACE1889.UsePercentForNpcAndCreatureDamageInfoInfo": "In the case of creatures and NPCs, the damage information in the chat output is in percentages instead of points",
 	"SPACE1889.InfoAddDamage": "Left click, to add damage",
 	"SPACE1889.ChatInfoUndoDamage": "Das Hinzufügen des Schadens bei Charakter {name} wurde wieder zurückgenommen.",
 	"SPACE1889.ChatInfoDamage": "Nimmt {damage}{damageType} Schaden",

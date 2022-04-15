@@ -2124,6 +2124,8 @@
 	"SPACE1889.HeroLevelVeteran": "Veteran",
 	"SPACE1889.HeroLevelWeltspitze": "Weltspitze",
 	"SPACE1889.HeroLevelUebermensch": "Übermensch",
+	"SPACE1889.UsePercentForNpcAndCreatureDamageInfo": "NSC Gesundheit in Prozenten",
+	"SPACE1889.UsePercentForNpcAndCreatureDamageInfoInfo": "Bei Kreaturen und NSCs erfolgt die Schadensinformation bei der Chatausgabe in Prozenten anstelle von Punkten",
 	"SPACE1889.InfoAddDamage": "Linksklick, zum Hinzufügen von Schaden",
 	"SPACE1889.ChatInfoUndoDamage": "Das Hinzufügen des Schadens bei Charakter {name} wurde wieder zurückgenommen.",
 	"SPACE1889.ChatInfoDamage": "Nimmt {damage}{damageType} Schaden",
