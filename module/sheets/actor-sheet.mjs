@@ -234,6 +234,9 @@ export class Space1889ActorSheet extends ActorSheet {
 			item.sheet.render(true);
 		});
 
+		// Rollable abilities.
+		html.find('.rollable').click(this._onRoll.bind(this));
+
 		// -------------------------------------------------------------
 		// Everything below here is only needed if the sheet is editable
 		if (!this.isEditable) return;
@@ -397,9 +400,6 @@ export class Space1889ActorSheet extends ActorSheet {
 
 		// Active Effect management
 		html.find(".effect-control").click(ev => onManageActiveEffect(ev, this.actor));
-
-		// Rollable abilities.
-		html.find('.rollable').click(this._onRoll.bind(this));
 
 		// Drag events for macros.
 		if (this.actor.isOwner) {
@@ -895,6 +895,7 @@ export class Space1889ActorSheet extends ActorSheet {
 		event.preventDefault();
 		const element = event.currentTarget;
 		const dataset = element.dataset;
+		const canRoll = this.isEditable;
 
 		// Handle item rolls.
 		if (dataset.rollType) 
@@ -905,7 +906,7 @@ export class Space1889ActorSheet extends ActorSheet {
 				const item = this.actor.items.get(itemId);
 				if (item)
 				{
-					if (dataset.rollDiecount)
+					if (dataset.rollDiecount && canRoll)
 					{
 						const dieCount = Math.max(Number(dataset.rollDiecount),0);
 						const showDialog = (event.shiftKey || event.ctrlKey);
@@ -921,12 +922,12 @@ export class Space1889ActorSheet extends ActorSheet {
 				if (item && item.data.type == "talent" && item.data.data.isRollable)
 				{
 					const showDialog = (event.shiftKey || event.ctrlKey);
-					if (item.data.data.id == "geschaerfterSinn")
+					if (item.data.data.id == "geschaerfterSinn" && canRoll)
 					{
 						const dieCount = Math.max(this.actor.data.data.secondaries.perception.total + Number(item.data.data.bonus), 0);
 						return item.rollSpecialTalent(dieCount, showDialog)
 					}
-					else if (item.data.data.id == "paralysierenderSchlag")
+					else if (item.data.data.id == "paralysierenderSchlag" && canRoll)
 					{
 						const skillItem = this.actor.items.find(e => e.data.data.id == "waffenlos");
 						if (skillItem != undefined)
@@ -935,7 +936,7 @@ export class Space1889ActorSheet extends ActorSheet {
 							return item.rollSpecialTalent(dieCount, showDialog);
 						}
 					}
-					else if (item.data.data.id == "assassine")
+					else if (item.data.data.id == "assassine" && canRoll)
 					{
 						const skillItem = this.actor.items.find(e => e.data.data.id == "heimlichkeit");
 						if (skillItem != undefined)
@@ -944,7 +945,7 @@ export class Space1889ActorSheet extends ActorSheet {
 							return item.rollSpecialTalent(dieCount, showDialog);
 						}
 					}
-					else if (item.data.data.id == "eigenartigerKampfstil")
+					else if (item.data.data.id == "eigenartigerKampfstil" && canRoll)
 					{
 						const skillItem = this.actor.items.find(e => e.data.data.id == item.data.data.bonusTarget);
 						if (skillItem != undefined)
@@ -965,7 +966,8 @@ export class Space1889ActorSheet extends ActorSheet {
 				if (evaluation.showInfoOnly)
 					return actor.showAttributeInfo(dataset.label, dataset.rollKey, evaluation.whisperInfo);
 
-				return actor.rollAttribute(dieCount, evaluation.showDialog, dataset.rollKey);
+				if (canRoll)
+					return actor.rollAttribute(dieCount, evaluation.showDialog, dataset.rollKey);
 			}
 			else if (dataset.rollType == 'actorinfo' &&  dataset.rollKey)
 			{
@@ -976,7 +978,7 @@ export class Space1889ActorSheet extends ActorSheet {
 		}
 
 		// Handle rolls that supply the formula directly.
-		if (dataset.roll) {
+		if (dataset.roll && canRoll) {
 			let label = dataset.label ? `${dataset.label}` : '';
 			let roll = new Roll(dataset.roll, this.actor.getRollData());
 			roll.toMessage({
