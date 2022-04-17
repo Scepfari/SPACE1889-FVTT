@@ -126,6 +126,7 @@
 	"SPACE1889.Average": "Average",
 	"SPACE1889.AverageAbbr": "Ø",
 	"SPACE1889.Attack": "Attack",
+	"SPACE1889.AttackOn": "Attack on {targetName}",
 	"SPACE1889.Injury": "Injury",
 	"SPACE1889.InjuryPl": "Injuries",
 	"SPACE1889.HealingFactor": "Healing Factor",
