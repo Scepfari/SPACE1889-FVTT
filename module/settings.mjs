@@ -22,8 +22,8 @@ export const registerSystemSettings = function ()
 
     game.settings.register("space1889", "improvedForeignLanguageCountCalculation",
         {
-            name: "SPACE1889.ImprovedForeignLanguageCountCalculation",
-            hint: "SPACE1889.ImprovedForeignLanguageCountCalculationInfo",
+            name: "SPACE1889.ConfigImprovedForeignLanguageCountCalculation",
+            hint: "SPACE1889.ConfigImprovedForeignLanguageCountCalculationInfo",
             scope: "world",
             config: true,
             default: true,
@@ -32,18 +32,28 @@ export const registerSystemSettings = function ()
 
     game.settings.register("space1889", "improvedEpCalculation",
         {
-            name: "SPACE1889.ImprovedEpCalculation",
-            hint: "SPACE1889.ImprovedEpCalculationInfo",
+            name: "SPACE1889.ConfigImprovedEpCalculation",
+            hint: "SPACE1889.ConfigImprovedEpCalculationInfo",
             scope: "world",
             config: true,
             default: true,
             type: Boolean
         });
 
+    game.settings.register("space1889", "optionalBlockDogeParryRule",
+        {
+            name: "SPACE1889.ConfigOptionalBlockDogeParryRule",
+            hint: "SPACE1889.ConfigOptionalBlockDogeParryRuleInfo",
+            scope: "world",
+            config: true,
+            default: false,
+            type: Boolean
+        });
+
     game.settings.register("space1889", "usePercentForNpcAndCreatureDamageInfo",
 	    {
-            name: "SPACE1889.UsePercentForNpcAndCreatureDamageInfo",
-            hint: "SPACE1889.UsePercentForNpcAndCreatureDamageInfoInfo",
+            name: "SPACE1889.ConfigUsePercentForNpcAndCreatureDamageInfo",
+            hint: "SPACE1889.ConfigUsePercentForNpcAndCreatureDamageInfoInfo",
 		    scope: "world",
 		    config: true,
 		    default: false,
