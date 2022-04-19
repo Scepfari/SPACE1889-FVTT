@@ -51,7 +51,10 @@ export class Space1889ItemSheet extends ItemSheet {
 		if (itemData.type == "specialization")
 			context.data['nonGroupSkills'] = CONFIG.SPACE1889.nonGroupSkills;
 		else if (itemData.type == "skill")
+		{
 			context.data['publications'] = CONFIG.SPACE1889.publications;
+			context.data['skillGroups'] = CONFIG.SPACE1889.skillGroups;
+		}
 		else if (itemData.type == "talent")
 		{
 			context.data['preConditionTypes'] = CONFIG.SPACE1889.preConditionTypes;

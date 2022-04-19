@@ -18,7 +18,9 @@
 		</div>
 		<div class="resource">
 			<label class="resource-label">{{ localize "SPACE1889.Rating" }}</label>
-			<input type="text" name="data.rating" value="{{data.rating}}" data-dtype="Number" />
+			<div class="resource-content flexrow flex-between">
+				<div class="resource item-margin5px">{{data.rating}}</div>
+			</div>
 		</div>
 	</div>
 	<div class="grid grid-2col">
@@ -28,18 +30,22 @@
 		</div>
 		<div class="resource">
 			<label class="resource-label">{{ localize "SPACE1889.Name" }}</label>
-			<input type="text" name="data.skillGroupName" value="{{data.skillGroupName}}" />
+			<select name="data.skillGroupName">
+				{{selectOptions data.skillGroups selected=data.skillGroupName localize=true}}
+			</select>
 		</div>
 
 		<div class="resource">
 			<label class="resource-label">{{ localize "SPACE1889.BaseAbility" }}</label>
-			<select name="data.underlyingAttribute" data-dtype="String">
-				{{#select data.underlyingAttribute}}
-				{{#each data.abilities as |ch char|}}
-				<option value="{{char}}">{{localize ch}}</option>
-				{{/each}}
-				{{/select}}
-			</select>
+			<div>
+				<select name="data.underlyingAttribute" data-dtype="String">
+					{{#select data.underlyingAttribute}}
+					{{#each data.abilities as |ch char|}}
+					<option value="{{char}}">{{localize ch}}</option>
+					{{/each}}
+					{{/select}}
+				</select>
+			</div>
 		</div>
 		<div class="resource">
 			<label class="resource-label">{{ localize "SPACE1889.Publication" }}</label>

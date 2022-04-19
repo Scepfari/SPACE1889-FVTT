@@ -103,6 +103,7 @@ SPACE1889.skillUnderlyingAttribute = [
 
 
 SPACE1889.skillGroups = {
+	'': "-",
 	akademischesWissen: "SPACE1889.SkillGroupAkaWissen",
 	handwerk: "SPACE1889.SkillGroupHandwerk",
 	kunst: "SPACE1889.SkillGroupKunst",
@@ -589,6 +590,7 @@ SPACE1889.publications = {
 	"aev1": "SPACE1889.PublicationAev1",
 	"aev2": "SPACE1889.PublicationAev2",
 	"aeds": "SPACE1889.PublicationAeds",
+	"nsc": "SPACE1889.PublicationNsc",
 	"uh": "SPACE1889.PublicationUh",
 	"sg": "SPACE1889.PublicationSg"
 };
@@ -604,6 +606,7 @@ SPACE1889.publicationsAbbreviations = {
 	"aev1": "SPACE1889.PublicationAev1Abbr",
 	"aev2": "SPACE1889.PublicationAev2Abbr",
 	"aeds": "SPACE1889.PublicationAedsAbbr",
+	"nsc": "SPACE1889.PublicationNscAbbr",
 	"uh": "SPACE1889.PublicationUhAbbr",
 	"sg": "SPACE1889.PublicationSgAbbr"
 };
