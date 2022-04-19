@@ -207,8 +207,9 @@ export default class SPACE1889RollHelper
 			desc = game.i18n.localize(item.data.descriptionLangId);
 			if (item.data.isSkillGroup)
 			{
+				const skillGroup = game.i18n.localize("SPACE1889.SkillGroup");
 				const gruppe = game.i18n.localize(CONFIG.SPACE1889.skillGroups[item.data.skillGroupName]);
-				label = `<h2><strong>${item.data.label}</strong></h2> <h3>${gruppe} [${fertigkeit}]</h3>`;
+				label = `<h2><strong>${gruppe}</strong></h2> <h3>[${skillGroup}]</h3>`;
 			}
 			else
 				label = `<h2><strong>${item.data.label}</strong> [${fertigkeit}]</h2>`;

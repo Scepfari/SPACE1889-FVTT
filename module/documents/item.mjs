@@ -163,7 +163,12 @@ export class Space1889Item extends Item {
 		const upperCaseId = item.data.id.replace(/^(.)/, function(b){return b.toUpperCase();});
 		item.data.nameLangId = 'SPACE1889.' + base + upperCaseId;
 		if (setDescription)
-			item.data.descriptionLangId = 'SPACE1889.' + base + 'Desc' + upperCaseId;
+		{
+			if (item.type == "skill" && item.data.isSkillGroup && item.data.skillGroupName.length > 0)
+				item.data.descriptionLangId = CONFIG.SPACE1889.skillGroupDescriptions[item.data.skillGroupName];
+			else
+				item.data.descriptionLangId = 'SPACE1889.' + base + 'Desc' + upperCaseId;
+		}
 		if (setInfo)
 		{
 			item.data.infoLangId = 'SPACE1889.' + base + 'Info' + upperCaseId;
