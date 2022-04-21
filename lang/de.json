@@ -1200,7 +1200,8 @@
 	"SPACE1889.WeaknessXenophob": "Xenophob",
 	"SPACE1889.WeaknessZerbrechlich": "Zerbrechlich",
 	"SPACE1889.WeaknessZwerg": "Zwerg",
-
+	"SPACE1889.WeaknessAmmoniakmetabolismus": "Ammoniak Metabolismus",
+	"SPACE1889.WeaknessPlasmametabolismus": "Plasma Metabolismus",
 
 	"SPACE1889.WeaknessDescAberglaube": "Unternimmt alles, um seinem eigenartigen Glauben zu folgen. ",
 	"SPACE1889.WeaknessDescAbstossend": "Abstoßendes Verhalten oder widerliche Eigenart.",
@@ -2159,7 +2160,7 @@
 	"SPACE1889.WeaponMartinihenryhinterladerGranatenaufsatz": "Martini-Henry-Hinterlader Granatenaufsatz",
 	"SPACE1889.WeaponMaximmg": "Maxim-MG",
 	"SPACE1889.WeaponMesser": "Messer",
-	"SPACE1889.WeaponSteinMesser": "Steinmesser",
+	"SPACE1889.WeaponSteinmesser": "Steinmesser",
 	"SPACE1889.WeaponMondmenschengewehr": "Mondmenschen-Gewehr",
 	"SPACE1889.WeaponMontignymitrailleuse": "Montigny-Mitrailleuse",
 	"SPACE1889.WeaponMoquaad": "Moquaad",
