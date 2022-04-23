@@ -265,6 +265,9 @@ export default class SPACE1889RollHelper
 		{
 			const armor = game.i18n.localize("SPACE1889.Armor") ?? item.type;
 			label = `[${armor}] ${item.data.label}`;
+			desc = game.i18n.localize(item.data.descriptionLangId);
+			if (desc == item.data.descriptionLangId && item.data.description != "")
+				desc = item.data.description;
 		}
 		else if (item.type == "language")
 		{

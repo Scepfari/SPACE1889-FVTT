@@ -1203,6 +1203,7 @@
 	"SPACE1889.WeaknessAmmoniakmetabolismus": "Ammoniak Metabolismus",
 	"SPACE1889.WeaknessPlasmametabolismus": "Plasma Metabolismus",
 
+
 	"SPACE1889.WeaknessDescAberglaube": "Unternimmt alles, um seinem eigenartigen Glauben zu folgen. ",
 	"SPACE1889.WeaknessDescAbstossend": "Abstoßendes Verhalten oder widerliche Eigenart.",
 	"SPACE1889.WeaknessDescAdelVerpflichtet": "Hat Verpflichtungen aufgrund seiner Herkunft",
@@ -2278,6 +2279,23 @@
 	"SPACE1889.WeaponZinnstrahl": "Zinnstrahl",
 
 
+	"SPACE1889.ArmorKettenpanzer": "Kettenpanzer",
+	"SPACE1889.ArmorLederrüstung": "Lederrüstung",
+	"SPACE1889.ArmorPlattenpanzer": "Plattenpanzer",
+	"SPACE1889.ArmorBrustpanzerMarsianisch": "Brustpanzer Marsianisch",
+	"SPACE1889.ArmorOenotrischeSchildinfantristenruestung": "Oenotrische Schildinfantristenrüstung",
+	"SPACE1889.ArmorRotesSandtiegerfell": "Rotes Sandtiegerfell",
+	"SPACE1889.ArmorSpinnentuchruestung": "Spinnentuch-Rüstung",
+	"SPACE1889.ArmorSportanzugGefuettert": "Sportanzug, gefüttert",
+	"SPACE1889.ArmorSchildStahl": "Schild, Stahl",
+	"SPACE1889.ArmorSchildHolz": "Schild, Holz",
+
+	"SPACE1889.ArmorDescBrustpanzerMarsianisch": "Gerade bei Offizieren kanalmarsianischer Garden sind diese den Bauch freilassenden und schmückenden Brustpanzer beliebt. Aus gehärtetem Leder oder seltener Metall und mit verzierten Schulterplatten stellen sie Stärke und Rang zur Schau. Gegenüber Marsianern und in Situationen, in denen Rang und Mut eine Rolle spielen, kann dies +1 Würfel auf Diplomatie- oder Einschüchtern-Proben bedeuten.",
+	"SPACE1889.ArmorDescOenotrischeSchildinfantristenruestung": "Diese aus lamellenartigen Metallplatten zusammengesetzte Rüstung ist der Stolz der oenotrischen Infanteristen. Zusammen mit ihrer Schildflinte galten sie damit bis zur Ankunft der Menschen als unbesiegbar. Die Rüstung ist etwas leichter als ein kompletter Plattenpanzer, aber dennoch nicht unerheblich in ihrer Behinderung.",
+	"SPACE1889.ArmorDescRotesSandtiegerfell": "<strong>Artefakt 1</strong><p>Das Fell des roten Sandtigers ist nicht nur eine schützende und schmückende Trophäe, sie behält bei richtiger Behandlung durch Hügelmarsianer, die das Geheimnis der Gerbung kennen, auch ihre Wirkung. Für den Träger bedeutet das in den Wüsten- und Steppengebieten des Mars +1 Würfel auf alle Heimlichkeit-Proben.</p>",
+	"SPACE1889.ArmorDescSpinnentuchruestung": "<strong>Artefakt 1</strong><p>Die Fasern dieser Rüstung wurden aus der Seide der domestizierten marsianischen Spinnenhunde hergestellt und sind viel stabiler als jeglicher irdische Stoff. Sie sind stark genug, Kugeln, Schrapnelle oder Schwerthiebe aufzuhalten. Fast alles Spinnentuch ist schon lange zu Staub und Fragmenten zerfallen, doch wurden wenige Anzüge für späteren Gebrauch in speziell versiegelten Räumen oder Kisten untergebracht. Sie sind so stabil und flexibel wie zu ihrer Herstellungszeit und außerordentlich nützlich. Das Geheimnis der Domestizierung von Spinnenhunden und wie man sie dazu bringt, Seide zu produzieren, geriet vor mehr als 20.000 Jahren in Vergessenheit, doch existieren Aufzeichnungen darüber in ein paar antiken marsianischen Ruinen. Spinnenhunde sind selten geworden, doch gibt es sie immer noch in wilden Gegenden entlang einiger toter Kanäle nahe dem Äquator. Wer das Geheimnis lüftet, wie man ihre Seide erntet und einige Dutzend der Tiere fängt, könnte neue Spinnentuch-Rüstungen herstellen.</p>",
+
+
 	"SPACE1889.Publication": "Publikation",
 	"SPACE1889.Page": "Seite",
 
@@ -2364,6 +2382,7 @@
 	"SPACE1889.Vanquished": "Besiegt",
 	"SPACE1889.StrikeEffect": "Trefferwirkung",
 	"SPACE1889.OverallEffect": "Gesamtwirkung",
+	"SPACE1889.CharacterSheetAvailableAre": "verfügbar sind",
 
 	"SPACE1889.ModifiedRoll": "Modifizierter Wurf",
 	"SPACE1889.NumberOfModificationDice": "Anzahl der Modifikations-Würfel",
