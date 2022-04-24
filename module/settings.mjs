@@ -58,5 +58,15 @@ export const registerSystemSettings = function ()
 		    config: true,
 		    default: false,
 		    type: Boolean
-	    });
+        });
+
+    game.settings.register("space1889", "lastCompendiumTranslationLanguage",
+        {
+            name: "last translation",
+            hint: "language abbreviation and space1889 version",
+            scope: "world",
+            config: false,
+            default: "de|0.6.2",
+            type: String
+        });
 }
