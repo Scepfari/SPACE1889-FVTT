@@ -8,6 +8,7 @@ import { Space1889ItemSheet } from "./sheets/item-sheet.mjs";
 import { preloadHandlebarsTemplates } from "./helpers/templates.mjs";
 import { SPACE1889 } from "./helpers/config.mjs";
 import { registerSystemSettings } from "./settings.mjs";
+import { Space1889Translation } from "./helpers/translation.mjs";
 
 /* -------------------------------------------- */
 /*  Init Hook                                   */
@@ -22,6 +23,7 @@ Hooks.once('init', async function() {
 		Space1889Item,
 		rollItemMacro,
 		config: SPACE1889,
+		translation: Space1889Translation,
 	};
 
 	// Add custom constants for configuration.
@@ -79,6 +81,8 @@ Handlebars.registerHelper('toLowerCase', function(str) {
 Hooks.once("ready", async function() {
 	// Wait to register hotbar drop hook on ready so that modules could register earlier if they want to
 	Hooks.on("hotbarDrop", (bar, data, slot) => createItemMacro(data, slot));
+
+	await Space1889Translation.runInitTranslationAction();
 });
 
 /* -------------------------------------------- */

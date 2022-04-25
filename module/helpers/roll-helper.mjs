@@ -80,7 +80,16 @@ export default class SPACE1889RollHelper
 
 		if (itemData.type == "weapon" || itemData.type == "skill" || itemData.type == "specialization")
 		{
-			const info = itemData.type == "weapon" ? game.i18n.localize("SPACE1889.Attack") ?? "Attack" : game.i18n.localize("SPACE1889.Probe") ?? "Probe";
+			let attackString = "";
+			if (itemData.type == "weapon")
+			{
+				if (game.user.targets.size > 0)
+					attackString = game.i18n.format("SPACE1889.AttackOn", { targetName: game.user.targets.first().name });
+				else
+					attackString = game.i18n.localize("SPACE1889.Attack") ?? "Attack";
+			}
+
+			const info = attackString != "" ? attackString : game.i18n.localize("SPACE1889.Probe") ?? "Probe";
 			this.rollSubSpecial(itemData, actor, dieCount, showDialog, info);
 		}
 	}
@@ -96,11 +105,16 @@ export default class SPACE1889RollHelper
 	{
 		if (itemData.type == "talent")
 		{
-			let info = game.i18n.localize("SPACE1889.Attack") ?? "Attack";
+			let info = "";
 			if (itemData.data.id == "geschaerfterSinn")
 				info = game.i18n.localize("SPACE1889.Probe") ?? "Probe";
 			else if (itemData.data.id == "eigenartigerKampfstil")
 				info = game.i18n.localize("SPACE1889.SecondaryAttributeDef");
+			else if (game.user.targets.size > 0)
+				info = game.i18n.format("SPACE1889.AttackOn", { targetName: game.user.targets.first().name });
+			else
+				info = game.i18n.localize("SPACE1889.Attack") ?? "Attack";
+
 			this.rollSubSpecial(itemData, actor, dieCount, showDialog, info, true);
 		}
 	}
@@ -193,8 +207,9 @@ export default class SPACE1889RollHelper
 			desc = game.i18n.localize(item.data.descriptionLangId);
 			if (item.data.isSkillGroup)
 			{
+				const skillGroup = game.i18n.localize("SPACE1889.SkillGroup");
 				const gruppe = game.i18n.localize(CONFIG.SPACE1889.skillGroups[item.data.skillGroupName]);
-				label = `<h2><strong>${item.data.label}</strong></h2> <h3>${gruppe} [${fertigkeit}]</h3>`;
+				label = `<h2><strong>${gruppe}</strong></h2> <h3>[${skillGroup}]</h3>`;
 			}
 			else
 				label = `<h2><strong>${item.data.label}</strong> [${fertigkeit}]</h2>`;
@@ -250,6 +265,9 @@ export default class SPACE1889RollHelper
 		{
 			const armor = game.i18n.localize("SPACE1889.Armor") ?? item.type;
 			label = `[${armor}] ${item.data.label}`;
+			desc = game.i18n.localize(item.data.descriptionLangId);
+			if (desc == item.data.descriptionLangId && item.data.description != "")
+				desc = item.data.description;
 		}
 		else if (item.type == "language")
 		{

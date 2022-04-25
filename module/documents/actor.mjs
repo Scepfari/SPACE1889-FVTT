@@ -584,6 +584,9 @@ export class Space1889Actor extends Actor
 			}
 		}
 
+		if (game.settings.get("space1889", "optionalBlockDogeParryRule"))
+			rating += this.getPassiveDefence(actorData);
+
 		actorData.data.block.value = rating;
 		actorData.data.block.instinctive = instinctive;
 		actorData.data.block.riposte = riposte;
@@ -641,6 +644,9 @@ export class Space1889Actor extends Actor
 			}
 		}
 
+		if (game.settings.get("space1889", "optionalBlockDogeParryRule"))
+			skillRating += this.getPassiveDefence(actorData);
+
 		actorData.data.parry.value = skillRating;
 		actorData.data.parry.instinctive = instinctive;
 		actorData.data.parry.riposte = riposte;
@@ -688,6 +694,9 @@ export class Space1889Actor extends Actor
 				break;
 			}
 		}
+
+		if (game.settings.get("space1889", "optionalBlockDogeParryRule"))
+			rating += this.getPassiveDefence(actorData);
 
 		actorData.data.evasion.value = rating;
 		actorData.data.evasion.instinctive = instinctive;

@@ -2,7 +2,7 @@
 	"name": "space1889",
 	"title": "Space 1889",
 	"description": "The SPACE 1889 Ubiquity system for FoundryVTT!",
-	"version": "0.6.2",
+	"version": "0.7.0",
 	"minimumCoreVersion": "0.8.6",
 	"compatibleCoreVersion": "9",
 	"author": "Scepfari",
@@ -96,7 +96,8 @@
 			"system": "space1889",
 			"path": "./packs/kreaturen-erde.db",
 			"entity": "Actor",
-			"type": "Actor"
+			"type": "Actor",
+			"private": true
 		},
 		{
 			"name": "kreaturenluna",
@@ -104,7 +105,8 @@
 			"system": "space1889",
 			"path": "./packs/kreaturen-luna.db",
 			"entity": "Actor",
-			"type": "Actor"
+			"type": "Actor",
+			"private": true
 		},
 		{
 			"name": "kreaturenmars",
@@ -112,7 +114,8 @@
 			"system": "space1889",
 			"path": "./packs/kreaturen-mars.db",
 			"entity": "Actor",
-			"type": "Actor"
+			"type": "Actor",
+			"private": true
 		},
 		{
 			"name": "kreaturenvenus",
@@ -120,7 +123,8 @@
 			"system": "space1889",
 			"path": "./packs/kreaturen-venus.db",
 			"entity": "Actor",
-			"type": "Actor"
+			"type": "Actor",
+			"private": true
 		},
 		{
 			"name": "kreaturenmerkur",
@@ -128,7 +132,8 @@
 			"system": "space1889",
 			"path": "./packs/kreaturen-merkur.db",
 			"entity": "Actor",
-			"type": "Actor"
+			"type": "Actor",
+			"private": true
 		},
 		{
 			"name": "gelderde",
@@ -172,6 +177,6 @@
 	"primaryTokenAttribute": "health",
 	"url": "https://github.com/Scepfari/SPACE1889-FVTT",
 	"manifest": "https://github.com/Scepfari/SPACE1889-FVTT/releases/latest/download/system.json",
-	"download": "https://github.com/Scepfari/SPACE1889-FVTT/releases/download/v0.6.2/space1889-foundry-0.6.2.zip",
+	"download": "https://github.com/Scepfari/SPACE1889-FVTT/releases/download/v0.7.0/space1889-foundry-0.7.0.zip",
 	"license": "LICENSE.txt"
 }
