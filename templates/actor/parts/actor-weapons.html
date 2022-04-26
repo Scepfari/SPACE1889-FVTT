@@ -30,7 +30,7 @@
 			<label class="items-list item-max-with60px">{{item.data.sizeMod}}</label>
 			<label class="items-list resource-label item-max-with40px">{{item.data.attack}} {{item.data.damageTypeDisplay}}</label>
 			<label class="items-list item-max-with40px">{{item.data.attackAverage}} {{item.data.damageTypeDisplay}}</label>
-			<div class="items-list item-max-with40px">
+			<div title='{{item.data.locationDisplayLong}}' class="items-list item-max-with40px">
 				<a class="location-click">{{item.data.locationDisplay}}</a>
 			</div>
 			<div class="item-controls item-max-with60px">
@@ -68,7 +68,7 @@
 			<label class="items-list item-max-with40px">{{item.data.dexPenalty}}</label>
 			<label class="items-list item-max-with60px">{{item.data.weight}}kg</label>
 			<div class="items-list item-max-with40px">
-				<a class="location-click">{{item.data.display}}</a>
+				<a title='{{item.data.locationLong}}' class="location-click">{{item.data.display}}</a>
 			</div>
 			<div class="item-controls item-max-with60px">
 				<a class="item-control item-edit" title="Edit Item"><i class="fas fa-edit"></i></a>

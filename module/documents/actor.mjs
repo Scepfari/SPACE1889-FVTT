@@ -204,16 +204,17 @@ export class Space1889Actor extends Actor
 		}
 		else
 		{
-			for (let armor of armors)
-			{
-				let langId = CONFIG.SPACE1889.storageLocationAbbreviations[armor.data.location] ?? "";
-				armor.data.display = (langId != "" ? game.i18n.localize(langId) : "?");
-			}
+			const lists = [armors, gear];
 
-			for (let item of gear)
+			for (const list of lists)
 			{
-				let langId = CONFIG.SPACE1889.storageLocationAbbreviations[item.data.location] ?? "";
-				item.data.display = (langId != "" ? game.i18n.localize(langId) : "?");
+				for (let element of list)
+				{
+					let langIdAbbr = CONFIG.SPACE1889.storageLocationAbbreviations[element.data.location] ?? "";
+					let longId = CONFIG.SPACE1889.storageLocations[element.data.location] ?? "";
+					element.data.display = (langIdAbbr != "" ? game.i18n.localize(langIdAbbr) : "?");
+					element.data.locationLong = (longId != "" ? game.i18n.localize(longId) : "?");
+				}
 			}
 
 			this._CalcThings(actorData);
@@ -324,7 +325,10 @@ export class Space1889Actor extends Actor
 			}
 			weapon.data.damageTypeDisplay = game.i18n.localize(CONFIG.SPACE1889.damageTypeAbbreviations[weapon.data.damageType]);
 			if (!SPACE1889Helper.isCreature(actorData))
+			{
 				weapon.data.locationDisplay = game.i18n.localize(CONFIG.SPACE1889.storageLocationAbbreviations[weapon.data.location]);
+				weapon.data.locationDisplayLong = game.i18n.localize(CONFIG.SPACE1889.storageLocations[weapon.data.location]);
+			}
 		}
 
 		SPACE1889Helper.sortByName(weapons);

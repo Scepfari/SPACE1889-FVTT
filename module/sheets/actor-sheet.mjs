@@ -84,7 +84,7 @@ export class Space1889ActorSheet extends ActorSheet {
 		context.data['species'] = CONFIG.SPACE1889.species;
 		context.data['motivations'] = CONFIG.SPACE1889.motivations;
 		context.data['resources'] = CONFIG.SPACE1889.resources;
-		context.data['storageLocationsAbbr'] = CONFIG.SPACE1889.storageLocationAbbreviations;
+		context.data['storageLocations'] = CONFIG.SPACE1889.storageLocation;
 	}
 
 	_prepareCreatureData(context)
