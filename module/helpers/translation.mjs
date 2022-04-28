@@ -33,7 +33,24 @@ export class Space1889Translation
             ["space1889.kreaturenluna", "SPACE1889.CompendiumCreatureLuna", "SPACE1889.CompendiumFolderNameCreatureLuna"],
             ["space1889.kreaturenmars", "SPACE1889.CompendiumCreatureMars", "SPACE1889.CompendiumFolderNameCreatureMars"],
             ["space1889.kreaturenvenus", "SPACE1889.CompendiumCreatureVenus", "SPACE1889.CompendiumFolderNameCreatureVenus"],
-            ["space1889.kreaturenmerkur", "SPACE1889.CompendiumCreatureMerkur", "SPACE1889.CompendiumFolderNameCreatureMercury"]
+            ["space1889.kreaturenmerkur", "SPACE1889.CompendiumCreatureMerkur", "SPACE1889.CompendiumFolderNameCreatureMercury"],
+            ["space1889.nsc1beamte", "SPACE1889.CompendiumNsc", "SPACE1889.CompendiumFolderNameBeamte"],
+            ["space1889.nsc1buehnenkuenstler", "SPACE1889.CompendiumNsc", "SPACE1889.CompendiumFolderNameBuehnenkuenstler"],
+            ["space1889.nsc1dienstpersonal", "SPACE1889.CompendiumNsc", "SPACE1889.CompendiumFolderNameDienstpersonal"],
+            ["space1889.nsc1haendlerundkaufleute", "SPACE1889.CompendiumNsc", "SPACE1889.CompendiumFolderNameHaendlerUndKaufleute"],
+            ["space1889.nsc1handwerker", "SPACE1889.CompendiumNsc", "SPACE1889.CompendiumFolderNameHandwerker"],
+            ["space1889.nsc2eingeborene", "SPACE1889.CompendiumNsc", "SPACE1889.CompendiumFolderNameEingeborene"],
+            ["space1889.nsc3herrenunddamenvonstand", "SPACE1889.CompendiumNsc", "SPACE1889.CompendiumFolderNameHerrenUndDamenVonStand"],
+            ["space1889.nsc4hochlandmarsianer", "SPACE1889.CompendiumNsc", "SPACE1889.CompendiumFolderNameHochlandmarsianer"],
+            ["space1889.nsc4huegelmarsianer", "SPACE1889.CompendiumNsc", "SPACE1889.CompendiumFolderNameHuegelmarsianer"],
+            ["space1889.nsc5militaer", "SPACE1889.CompendiumNsc", "SPACE1889.CompendiumFolderNameMilitaer"],
+            ["space1889.nsc6amuesierdamen", "SPACE1889.CompendiumNsc", "SPACE1889.CompendiumFolderNameAmuesierdamenUndGestrauchelteFrauen"],
+            ["space1889.nsc6gauner", "SPACE1889.CompendiumNsc", "SPACE1889.CompendiumFolderNameGauner"],
+            ["space1889.nsc6gluecksspieler", "SPACE1889.CompendiumNsc", "SPACE1889.CompendiumFolderNameGluecksspieler"],
+            ["space1889.nsc6schlaeger", "SPACE1889.CompendiumNsc", "SPACE1889.CompendiumFolderNameSchlaeger"],
+            ["space1889.nsc7archaischevenusier", "SPACE1889.CompendiumNsc", "SPACE1889.CompendiumFolderNameArchaischeVenusier"],
+            ["space1889.nsc7entwickeltevenusier", "SPACE1889.CompendiumNsc", "SPACE1889.CompendiumFolderNameEntwickelteVenusier"]
+
         ];
 	}
 
@@ -68,6 +85,7 @@ export class Space1889Translation
             }
             else
             {
+                const pack = await game.packs.get(key);
                 allConfig[key] = {
                     locked: lockState,
                     private: pack.private

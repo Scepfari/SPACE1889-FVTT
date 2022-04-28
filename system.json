@@ -158,6 +158,150 @@
 			"path": "./packs/makros.db",
 			"entity": "Macro",
 			"type": "Macro"
+		},
+		{
+			"name": "nsc1beamte",
+			"label": "Beamte",
+			"system": "space1889",
+			"path": "./packs/nsc1beamte.db",
+			"entity": "Actor",
+			"type": "Actor",
+			"private": true
+		},
+		{
+			"name": "nsc1buehnenkuenstler",
+			"label": "Buehnenkuenstler",
+			"system": "space1889",
+			"path": "./packs/nsc1buehnenkuenstler.db",
+			"entity": "Actor",
+			"type": "Actor",
+			"private": true
+		},
+		{
+			"name": "nsc1dienstpersonal",
+			"label": "Dienstpersonal",
+			"system": "space1889",
+			"path": "./packs/nsc1dienstpersonal.db",
+			"entity": "Actor",
+			"type": "Actor",
+			"private": true
+		},
+		{
+			"name": "nsc1haendlerundkaufleute",
+			"label": "Haendler Und Kaufleute",
+			"system": "space1889",
+			"path": "./packs/nsc1haendlerundkaufleute.db",
+			"entity": "Actor",
+			"type": "Actor",
+			"private": true
+		},
+		{
+			"name": "nsc1handwerker",
+			"label": "Handwerker",
+			"system": "space1889",
+			"path": "./packs/nsc1handwerker.db",
+			"entity": "Actor",
+			"type": "Actor",
+			"private": true
+		},
+		{
+			"name": "nsc2eingeborene",
+			"label": "Eingeborene",
+			"system": "space1889",
+			"path": "./packs/nsc2eingeborene.db",
+			"entity": "Actor",
+			"type": "Actor",
+			"private": true
+		},
+		{
+			"name": "nsc3herrenunddamenvonstand",
+			"label": "Herren und Damen von Stand",
+			"system": "space1889",
+			"path": "./packs/nsc3herrenunddamenvonstand.db",
+			"entity": "Actor",
+			"type": "Actor",
+			"private": true
+		},
+		{
+			"name": "nsc4hochlandmarsianer",
+			"label": "Hochlandmarsianer",
+			"system": "space1889",
+			"path": "./packs/nsc4hochlandmarsianer.db",
+			"entity": "Actor",
+			"type": "Actor",
+			"private": true
+		},
+		{
+			"name": "nsc4huegelmarsianer",
+			"label": "Huegelmarsianer",
+			"system": "space1889",
+			"path": "./packs/nsc4huegelmarsianer.db",
+			"entity": "Actor",
+			"type": "Actor",
+			"private": true
+		},
+		{
+			"name": "nsc5militaer",
+			"label": "Militaer",
+			"system": "space1889",
+			"path": "./packs/nsc5militaer.db",
+			"entity": "Actor",
+			"type": "Actor",
+			"private": true
+		},
+		{
+			"name": "nsc6amuesierdamen",
+			"label": "Amuesierdamen und gestrauchelte Frauen",
+			"system": "space1889",
+			"path": "./packs/nsc6amuesierdamen.db",
+			"entity": "Actor",
+			"type": "Actor",
+			"private": true
+		},
+		{
+			"name": "nsc6gauner",
+			"label": "Gauner",
+			"system": "space1889",
+			"path": "./packs/nsc6gauner.db",
+			"entity": "Actor",
+			"type": "Actor",
+			"private": true
+		},
+		{
+			"name": "nsc6gluecksspieler",
+			"label": "Gluecksspieler",
+			"system": "space1889",
+			"path": "./packs/nsc6gluecksspieler.db",
+			"entity": "Actor",
+			"type": "Actor",
+			"private": true
+		},
+		{
+			"name": "nsc6schlaeger",
+			"label": "Schlaeger",
+			"system": "space1889",
+			"path": "./packs/nsc6schlaeger.db",
+			"entity": "Actor",
+			"type": "Actor",
+			"private": true
+		},
+		{
+			"name": "nsc7archaischevenusier",
+			"label": "Archaische Venusier",
+			"system": "space1889",
+			"path": "./packs/nsc7archaischevenusier.db",
+			"entity": "Actor",
+			"type": "Actor",
+			"private": true
+		},
+		{
+			"name": "nsc7entwickeltevenusier",
+			"label": "Entwickelte Venusier",
+			"system": "space1889",
+			"path": "./packs/nsc7entwickeltevenusier.db",
+			"entity": "Actor",
+			"type": "Actor",
+			"private": true
 		}
 	],
 	"languages": [
