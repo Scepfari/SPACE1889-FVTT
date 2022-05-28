@@ -174,10 +174,11 @@ export default class SPACE1889RollHelper
 		function getChatData(wurfelAnzahl)
 		{
 			const von = game.i18n.localize("SPACE1889.Of");
+			const dieType = game.settings.get("space1889", "dice");
 			let messageContent = `<div><h2>${itemData.data.label}</h2></div>`;
 			if (withExtraInfo)
 				messageContent += `${extraInfo} <br>`;
-			messageContent += `${info} <b>[[${wurfelAnzahl}d6odd]] ${von}  ${wurfelAnzahl}</b> <br>`;
+			messageContent += `${info} <b>[[${wurfelAnzahl}${dieType}]] ${von}  ${wurfelAnzahl}</b> <br>`;
 			let chatData =
 			{
 				user: game.user.id,
@@ -549,6 +550,11 @@ export default class SPACE1889RollHelper
 	static usePercentForNpcAndCreatureDamageInfo()
 	{
 		return game.settings.get("space1889", "usePercentForNpcAndCreatureDamageInfo");
+	}
+
+	static getDieType()
+	{
+		return game.settings.get("space1889", "dice");
 	}
 	
 }

@@ -2441,6 +2441,11 @@
 
 	"SPACE1889.ChooseSkill": "Skill selection for the talent",
 	"SPACE1889.ChooseSense": "Sense selection for the talent",
+	"SPACE1889.ConfigDice": "Dice",
+	"SPACE1889.ConfigDiceInfo": "Type of dice to be used",
+	"SPACE1889.ConfigDiceCoin": "Coin",
+	"SPACE1889.ConfigDiceD6even": "six-sided die: even numbers are successes",
+	"SPACE1889.ConfigDiceD6odd": "six-sided die: odd numbers are successes",
 	"SPACE1889.ConfigImprovedForeignLanguageCountCalculation": "Foreign languages intermediate steps",
 	"SPACE1889.ConfigImprovedForeignLanguageCountCalculationInfo": "Calculation of the maximum foreign language share receives additional intermediate levels (Linguistics: Level 5 => 3, Level 7 => 6 und Level 9 => 12 languages)",
 	"SPACE1889.ConfigImprovedEpCalculation": "Houserule for XP calculation",

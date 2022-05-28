@@ -2441,6 +2441,11 @@
 
 	"SPACE1889.ChooseSkill": "Fertigkeitsauswahl für das Talent",
 	"SPACE1889.ChooseSense": "Sinnauswahl für das Talent",
+	"SPACE1889.ConfigDice": "Würfel",
+	"SPACE1889.ConfigDiceInfo": "Art der Würfel die verwendet werden sollen",
+	"SPACE1889.ConfigDiceCoin": "Münze",
+	"SPACE1889.ConfigDiceD6even": "sechsseitiger Würfel: gerade Zahlen sind Erfolge",
+	"SPACE1889.ConfigDiceD6odd": "sechsseitiger Würfel: ungerade Zahlen sind Erfolge",
 	"SPACE1889.ConfigImprovedForeignLanguageCountCalculation": "Fremdsprachen Zwischenstufen",
 	"SPACE1889.ConfigImprovedForeignLanguageCountCalculationInfo": "Berechung der Maximalen Fremdsprachenanzahl erhält zusätzliche Zwischenstufen (Linguistik: Stufe 5 => 3, Stufe 7 => 6 und Stufe 9 => 12 Sprachen)",
 	"SPACE1889.ConfigImprovedEpCalculation": "Hausregeln für die EP Berechnung",

@@ -1266,7 +1266,8 @@ export class Space1889Actor extends Actor
 		function getChatData(wurfelAnzahl)
 		{
 			let messageContent = `<div><h2>${name}</h2></div>`;
-			messageContent += `${info} <b>[[${wurfelAnzahl}dc]] von ${wurfelAnzahl}</b> <br>`;
+			const dieType = SPACE1889RollHelper.getDieType();
+			messageContent += `${info} <b>[[${wurfelAnzahl}${dieType}]] von ${wurfelAnzahl}</b> <br>`;
 			let chatData =
 			{
 				user: game.user.id,

@@ -29,15 +29,6 @@ Hooks.once('init', async function() {
 	// Add custom constants for configuration.
 	CONFIG.SPACE1889 = SPACE1889;
 
-	/**
-	 * Set an initiative formula for the system
-	 * @type {String}
-	 */
-	CONFIG.Combat.initiative = {
-		formula: "(@secondaries.initiative.total)dc + @secondaries.initiative.total / 100",
-		decimals: 2
-	};
-
 	// Define custom Document classes
 	CONFIG.Actor.documentClass = Space1889Actor;
 	CONFIG.Item.documentClass = Space1889Item;
@@ -50,6 +41,15 @@ Hooks.once('init', async function() {
 
 	// Register System Settings
 	registerSystemSettings();
+
+	/**
+	 * Set an initiative formula for the system
+	 * @type {String}
+	 */
+	CONFIG.Combat.initiative = {
+		formula: "(@secondaries.initiative.total)" + game.settings.get("space1889", "dice") + " + @secondaries.initiative.total / 100",
+		decimals: 2
+	};
 
 	// Preload Handlebars templates.
 	return preloadHandlebarsTemplates();

@@ -1,5 +1,22 @@
 export const registerSystemSettings = function ()
 {
+    game.settings.register("space1889", "dice",
+        {
+            name: "SPACE1889.ConfigDice",
+            hint: "SPACE1889.ConfigDiceInfo",
+            scope: "world",
+            config: true,
+            default: "dc",
+            type: String,
+            choices:
+            {
+                "dc": game.i18n.localize("SPACE1889.ConfigDiceCoin"),
+                "d6even": game.i18n.localize("SPACE1889.ConfigDiceD6even"),
+                "d6odd": game.i18n.localize("SPACE1889.ConfigDiceD6odd"),
+            }
+        }
+    );
+
     game.settings.register("space1889", "heroLevel",
         {
             name: "SPACE1889.ConfigHeroLevel",
