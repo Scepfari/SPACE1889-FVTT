@@ -883,7 +883,7 @@
 	"SPACE1889.StorageLocationKoerper": "On body",
 	"SPACE1889.StorageLocationRucksack": "In backpack",
 	"SPACE1889.StorageLocationWithBackpack": "With backpack",
-	"SPACE1889.StorageLocationLager": "Im Lager",
+	"SPACE1889.StorageLocationLager": "In store",
 	"SPACE1889.StorageLocationKoerperAbbr": "O",
 	"SPACE1889.StorageLocationRucksackAbbr": "B",
 	"SPACE1889.StorageLocationLagerAbbr": "S",

@@ -300,6 +300,7 @@
 .space1889 .sheet-body .tab,
 .space1889 .sheet-body .tab .editor {
 	height: 100%;
+	min-height: 30px;
 }
 
 .space1889 .tox .tox-editor-container {
@@ -609,3 +610,13 @@ font-size: 12px;
 	font-size: 13px;
 	font-weight: bold;
 }
+
+.space1889 .edit-special {
+	min-height: 30px;
+}
+
+.tox.tox-tinymce {
+	min-height: 300px;
+	resize: vertical;
+}
+

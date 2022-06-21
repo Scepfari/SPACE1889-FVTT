@@ -206,6 +206,8 @@ export default class SPACE1889RollHelper
 		{
 			const fertigkeit = game.i18n.localize("SPACE1889.Skill") ?? item.type;
 			desc = game.i18n.localize(item.data.descriptionLangId);
+			if (desc == item.data.descriptionLangId && item.data.description != "")
+				desc = item.data.description;
 			if (item.data.isSkillGroup)
 			{
 				const skillGroup = game.i18n.localize("SPACE1889.SkillGroup");
@@ -233,6 +235,8 @@ export default class SPACE1889RollHelper
 		else if (item.type == "weakness")
 		{
 			desc = game.i18n.localize(item.data.descriptionLangId);
+			if (desc == item.data.descriptionLangId && item.data.description != "")
+				desc = item.data.description;
 			const weakness = game.i18n.localize("SPACE1889.Weakness") ?? item.type;
 			label = `<h2><strong>${item.data.label}</strong> [${weakness}]</h2>`;
 		}
@@ -251,7 +255,7 @@ export default class SPACE1889RollHelper
 				desc += game.i18n.localize("SPACE1889.CombatSpecialization") + ": " + game.i18n.localize(CONFIG.SPACE1889.combatSpecializations[item.data.specializationId]) + "<br>";
 			desc +=  game.i18n.localize("SPACE1889.Damage") + ": " + item.data.damage.toString() + " " + item.data.damageTypeDisplay;
 			if (item.data.range != "")
-		{
+			{
 				desc += "<br>" + game.i18n.localize("SPACE1889.Range") + ": " + item.data.range;
 				desc += "<br>" + game.i18n.localize("SPACE1889.Capacity") + ": " + item.data.capacity + " " + game.i18n.localize(CONFIG.SPACE1889.weaponCapacityTypes[item.data.capacityType] + "Abbr");
 			}
@@ -269,6 +273,8 @@ export default class SPACE1889RollHelper
 			desc = game.i18n.localize(item.data.descriptionLangId);
 			if (desc == item.data.descriptionLangId && item.data.description != "")
 				desc = item.data.description;
+			else if (item.data.description != "")
+				desc += "<br>" + item.data.description;
 		}
 		else if (item.type == "language")
 		{
@@ -311,6 +317,9 @@ export default class SPACE1889RollHelper
 				else
 					desc = game.i18n.format("SPACE1889.NoLanguageEntry", { langId: item.data.descriptionLangId });
 			}
+			else if (item.data.description != "")
+				desc += "<br>" + item.data.description;
+
 			const type = game.i18n.localize("SPACE1889.Item") ?? item.type;
 			label = `<h2><strong>${item.data.label}</strong> [${type}]</h2>`;
 		}
