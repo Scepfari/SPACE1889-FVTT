@@ -86,4 +86,14 @@ export const registerSystemSettings = function ()
             default: "de|0.6.2",
             type: String
         });
+
+	game.settings.register("space1889", "lastUsedSystemVersion",
+		{
+			name: "last system version",
+			hint: "space1889 version",
+			scope: "world",
+			config: false,
+			default: "0.7.4",
+			type: String
+		});
 }

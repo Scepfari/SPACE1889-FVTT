@@ -9,6 +9,7 @@ import { preloadHandlebarsTemplates } from "./helpers/templates.mjs";
 import { SPACE1889 } from "./helpers/config.mjs";
 import { registerSystemSettings } from "./settings.mjs";
 import { Space1889Translation } from "./helpers/translation.mjs";
+import { Space1889Migration } from "./helpers/migration.mjs";
 
 /* -------------------------------------------- */
 /*  Init Hook                                   */
@@ -83,6 +84,7 @@ Hooks.once("ready", async function() {
 	Hooks.on("hotbarDrop", (bar, data, slot) => createItemMacro(data, slot));
 
 	await Space1889Translation.runInitTranslationAction();
+	await Space1889Migration.runInitMigrationAction();
 });
 
 /* -------------------------------------------- */
