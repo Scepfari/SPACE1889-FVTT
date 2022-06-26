@@ -750,6 +750,9 @@ export class Space1889Actor extends Actor
 			}
 		}
 
+		if (actorData.data.health.value < 0)
+			str = Math.max(0, str + actorData.data.health.value);
+
 		let levels = [4, 10, 20, 40, 100, 150, 250, 300, 350, 400, 450, 500];
 		str = Math.max(str, 1);
 		str = Math.min(str, 10);
@@ -972,6 +975,11 @@ export class Space1889Actor extends Actor
 			this.update({ "data.health.value": actorData.data.health.max - damage });
 
 		actorData.data.health.value = newHealth;
+		if (newHealth < 0)
+		{
+			actorData.data.secondaries.move.total = Math.max(0, actorData.data.secondaries.move.total + newHealth);
+			this.CalcAndSetLoad(actorData);
+		}
 	}
 
 	/**
