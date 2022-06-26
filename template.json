@@ -180,6 +180,7 @@
 			"bonus": 0,
 			"bonusTarget": "",
 			"bonusTargetType": "",
+			"bonusStartLevel":  1,
 			"info": ""
 		},
 		"skill": {

@@ -89,22 +89,26 @@
     </div>
 
     <hr>
-    <li class="item flexrow items-header">
-        <label class="resource-label">{{localize "SPACE1889.BonusTarget"}}</label>
-        <label class="resource-label">{{ localize "SPACE1889.TargetType" }}</label>
-        <label class="resource-label">{{localize "SPACE1889.Rating"}}</label>
-    </li>
-    <li class="item flex-group-center flexrow">
-        <div class="resource-content flex-center flex-between">
-            <input type="text" name="data.bonusTarget" value="{{data.bonusTarget}}" />
-        </div>
-        <div class="resource-content flex-center flex-between">
-            <input type="text" name="data.bonusTargetType" value="{{data.bonusTargetType}}" />
-        </div>
-        <div class="resource-content flex-center flex-between">
-            <input type="text" name="data.bonus" value="{{data.bonus}}" />
-        </div>
-    </li>
+	<li class="item flexrow items-header">
+		<label class="resource-label">{{localize "SPACE1889.BonusTarget"}}</label>
+		<label class="resource-label">{{ localize "SPACE1889.TargetType" }}</label>
+		<label class="resource-label">{{localize "SPACE1889.Rating"}}</label>
+		<label class="resource-label" title={{localize "SPACE1889.BonusStartLevel"}}>{{localize "SPACE1889.BonusStartLevelAbbr"}}</label>
+	</li>
+	<li class="item flex-group-center flexrow">
+		<div class="resource-content flex-center flex-between">
+			<input type="text" name="data.bonusTarget" value="{{data.bonusTarget}}" />
+		</div>
+		<div class="resource-content flex-center flex-between">
+			<input type="text" name="data.bonusTargetType" value="{{data.bonusTargetType}}" />
+		</div>
+		<div class="resource-content flex-center flex-between">
+			<input type="text" name="data.bonus" value="{{data.bonus}}" data-dtype="Number"/>
+		</div>
+		<div class="resource-content flex-center flex-between">
+			<input type="text" name="data.bonusStartLevel" value="{{data.bonusStartLevel}}"  data-dtype="Number"/>
+		</div>
+	</li>
 
     <ol>
         <li class="item flexrow items-header">

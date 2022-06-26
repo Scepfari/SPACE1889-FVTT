@@ -410,7 +410,12 @@ export class Space1889Actor extends Actor
 				continue;
 
 			if (item.data.data.bonusTargetType == type && item.data.data.bonusTarget == whatId)
-				bonus += (item.data.data.level.value * item.data.data.bonus);
+			{
+				let factor = item.data.data.level.value;
+				if (item.data.data.bonusStartLevel > 1)
+					factor = Math.max(0, item.data.data.level.value + 1 - item.data.data.bonusStartLevel);
+				bonus += (factor * item.data.data.bonus);
+			}
 		}
 
 		return bonus;
@@ -570,6 +575,7 @@ export class Space1889Actor extends Actor
 		let instinctive = false;
 		let riposte = false;
 		rating += actorData.data.armorTotal.bonus;
+		rating += actorData.data.secondaries.defense.talentBonus;
 
 		for (let item of actorData.items)
 		{
@@ -630,6 +636,7 @@ export class Space1889Actor extends Actor
 		let instinctive = false;
 		let riposte = false;
 		skillRating += actorData.data.armorTotal.bonus;
+		skillRating += actorData.data.secondaries.defense.talentBonus;
 
 		for (let item of actorData.items)
 		{
@@ -685,6 +692,7 @@ export class Space1889Actor extends Actor
 		let rating = this.GetSkillRating(actorData, id1, underlyingAbility1);
 		rating = Math.max(rating, this.GetSkillRating(actorData, id2, underlyingAbility2));
 		rating += actorData.data.armorTotal.bonus;
+		rating += actorData.data.secondaries.defense.talentBonus;
 
 		for (let item of actorData.items)
 		{
