@@ -96,4 +96,14 @@ export const registerSystemSettings = function ()
 			default: "0.7.4",
 			type: String
 		});
+
+	game.settings.register("space1889", "newVersionPopup",
+		{
+			name: "show popup",
+			hint: "show new version popup",
+			scope: "world",
+			config: false,
+			default: "1|0.7.4",
+			type: String
+		});
 }

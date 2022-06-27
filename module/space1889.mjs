@@ -11,6 +11,7 @@ import { registerSystemSettings } from "./settings.mjs";
 import { Space1889Translation } from "./helpers/translation.mjs";
 import { Space1889Migration } from "./helpers/migration.mjs";
 
+
 /* -------------------------------------------- */
 /*  Init Hook                                   */
 /* -------------------------------------------- */
@@ -85,7 +86,9 @@ Hooks.once("ready", async function() {
 
 	await Space1889Translation.runInitTranslationAction();
 	await Space1889Migration.runInitMigrationAction();
+	Space1889Migration.showNewVersionInfo();
 });
+
 
 /* -------------------------------------------- */
 /*  Hotbar Macros                               */
