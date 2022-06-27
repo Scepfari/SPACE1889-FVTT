@@ -967,7 +967,7 @@ export class Space1889ActorSheet extends ActorSheet {
 					return actor.showAttributeInfo(dataset.label, dataset.rollKey, evaluation.whisperInfo);
 
 				if (canRoll)
-					return actor.rollAttribute(dieCount, evaluation.showDialog, dataset.rollKey);
+					return actor.rollAttribute(dieCount, evaluation.showDialog, dataset.rollKey, evaluation.specialDialog);
 			}
 			else if (dataset.rollType == 'actorinfo' &&  dataset.rollKey)
 			{

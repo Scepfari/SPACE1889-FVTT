@@ -1142,7 +1142,7 @@ export class Space1889Actor extends Actor
 		if (evaluation.showInfoOnly)
 			return this.showAttributeInfo(game.i18n.localize(CONFIG.SPACE1889.abilities[key]), key, evaluation.whisperInfo);
 
-		return this.rollAttribute(dieCount, evaluation.showDialog, key);
+		return this.rollAttribute(dieCount, evaluation.showDialog, key, evaluation.specialDialog);
 	}
 
 	rollSecondary(key, event)
@@ -1228,25 +1228,28 @@ export class Space1889Actor extends Actor
 	 * @param dieCount 
 	 * @param showDialog 
 	*/
-	rollAttribute(dieCount, showDialog, key)
+	rollAttribute(dieCount, showDialog, key, specialDialog = false)
 	{
 		const theActor = this;
 		const langId = this.getLangId(key);
 		const name = game.i18n.localize(langId) ?? "unbekannt";
 		const titelPartOne = game.i18n.localize("SPACE1889.ModifiedRoll");
 		const inputDesc = game.i18n.localize("SPACE1889.NumberOfModificationDice");
+		const diceDesc = game.i18n.localize("SPACE1889.ConfigDice");
 
 		let info = game.i18n.localize("SPACE1889.Probe") ?? "Probe";
 		info += ":";
 
-		if (this.isAbility(key))
+		const isAbility = this.isAbility(key);
+		if (isAbility && !specialDialog)
 			dieCount *= 2;
+		
 
 		if (showDialog)
 		{
 			let dialogue = new Dialog(
 				{
-					title: `${titelPartOne}: ${name}`,
+					title: `${titelPartOne}: ${name} (${dieCount} ${diceDesc})`,
 					content: `<p>${inputDesc}: <input type="number" id="anzahlDerWuerfel" value = "0"></p>`,
 					buttons:
 					{

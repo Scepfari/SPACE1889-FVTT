@@ -6,8 +6,9 @@ export default class SPACE1889RollHelper
 	{
 		const showInfoOnly = event?.altKey;
 		const showDialog = !showInfoOnly && (event?.shiftKey || event?.ctrlKey);
+		const specialDialog = !showInfoOnly && (event?.shiftKey && event?.ctrlKey);
 		const doNotWhisperInfo = event?.shiftKey || event?.ctrlKey;
-		return { showDialog: showDialog, showInfoOnly: showInfoOnly, whisperInfo: !doNotWhisperInfo };
+		return { showDialog: showDialog, showInfoOnly: showInfoOnly, whisperInfo: !doNotWhisperInfo, specialDialog: specialDialog };
 	}
 
 	static rollItem(itemData, actor, event)
@@ -132,13 +133,14 @@ export default class SPACE1889RollHelper
 		const extraInfo = withExtraInfo ? game.i18n.localize(itemData.data.infoLangId) : "";
 		const titelPartOne = game.i18n.localize("SPACE1889.ModifiedRoll");
 		const inputDesc = game.i18n.localize("SPACE1889.NumberOfModificationDice");
+		const diceDesc = game.i18n.localize("SPACE1889.ConfigDice");
 
 		let info = titelInfo + ":";
 		if (showDialog)
 		{
 			let dialogue = new Dialog(
 				{
-					title: `${titelPartOne}: ${itemData.data.label}`,
+					title: `${titelPartOne}: ${itemData.data.label} (${dieCount} ${diceDesc})`,
 					content: `<p>${inputDesc}: <input type="number" id="anzahlDerWuerfel" value = "0"></p>`,
 					buttons:
 					{
