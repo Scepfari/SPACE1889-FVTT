@@ -51,10 +51,8 @@ export class Space1889Migration
 	{
 		const info = game.settings.get("space1889", "newVersionPopup").split("|");
 		const currentVersion = game.system.data.version;
-		if (game.user.isGM && isNewerVersion(currentVersion, info[1]) || info[0] > 0)
+		if (game.user.isGM && (isNewerVersion(currentVersion, info[1]) || info[0] > 0))
 		{
-			//let content = `<strong>Hello, SPACE 1889!</strong>`;
-
 			let content = `<h1>SPACE 1889 Neocristallicum</h1>
 			<p>&nbsp;</p>
 			<h3>0.7.5</h3>
