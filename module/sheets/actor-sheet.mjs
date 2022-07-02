@@ -59,6 +59,12 @@ export class Space1889ActorSheet extends ActorSheet {
 			this._prepareCreatureData(context);
 		}
 
+		if (actorData.type == 'vehicle')
+		{
+			this._prepareVehicleItems(context); 
+			this._prepareVehicleData(context);
+		}
+
 		// Add roll data for TinyMCE editors.
 		context.rollData = context.actor.getRollData();
 
@@ -93,6 +99,13 @@ export class Space1889ActorSheet extends ActorSheet {
 		context.data['archetypes'] = CONFIG.SPACE1889.creatureArchetypes;
 		context.data['movementTypes'] = CONFIG.SPACE1889.creatureMovementType;
 		context.data['origins'] = CONFIG.SPACE1889.creatureOrigins;
+	}
+
+	_prepareVehicleData(context)
+	{
+		context.data['crewExperiences'] = CONFIG.SPACE1889.crewExperience;
+		context.data['crewTempers'] = CONFIG.SPACE1889.crewTemper;
+		context.data['pilotSkills'] = CONFIG.SPACE1889.pilotSkills;
 	}
 
 	_prepareAttributes(context)
@@ -164,6 +177,17 @@ export class Space1889ActorSheet extends ActorSheet {
 		context.money = this.actor.data.money;
 	}
 
+
+	_prepareVehicleItems(context)
+	{
+		// Iterate through items, set default image
+		for (let i of context.items)
+		{
+			i.img = i.img || DEFAULT_TOKEN;
+		}
+		context.weapons = this.actor.data.weapons;
+		context.injuries = this.actor.data.injuries;
+	}
 
 	GetMaxSkillLevel()
 	{
@@ -314,7 +338,6 @@ export class Space1889ActorSheet extends ActorSheet {
 			}
 		});
 
-
 		html.find('.healingFactor-click').mousedown(ev =>
 		{
 			const itemId = this._getItemId(ev);
@@ -327,7 +350,7 @@ export class Space1889ActorSheet extends ActorSheet {
 		{
 			const itemId = this._getItemId(ev);
 			const item = this.actor.items.get(itemId);
-			const newLocation = this.incrementLocation(ev, item.data.data.location);
+			const newLocation = this.incrementLocation(ev, item.data.data.location, this.actor.data.type == 'vehicle');
 			item.update({ 'data.location': newLocation });
 		});
 
@@ -398,6 +421,125 @@ export class Space1889ActorSheet extends ActorSheet {
 			this.actor.update({ 'data.health.value': newValue });
 		});
 
+		html.find('.increment-structure-max-click').mousedown(ev =>
+		{
+			const newValue = this.incrementValue(ev, this.actor.data.data.structure.max, 0, undefined);
+			this.actor.update({ 'data.structure.max': newValue });
+		});
+		html.find('.increment-structure-current-click').mousedown(ev =>
+		{
+			const newValue = this.incrementValue(ev, this.actor.data.data.structure.value, -5, this.actor.data.data.structure.max);
+			this.actor.update({ 'data.structure.value': newValue });
+		});
+		html.find('.increment-speed-max-click').mousedown(ev =>
+		{
+			const newValue = this.incrementValue(ev, this.actor.data.data.speed.max, 0, undefined);
+			this.actor.update({ 'data.speed.max': newValue });
+		});
+		html.find('.increment-maneuverability-max-click').mousedown(ev =>
+		{
+			const newValue = this.incrementValue(ev, this.actor.data.data.maneuverability.max, -5, 5);
+			this.actor.update({ 'data.maneuverability.max': newValue });
+		});
+		html.find('.increment-passiveDefense-click').mousedown(ev =>
+		{
+			const newValue = this.incrementValue(ev, this.actor.data.data.passiveDefense, 0, undefined);
+			this.actor.update({ 'data.passiveDefense': newValue });
+		});
+
+		html.find('.increment-captain-click').mousedown(ev =>
+		{
+			const newValue = this.incrementValue(ev, this.actor.data.data.positions.captain.value, 0, undefined);
+			this.actor.update({ 'data.positions.captain.value': newValue });
+		});
+		html.find('.increment-copilot-click').mousedown(ev =>
+		{
+			const newValue = this.incrementValue(ev, this.actor.data.data.positions.copilot.value, 0, undefined);
+			this.actor.update({ 'data.positions.copilot.value': newValue });
+		});
+		html.find('.increment-gunner-click').mousedown(ev =>
+		{
+			const newValue = this.incrementValue(ev, this.actor.data.data.positions.gunner.value, 0, undefined);
+			this.actor.update({ 'data.positions.gunner.value': newValue });
+		});
+		html.find('.increment-signaler-click').mousedown(ev =>
+		{
+			const newValue = this.incrementValue(ev, this.actor.data.data.positions.signaler.value, 0, undefined);
+			this.actor.update({ 'data.positions.signaler.value': newValue });
+		});
+		html.find('.increment-lookout-click').mousedown(ev =>
+		{
+			const newValue = this.incrementValue(ev, this.actor.data.data.positions.lookout.value, 0, undefined);
+			this.actor.update({ 'data.positions.lookout.value': newValue });
+		});
+		html.find('.increment-mechanic-click').mousedown(ev =>
+		{
+			const newValue = this.incrementValue(ev, this.actor.data.data.positions.mechanic.value, 0, undefined);
+			this.actor.update({ 'data.positions.mechanic.value': newValue });
+		});
+		html.find('.increment-medic-click').mousedown(ev =>
+		{
+			const newValue = this.incrementValue(ev, this.actor.data.data.positions.medic.value, 0, undefined);
+			this.actor.update({ 'data.positions.medic.value': newValue });
+		});
+		html.find('.increment-crew-max-click').mousedown(ev =>
+		{
+			const newValue = this.incrementValue(ev, this.actor.data.data.crew.max, 1, undefined);
+			this.actor.update({ 'data.crew.max': newValue });
+		});
+		html.find('.increment-crew-current-click').mousedown(ev =>
+		{
+			const newValue = this.incrementValue(ev, this.actor.data.data.crew.value, 0, this.actor.data.data.crew.max);
+			this.actor.update({ 'data.crew.value': newValue });
+		});
+		html.find('.increment-passenger-max-click').mousedown(ev =>
+		{
+			const newValue = this.incrementValue(ev, this.actor.data.data.passenger.max, 0, undefined);
+			this.actor.update({ 'data.passenger.max': newValue });
+		});
+		html.find('.increment-passenger-current-click').mousedown(ev =>
+		{
+			const newValue = this.incrementValue(ev, this.actor.data.data.passenger.value, 0, this.actor.data.data.passenger.max);
+			this.actor.update({ 'data.passenger.value': newValue });
+		});
+		html.find('.increment-vehicle-size-click').mousedown(ev =>
+		{
+			const newValue = this.incrementValue(ev, this.actor.data.data.size, 0, undefined);
+			this.actor.update({ 'data.size': newValue });
+		});
+		html.find('.do-vehicle-captain-click').mousedown(ev =>
+		{
+			this._doVehiclePositionClick(ev, 'captain');
+		});
+		html.find('.do-vehicle-pilot-click').mousedown(ev =>
+		{
+			this._doVehiclePositionClick(ev, 'pilot');
+		});
+		html.find('.do-vehicle-copilot-click').mousedown(ev =>
+		{
+			this._doVehiclePositionClick(ev, 'copilot');
+		});
+		html.find('.do-vehicle-gunner-click').mousedown(ev =>
+		{
+			this._doVehiclePositionClick(ev, 'gunner');
+		});
+		html.find('.do-vehicle-signaler-click').mousedown(ev =>
+		{
+			this._doVehiclePositionClick(ev, 'signaler');
+		});
+		html.find('.do-vehicle-lookout-click').mousedown(ev =>
+		{
+			this._doVehiclePositionClick(ev, 'lookout');
+		});
+		html.find('.do-vehicle-mechanic-click').mousedown(ev =>
+		{
+			this._doVehiclePositionClick(ev, 'mechanic');
+		});
+		html.find('.do-vehicle-medic-click').mousedown(ev =>
+		{
+			this._doVehiclePositionClick(ev, 'medic');
+		});
+
 		// Active Effect management
 		html.find(".effect-control").click(ev => onManageActiveEffect(ev, this.actor));
 
@@ -412,6 +554,23 @@ export class Space1889ActorSheet extends ActorSheet {
 		}
 	}
 
+	_doVehiclePositionClick(event, positionKey)
+	{
+		if (this.actor.data.type == "vehicle")
+		{
+			const eventInfo = SPACE1889RollHelper.getEventEvaluation(event);
+			if (eventInfo.specialDialog)
+			{
+				const key = 'data.positions.' + positionKey + '.actorId';
+				let updateObject = {};
+				updateObject[key] = "";
+				this.actor.update(updateObject);
+			}
+			else
+				SPACE1889Helper.showActorSheet(this.actor.data.data.positions[positionKey].actorId);
+		}
+	}
+
 /*  async _onDrop(event) {
 		const dragData = JSON.parse(event.dataTransfer.getData("text/plain"))
 		//this._handleDragData(dragData, event, await itemFromDrop(dragData, this.actor.id))
@@ -420,6 +579,33 @@ export class Space1889ActorSheet extends ActorSheet {
 		ui.notifications.error(game.i18n.format("SPACE1889.canNotBeAdded", { item: dragData.id }))
 		await super._onDrop(event);
 	}*/
+
+	async _onDropActor(event, data)
+	{
+		if (!this.actor.isOwner)
+			return false;
+
+		if (this.actor.data.type != 'vehicle')
+			return false;
+
+		let dropedActor = null;
+		if (data.pack)
+		{
+			const pack = game.packs.find(p => p.collection === data.pack);
+			dropedActor = await pack.getDocument(data.id);
+		}
+		else
+		{
+			dropedActor = game.actors.get(data.id);
+		}
+
+		if (!dropedActor)
+			return;
+
+		await SPACE1889Helper.setVehicleActorPositionFromDialog(this.actor, dropedActor);
+		
+	}
+
 
 	async _onDropItem(event, data) {
 		if ( !this.actor.isOwner ) 
@@ -811,32 +997,22 @@ export class Space1889ActorSheet extends ActorSheet {
 	 */
 	incrementValue(ev, currentValue, min, max, showNotification = false)
 	{
-		const factor = (ev.ctrlKey && ev.shiftKey) ? 100 : (ev.ctrlKey ? 10 : (ev.shiftKey ? 5 : 1));
-		const sign = ev.button == 2 ? -1 : 1;
-		const wantedValue = currentValue + (factor * sign);
-		let newValue = wantedValue;
-		if (sign > 0 && max != undefined)
-			newValue = Math.min(newValue, max);
-		else if (sign < 0)
-			newValue = Math.max(newValue, min);
-
-		if (showNotification && wantedValue > newValue)
-		{
-			const info = game.i18n.format("SPACE1889.CanNotIncrementAttributeSkill", { level: max, currentHeroLevel: this.GetHeroLevelName() });
-			ui.notifications.info(info);
-		}
-			
-
-		return newValue;
+		return SPACE1889Helper.incrementValue(ev, currentValue, min, max, showNotification);
 	}
 
 	/**
 	 * 
 	 * @param {object} ev event
 	 * @param {string} currentValue a storage location: 'koerper', 'rucksack' or 'lager'
+	 * @param {boolean} isVehicle
 	 */
-	incrementLocation(ev, currentValue)
+	incrementLocation(ev, currentValue, isVehicle)
 	{
+		if (isVehicle)
+		{
+			return currentValue == 'mounted' ? 'lager' : 'mounted';
+		}
+
 		const k = 'koerper';
 		const r = 'rucksack';
 		const l = 'lager';
@@ -995,7 +1171,13 @@ export class Space1889ActorSheet extends ActorSheet {
 		return $(ev.currentTarget).parents(".item").attr("data-item-id")
 	}
 
+	render(force, options)
+	{
+		if (force && this.actor.data.type == "vehicle")
+			this.actor.prepareDerivedData();
 
+		super.render(force, options);
+	}
 
 }
 

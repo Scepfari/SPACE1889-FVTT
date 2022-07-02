@@ -1,6 +1,6 @@
 {
 	"Actor": {
-		"types": [ "character", "npc", "creature" ],
+		"types": [ "character", "npc", "creature", "vehicle" ],
 		"templates": {
 			"health": {
 				"health": {
@@ -126,6 +126,74 @@
 					"value": "ueberleben"
 				}
 			}
+		},
+		"vehicle": {
+			"templates": [ "primaries", "secondaries", "block", "parry", "evasion" ],
+			"typeOrClass": "",
+			"isAirship":  false,
+			"pilotSkill": "fahren",
+			"size": 0,
+			"passiveDefense": 0,
+			"structure": {
+				"value": 0,
+				"max": 0
+			},
+			"speed": {
+				"value": 0,
+				"max": 0
+			},
+			"maneuverability": {
+				"value": "0",
+				"max": 0
+			},
+			"crew": {
+				"value": 1,
+				"max": 1,
+				"experience": "regular",
+				"experienceValue": 4,
+				"temper": "normal"
+			},
+			"passenger": {
+				"value": 0,
+				"max": 0
+			},
+			"price": "",
+			"weight2": "0",
+			"description": "",
+			"positions": {
+				"captain": {
+					"value": 0,
+					"actorId": ""
+				},
+				"pilot": {
+					"value": 0,
+					"actorId": ""
+				},
+				"copilot": {
+					"value": 0,
+					"actorId": ""
+				},
+				"gunner": {
+					"value": 0,
+					"actorId": ""
+				},
+				"signaler": {
+					"value": 0,
+					"actorId": ""
+				},
+				"lookout": {
+					"value": 0,
+					"actorId": ""
+				},
+				"mechanic": {
+					"value": 0,
+					"actorId": ""
+				},
+				"medic": {
+					"value": 0,
+					"actorId": ""
+				}
+			}
 		}
 	},
 	"Item": {
@@ -207,6 +275,12 @@
 			"capacityType": "default",
 			"rateOfFire": "",
 			"speed": "",
+			"size": 0,
+			"vehicle": {
+				"spot": "bow",
+				"isSwivelMounted": false,
+				"swivelingRange": "120"
+			},
 			"isAreaDamage": false,
 			"ammunitionType": ""
 		},

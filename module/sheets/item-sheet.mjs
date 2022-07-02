@@ -1,3 +1,5 @@
+import SPACE1889Helper from "../helpers/helper.mjs";
+
 /**
  * Extend the basic ItemSheet with some very simple modifications
  * @extends {ItemSheet}
@@ -88,7 +90,14 @@ export class Space1889ItemSheet extends ItemSheet {
 			context.data['damageTypeAbbr'] = CONFIG.SPACE1889.damageTypeAbbreviations;
 		}
 
-		if (itemData.type == "weapon" || itemData.type == "armor" || itemData.type == "item")
+		if (itemData.type == "weapon")
+		{
+			context.data['storageLocations'] = CONFIG.SPACE1889.allStorageLocations;
+			context.data['storageLocationsAbbr'] = CONFIG.SPACE1889.allStorageLocationsAbbreviations;
+			context.data['weaponMountSpots'] = CONFIG.SPACE1889.weaponMountSpots;
+		}
+
+		if (itemData.type == "armor" || itemData.type == "item")
 		{
 			context.data['storageLocations'] = CONFIG.SPACE1889.storageLocations;
 			context.data['storageLocationsAbbr'] = CONFIG.SPACE1889.storageLocationAbbreviations;
@@ -106,5 +115,13 @@ export class Space1889ItemSheet extends ItemSheet {
 		if (!this.isEditable) return;
 
 		// Roll handlers, click handlers, etc. would go here.
+		html.find('.increment-weapon-size-click').mousedown(ev =>
+		{
+			if (this.item.data.type == "weapon")
+			{
+				const newValue = SPACE1889Helper.incrementValue(ev, this.item.data.data.size, 0, undefined);
+				this.item.update({ 'data.size': newValue });
+			}
+		});
 	}
 }

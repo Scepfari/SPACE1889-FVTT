@@ -82,12 +82,174 @@ export class Space1889Actor extends Actor
 		const data = actorData.data;
 		const flags = actorData.flags.space1889 || {};
 
-		// Was unterscheidet einen NSC von einem SC?
-		// vermutlich nichts, außer dass er in der Summe nicht so viele Fertigkeiten, Talente usw. hat
-		// und somit einen kompakteren NSC Bogen ähnlich dem Kreaturen bekommen kann
-		// damit kann alle Akteure in einem prepare verarbeitet werden.
-		// ToDo: NSC Bogen erstellen und beschränkungen rausnehmen
-		this._prepareCharacterData(actorData);
+		if (actorData.type == 'vehicle')
+			this._prepareVehicleData(actorData);
+		else
+			this._prepareCharacterData(actorData);
+	}
+
+
+	/**
+	 * Prepare Character type specific data
+	 */
+	_prepareVehicleData(actorData)
+	{
+		if (actorData.type !== 'vehicle')
+			return;
+
+		// Make modifications to data here. For example:
+		const data = actorData.data;
+		const items = actorData.items;
+
+		// leere Elemente für Token Action HUD erzeugen
+		let primaereAttribute = [];
+		for (let [key, ability] of Object.entries(data.abilities))
+		{
+			ability.total = 0;
+			primaereAttribute.push(key);
+		}
+		actorData.data['primaereAttribute'] = primaereAttribute;
+
+		actorData.talents = [];
+		actorData.skills = [];
+		actorData.speciSkills = [];
+		actorData.data.secondaries.defense.total = 0; //toDo mit was sinnvollem füllen
+		actorData.data.secondaries.perception.total = 0;
+		
+
+		const useCustomValue = actorData.data.crew.experience == "custom";
+		const defaultValue = useCustomValue ? actorData.data.crew.experienceValue : SPACE1889Helper.getCrewExperienceValue(actorData.data.crew.experience);
+		const mod = SPACE1889Helper.getCrewTemperModificator(actorData.data.crew.temper);
+		
+		for (let [key, position] of Object.entries(data.positions))
+		{
+			position.actorName = "";
+			if (position.actorId != "" && game.actors != undefined)
+			{
+				const posActor = game.actors.get(position.actorId);
+				position.total = this._GetVehiclePositionSkillValue(actorData, key, posActor);
+				position.actorName = posActor.data.name;
+				position.mod = 0;
+			}
+			else if (useCustomValue)
+			{
+				if (position.value == 0)
+					position.value = defaultValue;
+				position.mod = mod;
+				position.total = Math.max(0, position.value + mod);
+			}
+			else
+			{
+				position.mod = mod;
+				position.total = Math.max(0, defaultValue + mod);
+			}
+			position.label = game.i18n.localize(CONFIG.SPACE1889.vehicleCrewPositions[key]);
+		}
+
+		const weapons = [];
+		const injuries = [];
+		for (let item of items)
+		{
+			if (item.data.type === 'weapon')
+				weapons.push(item.data);
+			else if (item.data.type === 'damage')
+				injuries.push(item.data);
+		}
+
+		actorData.injuries = injuries;
+
+		this.prepareVehicleWeapons(actorData, weapons);
+		actorData.weapons = weapons;
+
+		for (let injury of injuries)
+		{
+			const isLethal = injury.data.damageType == "lethal";
+			const healingDurationInDays = (isLethal ? 7 : 1) * injury.data.damage / injury.data.healingFactor;
+			injury.data.damageTypeDisplay = game.i18n.localize(CONFIG.SPACE1889.damageTypeAbbreviations[injury.data.damageType]);
+			injury.data.healingDuration = this.FormatHealingDuration(healingDurationInDays);
+			injury.data.timeToNextCure = this.FormatHealingDuration(healingDurationInDays / injury.data.damage);
+		}
+
+		this._CalcVehicleThings(actorData);
+
+//		this._CalcThings(actorData);
+
+	}
+
+	_GetVehiclePositionSkillValue(vehicleData, position, actorOnPosition)
+	{
+		if (actorOnPosition == undefined || actorOnPosition == null || actorOnPosition.data.type == "vehicle")
+			return 0;
+
+		if (position == "pilot" || position == "copilot")
+		{
+			// toDo: Spezialisierung beachten
+			if (vehicleData.data.pilotSkill == "fahren" || vehicleData.data.pilotSkill == "reiten")
+				return this._GetSkillLevel(actorOnPosition.data, vehicleData.data.pilotSkill, "");
+
+			return this._GetSkillLevel(actorOnPosition.data, vehicleData.data.pilotSkill, "", "spezielleFahrzeuge" );
+		}
+
+		if (position == "captain")
+		{
+			const first = this._GetSkillLevel(actorOnPosition.data, "diplomatie", "fuehrungsstaerke");
+			const second = this._GetSkillLevel(actorOnPosition.data, "einschuechtern", "befehle");
+			return Math.max(first, second);
+		}
+		if (position == "gunner")
+		{
+			return this._GetSkillLevel(actorOnPosition.data, "geschuetze", "");
+		}
+		if (position == "signaler")
+		{
+			return this._GetSkillLevel(actorOnPosition.data, "linguistik", "codes");
+		}
+		if (position == "lookout")
+		{
+			return actorOnPosition.data.data.secondaries.perception.total;
+		}
+		if (position == "mechanic")
+		{
+			return this._GetSkillLevel(actorOnPosition.data, "mechaniker", "", "handwerk");
+			// alternativ andere Handwerk-Fertigkeiten
+		}
+		if (position == "medic")
+		{
+			return this._GetSkillLevel(actorOnPosition.data, "medizin", "ersteHilfe");
+		}
+		return 0;
+	}
+
+	_CalcVehicleThings(actorData)
+	{
+		const crewMax = actorData.data.crew.max;
+		const crewCurrent = actorData.data.crew.value;
+		const disabled = game.i18n.localize("SPACE1889.VehicleManeuverabilityDisabledAbbr");
+		if (crewCurrent <= 0)
+			actorData.data.maneuverability.value = disabled;
+
+
+		let malus = SPACE1889Helper.getStructureMalus(actorData.data.structure.value, actorData.data.structure.max, actorData.data.speed.max);
+
+		const rate = crewCurrent / crewMax;
+		let mod = (-1) * malus.maneuverability;
+		if (rate < 1)
+		{
+			if (rate >= 0.75)
+				mod += -1;
+			else if (rate >= 0.5)
+				mod += -2;
+			else if (rate >= 0.25)
+				mod += -4;
+		}
+
+		actorData.data.maneuverability.value = actorData.data.maneuverability.max + mod;
+
+		if (rate < 0.25)
+			actorData.data.maneuverability.value = disabled;
+
+		actorData.data.speed.value = actorData.data.speed.max - malus.speed;
+		actorData.data.secondaries.initiative.total = actorData.data.positions.pilot.total + actorData.data.maneuverability.value;
 	}
 
 	/**
@@ -334,6 +496,60 @@ export class Space1889Actor extends Actor
 		SPACE1889Helper.sortByName(weapons);
 	}
 
+	/**
+	 * 
+	 * @param {object} actorData
+	 * @param {Array<object>} weapons
+	 */
+	prepareVehicleWeapons(actorData, weapons)
+	{
+		let gunner = null;
+		if (actorData.data.positions.gunner.actorId != "" && game.actors != undefined)
+			gunner = game.actors.get(actorData.data.positions.gunner.actorId);
+
+		const useGunner = gunner != undefined && gunner != null;
+
+		for (let weapon of weapons)
+		{
+			if (weapon.data.skillId == "none" && weapon.data.isAreaDamage)
+			{
+				weapon.data.sizeMod = "-";
+				weapon.data.skillRating = "-";
+				weapon.data.attack = weapon.data.damage;
+				weapon.data.attackAverage = (Math.floor(weapon.data.attack / 2)).toString() + (weapon.data.attack % 2 == 0 ? "" : "+");
+			}
+			else
+			{
+				weapon.data.sizeMod = 0;
+				weapon.data.skillRating = useGunner ? this._GetSkillLevel(gunner.data, weapon.data.skillId, weapon.data.specializationId) : actorData.data.positions.gunner.total;
+				weapon.data.attack = Math.max(0, weapon.data.damage + weapon.data.skillRating);
+				weapon.data.attackAverage = (Math.floor(weapon.data.attack / 2)).toString() + (weapon.data.attack % 2 == 0 ? "" : "+");
+			}
+			weapon.data.damageTypeDisplay = game.i18n.localize(CONFIG.SPACE1889.damageTypeAbbreviations[weapon.data.damageType]);
+
+			if (weapon.data.location != "lager" && weapon.data.location != "mounted")
+				weapon.data.location = "mounted";
+
+			weapon.data.locationDisplay = game.i18n.localize(CONFIG.SPACE1889.allStorageLocationsAbbreviations[weapon.data.location]);
+			weapon.data.locationDisplayLong = game.i18n.localize(CONFIG.SPACE1889.allStorageLocations[weapon.data.location]);
+
+			if (weapon.data.location == "mounted")
+			{
+				const mountPos = game.i18n.localize(CONFIG.SPACE1889.weaponMountSpots[weapon.data.vehicle.spot]);
+				if (weapon.data.vehicle.isSwivelMounted)
+					weapon.data.vehicleInfo = game.i18n.format("SPACE1889.VehicleInfoSwivelMountPos", { spot: mountPos, swivelingRange: weapon.data.vehicle.swivelingRange });
+				else
+					weapon.data.vehicleInfo = game.i18n.format("SPACE1889.VehicleInfoRigidlyMountPos", { spot: mountPos });
+			}
+			else
+			{
+				weapon.data.vehicleInfo = game.i18n.localize("SPACE1889.VehicleInfoNotMounted");
+			}
+		}
+
+		SPACE1889Helper.sortByName(weapons);
+	}
+
 
 	/**
 	 * 
@@ -502,20 +718,57 @@ export class Space1889Actor extends Actor
 	 * @param {Object} actorData 
 	 * @param {string} skillId 
 	 * @param {string} specializationId
+  	 * @param {string} skillGroupId
 	 * @returns {number}
 	 */
-	_GetSkillLevel(actorData, skillId, specializationId)
+	_GetSkillLevel(actorData, skillId, specializationId, skillGroupId = "")
 	{
 		for (let speci of actorData.speciSkills)
 		{
 			if (specializationId == speci.data.id)
 				return speci.data.rating;
 		}
+
+		let skillGroups = [];
 		for (let skill of actorData.skills)
 		{
 			if (skillId == skill.data.id)
 				return skill.data.rating;
+			if (skill.data.isSkillGroup && skillGroupId == skill.data.skillGroupName)
+				skillGroups.push(skill);
 		}
+
+		if (skillGroupId != "")
+		{
+			let rating = 0;
+
+			if (skillGroups.length == 0)
+			{
+				// kein Fachbereich aus der Fertigkeitsgruppe gelernt
+				const uni = actorData.talents.find(v => v.data.id == "universalist");
+				if (uni != undefined && uni != null)
+				{
+					rating = this.GetSkillRating(actorData, skillId, "");  // Funktion behandelt fertigkeitsgruppen wie fertigkeiten
+					rating += (uni.data.data.level - 1);
+				}
+				return rating;
+			}
+
+			for (let skill of skillGroups)
+			{
+				if (skill.data.rating > rating)
+					rating = skill.data.rating;
+			}
+
+			const vielseitigId = "vielseitig" + skillGroupId.replace(/^(.)/, function (b) { return b.toUpperCase(); });
+			const talent = actorData.talents.find(v => v.data.id == vielseitigId);
+			let malus = 2;
+			if (talent != undefined && talent != null)
+				malus = 0;
+
+			return Math.max(0, rating - malus);
+		}
+
 		return this.GetSkillRating(actorData, skillId, "");
 	}
 
@@ -1096,6 +1349,17 @@ export class Space1889Actor extends Actor
 		if (langId == "")
 		{
 			for (let [k, v] of Object.entries(CONFIG.SPACE1889.secondaries)) 
+			{
+				if (k == key)
+				{
+					langId = v;
+					break;
+				}
+			}
+		}
+		if (langId == "")
+		{
+			for (let [k, v] of Object.entries(CONFIG.SPACE1889.vehicleCrewPositions))
 			{
 				if (k == key)
 				{

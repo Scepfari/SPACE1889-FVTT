@@ -76,6 +76,11 @@ Handlebars.registerHelper('toLowerCase', function(str) {
 	return str.toLowerCase();
 });
 
+Handlebars.registerHelper('doubleCheck', function (firstLeft, fistRight, secondLeft, secondRight)
+{
+	return firstLeft == fistRight && secondLeft == secondRight;
+})
+
 /* -------------------------------------------- */
 /*  Ready Hook                                  */
 /* -------------------------------------------- */

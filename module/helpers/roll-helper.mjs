@@ -264,6 +264,20 @@ export default class SPACE1889RollHelper
 
 			desc += "<br>" + game.i18n.localize("SPACE1889.Weight") + ": " + item.data.weight.toString() + "kg";
 			desc += "<br>" + game.i18n.localize("SPACE1889.Price") + ": " + item.data.price;
+
+			if (item.data.location == "mounted")
+			{
+				desc += "<br>" + game.i18n.localize("SPACE1889.SecondaryAttributeSiz") + ": " + item.data.size;
+				const mountPos = game.i18n.localize(CONFIG.SPACE1889.weaponMountSpots[item.data.vehicle.spot]);
+				desc += "<br>" + game.i18n.localize("SPACE1889.WeaponGunPosition") + ": " + mountPos;
+
+				if (item.data.vehicle.isSwivelMounted)
+					desc += "<br>" + game.i18n.localize("SPACE1889.WeaponSwivelingRange") + ": " + item.data.vehicle.swivelingRange + "&deg;";
+				else
+					desc += "<br>" + game.i18n.localize("SPACE1889.WeaponIsRigidlyMounted");
+			}
+
+
 			if (item.data.description != "")
 				desc += "<br>" + game.i18n.localize("SPACE1889.Description") + ": " + jQuery(item.data.description).text();
 			console.log(item.data.description);

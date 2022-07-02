@@ -11,9 +11,9 @@
 			<label class="resource-label">{{ localize "SPACE1889.CombatSkill" }}</label>
 			<select name="data.skillId" data-dtype="String">
 				{{#select data.skillId}}
-					{{#each data.combatSkills as |ch char|}}
-					<option value="{{char}}">{{localize ch}}</option>
-					{{/each}}
+				{{#each data.combatSkills as |ch char|}}
+				<option value="{{char}}">{{localize ch}}</option>
+				{{/each}}
 				{{/select}}
 			</select>
 		</div>
@@ -21,12 +21,22 @@
 			<label class="resource-label">{{ localize "SPACE1889.CombatSpecialization" }}</label>
 			<select name="data.specializationId" data-dtype="String">
 				{{#select data.specializationId}}
-					{{#each data.combatSpecializations as |ch char|}}
-					<option value="{{char}}">{{localize ch}}</option>
-					{{/each}}
+				{{#each data.combatSpecializations as |ch char|}}
+				<option value="{{char}}">{{localize ch}}</option>
+				{{/each}}
 				{{/select}}
 			</select>
 		</div>
+
+		{{#if (eq data.skillId 'geschuetze')}}
+		<div class="resource">
+			<label class="resource-label">{{ localize "SPACE1889.SecondaryAttributeSiz" }}</label>
+			<div class="resource-content flex-center flex-between">
+				<a class="increment-weapon-size-click">{{data.size}}</a>
+			</div>
+		</div>
+		{{/if}}
+
 	</li>
 
 	<li class="item flexrow items-header">
@@ -121,6 +131,34 @@
 		</select>
 	</li>
 
+	{{#if (eq data.location 'mounted')}}
+	<li class="item flexrow items-header">
+		<label class="resource-label">{{ localize "SPACE1889.WeaponGunPosition"}}</label>
+		<label class="resource-label">{{ localize "SPACE1889.WeaponIsSwivel"}}</label>
+		<label class="resource-label">{{ localize "SPACE1889.WeaponSwivelingRange"}}[&deg;]</label>
+	</li>
+	<li class="item flex-group-center flexrow">
+		<div class="resource">
+			<select name="data.vehicle.spot" data-dtype="String">
+				{{#select data.vehicle.spot}}
+				{{#each data.weaponMountSpots as |ch char|}}
+				<option value="{{char}}">{{localize ch}}</option>
+				{{/each}}
+				{{/select}}
+			</select>
+		</div>
+		<div class="resource-content flex-center flex-between">
+			<input type="checkbox" name="data.vehicle.isSwivelMounted" {{checked data.vehicle.isSwivelMounted}} />
+		</div>
+		{{#if data.vehicle.isSwivelMounted}}
+		<div class="resource">
+			<input type="text" name="data.vehicle.swivelingRange" value="{{data.vehicle.swivelingRange}}" />
+		</div>
+		{{else}}
+		<label class="item">0</label>
+		{{/if}}
+	</li>
+	{{/if}}
 
 	{{!-- Sheet Tab Navigation --}}
 	<nav class="sheet-tabs tabs" data-group="primary">
