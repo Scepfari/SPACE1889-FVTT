@@ -20,11 +20,11 @@
 					<div class="flexrow item-max-with60px">
 						<div style="display: grid; grid-template-columns: 45% 10% 45%; grid-template-rows: 100%;">
 							<div class="item-margintb2px item-right">
-								<a class="increment-structure-current-click item-margintb2px" align="right" data-type="damage">{{data.structure.value}}</a>
+								<a class="item-create item-margintb2px" align="right" title='{{localize "SPACE1889.InfoAddDamage"}}' data-type="damage">{{data.health.value}}</a>
 							</div>
 							<div class="item-margintb2px"> / </div>
 							<div class="item-margintb2px item-left">
-								<a class="increment-structure-max-click">{{data.structure.max}}</a>
+								<a class="increment-structure-max-click">{{data.health.max}}</a>
 							</div>
 						</div>
 					</div>
@@ -144,10 +144,12 @@
 					<div class="items-list item-max-with42px">{{#if (eq data.crew.experience 'custom')}}{{localize "SPACE1889.Base"}}{{else}}{{/if}}</div>
 					<div class="items-list item-max-with42px">{{localize "SPACE1889.Mod"}}</div>
 					<div title='{{localize "SPACE1889.Rating"}}' class="items-list item-max-with42px">{{localize "SPACE1889.Rating"}}</div>
+					<div class="items-list item-max-with20px"></div>
 				</li>
 				{{#each data.positions as |position key|}}
 				<li class="item row-section flexrow">
 					<label for="data.positions.{{key}}.value" class="rollable flexlarge align-left" data-roll-key="{{key}}" data-roll-type="actor" data-roll-diecount="{{position.total}}" data-label="{{position.label}}">{{position.label}}</label>
+
 					<div title='{{localize "SPACE1889.VehicelScCrewPositionToolTip"}}' class="items-list item-max-with150px">
 						<a class="do-vehicle-{{key}}-click">{{position.actorName}}</a>
 					</div>
@@ -161,6 +163,13 @@
 					{{/if}}
 					<label class="items-list item-max-with42px">{{#if (eq position.actorId '')}}{{position.mod}}{{else}} {{/if}}</label>
 					<label class="items-list item-max-with42px resource-label">{{position.total}}</label>
+					<div class="position item-max-with20px" data-id="{{key}}">
+						{{#if position.staffed}}
+						<a class="condition-toggle" title="{{localize 'SPACE1889.VehicleCrewPosition'}} {{localize 'SPACE1889.Staffed'}}"><i class="far fa-check-circle"></i></a> 
+						{{else}}
+						<a class="condition-toggle" title="{{localize 'SPACE1889.VehicleCrewPosition'}} {{localize 'SPACE1889.NotStaffed'}}"><i class="far fa-circle"></i></a> 
+						{{/if}}
+					</div>
 				</li>
 				{{/each}}
 			</div>
@@ -168,12 +177,16 @@
 			<div>
 				{{> "systems/space1889/templates/actor/parts/vehicle-weapons.html"}}
 			</div>
+			<div>
+				{{> "systems/space1889/templates/actor/parts/vehicle-damage.html"}}
+			</div>
 		</div>
 
 		{{!-- Biography Tab --}}
 		<div class="tab biography" data-group="primary" data-tab="biography">
 			{{> "systems/space1889/templates/actor/parts/vehicle-biography.html"}}
 		</div>
+
 
 		{{!-- Active Effects Tab --}}
 		{{!-- <div class="tab effects" data-group="primary" data-tab="effects"> --}}

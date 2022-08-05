@@ -213,6 +213,24 @@ SPACE1889.damageTypeAbbreviations ={
 	"both": "SPACE1889.LethalOrNonLethalAbbr"
 }
 
+SPACE1889.vehicleDamageTypes = {
+	"nonLethal": "SPACE1889.NonLethal",
+	"lethal": "SPACE1889.Lethal",
+	"controls": "SPACE1889.Controls",
+	"propulsion": "SPACE1889.Propulsion",
+	"guns": "SPACE1889.Guns",
+	"crew": "SPACE1889.VehicleCrew"
+}
+
+SPACE1889.vehicleDamageTypeAbbreviations = {
+	"nonLethal": "SPACE1889.NonLethalAbbr",
+	"lethal": "SPACE1889.LethalAbbr",
+	"controls": "SPACE1889.ControlsAbbr",
+	"propulsion": "SPACE1889.PropulsionAbbr",
+	"guns": "SPACE1889.GunsAbbr",
+	"crew": "SPACE1889.CrewAbbr"
+}
+
 SPACE1889.preConditionTypes = {
 	"nothing": "-",
 	"actor": "SPACE1889.PreConTypeActor",

@@ -231,6 +231,13 @@
 	text-align: center;
 }
 
+.condition-toggle,
+.condition-edit {
+	padding: 1px;
+	border: none;
+	color: var(--border-color);
+}
+
 /* Styles limited to space1889 sheets */
 .space1889 {
 	/* ----------------------------------------- */
@@ -449,6 +456,12 @@
 	align-items: center;
 	padding: 0 2px;
 	border-bottom: 1px solid #c9c7b8;
+}
+
+.space1889 .item-max-with20px {
+	max-width: 20px;
+	text-align: center;
+	vertical-align: center;
 }
 
 .space1889 .item-max-with40px{

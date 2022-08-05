@@ -86,8 +86,8 @@ export class Space1889ItemSheet extends ItemSheet {
 		}
 		else if (itemData.type == "damage")
 		{
-			context.data['damageTypes'] = CONFIG.SPACE1889.damageTypes;
-			context.data['damageTypeAbbr'] = CONFIG.SPACE1889.damageTypeAbbreviations;
+			context.data['damageTypes'] = CONFIG.SPACE1889.vehicleDamageTypes;
+			context.data['damageTypeAbbr'] = CONFIG.SPACE1889.vehicleDamageTypeAbbreviations;
 		}
 
 		if (itemData.type == "weapon")

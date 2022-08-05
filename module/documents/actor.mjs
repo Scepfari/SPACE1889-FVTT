@@ -131,6 +131,11 @@ export class Space1889Actor extends Actor
 				position.actorName = posActor.data.name;
 				position.mod = 0;
 			}
+			if (!position.staffed)
+			{
+				position.mod = 0;
+				position.total = 0;
+			}
 			else if (useCustomValue)
 			{
 				if (position.value == 0)
@@ -165,7 +170,7 @@ export class Space1889Actor extends Actor
 		{
 			const isLethal = injury.data.damageType == "lethal";
 			const healingDurationInDays = (isLethal ? 7 : 1) * injury.data.damage / injury.data.healingFactor;
-			injury.data.damageTypeDisplay = game.i18n.localize(CONFIG.SPACE1889.damageTypeAbbreviations[injury.data.damageType]);
+			injury.data.damageTypeDisplay = game.i18n.localize(CONFIG.SPACE1889.vehicleDamageTypeAbbreviations[injury.data.damageType]);
 			injury.data.healingDuration = this.FormatHealingDuration(healingDurationInDays);
 			injury.data.timeToNextCure = this.FormatHealingDuration(healingDurationInDays / injury.data.damage);
 		}
@@ -225,11 +230,11 @@ export class Space1889Actor extends Actor
 		const crewMax = actorData.data.crew.max;
 		const crewCurrent = actorData.data.crew.value;
 		const disabled = game.i18n.localize("SPACE1889.VehicleManeuverabilityDisabledAbbr");
-		if (crewCurrent <= 0)
-			actorData.data.maneuverability.value = disabled;
 
 
-		let malus = SPACE1889Helper.getStructureMalus(actorData.data.structure.value, actorData.data.structure.max, actorData.data.speed.max);
+		this.CalcAndSetHealth(actorData);
+
+		let malus = SPACE1889Helper.getStructureMalus(actorData.data.health.value, actorData.data.health.max, actorData.data.speed.max, actorData.data.health.controlDamage, actorData.data.health.propulsionDamage );
 
 		const rate = crewCurrent / crewMax;
 		let mod = (-1) * malus.maneuverability;
@@ -243,13 +248,20 @@ export class Space1889Actor extends Actor
 				mod += -4;
 		}
 
-		actorData.data.maneuverability.value = actorData.data.maneuverability.max + mod;
-
 		if (rate < 0.25)
 			actorData.data.maneuverability.value = disabled;
+		else
+			actorData.data.maneuverability.value = actorData.data.maneuverability.max + mod;
 
 		actorData.data.speed.value = actorData.data.speed.max - malus.speed;
 		actorData.data.secondaries.initiative.total = actorData.data.positions.pilot.total + actorData.data.maneuverability.value;
+		if (actorData.data.positions.copilot.staffed && actorData.data.positions.copilot.total >= 4 &&
+			(actorData.data.positions.copilot.actorId == "" || actorData.data.positions.copilot.actorId != actorData.data.positions.pilot.actorId))
+			actorData.data.secondaries.initiative.total += 2;
+		if (actorData.data.positions.captain.staffed && actorData.data.positions.captain.total >= 4 &&
+			(actorData.data.positions.captain.actorId == "" || actorData.data.positions.captain.actorId != actorData.data.positions.pilot.actorId))
+			actorData.data.secondaries.initiative.total += 2;
+
 	}
 
 	/**
@@ -1218,9 +1230,34 @@ export class Space1889Actor extends Actor
 	CalcAndSetHealth(actorData)
 	{
 		let damage = 0;
+		let controlDamage = 0;
+		let propulsionDamage = 0;
+		let gunDamage = 0;
+
 		for (const injury of actorData.injuries)
 		{
-			damage += injury.data.damage;
+			const healthOrStructureDamage = this.GetDamageFromType(injury.data.damage, injury.data.damageType, actorData.type);
+
+			damage += healthOrStructureDamage;
+
+			if (actorData.type == "vehicle")
+			{
+				switch (injury.data.damageType)
+				{
+					case "controls":
+						controlDamage += (2*injury.data.damage) - healthOrStructureDamage;
+						break;
+					case "propulsion":
+						propulsionDamage += (2*injury.data.damage) - healthOrStructureDamage;
+						break;
+					case "guns":
+						gunDamage += damage;
+						break;
+					case "crew":
+						crewDamage += injury.data.damage;
+						break;
+				}
+			}
 		}
 		const newHealth = actorData.data.health.max - damage;
 
@@ -1228,11 +1265,26 @@ export class Space1889Actor extends Actor
 			this.update({ "data.health.value": actorData.data.health.max - damage });
 
 		actorData.data.health.value = newHealth;
+		if (actorData.type == "vehicle")
+		{
+			actorData.data.health.controlDamage = controlDamage;
+			actorData.data.health.propulsionDamage = propulsionDamage;
+			actorData.data.health.gunDamage = gunDamage;
+		}
+
 		if (newHealth < 0)
 		{
 			actorData.data.secondaries.move.total = Math.max(0, actorData.data.secondaries.move.total + newHealth);
 			this.CalcAndSetLoad(actorData);
 		}
+	}
+
+	GetDamageFromType(damage, damageType, actorType)
+	{
+		if (actorType != "vehicle" || damageType == "lethal")
+			return damage;
+
+		return Math.floor(damage/2);
 	}
 
 	/**

@@ -128,16 +128,12 @@
 			}
 		},
 		"vehicle": {
-			"templates": [ "primaries", "secondaries", "block", "parry", "evasion" ],
+			"templates": [ "health", "primaries", "secondaries", "block", "parry", "evasion" ],
 			"typeOrClass": "",
 			"isAirship":  false,
 			"pilotSkill": "fahren",
 			"size": 0,
 			"passiveDefense": 0,
-			"structure": {
-				"value": 0,
-				"max": 0
-			},
 			"speed": {
 				"value": 0,
 				"max": 0
@@ -163,35 +159,43 @@
 			"positions": {
 				"captain": {
 					"value": 0,
-					"actorId": ""
+					"actorId": "",
+					"staffed": true
 				},
 				"pilot": {
 					"value": 0,
-					"actorId": ""
+					"actorId": "",
+					"staffed": true
 				},
 				"copilot": {
 					"value": 0,
-					"actorId": ""
+					"actorId": "",
+					"staffed": true
 				},
 				"gunner": {
 					"value": 0,
-					"actorId": ""
+					"actorId": "",
+					"staffed": true
 				},
 				"signaler": {
 					"value": 0,
-					"actorId": ""
+					"actorId": "",
+					"staffed": true
 				},
 				"lookout": {
 					"value": 0,
-					"actorId": ""
+					"actorId": "",
+					"staffed": true
 				},
 				"mechanic": {
 					"value": 0,
-					"actorId": ""
+					"actorId": "",
+					"staffed": true
 				},
 				"medic": {
 					"value": 0,
-					"actorId": ""
+					"actorId": "",
+					"staffed": true
 				}
 			}
 		}

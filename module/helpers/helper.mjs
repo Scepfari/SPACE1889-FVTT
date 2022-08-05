@@ -156,17 +156,29 @@ export default class SPACE1889Helper
 		}
 	}
 
-	static getStructureMalus(current, max, speed)
+	static getStructureMalus(current, max, speed, control, propulsion)
 	{
-		const rate = current / max;
-		if (rate > 0.75)
-			return { maneuverability: 0,  speed: 0 };
-		if (rate > 0.5)
-			return { maneuverability: 1, speed: 0 };
-		if (rate > 0.25)
-			return { maneuverability: 2, speed: Math.ceil(speed * 0.25) };
-		else
-			return { maneuverability: 4, speed: Math.ceil(speed * 0.5) };
+		const tempoRate = (current - propulsion) / max;
+		const maneuverabilityRate = (current - control) / max;
+
+		let maneuverability = 0;
+		let tempoFactor = 0;
+
+		if (maneuverabilityRate > 0.75)
+			maneuverability = 0;
+		else if (maneuverabilityRate > 0.5)
+			maneuverability =  1;
+		else if (maneuverabilityRate > 0.25)
+			maneuverability = 2;
+		else if (maneuverabilityRate <= 0.25)
+			maneuverability = 4;
+
+		if (tempoRate > 0.25 && tempoRate <= 0.5)
+			tempoFactor = 0.25;
+		else if (tempoRate <= 0.25)
+			tempoFactor = 0.5;
+
+		return { maneuverability: maneuverability, speed: Math.ceil(speed * tempoFactor) };
 	}
 
 	static async setVehicleActorPositionFromDialog(vehicle, dropedActor)

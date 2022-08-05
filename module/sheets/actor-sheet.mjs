@@ -423,13 +423,8 @@ export class Space1889ActorSheet extends ActorSheet {
 
 		html.find('.increment-structure-max-click').mousedown(ev =>
 		{
-			const newValue = this.incrementValue(ev, this.actor.data.data.structure.max, 0, undefined);
-			this.actor.update({ 'data.structure.max': newValue });
-		});
-		html.find('.increment-structure-current-click').mousedown(ev =>
-		{
-			const newValue = this.incrementValue(ev, this.actor.data.data.structure.value, -5, this.actor.data.data.structure.max);
-			this.actor.update({ 'data.structure.value': newValue });
+			const newValue = this.incrementValue(ev, this.actor.data.data.health.max, 0, undefined);
+			this.actor.update({ 'data.health.max': newValue });
 		});
 		html.find('.increment-speed-max-click').mousedown(ev =>
 		{
@@ -538,6 +533,15 @@ export class Space1889ActorSheet extends ActorSheet {
 		html.find('.do-vehicle-medic-click').mousedown(ev =>
 		{
 			this._doVehiclePositionClick(ev, 'medic');
+		});
+		html.find('.condition-toggle').mousedown(ev =>
+		{
+			const positionId = this._getDataId(ev);
+			const toggledValue = !this.actor.data.data.positions[positionId].staffed;
+			const key = 'data.positions.' + positionId + '.staffed';
+			let updateObject = {};
+			updateObject[key] = toggledValue;
+			this.actor.update(updateObject);
 		});
 
 		// Active Effect management
@@ -1169,6 +1173,11 @@ export class Space1889ActorSheet extends ActorSheet {
 
 	_getItemId(ev) {
 		return $(ev.currentTarget).parents(".item").attr("data-item-id")
+	}
+
+	_getDataId(ev)
+	{
+		return $(ev.currentTarget).parents(".position").attr("data-id");
 	}
 
 	render(force, options)
