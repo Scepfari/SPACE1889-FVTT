@@ -588,5 +588,232 @@ export default class SPACE1889RollHelper
 	{
 		return game.settings.get("space1889", "dice");
 	}
-	
+
+
+	static getVehiclePositionSupporter(position)
+	{
+		let list = [];
+		switch (position)
+		{
+			case "pilot":
+				list.push(["captain", game.i18n.localize("SPACE1889.VehicleCaptain")]);
+				list.push(["copilot", game.i18n.localize("SPACE1889.VehicleCopilot")]);
+				break;
+			case "gunner":
+				list.push(["2ndGunner", game.i18n.localize("SPACE1889.Vehicle2ndGunner")]);
+				list.push(["captain", game.i18n.localize("SPACE1889.VehicleCaptain")]);
+				list.push(["lookout", game.i18n.localize("SPACE1889.VehicleSignaling")]);
+				break;
+		}
+		return list;
+	}
+
+	static rollManoeuver(key, actor, event)
+	{
+		const evaluation = this.getEventEvaluation(event);
+		if (evaluation.showInfoOnly)
+		{
+			ui.notifications.info("Sorry keine Manoeverinfo verfuegbar!");
+			return;
+		}
+
+		const titleName = actor.name;
+		const actorData = actor.data.data;
+
+		const manoeuvreAndName = game.i18n.localize("SPACE1889.VehicleManoeuvre") + ": " + game.i18n.localize(CONFIG.SPACE1889.vehicleManoeuvres[key]);
+		const modifierText = game.i18n.localize("SPACE1889.Modifier");
+		const modifierLabel = modifierText + " (" + game.i18n.localize("SPACE1889.EnvironmentModifier") + ", " + game.i18n.localize("SPACE1889.SpaceDisadvantage") + ", " + game.i18n.localize("SPACE1889.etc") + ")";
+
+		const labelSkill = game.i18n.localize(CONFIG.SPACE1889.vehicleManoeuvresToSkill[key]);
+
+		const posKey = CONFIG.SPACE1889.vehicleManoeuvresToPosition[key];
+		const isManeuverabilitySkill = posKey == "pilot";
+		let maneuverability = 0;
+
+		if (isManeuverabilitySkill)
+		{
+			const disabled = game.i18n.localize("SPACE1889.VehicleManeuverabilityDisabledAbbr");
+			if (actorData.maneuverability.value == disabled)
+			{
+				ui.notifications.info(game.i18n.format("SPACE1889.VehicleManoeuvreNotPossible", { name: actor.data.name, manoeuvreName: game.i18n.localize(CONFIG.SPACE1889.vehicleManoeuvres[key]) }));
+				return; 
+			}
+			maneuverability = Number(actorData.maneuverability.value);
+		}
+
+
+		const skillValue = actorData.positions[posKey]?.total;
+		const lablelUnterstuetzung = game.i18n.localize("SPACE1889.Assistance");
+		const labelWurf = game.i18n.localize("SPACE1889.NumberOfDice") + ":";
+
+// toDo: für Gunner: Auswahl des Geschützes (Waffenschaden/Salvengröße geht mit ein)
+// Beschädigungen geht in die Gunnerprobe ein
+
+		const supporter = this.getVehiclePositionSupporter(posKey);
+
+		let isVisibleSupporter1 = false;
+		let isVisibleSupporter2 = false;
+		let isVisibleSupporter3 = false;
+
+		let checkboxHtml = "";
+		let loop = 0;
+
+		if (supporter.length > 0)
+		{
+			checkboxHtml = '<fieldset>';
+			checkboxHtml += '<legend>' + lablelUnterstuetzung + '</legend>';
+			for (let [positionKey, description] of supporter)
+			{
+				++loop;
+				let isTemplatePosition = actorData.positions[positionKey] != undefined;
+				let canDo = isTemplatePosition ? actorData.positions[positionKey].staffed && actorData.positions[positionKey].total >= 4 : true;
+				const state = canDo ? "" : ' disabled="true"';
+				const active = canDo && isTemplatePosition ? " checked" : "";
+				const positionName = "supporter" + loop.toString();
+				switch (loop)
+				{
+					case 1:
+						isVisibleSupporter1 = true;
+						break;
+					case 2:
+						isVisibleSupporter2 = true;
+						break;
+					case 3:
+						isVisibleSupporter3 = true;
+						break;
+				}
+
+				checkboxHtml += '<div>';
+				checkboxHtml += '<input type="checkbox" id="' + positionKey + '" class="' + positionName + 'Checkbox" value="' + positionKey + '" '
+				checkboxHtml += state + active + '>';
+				checkboxHtml += '<label for="' + positionKey + '">' + description + '</label>';
+				checkboxHtml += '</div>'
+			}
+			checkboxHtml += '</fieldset >';
+		}
+
+		const dieType = game.settings.get("space1889", "dice");
+
+		const actorInfo = "[" + labelSkill + " " + actor.data.data.positions[posKey]?.actorName + "]";
+		let diceInfo = "";
+
+		function Recalc()
+		{
+			let mod = Number($("#modifier")[0].value);
+			let unterstuetzung = 0;
+			let uText = "";
+			let modText = "";
+			let maneuvText = "";
+
+			for (let [positionKey, description] of supporter)
+			{
+				unterstuetzung += $("#" + positionKey)[0].checked ? 2 : 0;
+			}
+
+			uText = " + " + unterstuetzung.toString() + "[" + lablelUnterstuetzung + "]";
+			const uTextShort = " + " + unterstuetzung.toString() + "[" + lablelUnterstuetzung.substring(0, 3) + "]";
+			modText = " + " + mod.toString() + "[" + modifierText + "]";
+			const modTextShort = " + " + mod.toString() + "[" + modifierText.substring(0, 3) + "]";
+			const summe = skillValue + unterstuetzung + mod + maneuverability;
+			diceInfo = skillValue.toString() + actorInfo + (unterstuetzung > 0 ? uText : "") + (mod > 0 ? modText : "");
+			if (isManeuverabilitySkill)
+			{
+				maneuvText = " + " + maneuverability.toString() + "[" + game.i18n.localize("SPACE1889.VehicleManeuverability") + "]";
+				if (maneuverability != 0)
+					diceInfo += maneuvText;
+			}
+
+			$("#zusammensetzung")[0].value = skillValue.toString() + uTextShort + modTextShort + maneuvText + " = " + summe.toString();
+			$("#anzahlDerWuerfel")[0].value = summe;
+		}
+
+		function handleRender(html)
+		{
+			if (isVisibleSupporter1)
+			{
+				html.on('change', '.supporter1Checkbox', () =>
+				{
+					Recalc();
+				});
+			}
+			if (isVisibleSupporter2)
+			{
+				html.on('change', '.supporter2Checkbox', () =>
+				{
+					Recalc();
+				});
+			}
+			if (isVisibleSupporter3)
+			{
+				html.on('change', '.supporter3Checkbox', () =>
+				{
+					Recalc();
+				});
+			}
+			html.on('change', '.modInput', () =>
+			{
+				Recalc();
+			});
+			Recalc();
+		}
+
+		let dialogue = new Dialog(
+			{
+				title: `${titleName}`,
+				content: `
+  <form>
+    <h2>${manoeuvreAndName}</h2>
+    <br>
+    <p id="info" class="infoToChange">${labelSkill}: ${skillValue}</p>
+	${checkboxHtml}
+    <p>${modifierLabel}: <input type="number" class="modInput" id="modifier" value = "0"></p>
+    <hr>
+    <h3>
+    <div>
+        <label for="zusammensetzung">${labelWurf}</label>
+        <input type="text" id="zusammensetzung" value="${labelWurf}" disabled="true"></label>
+        <input type="hidden" id="anzahlDerWuerfel" value = "0" disabled="true" visible="false">
+    </div>
+    </h3>
+    <hr>
+  </form>`,
+				buttons:
+				{
+					ok:
+					{
+						icon: '',
+						label: 'Los!',
+						callback: (html) => 
+						{
+							const input = html.find('#anzahlDerWuerfel').val();
+							const anzahl = input ? parseInt(input) : 1;
+							const grund = manoeuvreAndName;
+
+							let messageContent = `<div><h2>${grund}</h2></div>`;
+							messageContent += `<p>${diceInfo}</p>`;
+							messageContent += `<b>[[${anzahl}${dieType}]] von ${anzahl}</b> <br>`;
+							let chatData =
+							{
+								user: game.user.id,
+								speaker: ChatMessage.getSpeaker({ actor: this.actor }),
+								content: messageContent
+							};
+							ChatMessage.create(chatData, {})
+						}
+					},
+					abbruch:
+					{
+						label: 'Abbrechen',
+						callback: () => { ui.notifications.info(game.i18n.localize("SPACE1889.CancelRoll")) },
+						icon: `<i class="fas fa-times"></i>`
+					}
+				},
+				default: "ok",
+				render: handleRender
+			})
+
+		dialogue.render(true)
+
+
+	}
 }

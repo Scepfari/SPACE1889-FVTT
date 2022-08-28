@@ -128,7 +128,7 @@
 			}
 		},
 		"vehicle": {
-			"templates": [ "health", "primaries", "secondaries", "block", "parry", "evasion" ],
+			"templates": [ "health", "secondaries" ],
 			"typeOrClass": "",
 			"isAirship":  false,
 			"pilotSkill": "fahren",

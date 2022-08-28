@@ -716,6 +716,48 @@ SPACE1889.weaponCapacityTypes = {
 	"powercell": "SPACE1889.WeaponCapacityTypePowercell"
 }
 
+SPACE1889.vehicleManoeuvres = {
+	"ApproachDistance": "SPACE1889.VehicleApproachDistance",
+	"UtmostPower":"SPACE1889.VehicleUtmostPower",
+	"Turnaround":"SPACE1889.VehicleTurnaround",
+	"AbruptBrakingAcceleration":"SPACE1889.VehicleAbruptBrakingAcceleration",
+	"Ramming":"SPACE1889.VehicleRamming",
+	"DoubleShot":"SPACE1889.VehicleDoubleShot",
+	"ContinuousFire":"SPACE1889.VehicleContinuousFire",
+	"AimedShot":"SPACE1889.VehicleAimedShot",
+	"Signaling":"SPACE1889.VehicleSignaling",
+	"TemporaryRepairs":"SPACE1889.VehicleTemporaryRepairs",
+	"Board":"SPACE1889.VehicleBoard"
+}
+
+SPACE1889.vehicleManoeuvresToSkill = {
+	"ApproachDistance": "SPACE1889.VehiclePilotSkill",
+	"UtmostPower": "SPACE1889.VehiclePilotSkill",
+	"Turnaround": "SPACE1889.VehiclePilotSkill",
+	"AbruptBrakingAcceleration": "SPACE1889.VehiclePilotSkill",
+	"Ramming": "SPACE1889.VehiclePilotSkill",
+	"DoubleShot": "SPACE1889.SkillGeschuetze",
+	"ContinuousFire": "SPACE1889.SkillGeschuetze",
+	"AimedShot": "SPACE1889.SkillGeschuetze",
+	"Signaling": "SPACE1889.SpeciSkillCodes",
+	"TemporaryRepairs": "SPACE1889.SkillGroupHandwerk",
+	"Board": "SPACE1889.SkillSportlichkeit"
+}
+
+SPACE1889.vehicleManoeuvresToPosition = {
+	"ApproachDistance": "pilot",
+	"UtmostPower": "pilot",
+	"Turnaround": "pilot",
+	"AbruptBrakingAcceleration": "pilot",
+	"Ramming": "pilot",
+	"DoubleShot": "gunner",
+	"ContinuousFire": "gunner",
+	"AimedShot": "gunner",
+	"Signaling": "signaler",
+	"TemporaryRepairs": "mechanic",
+	"Board": ""
+}
+
 SPACE1889.vehicleCrewPositions = {
 	"captain": "SPACE1889.VehicleCaptain",
 	"pilot": "SPACE1889.VehiclePilot",

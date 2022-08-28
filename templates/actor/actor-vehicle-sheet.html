@@ -139,8 +139,8 @@
 			<div class="abilities flexcol">
 				<div class="items-header-center">{{localize "SPACE1889.VehicleCrewValues"}}</div>
 				<li class="item flexrow items-header">
-					<div class="item-name ">{{localize "SPACE1889.VehicleCrewPosition"}}</div>
-					<div class="items-list item-max-with150px">{{localize "SPACE1889.Pc"}} {{localize "SPACE1889.Name"}}</div>
+					<div class="item-name">{{localize "SPACE1889.VehicleCrewPosition"}}</div>
+					<div class="items-list item-max-with150px">{{localize "SPACE1889.Name"}}</div>
 					<div class="items-list item-max-with42px">{{#if (eq data.crew.experience 'custom')}}{{localize "SPACE1889.Base"}}{{else}}{{/if}}</div>
 					<div class="items-list item-max-with42px">{{localize "SPACE1889.Mod"}}</div>
 					<div title='{{localize "SPACE1889.Rating"}}' class="items-list item-max-with42px">{{localize "SPACE1889.Rating"}}</div>
@@ -148,7 +148,7 @@
 				</li>
 				{{#each data.positions as |position key|}}
 				<li class="item row-section flexrow">
-					<label for="data.positions.{{key}}.value" class="rollable flexlarge align-left" data-roll-key="{{key}}" data-roll-type="actor" data-roll-diecount="{{position.total}}" data-label="{{position.label}}">{{position.label}}</label>
+					<label for="data.positions.{{key}}.value" class="rollable item-name" data-roll-key="{{key}}" data-roll-type="actor" data-roll-diecount="{{position.total}}" data-label="{{position.label}}">{{position.label}}</label>
 
 					<div title='{{localize "SPACE1889.VehicelScCrewPositionToolTip"}}' class="items-list item-max-with150px">
 						<a class="do-vehicle-{{key}}-click">{{position.actorName}}</a>

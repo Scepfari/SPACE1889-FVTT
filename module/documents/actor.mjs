@@ -101,15 +101,6 @@ export class Space1889Actor extends Actor
 		const data = actorData.data;
 		const items = actorData.items;
 
-		// leere Elemente für Token Action HUD erzeugen
-		let primaereAttribute = [];
-		for (let [key, ability] of Object.entries(data.abilities))
-		{
-			ability.total = 0;
-			primaereAttribute.push(key);
-		}
-		actorData.data['primaereAttribute'] = primaereAttribute;
-
 		actorData.talents = [];
 		actorData.skills = [];
 		actorData.speciSkills = [];
@@ -123,16 +114,17 @@ export class Space1889Actor extends Actor
 		
 		for (let [key, position] of Object.entries(data.positions))
 		{
-			position.actorName = "";
-			if (position.actorId != "" && game.actors != undefined)
+			position.actorName = game.i18n.localize("SPACE1889.VehicleCrew") +  " (" + game.i18n.localize(CONFIG.SPACE1889.vehicleCrewPositions[key]) + ")";
+			if (position.actorId != "" && game.actors != undefined && position.staffed)
 			{
 				const posActor = game.actors.get(position.actorId);
 				position.total = this._GetVehiclePositionSkillValue(actorData, key, posActor);
 				position.actorName = posActor.data.name;
 				position.mod = 0;
 			}
-			if (!position.staffed)
+			else if (!position.staffed)
 			{
+				position.actorName = "";
 				position.mod = 0;
 				position.total = 0;
 			}
@@ -248,7 +240,7 @@ export class Space1889Actor extends Actor
 				mod += -4;
 		}
 
-		if (rate < 0.25)
+		if (rate < 0.25 || actorData.data.health.value <= 0)
 			actorData.data.maneuverability.value = disabled;
 		else
 			actorData.data.maneuverability.value = actorData.data.maneuverability.max + mod;
@@ -1538,6 +1530,15 @@ export class Space1889Actor extends Actor
 		return this.rollAttribute(dieCount, evaluation.showDialog, key);
 	}
 
+	rollManoeuvre(key, event)
+	{
+		if (key != "Board")
+		{
+			SPACE1889RollHelper.rollManoeuver(key, this, event);
+		}
+		else
+			ui.notifications.info("Das Manöver " + game.i18n.localize(CONFIG.SPACE1889.vehicleManoeuvres[key]) + " ist noch nicht implementiert!");
+	}
 
 	/**
 	 * 
