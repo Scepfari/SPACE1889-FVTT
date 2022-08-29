@@ -613,7 +613,7 @@ export default class SPACE1889RollHelper
 		const evaluation = this.getEventEvaluation(event);
 		if (evaluation.showInfoOnly)
 		{
-			ui.notifications.info("Sorry keine Manoeverinfo verfuegbar!");
+			this.showManoeuverInfo(key, actor, evaluation.whisperInfo);
 			return;
 		}
 
@@ -815,5 +815,22 @@ export default class SPACE1889RollHelper
 		dialogue.render(true)
 
 
+	}
+
+	static showManoeuverInfo(key, actor, whisper)
+	{
+		const speaker = ChatMessage.getSpeaker({ actor: actor });
+		const rollMode = game.settings.get('core', 'rollMode');
+		const manoeuvreName = game.i18n.localize(CONFIG.SPACE1889.vehicleManoeuvres[key]);
+		const infoKey = CONFIG.SPACE1889.vehicleManoeuvres[key];
+		const desc = game.i18n.localize( infoKey + "Desc");
+		const label = `<h2><strong>${manoeuvreName}</strong></h2>`;
+		ChatMessage.create({
+			speaker: speaker,
+			rollMode: rollMode,
+			flavor: label,
+			whisper: whisper ? [game.user.id] : [],
+			content: desc ?? ''
+		});
 	}
 }

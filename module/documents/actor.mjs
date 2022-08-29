@@ -1532,12 +1532,18 @@ export class Space1889Actor extends Actor
 
 	rollManoeuvre(key, event)
 	{
-		if (key != "Board")
+		if (key === "Board")
+		{
+			const evaluation = SPACE1889RollHelper.getEventEvaluation(event);
+			if (evaluation.showInfoOnly)
+				SPACE1889RollHelper.showManoeuverInfo(key, this, evaluation.whisperInfo);
+			else
+				SPACE1889RollHelper.showManoeuverInfo(key, this, true);
+		}
+		else
 		{
 			SPACE1889RollHelper.rollManoeuver(key, this, event);
 		}
-		else
-			ui.notifications.info("Das Manöver " + game.i18n.localize(CONFIG.SPACE1889.vehicleManoeuvres[key]) + " ist noch nicht implementiert!");
 	}
 
 	/**
