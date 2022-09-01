@@ -70,12 +70,6 @@
 			<section class="grid grid-2col">
 				<div class="abilities flexcol">
 					<li class="flexrow">
-						<div class="item-name">{{localize "SPACE1889.VehiclePassiveDefense"}}</div>
-						<div class="item flexrow flex-group-center">
-							<a class="increment-passiveDefense-click">{{data.passiveDefense}}</a>
-						</div>
-					</li>
-					<li class="flexrow">
 						<div class="item-name ">{{localize "SPACE1889.VehiclePilotSkill"}}</div>
 						<div class="resource-content flexrow flex-center flex-between item-marginlr5px">
 							<select name="data.pilotSkill" data-dtype="String">
@@ -91,6 +85,19 @@
 						<div class="item-name " title="{{localize "SPACE1889.VehicleIsAirshipInfo"}}">{{localize "SPACE1889.VehicleIsAirship"}}</div>
 						<div class="item flexrow flex-group-center" title="{{localize "SPACE1889.VehicleIsAirshipInfo"}}">
 							<input type="checkbox" name="data.isAirship" {{checked data.isAirship}} />
+						</div>
+					</li>
+					<li class="flexrow">
+						<div class="item-name " title="{{localize "SPACE1889.VehicleIsStrengthBasedTempoInfo"}}">{{localize "SPACE1889.VehicleIsStrengthBasedTempo"}}</div>
+						<div style="display: grid; grid-template-columns: 55% 45%; grid-template-rows: 100%;">
+							<div class="item flexrow flex-group-right" title="{{localize "SPACE1889.VehicleIsPureMusclePowerInfo"}}">
+								<input type="checkbox" name="data.isStrengthBasedTempo" {{checked data.isStrengthBasedTempo}} />
+							</div>
+							{{#if data.isStrengthBasedTempo}}
+							<div class="item flexrow flex-group-center" title="{{localize "SPACE1889.VehicleStrengthTempoFactor"}}">
+								<a class="increment-strengthTempoFactor-click">{{data.strengthTempoFactor.value}}</a>
+							</div>
+							{{/if}}
 						</div>
 					</li>
 				</div>

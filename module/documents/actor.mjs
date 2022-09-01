@@ -143,6 +143,17 @@ export class Space1889Actor extends Actor
 			position.label = game.i18n.localize(CONFIG.SPACE1889.vehicleCrewPositions[key]);
 		}
 
+		if (actorData.data.isStrengthBasedTempo)
+		{
+			let strValue = Math.round(actorData.data.positions.pilot.total / 2);
+			if (actorData.data.positions.pilot.actorId != "" && game.actors != undefined)
+			{
+				const pilot = game.actors.get(actorData.data.positions.pilot.actorId);
+				strValue = pilot.data.data.abilities.str.total;
+			}
+			actorData.data.speed.max = strValue * actorData.data.strengthTempoFactor.value;
+		}
+
 		const weapons = [];
 		const injuries = [];
 		for (let item of items)

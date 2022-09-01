@@ -497,6 +497,11 @@ export class Space1889ActorSheet extends ActorSheet {
 			const newValue = this.incrementValue(ev, this.actor.data.data.passenger.value, 0, this.actor.data.data.passenger.max);
 			this.actor.update({ 'data.passenger.value': newValue });
 		});
+		html.find('.increment-strengthTempoFactor-click').mousedown(ev =>
+		{
+			const newValue = this.incrementValue(ev, this.actor.data.data.strengthTempoFactor.value, 0, this.actor.data.data.strengthTempoFactor.max);
+			this.actor.update({ 'data.strengthTempoFactor.value': newValue });
+		});
 		html.find('.increment-vehicle-size-click').mousedown(ev =>
 		{
 			const newValue = this.incrementValue(ev, this.actor.data.data.size, 0, undefined);
@@ -645,11 +650,19 @@ export class Space1889ActorSheet extends ActorSheet {
 
 		if (itemData.type == "weapon")
 		{
-			if (itemData.data.strengthThreshold > actor.data.abilities["str"].total)
+			if (actor.type == "vehicle")
+			{
+				if (itemData.data.skillId != "geschuetze")
+				{
+					ui.notifications.error(game.i18n.format("SPACE1889.canNotBeAdded", { item: itemData.name }))
+					return false;
+				}
+			}
+			else if (itemData.data.strengthThreshold > actor.data.abilities["str"].total)
 			{
 				ui.notifications.error(game.i18n.format("SPACE1889.canNotBeAdded", { item: itemData.name }))
 				return false;
-			}
+			}	
 		}
 		if (itemData.type == "specialization")
 		{

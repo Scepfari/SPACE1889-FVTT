@@ -461,9 +461,10 @@ export default class SPACE1889RollHelper
 			return;
 
 		const dmgTypeLabel = dmgType == "lethal" ? game.i18n.localize("SPACE1889.LethalAbbr") : game.i18n.localize("SPACE1889.NonLethalAbbr");
-		const isCharakter = actor.data.type == "character"
-		let stun = actor.data.data.secondaries.stun.total;
-		let str = actor.data.data.abilities.str.total;
+		const isCharakter = actor.data.type == "character";
+		const isVehicle = actor.data.type == "vehicle";
+		let stun = isVehicle ? 1000 : actor.data.data.secondaries.stun.total;
+		let str = isVehicle ? 1000 : actor.data.data.abilities.str.total;
 		let recoil = 0;
 		let liegend = false;
 		let stunned = false;
