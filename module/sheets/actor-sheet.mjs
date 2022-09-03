@@ -440,12 +440,6 @@ export class Space1889ActorSheet extends ActorSheet {
 			this.actor.update({ 'data.secondaries.size.value': newValue });
 		});
 
-		html.find('.increment-creatureHealth-click').mousedown(ev =>
-		{
-			const newValue = this.incrementValue(ev, this.actor.data.data.health.value, this.actor.data.data.health.min, this.actor.data.data.health.max);
-			this.actor.update({ 'data.health.value': newValue });
-		});
-
 		html.find('.increment-structure-max-click').mousedown(ev =>
 		{
 			const newValue = this.incrementValue(ev, this.actor.data.data.health.max, 0, undefined);

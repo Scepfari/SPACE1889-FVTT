@@ -159,6 +159,8 @@
 	"SPACE1889.IsBaseResource": "Ist Grundressource",
 	"SPACE1889.BaseResource": "Grundressource",
 	"SPACE1889.DefenseBonus": "Abwehr Bonus",
+	"SPACE1889.TotalDefense": "Volle Abwehr",
+	"SPACE1889.TotalDefenseDesc": "In manchen Situationen kann es sinnvoll sein, sich völlig auf die Verteidigung zu konzentrieren, auch wenn man dabei auf eigene Angriffsmöglichkeiten verzichten muss: Schläge abwehren, Hiebe parieren und Fernkampfattacken ausweichen. Durch die Aufgabe der eigenen Angriffsaktion erhält der Charakter bis zur nächsten Runde 4 zusätzliche Würfel für seine Abwehr.",
 	"SPACE1889.DexPenalty": "Ge-Malus",
 	"SPACE1889.Quantity": "Anzahl",
 	"SPACE1889.LoadingLevel": "Beladung",

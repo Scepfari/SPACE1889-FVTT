@@ -159,6 +159,8 @@
 	"SPACE1889.IsBaseResource": "Is Base Resource",
 	"SPACE1889.BaseResource": "Base resource",
 	"SPACE1889.DefenseBonus": "Defence Bonus",
+	"SPACE1889.TotalDefense": "TotalDefense",
+	"SPACE1889.TotalDefenseDesc": "In dire circumstances, your character may focus entirely on her defense – blocking blows, parrying strikes, and dodging ranged attacks all at the same time. By giving up her attack action, your character gains a +4 bonus to her Defense rating until her next turn.",
 	"SPACE1889.DexPenalty": "Dex-penalty",
 	"SPACE1889.Quantity": "Quantity",
 	"SPACE1889.LoadingLevel": "Loading level",

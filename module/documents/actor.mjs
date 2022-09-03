@@ -179,9 +179,6 @@ export class Space1889Actor extends Actor
 		}
 
 		this._CalcVehicleThings(actorData);
-
-//		this._CalcThings(actorData);
-
 	}
 
 	_GetVehiclePositionSkillValue(vehicleData, position, actorOnPosition)
@@ -265,6 +262,11 @@ export class Space1889Actor extends Actor
 			(actorData.data.positions.captain.actorId == "" || actorData.data.positions.captain.actorId != actorData.data.positions.pilot.actorId))
 			actorData.data.secondaries.initiative.total += 2;
 
+		actorData.data.secondaries.defense.value = actorData.data.passiveDefense;
+		if (actorData.data.maneuverability.value == disabled)
+			actorData.data.secondaries.defense.total = actorData.data.passiveDefense
+		else
+			actorData.data.secondaries.defense.total = actorData.data.passiveDefense + actorData.data.positions.pilot.total + actorData.data.maneuverability.value;
 	}
 
 	/**
@@ -1264,9 +1266,6 @@ export class Space1889Actor extends Actor
 		}
 		const newHealth = actorData.data.health.max - damage;
 
-		if (actorData.data.health.value != newHealth && this.isEditable)
-			this.update({ "data.health.value": actorData.data.health.max - damage });
-
 		actorData.data.health.value = newHealth;
 		if (actorData.type == "vehicle")
 		{
@@ -1278,7 +1277,8 @@ export class Space1889Actor extends Actor
 		if (newHealth < 0)
 		{
 			actorData.data.secondaries.move.total = Math.max(0, actorData.data.secondaries.move.total + newHealth);
-			this.CalcAndSetLoad(actorData);
+			if (actorData.type != 'vehicle')
+				this.CalcAndSetLoad(actorData);
 		}
 	}
 
@@ -1397,32 +1397,28 @@ export class Space1889Actor extends Actor
 		{
 			if (k == key)
 			{
-				langId = v;
-				break;
+				return v;
 			}
 		}
-		if (langId == "")
+		for (let [k, v] of Object.entries(CONFIG.SPACE1889.secondaries)) 
 		{
-			for (let [k, v] of Object.entries(CONFIG.SPACE1889.secondaries)) 
+			if (k == key)
 			{
-				if (k == key)
-				{
-					langId = v;
-					break;
-				}
+				return v;
 			}
 		}
-		if (langId == "")
+
+		for (let [k, v] of Object.entries(CONFIG.SPACE1889.vehicleCrewPositions))
 		{
-			for (let [k, v] of Object.entries(CONFIG.SPACE1889.vehicleCrewPositions))
+			if (k == key)
 			{
-				if (k == key)
-				{
-					langId = v;
-					break;
-				}
+				return v;
 			}
 		}
+
+		if (key == 'totalDefence')
+			return "SPACE1889.TotalDefense";
+
 		if (langId == "")
 		{
 			langId = "SPACE1889." + key.replace(/^(.)/, function (b) { return b.toUpperCase(); });
@@ -1532,6 +1528,10 @@ export class Space1889Actor extends Actor
 				dieCount = this.data.data.secondaries.defense.total;
 				label = game.i18n.localize("SPACE1889.SecondaryAttributeDef");
 				break;
+			case 'totalDefense':
+				dieCount = this.data.data.secondaries.defense.total + 4;
+				label = game.i18n.localize("SPACE1889.TalentVolleAbwehr");
+				break;			
 		}
 
 		const evaluation = SPACE1889RollHelper.getEventEvaluation(event);

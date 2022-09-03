@@ -84,10 +84,13 @@ export default class SPACE1889RollHelper
 			let attackString = "";
 			if (itemData.type == "weapon")
 			{
+				if (actor.data.type == "vehicle")
+					attackString = itemData.data.vehicleInfo + '<br>'; 
+
 				if (game.user.targets.size > 0)
-					attackString = game.i18n.format("SPACE1889.AttackOn", { targetName: game.user.targets.first().name });
+					attackString += game.i18n.format("SPACE1889.AttackOn", { targetName: game.user.targets.first().name });
 				else
-					attackString = game.i18n.localize("SPACE1889.Attack") ?? "Attack";
+					attackString += game.i18n.localize("SPACE1889.Attack") ?? "Attack";
 			}
 
 			const info = attackString != "" ? attackString : game.i18n.localize("SPACE1889.Probe") ?? "Probe";
