@@ -214,6 +214,7 @@
 	"SPACE1889.WeaponIsSwivel": "Is swivel",
 	"SPACE1889.WeaponIsRigidlyMounted": "Is rigidly mounted",
 	"SPACE1889.WeaponSwivelingRange": "Swiveling range",
+	"SPACE1889.WeaponSwivelingRangeAbbr": "SR",
 
 	"SPACE1889.VehicleTypeOrClass": "Type / Class",
 	"SPACE1889.VehicleIsAirship": "Is Airship",

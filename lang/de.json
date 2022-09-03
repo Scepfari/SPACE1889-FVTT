@@ -214,6 +214,7 @@
 	"SPACE1889.WeaponIsSwivel": "Ist schwenkbar",
 	"SPACE1889.WeaponIsRigidlyMounted": "Ist starr montiert",
 	"SPACE1889.WeaponSwivelingRange": "Schwenkbereich",
+	"SPACE1889.WeaponSwivelingRangeAbbr": "SB",
 
 	"SPACE1889.VehicleTypeOrClass": "Typ / Klasse",
 	"SPACE1889.VehicleIsAirship": "Ist Luftschiff",

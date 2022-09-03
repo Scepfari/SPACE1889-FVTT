@@ -350,8 +350,33 @@ export class Space1889ActorSheet extends ActorSheet {
 		{
 			const itemId = this._getItemId(ev);
 			const item = this.actor.items.get(itemId);
-			const newLocation = this.incrementLocation(ev, item.data.data.location, this.actor.data.type == 'vehicle');
-			item.update({ 'data.location': newLocation });
+			if (this.actor.data.type == 'vehicle')
+			{
+				const newLocationAndSpot = this.incrementVehicleMountLocation(ev, item.data.data.location, item.data.data.vehicle.spot);
+				item.update({ 'data.location': newLocationAndSpot[0], 'data.vehicle.spot': newLocationAndSpot[1] });
+			}
+			else
+			{
+				const newLocation = this.incrementLocation(ev, item.data.data.location);
+				item.update({ 'data.location': newLocation });
+			}
+		});
+
+		html.find('.swivelingRange-click').mousedown(ev =>
+		{
+			const itemId = this._getItemId(ev);
+			const item = this.actor.items.get(itemId);
+			if (this.actor.data.type == 'vehicle' && item.data.type == 'weapon')
+			{
+				const newValue = this.incrementValue(ev, Number(item.data.data.vehicle.swivelingRange), 0, 360);
+				let isSwivelMounted = item.data.data.vehicle.isSwivelMounted;
+				if (newValue == 0 && isSwivelMounted)
+					isSwivelMounted = false;
+				else if (newValue > 0 && !isSwivelMounted)
+					isSwivelMounted = true;
+
+				this.actor.updateEmbeddedDocuments("Item", [{ _id: itemId, "data.vehicle.swivelingRange": newValue, "data.vehicle.isSwivelMounted": isSwivelMounted }]);
+			}
 		});
 
 		const isCharacter = this.actor.data.type == "character";
@@ -1021,15 +1046,9 @@ export class Space1889ActorSheet extends ActorSheet {
 	 * 
 	 * @param {object} ev event
 	 * @param {string} currentValue a storage location: 'koerper', 'rucksack' or 'lager'
-	 * @param {boolean} isVehicle
 	 */
-	incrementLocation(ev, currentValue, isVehicle)
+	incrementLocation(ev, currentValue)
 	{
-		if (isVehicle)
-		{
-			return currentValue == 'mounted' ? 'lager' : 'mounted';
-		}
-
 		const k = 'koerper';
 		const r = 'rucksack';
 		const l = 'lager';
@@ -1043,6 +1062,33 @@ export class Space1889ActorSheet extends ActorSheet {
 			return backward ? r : k;
 	}
 
+	/**
+	 * 
+	 * @param {object} ev event
+	 * @param {string} currentLocationValue a storage location: 'mounted' or 'lager'
+	 * @param {string} currentMountSpot the mounting spot: 'bow', 'stern', 'port', 'starboard'
+	 */
+	incrementVehicleMountLocation(ev, currentLocationValue, currentMountSpot)
+	{
+		const list = [['lager', currentMountSpot], ['mounted', 'bow'], ['mounted', 'starboard'], ['mounted', 'stern'], ['mounted', 'port']];
+		const backward = ev.button == 2;
+
+		if (currentLocationValue == 'lager')
+			return backward ? list[4] : list[1];
+
+		for (let i = 1; i < list.length; ++i)
+		{
+			if (list[i][1] == currentMountSpot)
+			{
+				if (backward)
+					return list[i - 1];
+				else
+				{
+					return i == list.length - 1 ? list[0] : list[i + 1];
+				}
+			}
+		}
+	}
 
 	/**
 	 * Handle creating a new Owned Item for the actor using initial data defined in the HTML dataset
