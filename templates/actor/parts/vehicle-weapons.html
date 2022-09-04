@@ -18,7 +18,7 @@
 					<a class="rollable" data-roll-type="item" data-roll-diecount="{{item.data.attack}}"><img src="../../icons/svg/dice-target.svg" title="{{item.data.label}} Probe" width="18" height="18"/></a>
 				</div>
 				<div class="item-name-name">
-					<h4 for="" class="rollable" data-roll-type="item" data-label="{{item.data.label}}" title="{{item.data.vehicleInfo}}">{{item.data.label}}</h4>
+					<h4 for="" class="rollable" data-roll-type="item" data-label="{{item.data.label}}" title="{{item.data.vehicleInfo}} {{#if (eq item.data.location 'mounted')}}{{localize "SPACE1889.Range"}}: {{item.data.range}}{{/if}}">{{item.data.label}}</h4>
 				</div>
 			</div>
 			<div class="item-max-with60px resource-label">

@@ -14,7 +14,9 @@
 					<div class="item-name item-max-with60px" ">{{localize "SPACE1889.VehicleStructure"}}</div>
 					<div class="item-name item-max-with60px" ">{{localize "SPACE1889.Speed"}}</div>
 					<div class="item-name item-max-with100px">{{localize "SPACE1889.VehicleManeuverability"}}</div>
-					<div class="item-name item-max-with100px">{{localize "SPACE1889.VehiclePassiveDefense"}}</div>
+					<div class="item-name item-max-with100px" title="{{localize "SPACE1889.ClickToRoll"}}">
+						<label class="resource-label rollable" data-roll-key="passiveDefence" data-roll-type="actor" data-roll-diecount="{{data.passiveDefense}}" data-label='{{localize "SPACE1889.VehiclePassiveDefense"}}'>{{localize "SPACE1889.VehiclePassiveDefense"}}</label>
+					</div>
 				</li>
 				<li class="item flexrow flex-group-center">
 					<div class="flexrow item-max-with60px">
@@ -144,6 +146,22 @@
 			</section>
 
 			<div class="abilities flexcol">
+
+
+				<li class="item flexrow items-header">
+					<div class="resource flex-group-center" title="{{localize "SPACE1889.VehicleSelectManoeuvre"}}">
+						<a class="do-pilot-maneuver-click">{{localize "SPACE1889.VehicleMovementManeuver"}}</a>
+					</div>
+					<div class="resource flex-group-center" title="{{localize "SPACE1889.VehicleSelectManoeuvre"}}">
+						<a class="do-gunner-maneuver-click">{{localize "SPACE1889.VehicleAttackManeuver"}}</a>
+					</div>
+					<div class="resource flex-group-center" title="{{localize "SPACE1889.ClickToRoll"}}">
+						<label class="resource-label rollable" data-roll-key="defense" data-roll-type="actor" data-roll-diecount="{{data.secondaries.defense.total}}" data-label='{{localize "SPACE1889.SecondaryAttributeDef"}}'>{{localize "SPACE1889.SecondaryAttributeDef"}}: </label>
+						<label class="items-list item-max-with60px">{{data.secondaries.defense.total}}</label>
+					</div>
+				</li>
+
+
 				<div class="items-header-center">{{localize "SPACE1889.VehicleCrewValues"}}</div>
 				<li class="item flexrow items-header">
 					<div class="item-name">{{localize "SPACE1889.VehicleCrewPosition"}}</div>

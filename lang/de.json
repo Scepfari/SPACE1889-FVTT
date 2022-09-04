@@ -282,11 +282,15 @@
 	"SPACE1889.VehicleWeaponMountSpotPort": "Backbord",
 	"SPACE1889.VehicleWeaponMountSpotStarboard": "Steuerbord",
 
-	"SPACE1889.VehicleInfoSwivelMountPos": "Waffe ist am/im Fahrzeug schwenkbar montiert ({spot}) und hat einen Schwenkbereich von {swivelingRange} Grad",
-	"SPACE1889.VehicleInfoRigidlyMountPos": "Waffe ist am/im Fahrzeug starr montiert ({spot}) und muss über das Fahrzeug ausgerichtet werden",
-	"SPACE1889.VehicleInfoNotMounted": "Waffe befindet sich im Stauraum des Fahrzeuges und ist damit nicht einsetzbar",
+	"SPACE1889.VehicleInfoSwivelMountPos": "Waffe ist am/im Fahrzeug schwenkbar montiert ({spot}) und hat einen Schwenkbereich von {swivelingRange} Grad.",
+	"SPACE1889.VehicleInfoRigidlyMountPos": "Waffe ist am/im Fahrzeug starr montiert ({spot}) und muss über das Fahrzeug ausgerichtet werden.",
+	"SPACE1889.VehicleInfoNotMounted": "Waffe befindet sich im Stauraum des Fahrzeuges und ist damit nicht einsetzbar.",
 
 	"SPACE1889.VehicleManoeuvre": "Manöver",
+	"SPACE1889.VehicleManoeuvreSelection": "Manöverauswahl",
+	"SPACE1889.VehicleSelectManoeuvre": "Klicken zur Manöverauswahl",
+	"SPACE1889.VehicleMovementManeuver": "Bewegungsmanöver",
+	"SPACE1889.VehicleAttackManeuver": "Angriffsmanöver",
 	"SPACE1889.VehicleApproachDistance": "Annähern / Entfernen",
 	"SPACE1889.VehicleUtmostPower": "Äußerste Kraft",
 	"SPACE1889.VehicleTurnaround": "Wenden",
@@ -2623,6 +2627,7 @@
 	"SPACE1889.CancelRoll": "Auch gut, dann wird nicht gewürfelt",
 	"SPACE1889.VehicelScCrewPositionToolTip": "Klicken zum öffnen des Charakterbogens \n[STRG] + [SHIFT] + Klick zum Entfenen des Charakters",
 	"SPACE1889.TranslationCanNotApply": "Die Übersetzung der Kompendien darf nur der Spielleiter ausführen!",
+	"SPACE1889.ClickToRoll": "Klicken zum würfeln",
 
 	"SPACE1889.CompendiumFolderNameSkill": "Fertigkeiten",
 	"SPACE1889.CompendiumFolderNameResource": "Ressourcen",

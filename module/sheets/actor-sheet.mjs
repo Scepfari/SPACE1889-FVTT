@@ -558,6 +558,14 @@ export class Space1889ActorSheet extends ActorSheet {
 		{
 			this._doVehiclePositionClick(ev, 'medic');
 		});
+		html.find('.do-pilot-maneuver-click').mousedown(ev =>
+		{
+			this._doVehicleMovementManeuverClick(ev);
+		});
+		html.find('.do-gunner-maneuver-click').mousedown(ev =>
+		{
+			this._doVehicleAttackManeuverClick(ev);
+		});
 		html.find('.condition-toggle').mousedown(ev =>
 		{
 			const positionId = this._getDataId(ev);
@@ -597,6 +605,106 @@ export class Space1889ActorSheet extends ActorSheet {
 			else
 				SPACE1889Helper.showActorSheet(this.actor.data.data.positions[positionKey].actorId);
 		}
+	}
+
+	_doVehicleMovementManeuverClick(event)
+	{
+		const titleName =  game.i18n.localize("SPACE1889.VehicleManoeuvreSelection");
+
+		let optionen = '<option value="eins" selected>' + game.i18n.localize("SPACE1889.VehicleApproachDistance") + '</option>';
+		optionen += '<option value="zwei">' + game.i18n.localize("SPACE1889.VehicleUtmostPower") + '</option>';
+		optionen += '<option value="drei">' + game.i18n.localize("SPACE1889.VehicleTurnaround") + '</option>';
+		optionen += '<option value="vier">' + game.i18n.localize("SPACE1889.VehicleAbruptBrakingAcceleration") + '</option>';
+		optionen += '<option value="funf">' + game.i18n.localize("SPACE1889.VehicleRamming") + '</option>';
+
+		const userId = game.user.id;
+
+		let dialogue = new Dialog(
+		{
+		  title: `${titleName}`,
+		  content: `<p><select id="manoeverauswahl" name="manoeverauswahl">${optionen}</select></p>`,
+		  buttons: 
+		  {
+			ok: 
+			{
+			  icon: '',
+			  label: 'Los!',
+			  callback: (html) => 
+			  {
+				const selectedOption = html.find('#manoeverauswahl').val();
+				if (selectedOption == "eins")
+				  this.actor.rollManoeuvre("ApproachDistance", event);
+				else if (selectedOption == "zwei")
+				  this.actor.rollManoeuvre("UtmostPower", event);
+				else if (selectedOption == "drei")
+				  this.actor.rollManoeuvre("Turnaround", event);
+				else if (selectedOption == "vier")
+				  this.actor.rollManoeuvre("AbruptBrakingAcceleration", event);
+				else if (selectedOption == "funf")
+				  this.actor.rollManoeuvre("Ramming", event);
+			  }
+			},
+			abbruch:
+			{
+			  label: 'Abbrechen',
+			  callback: ()=> {ui.notifications.info(game.i18n.localize("SPACE1889.CancelRoll"))},
+			  icon: `<i class="fas fa-times"></i>`
+			}
+		  },
+		  default: "ok"
+		})
+
+		dialogue.render(true)
+	}
+
+	_doVehicleAttackManeuverClick(event)
+	{
+		const titleName =  game.i18n.localize("SPACE1889.VehicleManoeuvreSelection");
+
+		let optionen = '<option value="one" selected>' + game.i18n.localize("SPACE1889.Attack") + '</option>';
+		optionen += '<option value="two">' + game.i18n.localize("SPACE1889.VehicleTotalAttack") + '</option>';
+		optionen += '<option value="three">' + game.i18n.localize("SPACE1889.VehicleDoubleShot") + '</option>';
+		optionen += '<option value="four">' + game.i18n.localize("SPACE1889.VehicleContinuousFire") + '</option>';
+		optionen += '<option value="five">' + game.i18n.localize("SPACE1889.VehicleAimedShot") + '</option>';
+
+		const userId = game.user.id;
+
+		let dialogue = new Dialog(
+		{
+		  title: `${titleName}`,
+		  content: `<p><select id="manoeverauswahl" name="manoeverauswahl">${optionen}</select></p>`,
+		  buttons: 
+		  {
+			ok: 
+			{
+			  icon: '',
+			  label: 'Los!',
+			  callback: (html) => 
+			  {
+				const selectedOption = html.find('#manoeverauswahl').val();
+				if (selectedOption == "one")
+				  this.actor.rollManoeuvre("Attack", event);
+				else if (selectedOption == "two")
+				  this.actor.rollManoeuvre("TotalAttack", event);
+				else if (selectedOption == "three")
+				  this.actor.rollManoeuvre("DoubleShot", event);
+				else if (selectedOption == "four")
+				  this.actor.rollManoeuvre("ContinuousFire", event);
+				else if (selectedOption == "five")
+				  this.actor.rollManoeuvre("AimedShot", event);
+			  }
+			},
+			abbruch:
+			{
+			  label: 'Abbrechen',
+			  callback: ()=> {ui.notifications.info(game.i18n.localize("SPACE1889.CancelRoll"))},
+			  icon: `<i class="fas fa-times"></i>`
+			}
+		  },
+		  default: "ok"
+		})
+
+		dialogue.render(true)
 	}
 
 /*  async _onDrop(event) {

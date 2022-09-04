@@ -669,6 +669,7 @@ export default class SPACE1889RollHelper
 		const modifierLabel = modifierText + " (" + game.i18n.localize("SPACE1889.EnvironmentModifier") + ", " + game.i18n.localize("SPACE1889.SpaceDisadvantage") + ", " + game.i18n.localize("SPACE1889.etc") + ")";
 
 		const labelSkill = game.i18n.localize(CONFIG.SPACE1889.vehicleManoeuvresToSkill[key]);
+		let skillWithSpezAndValue = labelSkill;
 
 		const posKey = CONFIG.SPACE1889.vehicleManoeuvresToPosition[key];
 		const isManeuverabilitySkill = posKey == "pilot";
@@ -686,9 +687,8 @@ export default class SPACE1889RollHelper
 		}
 
 
-		let skillValue = actorData.positions[posKey]?.total;
-		if (actorData.health.value < 0)
-			skillValue += actorData.health.value;
+		const skillValueBase = actorData.positions[posKey]?.total + (actorData.health.value < 0 ? actorData.health.value : 0);
+		let skillValue = skillValueBase;
 
 		const lablelUnterstuetzung = game.i18n.localize("SPACE1889.Assistance");
 		const labelWurf = game.i18n.localize("SPACE1889.NumberOfDice") + ":";
@@ -743,7 +743,7 @@ export default class SPACE1889RollHelper
 
 		const dieType = game.settings.get("space1889", "dice");
 
-		const actorInfo = "[" + labelSkill + " " + actor.data.data.positions[posKey]?.actorName + "]";
+		let actorInfo = "[" + labelSkill + " " + actor.data.data.positions[posKey]?.actorName + "]";
 		let diceInfo = "";
 
 		function Recalc()
@@ -754,6 +754,7 @@ export default class SPACE1889RollHelper
 			let uText = "";
 			let modText = "";
 			let maneuvText = "";
+			let maneuvTextShort = "";
 			let damageText = "";
 			diceInfo = "";
 
@@ -767,9 +768,29 @@ export default class SPACE1889RollHelper
 			{
 				const id = $("#choices")[0].value;
 				const weaponItem = actor.data.weapons.find(e => e._id == id);
-				weaponDamage = weaponItem?.data.damage;
 				if (weaponItem != undefined)
+				{
+					const gunner = game.actors.get(actor.data.data.positions.gunner.actorId);
+					const spezialisation = gunner?.data.speciSkills.find(j => j.data.id == weaponItem.data.specializationId);
+					
+					if (spezialisation != undefined)
+					{
+						const spezName = game.i18n.localize(spezialisation.data.nameLangId);
+						const spezLevel = spezialisation.data.level;
+						skillValue = skillValueBase + spezLevel;
+						skillWithSpezAndValue = labelSkill + " (" + spezName + "): " + skillValue.toString();
+						actorInfo = "[" + spezName + " " + actor.data.data.positions[posKey]?.actorName + "]";
+					}
+					else
+					{
+						skillValue = skillValueBase;
+						skillWithSpezAndValue = labelSkill + ": " + skillValue.toString();
+						actorInfo = "[" + labelSkill + " " + actor.data.data.positions[posKey]?.actorName + "]";
+					}
+
+					weaponDamage = weaponItem.data.damage;
 					diceInfo = weaponItem.name + ' (' + game.i18n.localize(CONFIG.SPACE1889.weaponMountSpots[weaponItem.data.vehicle.spot]) + ')<br>';
+				}
 			}
 
 			uText = " + " + unterstuetzung.toString() + "[" + lablelUnterstuetzung + "]";
@@ -777,18 +798,21 @@ export default class SPACE1889RollHelper
 			modText = " + " + mod.toString() + "[" + modifierText + "]";
 			const modTextShort = " + " + mod.toString() + "[" + modifierText.substring(0, 3) + "]";
 			damageText = " + " + weaponDamage.toString() + "[" + lablelDamage + "]";
-			const damageTextShort = " + " + weaponDamage.toString() + "[" + lablelDamage.substring(0, 3) + "]";
+			const damageTextShort = weaponDamage != 0 ? " + " + weaponDamage.toString() + "[" + lablelDamage.substring(0, 3) + "]" : "";
 
 			let summe = Math.max(0, skillValue + weaponDamage + unterstuetzung + mod + maneuverability);
 			diceInfo += skillValue.toString() + actorInfo + (weaponDamage > 0 ? damageText : "") + (unterstuetzung > 0 ? uText : "") + (mod > 0 ? modText : "");
 			if (isManeuverabilitySkill)
 			{
-				maneuvText = " + " + maneuverability.toString() + "[" + game.i18n.localize("SPACE1889.VehicleManeuverability") + "]";
+				const maneuver = game.i18n.localize("SPACE1889.VehicleManeuverability");
+				maneuvText = " + " + maneuverability.toString() + "[" + maneuver + "]";
+				maneuvTextShort = " + " + maneuverability.toString() + "[" + maneuver.substring(0, 3) + "]";
 				if (maneuverability != 0)
 					diceInfo += maneuvText;
 			}
 
-			$("#zusammensetzung")[0].value = skillValue.toString() + damageTextShort + uTextShort + modTextShort + maneuvText + " = " + summe.toString();
+			$("#infoToChange")[0].value = skillWithSpezAndValue;
+			$("#zusammensetzung")[0].value = skillValue.toString() + damageTextShort + uTextShort + modTextShort + maneuvTextShort + " = " + summe.toString();
 			$("#anzahlDerWuerfel")[0].value = summe;
 		}
 
@@ -837,7 +861,9 @@ export default class SPACE1889RollHelper
     <h2>${manoeuvreAndName}</h2>
     <br>
 	${weaponChoiceHtml}
-    <p id="info" class="infoToChange">${labelSkill}: ${skillValue}</p>
+	<div>
+		<input type="text" id="infoToChange" value="${skillWithSpezAndValue}" disabled="true">
+	</div>
 	${checkboxHtml}
     <p>${modifierLabel}: <input type="number" class="modInput" id="modifier" value = "${modifierDefault}"></p>
     <hr>

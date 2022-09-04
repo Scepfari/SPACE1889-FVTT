@@ -267,6 +267,10 @@ export class Space1889Actor extends Actor
 			actorData.data.secondaries.defense.total = actorData.data.passiveDefense
 		else
 			actorData.data.secondaries.defense.total = actorData.data.passiveDefense + actorData.data.positions.pilot.total + actorData.data.maneuverability.value;
+
+		if (actorData.data.health.value < 0)
+			actorData.data.secondaries.defense.total = Math.max(0, actorData.data.secondaries.defense.total + actorData.data.health.value);
+			
 	}
 
 	/**
@@ -1418,6 +1422,8 @@ export class Space1889Actor extends Actor
 
 		if (key == 'totalDefence')
 			return "SPACE1889.TotalDefense";
+		if (key == 'passiveDefence')
+			return "SPACE1889.VehiclePassiveDefense";
 
 		if (langId == "")
 		{
