@@ -230,7 +230,7 @@ export class Space1889Actor extends Actor
 		const crewMax = actorData.data.crew.max;
 		const crewCurrent = actorData.data.crew.value;
 		const disabled = game.i18n.localize("SPACE1889.VehicleManeuverabilityDisabledAbbr");
-
+		let isDisabled = false;
 
 		this.CalcAndSetHealth(actorData);
 
@@ -249,16 +249,21 @@ export class Space1889Actor extends Actor
 		}
 
 		if (rate < 0.25 || actorData.data.health.value <= 0)
+		{
 			actorData.data.maneuverability.value = disabled;
+			isDisabled = true;
+		}
 		else
 			actorData.data.maneuverability.value = actorData.data.maneuverability.max + mod;
 
 		actorData.data.speed.value = actorData.data.speed.max - malus.speed;
-		actorData.data.secondaries.initiative.total = actorData.data.positions.pilot.total + actorData.data.maneuverability.value;
-		if (actorData.data.positions.copilot.staffed && actorData.data.positions.copilot.total >= 4 &&
+
+		actorData.data.secondaries.initiative.total = isDisabled ? 0 : actorData.data.positions.pilot.total + Number(actorData.data.maneuverability.value);
+
+		if (!isDisabled && actorData.data.positions.copilot.staffed && actorData.data.positions.copilot.total >= 4 &&
 			(actorData.data.positions.copilot.actorId == "" || actorData.data.positions.copilot.actorId != actorData.data.positions.pilot.actorId))
 			actorData.data.secondaries.initiative.total += 2;
-		if (actorData.data.positions.captain.staffed && actorData.data.positions.captain.total >= 4 &&
+		if (!isDisabled && actorData.data.positions.captain.staffed && actorData.data.positions.captain.total >= 4 &&
 			(actorData.data.positions.captain.actorId == "" || actorData.data.positions.captain.actorId != actorData.data.positions.pilot.actorId))
 			actorData.data.secondaries.initiative.total += 2;
 
