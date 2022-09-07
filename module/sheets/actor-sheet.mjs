@@ -566,6 +566,19 @@ export class Space1889ActorSheet extends ActorSheet {
 		{
 			this._doVehicleAttackManeuverClick(ev);
 		});
+		html.find('.roll-vehicle-attack-click').mousedown(ev =>
+		{
+			const itemId = this._getItemId(ev);
+			if (this.actor.data.type == 'vehicle')
+			{
+				SPACE1889RollHelper.rollManoeuver('Attack', this.actor, ev, itemId);
+			}
+		});
+		html.find('.roll-vehicle-defense-click').mousedown(ev =>
+		{
+			if (this.actor.data.type == 'vehicle')
+				SPACE1889RollHelper.rollManoeuver('defense', this.actor, ev);
+		});
 		html.find('.condition-toggle').mousedown(ev =>
 		{
 			const positionId = this._getDataId(ev);

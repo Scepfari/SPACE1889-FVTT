@@ -652,7 +652,7 @@ export default class SPACE1889RollHelper
 		return html;
 	}
 
-	static rollManoeuver(key, actor, event)
+	static rollManoeuver(key, actor, event, preSelectedWeaponId = "")
 	{
 		const evaluation = this.getEventEvaluation(event);
 		if (evaluation.showInfoOnly)
@@ -671,8 +671,19 @@ export default class SPACE1889RollHelper
 		const labelSkill = game.i18n.localize(CONFIG.SPACE1889.vehicleManoeuvresToSkill[key]);
 		let skillWithSpezAndValue = labelSkill;
 
+		const isTotalDefense = key == "totalDefense"
+		const isDefense = key == "defense" || isTotalDefense;
+
+		if (isDefense && actorData.health.value > 0 && actorData.positions.pilot.staffed)
+			skillWithSpezAndValue += " + " + game.i18n.localize("SPACE1889.VehiclePassiveDefense") + " + " + game.i18n.localize("SPACE1889.VehicleManeuverability");
+		else if (isDefense)
+		{
+			skillWithSpezAndValue = game.i18n.localize("SPACE1889.VehiclePassiveDefense") + " + " + game.i18n.localize("SPACE1889.VehicleNegativeStructure");
+		}
+		skillWithSpezAndValue += isTotalDefense ? " + 4" : "";
+
 		const posKey = CONFIG.SPACE1889.vehicleManoeuvresToPosition[key];
-		const isManeuverabilitySkill = posKey == "pilot";
+		const isManeuverabilitySkill = posKey == "pilot" && !isDefense;
 		let maneuverability = 0;
 
 		if (isManeuverabilitySkill)
@@ -686,16 +697,31 @@ export default class SPACE1889RollHelper
 			maneuverability = Number(actorData.maneuverability.value);
 		}
 
+		if (posKey == "gunner" && actorData.weaponLoad.isOverloaded)
+		{
+			let text = game.i18n.format("SPACE1889.VehicleExceedingOverloadMax", { name: actor.data.name });
+			text += "<br>" + game.i18n.format("SPACE1889.VehicleExceedingOverloadMaxInfo", { max: actorData.weaponLoad.maxWithOverload, current: actorData.weaponLoad.value });
+			ui.notifications.info(text);
+			return;
+		}
+		else if (posKey == "gunner" && !actorData.positions.gunner.staffed)
+		{
+			ui.notifications.info(game.i18n.localize("SPACE1889.VehicleNoGunner"));
+			return;
+		}
 
 		const skillValueBase = actorData.positions[posKey]?.total + (actorData.health.value < 0 ? actorData.health.value : 0);
 		let skillValue = skillValueBase;
+
+		if (isDefense)
+			skillValue = actorData.secondaries.defense.total + (isTotalDefense ? 4 : 0);
 
 		const lablelUnterstuetzung = game.i18n.localize("SPACE1889.Assistance");
 		const labelWurf = game.i18n.localize("SPACE1889.NumberOfDice") + ":";
 		const lablelDamage = game.i18n.localize("SPACE1889.Damage");
 
 
-		const weaponChoiceHtml = posKey == 'gunner' ? this.getWeaponAuswahl(actor, ""): '';
+		const weaponChoiceHtml = posKey == 'gunner' ? this.getWeaponAuswahl(actor, preSelectedWeaponId): '';
 
 		const modifierDefault = this.getVehicleManoeuvresDefaultMod(key);
 		const supporter = this.getVehiclePositionSupporter(posKey);
@@ -717,7 +743,7 @@ export default class SPACE1889RollHelper
 				let isTemplatePosition = actorData.positions[positionKey] != undefined;
 				let canDo = isTemplatePosition ? actorData.positions[positionKey].staffed && actorData.positions[positionKey].total >= 4 : true;
 				const state = canDo ? "" : ' disabled="true"';
-				const active = canDo && isTemplatePosition ? " checked" : "";
+				const active = canDo && isTemplatePosition && !isDefense ? " checked" : "";
 				const positionName = "supporter" + loop.toString();
 				switch (loop)
 				{
@@ -745,6 +771,8 @@ export default class SPACE1889RollHelper
 
 		let actorInfo = "[" + labelSkill + " " + actor.data.data.positions[posKey]?.actorName + "]";
 		let diceInfo = "";
+		if (isDefense)
+			actorInfo = "[" + skillWithSpezAndValue + "]";
 
 		function Recalc()
 		{

@@ -227,6 +227,7 @@
 	"SPACE1889.VehicleStrengthTempoFactor": "Stärke-Tempo-Faktor",
 	"SPACE1889.VehiclePassiveDefense": "Passive Abwehr",
 	"SPACE1889.VehicleStructure": "Struktur",
+	"SPACE1889.VehicleNegativeStructure": "Negative Struktur",
 	"SPACE1889.VehicleDamagePl": "Schäden",
 	"SPACE1889.VehicleManeuverability": "Manövrierfähigkeit",
 	"SPACE1889.VehicleManeuverabilityDisabled": "manövrierunfähig",
@@ -256,6 +257,7 @@
 	"SPACE1889.VehicleLookoutDesc": "In zweiter Funktion darf der Signalgeber als Ausguck dem Kanonier im Teamwork assistieren. <br>Voraussetzung: Wahrnehmung >= 4",
 	"SPACE1889.VehicleMechanicDesc": "Ein Mechaniker kümmert sich um die Technik an Bord und würfelt Proben auf Handwerk-Fertigkeiten, insbesondere Mechaniker.",
 	"SPACE1889.VehicleMedicDesc": "Ein Sanitäter kann jeder Spielercharakter mit der Fertigkeit Medizin sein, der oder die nicht für andere Aktionen benötigt wird. Er oder sie kann Erste Hilfe während und nach Gefechten leisten (vgl. EE Seite 153).",
+	"SPACE1889.VehicleNoGunner": "Das Abfeuern der Schiffswaffen ohne Kanonier ist nicht möglich.",
 	"SPACE1889.Staffed": "besetzt",
 	"SPACE1889.NotStaffed": "nicht besetzt",
 	"SPACE1889.SpaceDisadvantage": "Raumnachteil",
@@ -320,6 +322,10 @@
 	"SPACE1889.VehicleDeployRetractExplosiveDeviceDesc": "<strong>Ausgangssituation:</strong> Das Fahrzeug ist mit einer Angriffsaktion an der Reihe.<br><strong>Voraussetzung:</strong> Flug- oder Luftschiff, das mit einem Schlepptorpedo oder einer Kabelmine bestückt ist.<br><strong>Kosten:</strong> Verzicht auf alle Abwehraktionen (nur Passive Abwehr) oder 2 Manöverpunkte.<br><strong>Probe:</strong> Sprengstoffe + Schaden des Sprengkörpers (ohne Modifikatoren) ergibt den Angriffswurf für den Fall, dass die Falle ausgelöst wird; keine Probe für das Einfahren nötig.<br><strong>Auswirkung:</strong> Der Charakter lässt einen Sprengkörper an einem Kabel vom Schiff herab (Schlepptorpedo) beziehungsweise hinauf (Kabelmine mit Flugholz) – oder holt diesen sicher wieder ein.<br>Einem Schiff mit ausgesetztem, scharfem Sprengkörper können sich Gegner (oder Verbündete) nur bis auf maximal deren Tempo x1 Meter annähern, sonst laufen sie Gefahr, die Mine auszulösen:<br>Sie müssen den beim Aussetzen ausgewürfelten Angriff abwehren. Gelingt dies, ohne dass Schaden entsteht, hat der Gegner den Sprengkörper umflogen. Er ist nicht detoniert und weiterhin scharf, dafür hat sich der Gegner erfolgreich angenähert. Das letzte Wort bei der Einschätzung der Position im Raum – wer kommt aus welcher Richtung? – hat die Spielleitung.",
 
 	"SPACE1889.VehicleManoeuvreNotPossible": "Das Fahrzeug {name} ist manövrierunfähig und kann daher das Manöver {manoeuvreName} nicht durchführen!",
+	"SPACE1889.VehicleIsOverloaded": "Das Fahrzeug {name} trägt zuviele installierte Waffen und ist überladen. Das wirkt sich nachteilig auf die Manövrierbarkeit aus.",
+	"SPACE1889.VehicleExceedingOverloadMax": "Das Fahrzeug {name} kann nicht so viele Waffen installieren! So ist ein Abfeuern der Waffen nicht möglich.",
+	"SPACE1889.VehicleIsOverloadedInfo": "Überladen! Überladungsgrenze der Geschütze ist {max} (aktueller Wert {current}).",
+	"SPACE1889.VehicleExceedingOverloadMaxInfo": "Ungültige Konfiguration! Installationsgrenze der Geschütze ist {max} (aktueller Wert {current}).",
 
 	"SPACE1889.ExchangeValue": "Gegenwert",
 	"SPACE1889.ExchangeRateForOnePound": "Umrechnungskurs für 1£",

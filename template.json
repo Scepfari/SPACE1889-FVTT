@@ -136,6 +136,10 @@
 				"value": 0,
 				"max": 10
 			},
+			"weaponLoad": {
+				"value": 0,
+				"max": 0
+			},
 			"pilotSkill": "fahren",
 			"size": 0,
 			"passiveDefense": 0,

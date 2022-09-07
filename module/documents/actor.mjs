@@ -236,6 +236,23 @@ export class Space1889Actor extends Actor
 
 		let malus = SPACE1889Helper.getStructureMalus(actorData.data.health.value, actorData.data.health.max, actorData.data.speed.max, actorData.data.health.controlDamage, actorData.data.health.propulsionDamage );
 
+		actorData.data.weaponLoad.max = actorData.data.isAirship ? actorData.data.size / 2 : actorData.data.size;
+		actorData.data.weaponLoad.maxWithOverload = actorData.data.health.max;
+
+		actorData.data.weaponLoad.value = this.getWeaponLoad(actorData);
+		actorData.data.weaponLoad.maneuverabilityMalus = 0;
+		actorData.data.weaponLoad.isOverloaded = false;
+		if (actorData.data.weaponLoad.value > actorData.data.weaponLoad.max)
+		{
+			actorData.data.weaponLoad.maneuverabilityMalus = (actorData.data.weaponLoad.max - actorData.data.weaponLoad.value) * (actorData.data.isAirship ? 2 : 1);
+			//ui.notifications?.info(game.i18n.format("SPACE1889.VehicleIsOverloaded", {name: actorData.name}));
+		}
+		if (actorData.data.weaponLoad.value > actorData.data.weaponLoad.maxWithOverload)
+		{
+			actorData.data.weaponLoad.isOverloaded = true;
+			ui.notifications?.info(game.i18n.format("SPACE1889.VehicleExceedingOverloadMax", {name: actorData.name}));
+		}
+
 		const rate = crewCurrent / crewMax;
 		let mod = (-1) * malus.maneuverability;
 		if (rate < 1)
@@ -254,7 +271,7 @@ export class Space1889Actor extends Actor
 			isDisabled = true;
 		}
 		else
-			actorData.data.maneuverability.value = actorData.data.maneuverability.max + mod;
+			actorData.data.maneuverability.value = actorData.data.maneuverability.max + mod + actorData.data.weaponLoad.maneuverabilityMalus;
 
 		actorData.data.speed.value = actorData.data.speed.max - malus.speed;
 
@@ -275,7 +292,19 @@ export class Space1889Actor extends Actor
 
 		if (actorData.data.health.value < 0)
 			actorData.data.secondaries.defense.total = Math.max(0, actorData.data.secondaries.defense.total + actorData.data.health.value);
-			
+
+	}
+
+	getWeaponLoad(actorData)
+	{
+		let load = 0;
+		for (let weapon of actorData.weapons)
+		{
+			if (weapon.data.location == "lager")
+				continue;
+			load += weapon.data.size;
+		}
+		return load;
 	}
 
 	/**
@@ -1504,7 +1533,10 @@ export class Space1889Actor extends Actor
 		const item = this.data.weapons.find(e => e.data.id == key);
 		if (item != undefined)
 		{
-			SPACE1889RollHelper.rollItem(item, this, event);
+			if (this.data.type == "vehicle")
+				SPACE1889RollHelper.rollManoeuver("Attack", this, event, item._id);
+			else
+				SPACE1889RollHelper.rollItem(item, this, event);
 		}
 	}
 
@@ -1549,7 +1581,10 @@ export class Space1889Actor extends Actor
 		if (evaluation.showInfoOnly)
 			return this.showAttributeInfo(label, key, evaluation.whisperInfo);
 
-		return this.rollAttribute(dieCount, evaluation.showDialog, key);
+		if (this.data.type == "vehicle")
+			return SPACE1889RollHelper.rollManoeuver(key, this, event);
+		else
+			return this.rollAttribute(dieCount, evaluation.showDialog, key);
 	}
 
 	rollManoeuvre(key, event)
