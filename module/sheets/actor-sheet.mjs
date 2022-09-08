@@ -460,6 +460,11 @@ export class Space1889ActorSheet extends ActorSheet {
 			const newValue = this.incrementValue(ev, this.actor.data.data.passiveDefense, 0, undefined);
 			this.actor.update({ 'data.passiveDefense': newValue });
 		});
+		html.find('.increment-vehicleSize-click').mousedown(ev =>
+		{
+			const newValue = SPACE1889Helper.incrementVehicleSizeValue(ev, this.actor.data.data.size);
+			this.actor.update({ 'data.size': newValue });
+		});
 
 		html.find('.increment-captain-click').mousedown(ev =>
 		{

@@ -100,7 +100,7 @@ export default class SPACE1889Helper
 	{
 		const factor = (ev.ctrlKey && ev.shiftKey) ? 100 : (ev.ctrlKey ? 10 : (ev.shiftKey ? 5 : 1));
 		const sign = ev.button == 2 ? -1 : 1;
-		const wantedValue = currentValue + (factor * sign);
+		const wantedValue = Number(currentValue) + (factor * sign);
 		let newValue = wantedValue;
 		if (sign > 0 && max != undefined)
 			newValue = Math.min(newValue, max);
@@ -114,6 +114,21 @@ export default class SPACE1889Helper
 		}
 
 		return newValue;
+	}
+
+	static incrementVehicleSizeValue(ev, currentValue)
+	{
+		const sign = ev.button == 2 ? -1 : 1;
+		const factor = (ev.ctrlKey && ev.shiftKey) ? 10 : (ev.ctrlKey ? 4 : (ev.shiftKey ? 2 : 1));
+
+		const sizeList = [0, 1, 2, 4, 8, 16, 32];
+		const currentIndex = sizeList.findIndex((e) => e == Number(currentValue));
+		if (currentIndex > -1)
+		{
+			const newIndex = Math.max(0, Math.min(sizeList.length - 1, currentIndex + (sign * factor)));
+			return sizeList[newIndex];
+		}
+		return this.incrementValue(ev, currentValue, sizeList[0], sizeList[sizeList.length - 1]);
 	}
 
 	static getCrewTemperModificator(temper)
