@@ -13,9 +13,9 @@
 				<li class="item flexrow items-header flex-group-center">
 					<div class="item item-max-with60px">{{localize "SPACE1889.VehicleStructure"}}</div>
 					<div class="item item-max-with75px">{{localize "SPACE1889.Speed"}}</div>
-					<div class="item item-max-with60px" title="{{localize "SPACE1889.VehicleManeuverability"}}">{{localize "SPACE1889.VehicleManeuverabilityAbbr"}}</div>
-					<div class="item item-max-with100px" title="{{localize "SPACE1889.ClickToRoll"}}">
-						<label class="resource-label rollable" data-roll-key="passiveDefence" data-roll-type="actor" data-roll-diecount="{{data.passiveDefense}}" data-label='{{localize "SPACE1889.VehiclePassiveDefense"}}'>{{localize "SPACE1889.VehiclePassiveDefense"}}</label>
+					<div class="item item-max-with100px">{{localize "SPACE1889.VehicleManeuverability"}}</div>
+					<div class="item item-max-with75px" title="{{localize "SPACE1889.VehiclePassiveDefense"}} - {{localize "SPACE1889.ClickToRoll"}}">
+						<label class="resource-label rollable" data-roll-key="passiveDefence" data-roll-type="actor" data-roll-diecount="{{data.passiveDefense}}" data-label='{{localize "SPACE1889.VehiclePassiveDefense"}}'>{{localize "SPACE1889.VehiclePassiveDefenseAbbr"}}</label>
 					</div>
 					<div class="item-name item-max-with60px">{{localize "SPACE1889.SecondaryAttributeSiz"}}</div>
 				</li>
@@ -40,7 +40,7 @@
 							</div>
 						</div>
 					</div>
-					<div class="flexrow item-max-with60px">
+					<div class="flexrow item-max-with100px">
 						<div style="display: grid; grid-template-columns: 45% 10% 45%; grid-template-rows: 100%;">
 							<div class="item-margintb2px item-right">{{data.maneuverability.value}}</div>
 							<div class="item-margintb2px"> / </div>
@@ -49,7 +49,7 @@
 							</div>
 						</div>
 					</div>
-					<div class="flexrow item-max-with100px">
+					<div class="flexrow item-max-with75px">
 						<div class="item-margintb2px">
 							<a class="increment-passiveDefense-click">{{data.passiveDefense}}</a>
 						</div>

@@ -922,7 +922,7 @@ export default class SPACE1889RollHelper
 							let chatData =
 							{
 								user: game.user.id,
-								speaker: ChatMessage.getSpeaker({ actor: this.actor }),
+								speaker: ChatMessage.getSpeaker({ actor: actor }),
 								content: messageContent
 							};
 							ChatMessage.create(chatData, {})
