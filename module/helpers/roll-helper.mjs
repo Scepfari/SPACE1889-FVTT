@@ -84,10 +84,13 @@ export default class SPACE1889RollHelper
 			let attackString = "";
 			if (itemData.type == "weapon")
 			{
+				if (actor.data.type == "vehicle")
+					attackString = itemData.data.vehicleInfo + '<br>'; 
+
 				if (game.user.targets.size > 0)
-					attackString = game.i18n.format("SPACE1889.AttackOn", { targetName: game.user.targets.first().name });
+					attackString += game.i18n.format("SPACE1889.AttackOn", { targetName: game.user.targets.first().name });
 				else
-					attackString = game.i18n.localize("SPACE1889.Attack") ?? "Attack";
+					attackString += game.i18n.localize("SPACE1889.Attack") ?? "Attack";
 			}
 
 			const info = attackString != "" ? attackString : game.i18n.localize("SPACE1889.Probe") ?? "Probe";
@@ -264,6 +267,20 @@ export default class SPACE1889RollHelper
 
 			desc += "<br>" + game.i18n.localize("SPACE1889.Weight") + ": " + item.data.weight.toString() + "kg";
 			desc += "<br>" + game.i18n.localize("SPACE1889.Price") + ": " + item.data.price;
+
+			if (item.data.location == "mounted")
+			{
+				desc += "<br>" + game.i18n.localize("SPACE1889.SecondaryAttributeSiz") + ": " + item.data.size;
+				const mountPos = game.i18n.localize(CONFIG.SPACE1889.weaponMountSpots[item.data.vehicle.spot]);
+				desc += "<br>" + game.i18n.localize("SPACE1889.WeaponGunPosition") + ": " + mountPos;
+
+				if (item.data.vehicle.isSwivelMounted)
+					desc += "<br>" + game.i18n.localize("SPACE1889.WeaponSwivelingRange") + ": " + item.data.vehicle.swivelingRange + "&deg;";
+				else
+					desc += "<br>" + game.i18n.localize("SPACE1889.WeaponIsRigidlyMounted");
+			}
+
+
 			if (item.data.description != "")
 				desc += "<br>" + game.i18n.localize("SPACE1889.Description") + ": " + jQuery(item.data.description).text();
 			console.log(item.data.description);
@@ -343,6 +360,13 @@ export default class SPACE1889RollHelper
 
 		optionen += '<option value="lethal"' + (isLethal ? ' selected="selected">' : '>') + game.i18n.localize("SPACE1889.Lethal") + '</option>';
 		optionen += '<option value="nonLethal"' + (!isLethal ? ' selected="selected">' : '>') + game.i18n.localize("SPACE1889.NonLethal") + '</option>';
+		if (actorData.type == "vehicle")
+		{
+			optionen += '<option value="controls"' + '>' + game.i18n.localize("SPACE1889.Controls") + '</option>';
+			optionen += '<option value="propulsion"' + '>' + game.i18n.localize("SPACE1889.Propulsion") + '</option>';
+			optionen += '<option value="guns"' + '>' + game.i18n.localize("SPACE1889.Guns") + '</option>';
+			optionen += '<option value="crew"' + '>' + game.i18n.localize("SPACE1889.VehicleCrew") + '</option>';
+		}
 
 		let damageLabel = game.i18n.localize("SPACE1889.Damage");
 		let nameLabel = game.i18n.localize("SPACE1889.Name");
@@ -440,9 +464,10 @@ export default class SPACE1889RollHelper
 			return;
 
 		const dmgTypeLabel = dmgType == "lethal" ? game.i18n.localize("SPACE1889.LethalAbbr") : game.i18n.localize("SPACE1889.NonLethalAbbr");
-		const isCharakter = actor.data.type == "character"
-		let stun = actor.data.data.secondaries.stun.total;
-		let str = actor.data.data.abilities.str.total;
+		const isCharakter = actor.data.type == "character";
+		const isVehicle = actor.data.type == "vehicle";
+		let stun = isVehicle ? 1000 : actor.data.data.secondaries.stun.total;
+		let str = isVehicle ? 1000 : actor.data.data.abilities.str.total;
 		let recoil = 0;
 		let liegend = false;
 		let stunned = false;
@@ -567,5 +592,372 @@ export default class SPACE1889RollHelper
 	{
 		return game.settings.get("space1889", "dice");
 	}
-	
+
+
+	static getVehiclePositionSupporter(position)
+	{
+		let list = [];
+		switch (position)
+		{
+			case "pilot":
+				list.push(["captain", game.i18n.localize("SPACE1889.VehicleCaptain")]);
+				list.push(["copilot", game.i18n.localize("SPACE1889.VehicleCopilot")]);
+				break;
+			case "gunner":
+				list.push(["2ndGunner", game.i18n.localize("SPACE1889.Vehicle2ndGunner")]);
+				list.push(["captain", game.i18n.localize("SPACE1889.VehicleCaptain")]);
+				list.push(["lookout", game.i18n.localize("SPACE1889.VehicleSignaling")]);
+				break;
+		}
+		return list;
+	}
+
+	static getVehicleManoeuvresDefaultMod(key)
+	{
+		switch (key)
+		{
+			case "DoubleShot":
+				return -4;
+			case "TotalAttack":
+				return 2;
+			case "ContinuousFire":
+				return 3;
+		}
+		return 0;
+	}
+	static getWeaponAuswahl(actor, preSelectId)
+	{
+		let opt = "";
+
+		let isFirst = true;
+
+		for (let item of actor.data.weapons)
+		{
+			if (item.data.location == 'lager')
+				continue;
+
+			const info = item.name + " " + item.data.damage.toString() + game.i18n.localize(CONFIG.SPACE1889.damageTypeAbbreviations[item.data.damageType]) +
+				' (' + game.i18n.localize(CONFIG.SPACE1889.weaponMountSpots[item.data.vehicle.spot]) + ')';
+			if (isFirst || item._id == preSelectId)
+				opt += '<option value="' + item._id + '" selected>' + info + '</option>';
+			else
+				opt += '<option value="' + item._id + '">' + info + '</option>';
+			isFirst = false;
+		}
+
+		if (isFirst)
+			return '';
+
+		const html = '<p><select id="choices" class="choices" name="choices">' + opt + '</select></p>'
+		return html;
+	}
+
+	static rollManoeuver(key, actor, event, preSelectedWeaponId = "")
+	{
+		const evaluation = this.getEventEvaluation(event);
+		if (evaluation.showInfoOnly)
+		{
+			this.showManoeuverInfo(key, actor, evaluation.whisperInfo);
+			return;
+		}
+
+		const titleName = actor.name;
+		const actorData = actor.data.data;
+
+		const manoeuvreAndName = game.i18n.localize("SPACE1889.VehicleManoeuvre") + ": " + game.i18n.localize(CONFIG.SPACE1889.vehicleManoeuvres[key]);
+		const modifierText = game.i18n.localize("SPACE1889.Modifier");
+		const modifierLabel = modifierText + " (" + game.i18n.localize("SPACE1889.EnvironmentModifier") + ", " + game.i18n.localize("SPACE1889.SpaceDisadvantage") + ", " + game.i18n.localize("SPACE1889.etc") + ")";
+
+		const labelSkill = game.i18n.localize(CONFIG.SPACE1889.vehicleManoeuvresToSkill[key]);
+		let skillWithSpezAndValue = labelSkill;
+
+		const isTotalDefense = key == "totalDefense"
+		const isDefense = key == "defense" || isTotalDefense;
+
+		if (isDefense && actorData.health.value > 0 && actorData.positions.pilot.staffed)
+			skillWithSpezAndValue += " + " + game.i18n.localize("SPACE1889.VehiclePassiveDefense") + " + " + game.i18n.localize("SPACE1889.VehicleManeuverability");
+		else if (isDefense)
+		{
+			skillWithSpezAndValue = game.i18n.localize("SPACE1889.VehiclePassiveDefense") + " + " + game.i18n.localize("SPACE1889.VehicleNegativeStructure");
+		}
+		skillWithSpezAndValue += isTotalDefense ? " + 4" : "";
+
+		const posKey = CONFIG.SPACE1889.vehicleManoeuvresToPosition[key];
+		const isManeuverabilitySkill = posKey == "pilot" && !isDefense;
+		let maneuverability = 0;
+
+		if (isManeuverabilitySkill)
+		{
+			const disabled = game.i18n.localize("SPACE1889.VehicleManeuverabilityDisabledAbbr");
+			if (actorData.maneuverability.value == disabled)
+			{
+				ui.notifications.info(game.i18n.format("SPACE1889.VehicleManoeuvreNotPossible", { name: actor.data.name, manoeuvreName: game.i18n.localize(CONFIG.SPACE1889.vehicleManoeuvres[key]) }));
+				return; 
+			}
+			maneuverability = Number(actorData.maneuverability.value);
+		}
+
+		if (posKey == "gunner" && actorData.weaponLoad.isOverloaded)
+		{
+			let text = game.i18n.format("SPACE1889.VehicleExceedingOverloadMax", { name: actor.data.name });
+			text += "<br>" + game.i18n.format("SPACE1889.VehicleExceedingOverloadMaxInfo", { max: actorData.weaponLoad.maxWithOverload, current: actorData.weaponLoad.value });
+			ui.notifications.info(text);
+			return;
+		}
+		else if (posKey == "gunner" && !actorData.positions.gunner.staffed)
+		{
+			ui.notifications.info(game.i18n.localize("SPACE1889.VehicleNoGunner"));
+			return;
+		}
+
+		const skillValueBase = actorData.positions[posKey]?.total + (actorData.health.value < 0 ? actorData.health.value : 0);
+		let skillValue = skillValueBase;
+
+		if (isDefense)
+			skillValue = actorData.secondaries.defense.total + (isTotalDefense ? 4 : 0);
+
+		const lablelUnterstuetzung = game.i18n.localize("SPACE1889.Assistance");
+		const labelWurf = game.i18n.localize("SPACE1889.NumberOfDice") + ":";
+		const lablelDamage = game.i18n.localize("SPACE1889.Damage");
+
+
+		const weaponChoiceHtml = posKey == 'gunner' ? this.getWeaponAuswahl(actor, preSelectedWeaponId): '';
+
+		const modifierDefault = this.getVehicleManoeuvresDefaultMod(key);
+		const supporter = this.getVehiclePositionSupporter(posKey);
+
+		let isVisibleSupporter1 = false;
+		let isVisibleSupporter2 = false;
+		let isVisibleSupporter3 = false;
+
+		let checkboxHtml = "";
+		let loop = 0;
+
+		if (supporter.length > 0)
+		{
+			checkboxHtml = '<fieldset>';
+			checkboxHtml += '<legend>' + lablelUnterstuetzung + '</legend>';
+			for (let [positionKey, description] of supporter)
+			{
+				++loop;
+				let isTemplatePosition = actorData.positions[positionKey] != undefined;
+				let canDo = isTemplatePosition ? actorData.positions[positionKey].staffed && actorData.positions[positionKey].total >= 4 : true;
+				const state = canDo ? "" : ' disabled="true"';
+				const active = canDo && isTemplatePosition && !isDefense ? " checked" : "";
+				const positionName = "supporter" + loop.toString();
+				switch (loop)
+				{
+					case 1:
+						isVisibleSupporter1 = true;
+						break;
+					case 2:
+						isVisibleSupporter2 = true;
+						break;
+					case 3:
+						isVisibleSupporter3 = true;
+						break;
+				}
+
+				checkboxHtml += '<div>';
+				checkboxHtml += '<input type="checkbox" id="' + positionKey + '" class="' + positionName + 'Checkbox" value="' + positionKey + '" '
+				checkboxHtml += state + active + '>';
+				checkboxHtml += '<label for="' + positionKey + '">' + description + '</label>';
+				checkboxHtml += '</div>'
+			}
+			checkboxHtml += '</fieldset >';
+		}
+
+		const dieType = game.settings.get("space1889", "dice");
+
+		let actorInfo = "[" + labelSkill + " " + actor.data.data.positions[posKey]?.actorName + "]";
+		let diceInfo = "";
+		if (isDefense)
+			actorInfo = "[" + skillWithSpezAndValue + "]";
+
+		function Recalc()
+		{
+			let mod = Number($("#modifier")[0].value);
+			let unterstuetzung = 0;
+			let weaponDamage = 0;
+			let uText = "";
+			let modText = "";
+			let maneuvText = "";
+			let maneuvTextShort = "";
+			let damageText = "";
+			diceInfo = "";
+
+			for (let [positionKey, description] of supporter)
+			{
+				unterstuetzung += $("#" + positionKey)[0].checked ? 2 : 0;
+			}
+
+
+			if (weaponChoiceHtml != '')
+			{
+				const id = $("#choices")[0].value;
+				const weaponItem = actor.data.weapons.find(e => e._id == id);
+				if (weaponItem != undefined)
+				{
+					const gunner = game.actors.get(actor.data.data.positions.gunner.actorId);
+					const spezialisation = gunner?.data.speciSkills.find(j => j.data.id == weaponItem.data.specializationId);
+					
+					if (spezialisation != undefined)
+					{
+						const spezName = game.i18n.localize(spezialisation.data.nameLangId);
+						const spezLevel = spezialisation.data.level;
+						skillValue = skillValueBase + spezLevel;
+						skillWithSpezAndValue = labelSkill + " (" + spezName + "): " + skillValue.toString();
+						actorInfo = "[" + spezName + " " + actor.data.data.positions[posKey]?.actorName + "]";
+					}
+					else
+					{
+						skillValue = skillValueBase;
+						skillWithSpezAndValue = labelSkill + ": " + skillValue.toString();
+						actorInfo = "[" + labelSkill + " " + actor.data.data.positions[posKey]?.actorName + "]";
+					}
+
+					weaponDamage = weaponItem.data.damage;
+					diceInfo = weaponItem.name + ' (' + game.i18n.localize(CONFIG.SPACE1889.weaponMountSpots[weaponItem.data.vehicle.spot]) + ')<br>';
+				}
+			}
+
+			uText = " + " + unterstuetzung.toString() + "[" + lablelUnterstuetzung + "]";
+			const uTextShort = " + " + unterstuetzung.toString() + "[" + lablelUnterstuetzung.substring(0, 3) + "]";
+			modText = " + " + mod.toString() + "[" + modifierText + "]";
+			const modTextShort = " + " + mod.toString() + "[" + modifierText.substring(0, 3) + "]";
+			damageText = " + " + weaponDamage.toString() + "[" + lablelDamage + "]";
+			const damageTextShort = weaponDamage != 0 ? " + " + weaponDamage.toString() + "[" + lablelDamage.substring(0, 3) + "]" : "";
+
+			let summe = Math.max(0, skillValue + weaponDamage + unterstuetzung + mod + maneuverability);
+			diceInfo += skillValue.toString() + actorInfo + (weaponDamage > 0 ? damageText : "") + (unterstuetzung > 0 ? uText : "") + (mod > 0 ? modText : "");
+			if (isManeuverabilitySkill)
+			{
+				const maneuver = game.i18n.localize("SPACE1889.VehicleManeuverability");
+				maneuvText = " + " + maneuverability.toString() + "[" + maneuver + "]";
+				maneuvTextShort = " + " + maneuverability.toString() + "[" + maneuver.substring(0, 3) + "]";
+				if (maneuverability != 0)
+					diceInfo += maneuvText;
+			}
+
+			$("#infoToChange")[0].value = skillWithSpezAndValue;
+			$("#zusammensetzung")[0].value = skillValue.toString() + damageTextShort + uTextShort + modTextShort + maneuvTextShort + " = " + summe.toString();
+			$("#anzahlDerWuerfel")[0].value = summe;
+		}
+
+		function handleRender(html)
+		{
+			if (isVisibleSupporter1)
+			{
+				html.on('change', '.supporter1Checkbox', () =>
+				{
+					Recalc();
+				});
+			}
+			if (isVisibleSupporter2)
+			{
+				html.on('change', '.supporter2Checkbox', () =>
+				{
+					Recalc();
+				});
+			}
+			if (isVisibleSupporter3)
+			{
+				html.on('change', '.supporter3Checkbox', () =>
+				{
+					Recalc();
+				});
+			}
+			html.on('input', '.modInput', () =>
+			{
+				Recalc();
+			});
+			if (weaponChoiceHtml != '')
+			{
+				html.on('input', '.choices', () =>
+				{
+					Recalc();
+				});
+			}
+			Recalc();
+		}
+
+		let dialogue = new Dialog(
+			{
+				title: `${titleName}`,
+				content: `
+  <form>
+    <h2>${manoeuvreAndName}</h2>
+    <br>
+	${weaponChoiceHtml}
+	<div>
+		<input type="text" id="infoToChange" value="${skillWithSpezAndValue}" disabled="true">
+	</div>
+	${checkboxHtml}
+    <p>${modifierLabel}: <input type="number" class="modInput" id="modifier" value = "${modifierDefault}"></p>
+    <hr>
+    <h3>
+    <div>
+        <label for="zusammensetzung">${labelWurf}</label>
+        <input type="text" id="zusammensetzung" value="${labelWurf}" disabled="true"></label>
+        <input type="hidden" id="anzahlDerWuerfel" value = "0" disabled="true" visible="false">
+    </div>
+    </h3>
+    <hr>
+  </form>`,
+				buttons:
+				{
+					ok:
+					{
+						icon: '',
+						label: 'Los!',
+						callback: (html) => 
+						{
+							const input = html.find('#anzahlDerWuerfel').val();
+							const anzahl = input ? parseInt(input) : 1;
+							const grund = manoeuvreAndName;
+
+							let messageContent = `<div><h2>${grund}</h2></div>`;
+							messageContent += `<p>${diceInfo}</p>`;
+							messageContent += `<b>[[${anzahl}${dieType}]] von ${anzahl}</b> <br>`;
+							let chatData =
+							{
+								user: game.user.id,
+								speaker: ChatMessage.getSpeaker({ actor: actor }),
+								content: messageContent
+							};
+							ChatMessage.create(chatData, {})
+						}
+					},
+					abbruch:
+					{
+						label: 'Abbrechen',
+						callback: () => { ui.notifications.info(game.i18n.localize("SPACE1889.CancelRoll")) },
+						icon: `<i class="fas fa-times"></i>`
+					}
+				},
+				default: "ok",
+				render: handleRender
+			})
+
+		dialogue.render(true)
+
+
+	}
+
+	static showManoeuverInfo(key, actor, whisper)
+	{
+		const speaker = ChatMessage.getSpeaker({ actor: actor });
+		const rollMode = game.settings.get('core', 'rollMode');
+		const manoeuvreName = game.i18n.localize(CONFIG.SPACE1889.vehicleManoeuvres[key]);
+		const infoKey = CONFIG.SPACE1889.vehicleManoeuvres[key];
+		const desc = game.i18n.localize( infoKey + "Desc");
+		const label = `<h2><strong>${manoeuvreName}</strong></h2>`;
+		ChatMessage.create({
+			speaker: speaker,
+			rollMode: rollMode,
+			flavor: label,
+			whisper: whisper ? [game.user.id] : [],
+			content: desc ?? ''
+		});
+	}
 }

@@ -1,8 +1,9 @@
 <form class="{{cssClass}}" autocomplete="off">
 	<header class="sheet-header">
-		<img class="profile-img" src="{{item.img}}" data-edit="img" title="{{item.name}}"/>
+		<img class="profile-img" src="{{item.img}}" data-edit="img" title="{{item.name}}" />
 		<div class="header-fields">
-			<h1 class="charname"><input name="name" type="text" value="{{item.name}}" placeholder="Name"/></h1>
+			<h1 class="charname"><input name="name" type="text" value="{{item.name}}" placeholder="Name" /></h1>
+			{{> "systems/space1889/templates/item/item-sub-id.html"}}
 		</div>
 	</header>
 
@@ -11,9 +12,9 @@
 			<label class="resource-label">{{ localize "SPACE1889.CombatSkill" }}</label>
 			<select name="data.skillId" data-dtype="String">
 				{{#select data.skillId}}
-					{{#each data.combatSkills as |ch char|}}
-					<option value="{{char}}">{{localize ch}}</option>
-					{{/each}}
+				{{#each data.combatSkills as |ch char|}}
+				<option value="{{char}}">{{localize ch}}</option>
+				{{/each}}
 				{{/select}}
 			</select>
 		</div>
@@ -21,12 +22,22 @@
 			<label class="resource-label">{{ localize "SPACE1889.CombatSpecialization" }}</label>
 			<select name="data.specializationId" data-dtype="String">
 				{{#select data.specializationId}}
-					{{#each data.combatSpecializations as |ch char|}}
-					<option value="{{char}}">{{localize ch}}</option>
-					{{/each}}
+				{{#each data.combatSpecializations as |ch char|}}
+				<option value="{{char}}">{{localize ch}}</option>
+				{{/each}}
 				{{/select}}
 			</select>
 		</div>
+
+		{{#if (eq data.skillId 'geschuetze')}}
+		<div class="resource">
+			<label class="resource-label">{{ localize "SPACE1889.SecondaryAttributeSiz" }}</label>
+			<div class="resource-content flex-center flex-between">
+				<a class="increment-weapon-size-click">{{data.size}}</a>
+			</div>
+		</div>
+		{{/if}}
+
 	</li>
 
 	<li class="item flexrow items-header">
@@ -36,19 +47,19 @@
 	</li>
 	<li class="item flex-group-center flexrow">
 		<div class="resource">
-			<input type="text" name="data.damage" value="{{data.damage}}" data-dtype="Number"/>
+			<input type="text" name="data.damage" value="{{data.damage}}" data-dtype="Number" />
 		</div>
 		<div class="resource">
 			<select name="data.damageType" data-dtype="String">
 				{{#select data.damageType}}
-					{{#each data.damageTypes as |ch char|}}
-					<option value="{{char}}">{{localize ch}}</option>
-					{{/each}}
+				{{#each data.damageTypes as |ch char|}}
+				<option value="{{char}}">{{localize ch}}</option>
+				{{/each}}
 				{{/select}}
 			</select>
 		</div>
 		<div class="resource-content flex-center flex-between">
-			<input type="checkbox" name="data.isAreaDamage" {{checked data.isAreaDamage}}/>
+			<input type="checkbox" name="data.isAreaDamage" {{checked data.isAreaDamage}} />
 		</div>
 	</li>
 
@@ -61,13 +72,13 @@
 	</li>
 	<li class="item flex-group-center flexrow">
 		<div class="resource-content flex-center flex-between">
-			<input type="text" name="data.strengthThreshold" value="{{data.strengthThreshold}}"/>
+			<input type="text" name="data.strengthThreshold" value="{{data.strengthThreshold}}" />
 		</div>
 		<div class="resource-content flex-center flex-between">
-			<input type="text" name="data.weight" value="{{data.weight}}" data-dtype="Number"/>
+			<input type="text" name="data.weight" value="{{data.weight}}" data-dtype="Number" />
 		</div>
 		<div class="resource-content flex-center flex-between">
-			<input type="text" name="data.price" value="{{data.price}}"/>
+			<input type="text" name="data.price" value="{{data.price}}" />
 		</div>
 	</li>
 
@@ -110,17 +121,45 @@
 	</li>
 	<li class="item flex-group-center flexrow">
 		<div class="resource-content flex-center flex-between">
-			<input type="text" name="data.ammunitionType" value="{{data.ammunitionType}}"/>
+			<input type="text" name="data.ammunitionType" value="{{data.ammunitionType}}" />
 		</div>
 		<select name="data.location" data-dtype="String">
 			{{#select data.location}}
-				{{#each data.storageLocations as |ch char|}}
-				<option value="{{char}}">{{localize ch}}</option>
-				{{/each}}
+			{{#each data.storageLocations as |ch char|}}
+			<option value="{{char}}">{{localize ch}}</option>
+			{{/each}}
 			{{/select}}
 		</select>
 	</li>
 
+	{{#if (eq data.location 'mounted')}}
+	<li class="item flexrow items-header">
+		<label class="resource-label">{{ localize "SPACE1889.WeaponGunPosition"}}</label>
+		<label class="resource-label">{{ localize "SPACE1889.WeaponIsSwivel"}}</label>
+		<label class="resource-label">{{ localize "SPACE1889.WeaponSwivelingRange"}}[&deg;]</label>
+	</li>
+	<li class="item flex-group-center flexrow">
+		<div class="resource">
+			<select name="data.vehicle.spot" data-dtype="String">
+				{{#select data.vehicle.spot}}
+				{{#each data.weaponMountSpots as |ch char|}}
+				<option value="{{char}}">{{localize ch}}</option>
+				{{/each}}
+				{{/select}}
+			</select>
+		</div>
+		<div class="resource-content flex-center flex-between">
+			<input type="checkbox" name="data.vehicle.isSwivelMounted" {{checked data.vehicle.isSwivelMounted}} />
+		</div>
+		{{#if data.vehicle.isSwivelMounted}}
+		<div class="resource">
+			<input type="text" name="data.vehicle.swivelingRange" value="{{data.vehicle.swivelingRange}}" />
+		</div>
+		{{else}}
+		<label class="item">0</label>
+		{{/if}}
+	</li>
+	{{/if}}
 
 	{{!-- Sheet Tab Navigation --}}
 	<nav class="sheet-tabs tabs" data-group="primary">

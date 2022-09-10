@@ -59,6 +59,12 @@ export class Space1889ActorSheet extends ActorSheet {
 			this._prepareCreatureData(context);
 		}
 
+		if (actorData.type == 'vehicle')
+		{
+			this._prepareVehicleItems(context); 
+			this._prepareVehicleData(context);
+		}
+
 		// Add roll data for TinyMCE editors.
 		context.rollData = context.actor.getRollData();
 
@@ -93,6 +99,13 @@ export class Space1889ActorSheet extends ActorSheet {
 		context.data['archetypes'] = CONFIG.SPACE1889.creatureArchetypes;
 		context.data['movementTypes'] = CONFIG.SPACE1889.creatureMovementType;
 		context.data['origins'] = CONFIG.SPACE1889.creatureOrigins;
+	}
+
+	_prepareVehicleData(context)
+	{
+		context.data['crewExperiences'] = CONFIG.SPACE1889.crewExperience;
+		context.data['crewTempers'] = CONFIG.SPACE1889.crewTemper;
+		context.data['pilotSkills'] = CONFIG.SPACE1889.pilotSkills;
 	}
 
 	_prepareAttributes(context)
@@ -164,6 +177,17 @@ export class Space1889ActorSheet extends ActorSheet {
 		context.money = this.actor.data.money;
 	}
 
+
+	_prepareVehicleItems(context)
+	{
+		// Iterate through items, set default image
+		for (let i of context.items)
+		{
+			i.img = i.img || DEFAULT_TOKEN;
+		}
+		context.weapons = this.actor.data.weapons;
+		context.injuries = this.actor.data.injuries;
+	}
 
 	GetMaxSkillLevel()
 	{
@@ -314,7 +338,6 @@ export class Space1889ActorSheet extends ActorSheet {
 			}
 		});
 
-
 		html.find('.healingFactor-click').mousedown(ev =>
 		{
 			const itemId = this._getItemId(ev);
@@ -327,8 +350,33 @@ export class Space1889ActorSheet extends ActorSheet {
 		{
 			const itemId = this._getItemId(ev);
 			const item = this.actor.items.get(itemId);
-			const newLocation = this.incrementLocation(ev, item.data.data.location);
-			item.update({ 'data.location': newLocation });
+			if (this.actor.data.type == 'vehicle')
+			{
+				const newLocationAndSpot = this.incrementVehicleMountLocation(ev, item.data.data.location, item.data.data.vehicle.spot);
+				item.update({ 'data.location': newLocationAndSpot[0], 'data.vehicle.spot': newLocationAndSpot[1] });
+			}
+			else
+			{
+				const newLocation = this.incrementLocation(ev, item.data.data.location);
+				item.update({ 'data.location': newLocation });
+			}
+		});
+
+		html.find('.swivelingRange-click').mousedown(ev =>
+		{
+			const itemId = this._getItemId(ev);
+			const item = this.actor.items.get(itemId);
+			if (this.actor.data.type == 'vehicle' && item.data.type == 'weapon')
+			{
+				const newValue = this.incrementValue(ev, Number(item.data.data.vehicle.swivelingRange), 0, 360);
+				let isSwivelMounted = item.data.data.vehicle.isSwivelMounted;
+				if (newValue == 0 && isSwivelMounted)
+					isSwivelMounted = false;
+				else if (newValue > 0 && !isSwivelMounted)
+					isSwivelMounted = true;
+
+				this.actor.updateEmbeddedDocuments("Item", [{ _id: itemId, "data.vehicle.swivelingRange": newValue, "data.vehicle.isSwivelMounted": isSwivelMounted }]);
+			}
 		});
 
 		const isCharacter = this.actor.data.type == "character";
@@ -392,10 +440,158 @@ export class Space1889ActorSheet extends ActorSheet {
 			this.actor.update({ 'data.secondaries.size.value': newValue });
 		});
 
-		html.find('.increment-creatureHealth-click').mousedown(ev =>
+		html.find('.increment-structure-max-click').mousedown(ev =>
 		{
-			const newValue = this.incrementValue(ev, this.actor.data.data.health.value, this.actor.data.data.health.min, this.actor.data.data.health.max);
-			this.actor.update({ 'data.health.value': newValue });
+			const newValue = this.incrementValue(ev, this.actor.data.data.health.max, 0, undefined);
+			this.actor.update({ 'data.health.max': newValue });
+		});
+		html.find('.increment-speed-max-click').mousedown(ev =>
+		{
+			const newValue = this.incrementValue(ev, this.actor.data.data.speed.max, 0, undefined);
+			this.actor.update({ 'data.speed.max': newValue });
+		});
+		html.find('.increment-maneuverability-max-click').mousedown(ev =>
+		{
+			const newValue = this.incrementValue(ev, this.actor.data.data.maneuverability.max, -5, 5);
+			this.actor.update({ 'data.maneuverability.max': newValue });
+		});
+		html.find('.increment-passiveDefense-click').mousedown(ev =>
+		{
+			const newValue = this.incrementValue(ev, this.actor.data.data.passiveDefense, 0, undefined);
+			this.actor.update({ 'data.passiveDefense': newValue });
+		});
+		html.find('.increment-vehicleSize-click').mousedown(ev =>
+		{
+			const newValue = SPACE1889Helper.incrementVehicleSizeValue(ev, this.actor.data.data.size);
+			this.actor.update({ 'data.size': newValue });
+		});
+
+		html.find('.increment-captain-click').mousedown(ev =>
+		{
+			const newValue = this.incrementValue(ev, this.actor.data.data.positions.captain.value, 0, undefined);
+			this.actor.update({ 'data.positions.captain.value': newValue });
+		});
+		html.find('.increment-copilot-click').mousedown(ev =>
+		{
+			const newValue = this.incrementValue(ev, this.actor.data.data.positions.copilot.value, 0, undefined);
+			this.actor.update({ 'data.positions.copilot.value': newValue });
+		});
+		html.find('.increment-gunner-click').mousedown(ev =>
+		{
+			const newValue = this.incrementValue(ev, this.actor.data.data.positions.gunner.value, 0, undefined);
+			this.actor.update({ 'data.positions.gunner.value': newValue });
+		});
+		html.find('.increment-signaler-click').mousedown(ev =>
+		{
+			const newValue = this.incrementValue(ev, this.actor.data.data.positions.signaler.value, 0, undefined);
+			this.actor.update({ 'data.positions.signaler.value': newValue });
+		});
+		html.find('.increment-lookout-click').mousedown(ev =>
+		{
+			const newValue = this.incrementValue(ev, this.actor.data.data.positions.lookout.value, 0, undefined);
+			this.actor.update({ 'data.positions.lookout.value': newValue });
+		});
+		html.find('.increment-mechanic-click').mousedown(ev =>
+		{
+			const newValue = this.incrementValue(ev, this.actor.data.data.positions.mechanic.value, 0, undefined);
+			this.actor.update({ 'data.positions.mechanic.value': newValue });
+		});
+		html.find('.increment-medic-click').mousedown(ev =>
+		{
+			const newValue = this.incrementValue(ev, this.actor.data.data.positions.medic.value, 0, undefined);
+			this.actor.update({ 'data.positions.medic.value': newValue });
+		});
+		html.find('.increment-crew-max-click').mousedown(ev =>
+		{
+			const newValue = this.incrementValue(ev, this.actor.data.data.crew.max, 1, undefined);
+			this.actor.update({ 'data.crew.max': newValue });
+		});
+		html.find('.increment-crew-current-click').mousedown(ev =>
+		{
+			const newValue = this.incrementValue(ev, this.actor.data.data.crew.value, 0, this.actor.data.data.crew.max);
+			this.actor.update({ 'data.crew.value': newValue });
+		});
+		html.find('.increment-passenger-max-click').mousedown(ev =>
+		{
+			const newValue = this.incrementValue(ev, this.actor.data.data.passenger.max, 0, undefined);
+			this.actor.update({ 'data.passenger.max': newValue });
+		});
+		html.find('.increment-passenger-current-click').mousedown(ev =>
+		{
+			const newValue = this.incrementValue(ev, this.actor.data.data.passenger.value, 0, this.actor.data.data.passenger.max);
+			this.actor.update({ 'data.passenger.value': newValue });
+		});
+		html.find('.increment-strengthTempoFactor-click').mousedown(ev =>
+		{
+			const newValue = this.incrementValue(ev, this.actor.data.data.strengthTempoFactor.value, 0, this.actor.data.data.strengthTempoFactor.max);
+			this.actor.update({ 'data.strengthTempoFactor.value': newValue });
+		});
+		html.find('.increment-vehicle-size-click').mousedown(ev =>
+		{
+			const newValue = this.incrementValue(ev, this.actor.data.data.size, 0, undefined);
+			this.actor.update({ 'data.size': newValue });
+		});
+		html.find('.do-vehicle-captain-click').mousedown(ev =>
+		{
+			this._doVehiclePositionClick(ev, 'captain');
+		});
+		html.find('.do-vehicle-pilot-click').mousedown(ev =>
+		{
+			this._doVehiclePositionClick(ev, 'pilot');
+		});
+		html.find('.do-vehicle-copilot-click').mousedown(ev =>
+		{
+			this._doVehiclePositionClick(ev, 'copilot');
+		});
+		html.find('.do-vehicle-gunner-click').mousedown(ev =>
+		{
+			this._doVehiclePositionClick(ev, 'gunner');
+		});
+		html.find('.do-vehicle-signaler-click').mousedown(ev =>
+		{
+			this._doVehiclePositionClick(ev, 'signaler');
+		});
+		html.find('.do-vehicle-lookout-click').mousedown(ev =>
+		{
+			this._doVehiclePositionClick(ev, 'lookout');
+		});
+		html.find('.do-vehicle-mechanic-click').mousedown(ev =>
+		{
+			this._doVehiclePositionClick(ev, 'mechanic');
+		});
+		html.find('.do-vehicle-medic-click').mousedown(ev =>
+		{
+			this._doVehiclePositionClick(ev, 'medic');
+		});
+		html.find('.do-pilot-maneuver-click').mousedown(ev =>
+		{
+			this._doVehicleMovementManeuverClick(ev);
+		});
+		html.find('.do-gunner-maneuver-click').mousedown(ev =>
+		{
+			this._doVehicleAttackManeuverClick(ev);
+		});
+		html.find('.roll-vehicle-attack-click').mousedown(ev =>
+		{
+			const itemId = this._getItemId(ev);
+			if (this.actor.data.type == 'vehicle')
+			{
+				SPACE1889RollHelper.rollManoeuver('Attack', this.actor, ev, itemId);
+			}
+		});
+		html.find('.roll-vehicle-defense-click').mousedown(ev =>
+		{
+			if (this.actor.data.type == 'vehicle')
+				SPACE1889RollHelper.rollManoeuver('defense', this.actor, ev);
+		});
+		html.find('.condition-toggle').mousedown(ev =>
+		{
+			const positionId = this._getDataId(ev);
+			const toggledValue = !this.actor.data.data.positions[positionId].staffed;
+			const key = 'data.positions.' + positionId + '.staffed';
+			let updateObject = {};
+			updateObject[key] = toggledValue;
+			this.actor.update(updateObject);
 		});
 
 		// Active Effect management
@@ -412,6 +608,123 @@ export class Space1889ActorSheet extends ActorSheet {
 		}
 	}
 
+	_doVehiclePositionClick(event, positionKey)
+	{
+		if (this.actor.data.type == "vehicle")
+		{
+			const eventInfo = SPACE1889RollHelper.getEventEvaluation(event);
+			if (eventInfo.specialDialog)
+			{
+				const key = 'data.positions.' + positionKey + '.actorId';
+				let updateObject = {};
+				updateObject[key] = "";
+				this.actor.update(updateObject);
+			}
+			else
+				SPACE1889Helper.showActorSheet(this.actor.data.data.positions[positionKey].actorId);
+		}
+	}
+
+	_doVehicleMovementManeuverClick(event)
+	{
+		const titleName =  game.i18n.localize("SPACE1889.VehicleManoeuvreSelection");
+
+		let optionen = '<option value="eins" selected>' + game.i18n.localize("SPACE1889.VehicleApproachDistance") + '</option>';
+		optionen += '<option value="zwei">' + game.i18n.localize("SPACE1889.VehicleUtmostPower") + '</option>';
+		optionen += '<option value="drei">' + game.i18n.localize("SPACE1889.VehicleTurnaround") + '</option>';
+		optionen += '<option value="vier">' + game.i18n.localize("SPACE1889.VehicleAbruptBrakingAcceleration") + '</option>';
+		optionen += '<option value="funf">' + game.i18n.localize("SPACE1889.VehicleRamming") + '</option>';
+
+		const userId = game.user.id;
+
+		let dialogue = new Dialog(
+		{
+		  title: `${titleName}`,
+		  content: `<p><select id="manoeverauswahl" name="manoeverauswahl">${optionen}</select></p>`,
+		  buttons: 
+		  {
+			ok: 
+			{
+			  icon: '',
+			  label: 'Los!',
+			  callback: (html) => 
+			  {
+				const selectedOption = html.find('#manoeverauswahl').val();
+				if (selectedOption == "eins")
+				  this.actor.rollManoeuvre("ApproachDistance", event);
+				else if (selectedOption == "zwei")
+				  this.actor.rollManoeuvre("UtmostPower", event);
+				else if (selectedOption == "drei")
+				  this.actor.rollManoeuvre("Turnaround", event);
+				else if (selectedOption == "vier")
+				  this.actor.rollManoeuvre("AbruptBrakingAcceleration", event);
+				else if (selectedOption == "funf")
+				  this.actor.rollManoeuvre("Ramming", event);
+			  }
+			},
+			abbruch:
+			{
+			  label: 'Abbrechen',
+			  callback: ()=> {ui.notifications.info(game.i18n.localize("SPACE1889.CancelRoll"))},
+			  icon: `<i class="fas fa-times"></i>`
+			}
+		  },
+		  default: "ok"
+		})
+
+		dialogue.render(true)
+	}
+
+	_doVehicleAttackManeuverClick(event)
+	{
+		const titleName =  game.i18n.localize("SPACE1889.VehicleManoeuvreSelection");
+
+		let optionen = '<option value="one" selected>' + game.i18n.localize("SPACE1889.Attack") + '</option>';
+		optionen += '<option value="two">' + game.i18n.localize("SPACE1889.VehicleTotalAttack") + '</option>';
+		optionen += '<option value="three">' + game.i18n.localize("SPACE1889.VehicleDoubleShot") + '</option>';
+		optionen += '<option value="four">' + game.i18n.localize("SPACE1889.VehicleContinuousFire") + '</option>';
+		optionen += '<option value="five">' + game.i18n.localize("SPACE1889.VehicleAimedShot") + '</option>';
+
+		const userId = game.user.id;
+
+		let dialogue = new Dialog(
+		{
+		  title: `${titleName}`,
+		  content: `<p><select id="manoeverauswahl" name="manoeverauswahl">${optionen}</select></p>`,
+		  buttons: 
+		  {
+			ok: 
+			{
+			  icon: '',
+			  label: 'Los!',
+			  callback: (html) => 
+			  {
+				const selectedOption = html.find('#manoeverauswahl').val();
+				if (selectedOption == "one")
+				  this.actor.rollManoeuvre("Attack", event);
+				else if (selectedOption == "two")
+				  this.actor.rollManoeuvre("TotalAttack", event);
+				else if (selectedOption == "three")
+				  this.actor.rollManoeuvre("DoubleShot", event);
+				else if (selectedOption == "four")
+				  this.actor.rollManoeuvre("ContinuousFire", event);
+				else if (selectedOption == "five")
+				  this.actor.rollManoeuvre("AimedShot", event);
+			  }
+			},
+			abbruch:
+			{
+			  label: 'Abbrechen',
+			  callback: ()=> {ui.notifications.info(game.i18n.localize("SPACE1889.CancelRoll"))},
+			  icon: `<i class="fas fa-times"></i>`
+			}
+		  },
+		  default: "ok"
+		})
+
+		dialogue.render(true)
+	}
+
 /*  async _onDrop(event) {
 		const dragData = JSON.parse(event.dataTransfer.getData("text/plain"))
 		//this._handleDragData(dragData, event, await itemFromDrop(dragData, this.actor.id))
@@ -420,6 +733,33 @@ export class Space1889ActorSheet extends ActorSheet {
 		ui.notifications.error(game.i18n.format("SPACE1889.canNotBeAdded", { item: dragData.id }))
 		await super._onDrop(event);
 	}*/
+
+	async _onDropActor(event, data)
+	{
+		if (!this.actor.isOwner)
+			return false;
+
+		if (this.actor.data.type != 'vehicle')
+			return false;
+
+		let dropedActor = null;
+		if (data.pack)
+		{
+			const pack = game.packs.find(p => p.collection === data.pack);
+			dropedActor = await pack.getDocument(data.id);
+		}
+		else
+		{
+			dropedActor = game.actors.get(data.id);
+		}
+
+		if (!dropedActor)
+			return;
+
+		await SPACE1889Helper.setVehicleActorPositionFromDialog(this.actor, dropedActor);
+		
+	}
+
 
 	async _onDropItem(event, data) {
 		if ( !this.actor.isOwner ) 
@@ -455,11 +795,19 @@ export class Space1889ActorSheet extends ActorSheet {
 
 		if (itemData.type == "weapon")
 		{
-			if (itemData.data.strengthThreshold > actor.data.abilities["str"].total)
+			if (actor.type == "vehicle")
+			{
+				if (itemData.data.skillId != "geschuetze")
+				{
+					ui.notifications.error(game.i18n.format("SPACE1889.canNotBeAdded", { item: itemData.name }))
+					return false;
+				}
+			}
+			else if (itemData.data.strengthThreshold > actor.data.abilities["str"].total)
 			{
 				ui.notifications.error(game.i18n.format("SPACE1889.canNotBeAdded", { item: itemData.name }))
 				return false;
-			}
+			}	
 		}
 		if (itemData.type == "specialization")
 		{
@@ -811,23 +1159,7 @@ export class Space1889ActorSheet extends ActorSheet {
 	 */
 	incrementValue(ev, currentValue, min, max, showNotification = false)
 	{
-		const factor = (ev.ctrlKey && ev.shiftKey) ? 100 : (ev.ctrlKey ? 10 : (ev.shiftKey ? 5 : 1));
-		const sign = ev.button == 2 ? -1 : 1;
-		const wantedValue = currentValue + (factor * sign);
-		let newValue = wantedValue;
-		if (sign > 0 && max != undefined)
-			newValue = Math.min(newValue, max);
-		else if (sign < 0)
-			newValue = Math.max(newValue, min);
-
-		if (showNotification && wantedValue > newValue)
-		{
-			const info = game.i18n.format("SPACE1889.CanNotIncrementAttributeSkill", { level: max, currentHeroLevel: this.GetHeroLevelName() });
-			ui.notifications.info(info);
-		}
-			
-
-		return newValue;
+		return SPACE1889Helper.incrementValue(ev, currentValue, min, max, showNotification);
 	}
 
 	/**
@@ -850,6 +1182,33 @@ export class Space1889ActorSheet extends ActorSheet {
 			return backward ? r : k;
 	}
 
+	/**
+	 * 
+	 * @param {object} ev event
+	 * @param {string} currentLocationValue a storage location: 'mounted' or 'lager'
+	 * @param {string} currentMountSpot the mounting spot: 'bow', 'stern', 'port', 'starboard'
+	 */
+	incrementVehicleMountLocation(ev, currentLocationValue, currentMountSpot)
+	{
+		const list = [['lager', currentMountSpot], ['mounted', 'bow'], ['mounted', 'starboard'], ['mounted', 'stern'], ['mounted', 'port']];
+		const backward = ev.button == 2;
+
+		if (currentLocationValue == 'lager')
+			return backward ? list[4] : list[1];
+
+		for (let i = 1; i < list.length; ++i)
+		{
+			if (list[i][1] == currentMountSpot)
+			{
+				if (backward)
+					return list[i - 1];
+				else
+				{
+					return i == list.length - 1 ? list[0] : list[i + 1];
+				}
+			}
+		}
+	}
 
 	/**
 	 * Handle creating a new Owned Item for the actor using initial data defined in the HTML dataset
@@ -995,7 +1354,18 @@ export class Space1889ActorSheet extends ActorSheet {
 		return $(ev.currentTarget).parents(".item").attr("data-item-id")
 	}
 
+	_getDataId(ev)
+	{
+		return $(ev.currentTarget).parents(".position").attr("data-id");
+	}
 
+	render(force, options)
+	{
+		if (force && this.actor.data.type == "vehicle")
+			this.actor.prepareDerivedData();
+
+		super.render(force, options);
+	}
 
 }
 

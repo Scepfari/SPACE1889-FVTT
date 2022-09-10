@@ -2,28 +2,25 @@
 	<header class="sheet-header">
 		<img class="profile-img" src="{{item.img}}" data-edit="img" title="{{ localize 'SPACE1889.Skill' }}"/>
 		<div class="header-fields">
-			<h1 class="charname"><input name="name" type="text" value="{{item.name}}" placeholder="Name"/></h1>
-			<div class="resource">
-				<label class="resource-label">Id</label>
-				<input type="text" name="data.id" value="{{data.id}}"/>
-			</div>
+			<h1 class="charname"><input name="name" type="text" value="{{item.name}}" placeholder="Name" /></h1>
+			{{> "systems/space1889/templates/item/item-sub-id.html"}}
 			<div class="grid grid-2col">
 				<div class="resource">
 					<label class="resource-label">{{ localize "SPACE1889.Level" }}</label>
-					<input type="text" name="data.level" value="{{data.level}}" data-dtype="Number"/>
+					<input type="text" name="data.level" value="{{data.level}}" data-dtype="Number" />
 				</div>
 				<div class="resource">
 					<label class="resource-label">{{ localize "SPACE1889.Rating" }}</label>
-					<input type="text" name="data.rating" value="{{data.rating}}" data-dtype="Number"/>
+					<input type="text" name="data.rating" value="{{data.rating}}" data-dtype="Number" />
 				</div>
 			</div>
 			<div class="resource">
 				<label class="resource-label">{{ localize "SPACE1889.BaseSkill" }}</label>
 				<select name="data.underlyingSkillId" data-dtype="String">
 					{{#select data.underlyingSkillId}}
-						{{#each data.nonGroupSkills as |ch char|}}
-						<option value="{{char}}">{{localize ch}}</option>
-						{{/each}}
+					{{#each data.nonGroupSkills as |ch char|}}
+					<option value="{{char}}">{{localize ch}}</option>
+					{{/each}}
 					{{/select}}
 				</select>
 			</div>

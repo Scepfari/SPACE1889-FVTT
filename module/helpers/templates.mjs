@@ -27,5 +27,9 @@
 		"systems/space1889/templates/actor/parts/actor-creature-damage.html",
 		"systems/space1889/templates/actor/parts/npc-resources.html",
 		"systems/space1889/templates/actor/parts/npc-items.html",
+		"systems/space1889/templates/actor/parts/vehicle-weapons.html",
+		"systems/space1889/templates/actor/parts/vehicle-biography.html",
+		"systems/space1889/templates/actor/parts/vehicle-damage.html",
+		"systems/space1889/templates/item/item-sub-id.html",
 	]);
 };

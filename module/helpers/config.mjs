@@ -162,19 +162,36 @@ SPACE1889.combatSkills = {
 	"waffenlos": "SPACE1889.SkillWaffenlos"
 }
 
+SPACE1889.pilotSkills = {
+	"aetherschiffe": "SPACE1889.SkillAetherschiffe",
+	"ballons": "SPACE1889.SkillBallons",
+	"bohrgeraete": "SPACE1889.SkillBohrgeraete",
+	"fahren": "SPACE1889.SkillFahren",
+	"flugautos": "SPACE1889.SkillFlugautos",
+	"flugschiffe": "SPACE1889.SkillFlugschiffe",
+	"panzerlaeufer": "SPACE1889.SkillPanzerlaeufer",
+	"personenflug": "SPACE1889.SkillPersonenflug",
+	"reiten": "SPACE1889.SkillReiten",
+	"schiffe": "SPACE1889.SkillSchiffe",
+	"uboote": "SPACE1889.SkillUboote"
+}
+
 SPACE1889.combatSpecializations ={
 	"none": "-",
 	"archaisch": "SPACE1889.SpeciSkillArchaisch",
+	"artillerie": "SPACE1889.SpeciSkillArtillerie",
 	"armbrust": "SPACE1889.SpeciSkillArmbrust",
 	"aexte": "SPACE1889.SpeciSkillAexte",
 	"blasrohr": "SPACE1889.SpeciSkillBlasrohr",
 	"bogen": "SPACE1889.SpeciSkillBogen",
+	"bomben": "SPACE1889.SpeciSkillBomben",
 	"gewehr": "SPACE1889.SpeciSkillGewehr",
 	"kanonen": "SPACE1889.SpeciSkillKanonen",
 	"knueppel": "SPACE1889.SpeciSkillKnueppel",
 	"maschinengewehre": "SPACE1889.SpeciSkillMaschinengewehre",
 	"messer": "SPACE1889.SpeciSkillMesser",
 	"pistole": "SPACE1889.SpeciSkillPistole",
+	"raketen": "SPACE1889.SpeciSkillRaketen",
 	"schlaege": "SPACE1889.SpeciSkillSchlaege",
 	"schleuder": "SPACE1889.SpeciSkillSchleuder",
 	"schrotgewehr": "SPACE1889.SpeciSkillSchrotgewehr",
@@ -194,6 +211,24 @@ SPACE1889.damageTypeAbbreviations ={
 	"nonLethal": "SPACE1889.NonLethalAbbr",
 	"lethal": "SPACE1889.LethalAbbr",
 	"both": "SPACE1889.LethalOrNonLethalAbbr"
+}
+
+SPACE1889.vehicleDamageTypes = {
+	"nonLethal": "SPACE1889.NonLethal",
+	"lethal": "SPACE1889.Lethal",
+	"controls": "SPACE1889.Controls",
+	"propulsion": "SPACE1889.Propulsion",
+	"guns": "SPACE1889.Guns",
+	"crew": "SPACE1889.VehicleCrew"
+}
+
+SPACE1889.vehicleDamageTypeAbbreviations = {
+	"nonLethal": "SPACE1889.NonLethalAbbr",
+	"lethal": "SPACE1889.LethalAbbr",
+	"controls": "SPACE1889.ControlsAbbr",
+	"propulsion": "SPACE1889.PropulsionAbbr",
+	"guns": "SPACE1889.GunsAbbr",
+	"crew": "SPACE1889.CrewAbbr"
 }
 
 SPACE1889.preConditionTypes = {
@@ -363,6 +398,30 @@ SPACE1889.storageLocations = {
 SPACE1889.storageLocationAbbreviations = {
 	"koerper": "SPACE1889.StorageLocationKoerperAbbr",
 	"rucksack": "SPACE1889.StorageLocationRucksackAbbr",
+	"lager": "SPACE1889.StorageLocationLagerAbbr",
+};
+
+SPACE1889.allStorageLocations = {
+	"koerper": "SPACE1889.StorageLocationKoerper",
+	"rucksack": "SPACE1889.StorageLocationRucksack",
+	"lager": "SPACE1889.StorageLocationLager",
+	"mounted": "SPACE1889.StorageLocationMounted"
+};
+
+SPACE1889.allStorageLocationsAbbreviations = {
+	"koerper": "SPACE1889.StorageLocationKoerperAbbr",
+	"rucksack": "SPACE1889.StorageLocationRucksackAbbr",
+	"lager": "SPACE1889.StorageLocationLagerAbbr",
+	"mounted": "SPACE1889.StorageLocationMountedAbbr",
+};
+
+SPACE1889.vehicleStorageLocations = {
+	"mounted": "SPACE1889.StorageLocationMounted",
+	"lager": "SPACE1889.StorageLocationLager",
+};
+
+SPACE1889.vehicleStorageLocationAbbreviations = {
+	"mounted": "SPACE1889.StorageLocationMountedAbbr",
 	"lager": "SPACE1889.StorageLocationLagerAbbr",
 };
 
@@ -655,6 +714,94 @@ SPACE1889.weaponCapacityTypes = {
 	"magazine": "SPACE1889.WeaponCapacityTypeMagazine",
 	"revolver": "SPACE1889.WeaponCapacityTypeRevolver",
 	"powercell": "SPACE1889.WeaponCapacityTypePowercell"
+}
+
+SPACE1889.vehicleManoeuvres = {
+	"ApproachDistance": "SPACE1889.VehicleApproachDistance",
+	"UtmostPower":"SPACE1889.VehicleUtmostPower",
+	"Turnaround":"SPACE1889.VehicleTurnaround",
+	"AbruptBrakingAcceleration":"SPACE1889.VehicleAbruptBrakingAcceleration",
+	"Ramming": "SPACE1889.VehicleRamming",
+	"defense": "SPACE1889.SecondaryAttributeDef",
+	"totalDefense": "SPACE1889.TotalDefense",
+	"Attack": "SPACE1889.Attack",
+	"TotalAttack": "SPACE1889.VehicleTotalAttack",
+	"DoubleShot":"SPACE1889.VehicleDoubleShot",
+	"ContinuousFire":"SPACE1889.VehicleContinuousFire",
+	"AimedShot":"SPACE1889.VehicleAimedShot",
+	"Signaling":"SPACE1889.VehicleSignaling",
+	"TemporaryRepairs":"SPACE1889.VehicleTemporaryRepairs",
+	"Board":"SPACE1889.VehicleBoard"
+}
+
+SPACE1889.vehicleManoeuvresToSkill = {
+	"ApproachDistance": "SPACE1889.VehiclePilotSkill",
+	"UtmostPower": "SPACE1889.VehiclePilotSkill",
+	"Turnaround": "SPACE1889.VehiclePilotSkill",
+	"AbruptBrakingAcceleration": "SPACE1889.VehiclePilotSkill",
+	"Ramming": "SPACE1889.VehiclePilotSkill",
+	"defense": "SPACE1889.VehiclePilotSkill",
+	"totalDefense": "SPACE1889.VehiclePilotSkill",
+	"Attack": "SPACE1889.SkillGeschuetze",
+	"TotalAttack": "SPACE1889.SkillGeschuetze",
+	"DoubleShot": "SPACE1889.SkillGeschuetze",
+	"ContinuousFire": "SPACE1889.SkillGeschuetze",
+	"AimedShot": "SPACE1889.SkillGeschuetze",
+	"Signaling": "SPACE1889.SpeciSkillCodes",
+	"TemporaryRepairs": "SPACE1889.SkillGroupHandwerk",
+	"Board": "SPACE1889.SkillSportlichkeit"
+}
+
+SPACE1889.vehicleManoeuvresToPosition = {
+	"ApproachDistance": "pilot",
+	"UtmostPower": "pilot",
+	"Turnaround": "pilot",
+	"AbruptBrakingAcceleration": "pilot",
+	"Ramming": "pilot",
+	"defense": "pilot",
+	"totalDefense": "pilot",
+	"Attack": "gunner",
+	"TotalAttack": "gunner",
+	"DoubleShot": "gunner",
+	"ContinuousFire": "gunner",
+	"AimedShot": "gunner",
+	"Signaling": "signaler",
+	"TemporaryRepairs": "mechanic",
+	"Board": ""
+}
+
+SPACE1889.vehicleCrewPositions = {
+	"captain": "SPACE1889.VehicleCaptain",
+	"pilot": "SPACE1889.VehiclePilot",
+	"copilot": "SPACE1889.VehicleCopilot",
+	"gunner": "SPACE1889.VehicleGunner",
+	"signaler": "SPACE1889.VehicleSignaler",
+	"lookout": "SPACE1889.VehicleLookout",
+	"mechanic": "SPACE1889.VehicleMechanic",
+	"medic": "SPACE1889.VehicleMedic"
+}
+
+SPACE1889.crewTemper = {
+	"hochmotiviert": "SPACE1889.VehicleCrewTemperHighlyMotivated",
+	"normal": "SPACE1889.VehicleCrewTemperRegular",
+	"angespannt": "SPACE1889.VehicleCrewTemperTensed",
+	"befehlsverweigerung": "SPACE1889.VehicleCrewTemperInsubordination",
+	"meuterei": "SPACE1889.VehicleCrewTemperMutiny"
+}
+
+SPACE1889.weaponMountSpots= {
+	"bow": "SPACE1889.VehicleWeaponMountSpotBow",
+	"stern": "SPACE1889.VehicleWeaponMountSpotStern",
+	"port": "SPACE1889.VehicleWeaponMountSpotPort",
+	"starboard": "SPACE1889.VehicleWeaponMountSpotStarboard"
+}
+
+SPACE1889.crewExperience = {
+	"rookie": "SPACE1889.VehicleCrewExperienceRookie",
+	"regular": "SPACE1889.VehicleCrewExperienceRegular",
+	"veteran": "SPACE1889.VehicleCrewExperienceVeteran",
+	"elite": "SPACE1889.VehicleCrewExperienceElite",
+	"custom": "SPACE1889.VehicleCrewExperienceCustom"
 }
 
 SPACE1889.umlautMap = {

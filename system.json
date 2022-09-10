@@ -2,7 +2,7 @@
 	"name": "space1889",
 	"title": "Space 1889",
 	"description": "The SPACE 1889 Ubiquity system for FoundryVTT!",
-	"version": "0.7.5",
+	"version": "0.8.0",
 	"minimumCoreVersion": "0.8.6",
 	"compatibleCoreVersion": "9",
 	"author": "Scepfari",
@@ -302,6 +302,50 @@
 			"entity": "Actor",
 			"type": "Actor",
 			"private": true
+		},
+		{
+			"name": "fahrzeugwaffen",
+			"label": "Waffen fuer Fahrzeuge",
+			"system": "space1889",
+			"path": "./packs/fahrzeugwaffen.db",
+			"entity": "Item",
+			"type": "Item"
+		},
+		{
+			"name": "atherfahrzeuge",
+			"label": "Aetherfahrzeuge",
+			"system": "space1889",
+			"path": "./packs/atherfahrzeuge.db",
+			"entity": "Actor",
+			"type": "Actor",
+			"private": true
+		},
+		{
+			"name": "landfahrzeuge",
+			"label": "Landfahrzeuge",
+			"system": "space1889",
+			"path": "./packs/landfahrzeuge.db",
+			"entity": "Actor",
+			"type": "Actor",
+			"private": true
+		},
+		{
+			"name": "luftfahrzeuge",
+			"label": "Luftfahrzeuge",
+			"system": "space1889",
+			"path": "./packs/luftfahrzeuge.db",
+			"entity": "Actor",
+			"type": "Actor",
+			"private": true
+		},
+		{
+			"name": "wasserfahrzeuge",
+			"label": "Wasserfahrzeuge",
+			"system": "space1889",
+			"path": "./packs/wasserfahrzeuge.db",
+			"entity": "Actor",
+			"type": "Actor",
+			"private": true
 		}
 	],
 	"languages": [
@@ -321,6 +365,6 @@
 	"primaryTokenAttribute": "health",
 	"url": "https://github.com/Scepfari/SPACE1889-FVTT",
 	"manifest": "https://github.com/Scepfari/SPACE1889-FVTT/releases/latest/download/system.json",
-	"download": "https://github.com/Scepfari/SPACE1889-FVTT/releases/download/v0.7.5/space1889-foundry-0.7.5.zip",
+	"download": "https://github.com/Scepfari/SPACE1889-FVTT/releases/download/v0.8.0/space1889-foundry-0.8.0.zip",
 	"license": "LICENSE.txt"
 }

@@ -76,6 +76,11 @@ Handlebars.registerHelper('toLowerCase', function(str) {
 	return str.toLowerCase();
 });
 
+Handlebars.registerHelper('doubleCheck', function (firstLeft, fistRight, secondLeft, secondRight)
+{
+	return firstLeft == fistRight && secondLeft == secondRight;
+})
+
 /* -------------------------------------------- */
 /*  Ready Hook                                  */
 /* -------------------------------------------- */
@@ -87,6 +92,12 @@ Hooks.once("ready", async function() {
 	await Space1889Translation.runInitTranslationAction();
 	await Space1889Migration.runInitMigrationAction();
 	Space1889Migration.showNewVersionInfo();
+	// refresh Vehicle Data
+	game.actors.forEach((values, keys) =>
+	{
+		if (values.data.type == "vehicle")
+			values.prepareDerivedData();
+	});
 });
 
 

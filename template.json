@@ -1,6 +1,6 @@
 {
 	"Actor": {
-		"types": [ "character", "npc", "creature" ],
+		"types": [ "character", "npc", "creature", "vehicle" ],
 		"templates": {
 			"health": {
 				"health": {
@@ -126,6 +126,87 @@
 					"value": "ueberleben"
 				}
 			}
+		},
+		"vehicle": {
+			"templates": [ "health", "secondaries" ],
+			"typeOrClass": "",
+			"isAirship": false,
+			"isStrengthBasedTempo": false,
+			"strengthTempoFactor": {
+				"value": 0,
+				"max": 10
+			},
+			"weaponLoad": {
+				"value": 0,
+				"max": 0
+			},
+			"pilotSkill": "fahren",
+			"size": 0,
+			"passiveDefense": 0,
+			"speed": {
+				"value": 0,
+				"max": 0
+			},
+			"maneuverability": {
+				"value": "0",
+				"max": 0
+			},
+			"crew": {
+				"value": 1,
+				"max": 1,
+				"experience": "regular",
+				"experienceValue": 4,
+				"temper": "normal"
+			},
+			"passenger": {
+				"value": 0,
+				"max": 0
+			},
+			"price": "",
+			"weight2": "0",
+			"description": "",
+			"positions": {
+				"captain": {
+					"value": 0,
+					"actorId": "",
+					"staffed": true
+				},
+				"pilot": {
+					"value": 0,
+					"actorId": "",
+					"staffed": true
+				},
+				"copilot": {
+					"value": 0,
+					"actorId": "",
+					"staffed": true
+				},
+				"gunner": {
+					"value": 0,
+					"actorId": "",
+					"staffed": true
+				},
+				"signaler": {
+					"value": 0,
+					"actorId": "",
+					"staffed": true
+				},
+				"lookout": {
+					"value": 0,
+					"actorId": "",
+					"staffed": true
+				},
+				"mechanic": {
+					"value": 0,
+					"actorId": "",
+					"staffed": true
+				},
+				"medic": {
+					"value": 0,
+					"actorId": "",
+					"staffed": true
+				}
+			}
 		}
 	},
 	"Item": {
@@ -207,6 +288,12 @@
 			"capacityType": "default",
 			"rateOfFire": "",
 			"speed": "",
+			"size": 0,
+			"vehicle": {
+				"spot": "bow",
+				"isSwivelMounted": false,
+				"swivelingRange": "120"
+			},
 			"isAreaDamage": false,
 			"ammunitionType": ""
 		},

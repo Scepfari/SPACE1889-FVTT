@@ -1,0 +1,229 @@
+<form class="{{cssClass}} {{actor.type}} flexcol" autocomplete="off">
+
+	{{!-- Sheet Header --}}
+	<header class="sheet-header">
+		<img class="profile-img" src="{{actor.img}}" data-edit="img" title="{{actor.name}}" height="150" width="150"/>
+		<div class="header-fields">
+			<h2 class="charname"><input name="name" type="text" value="{{actor.name}}" placeholder="Name" /></h2>
+			<h3 class="resource-content flex-center flex-between">
+				<input type="text" name="data.typeOrClass" value="{{data.typeOrClass}}" placeholder="{{localize "SPACE1889.VehicleTypeOrClass"}}"/>
+			</h3>
+
+			<div class="abilities flexcol items-list">
+				<li class="item flexrow items-header flex-group-center">
+					<div class="item item-max-with60px">{{localize "SPACE1889.VehicleStructure"}}</div>
+					<div class="item item-max-with75px">{{localize "SPACE1889.Speed"}}</div>
+					<div class="item item-max-with100px">{{localize "SPACE1889.VehicleManeuverability"}}</div>
+					<div class="item item-max-with75px" title="{{localize "SPACE1889.VehiclePassiveDefense"}} - {{localize "SPACE1889.ClickToRoll"}}">
+						<label class="resource-label rollable" data-roll-key="passiveDefence" data-roll-type="actor" data-roll-diecount="{{data.passiveDefense}}" data-label='{{localize "SPACE1889.VehiclePassiveDefense"}}'>{{localize "SPACE1889.VehiclePassiveDefenseAbbr"}}</label>
+					</div>
+					<div class="item-name item-max-with60px">{{localize "SPACE1889.SecondaryAttributeSiz"}}</div>
+				</li>
+				<li class="item flexrow flex-group-center">
+					<div class="flexrow item-max-with60px">
+						<div style="display: grid; grid-template-columns: 45% 10% 45%; grid-template-rows: 100%;">
+							<div class="item-margintb2px item-right">
+								<a class="item-create item-margintb2px" align="right" title='{{localize "SPACE1889.InfoAddDamage"}}' data-type="damage">{{data.health.value}}</a>
+							</div>
+							<div class="item-margintb2px"> / </div>
+							<div class="item-margintb2px item-left">
+								<a class="increment-structure-max-click">{{data.health.max}}</a>
+							</div>
+						</div>
+					</div>
+					<div class="flexrow item-max-with75px">
+						<div style="display: grid; grid-template-columns: 45% 10% 45%; grid-template-rows: 100%;">
+							<div class="item-margintb2px item-right">{{data.speed.value}}</div>
+							<div class="item-margintb2px"> / </div>
+							<div class="item-margintb2px item-left">
+								<a class="increment-speed-max-click">{{data.speed.max}}</a>
+							</div>
+						</div>
+					</div>
+					<div class="flexrow item-max-with100px">
+						<div style="display: grid; grid-template-columns: 45% 10% 45%; grid-template-rows: 100%;">
+							<div class="item-margintb2px item-right">{{data.maneuverability.value}}</div>
+							<div class="item-margintb2px"> / </div>
+							<div class="item-margintb2px item-left">
+								<a class="increment-maneuverability-max-click">{{data.maneuverability.max}}</a>
+							</div>
+						</div>
+					</div>
+					<div class="flexrow item-max-with75px">
+						<div class="item-margintb2px">
+							<a class="increment-passiveDefense-click">{{data.passiveDefense}}</a>
+						</div>
+					</div>
+					<div class="flexrow item-max-with60px">
+						<div class="item-margintb2px">
+							<a class="increment-vehicleSize-click">{{data.size}}</a>
+						</div>
+					</div>
+				</li>
+			</div>
+		</div>
+	</header>
+
+	{{!-- Sheet Tab Navigation --}}
+	<nav class="sheet-tabs tabs" data-group="primary">
+		{{!-- Default tab is specified in actor-sheet.mjs --}}
+		<a class="item" data-tab="abilities">{{localize "SPACE1889.AbilityPl"}}</a>
+		<a class="item" data-tab="biography">{{localize "SPACE1889.BiographyAbbr"}}</a>
+	{{!--	<a class="item" data-tab="effects">Effects</a>  --}}
+	</nav>
+
+	{{!-- Sheet Body --}}
+	<section class="sheet-body">
+		<div class="tab abilities" data-group="primary" data-tab="abilities">
+			<section class="grid grid-2col">
+				<div class="abilities flexcol">
+					<li class="flexrow">
+						<div class="item-name ">{{localize "SPACE1889.VehiclePilotSkill"}}</div>
+						<div class="resource-content flexrow flex-center flex-between item-marginlr5px">
+							<select name="data.pilotSkill" data-dtype="String">
+								{{#select data.pilotSkill}}
+								{{#each data.pilotSkills as |key char|}}
+								<option value="{{char}}">{{localize key}}</option>
+								{{/each}}
+								{{/select}}
+							</select>
+						</div>
+					</li>
+					<li class="flexrow">
+						<div class="item-name " title="{{localize "SPACE1889.VehicleIsAirshipInfo"}}">{{localize "SPACE1889.VehicleIsAirship"}}</div>
+						<div class="item flexrow flex-group-center" title="{{localize "SPACE1889.VehicleIsAirshipInfo"}}">
+							<input type="checkbox" name="data.isAirship" {{checked data.isAirship}} />
+						</div>
+					</li>
+					<li class="flexrow">
+						<div class="item-name " title="{{localize "SPACE1889.VehicleIsStrengthBasedTempoInfo"}}">{{localize "SPACE1889.VehicleIsStrengthBasedTempo"}}</div>
+						<div style="display: grid; grid-template-columns: 55% 45%; grid-template-rows: 100%;">
+							<div class="item flexrow flex-group-right" title="{{localize "SPACE1889.VehicleIsPureMusclePowerInfo"}}">
+								<input type="checkbox" name="data.isStrengthBasedTempo" {{checked data.isStrengthBasedTempo}} />
+							</div>
+							{{#if data.isStrengthBasedTempo}}
+							<div class="item flexrow flex-group-center" title="{{localize "SPACE1889.VehicleStrengthTempoFactor"}}">
+								<a class="increment-strengthTempoFactor-click">{{data.strengthTempoFactor.value}}</a>
+							</div>
+							{{/if}}
+						</div>
+					</li>
+				</div>
+
+				<div class="secondaries flexcol">
+					<li class="flexrow">
+						<div class="item-name ">{{localize "SPACE1889.VehicleCrew"}}</div>
+
+						<div style="display: grid; grid-template-columns: 42% 13% 45%; grid-template-rows: 100%;">
+							<div class="item-right">
+								<a class="increment-crew-current-click" align="right" data-type="passenger">{{data.crew.value}}</a>
+							</div>
+							<div class="item" align="center"> / </div>
+							<div class="item-left">
+								<a class="increment-crew-max-click">{{data.crew.max}}</a>
+							</div>
+						</div>
+					</li>
+					<li class="flexrow">
+						<div class="item-name ">{{localize "SPACE1889.VehicleCrewExperience"}}</div>
+						<div class="resource-content flexrow flex-center flex-between item-marginlr5px">
+							<select name="data.crew.experience" data-dtype="String">
+								{{#select data.crew.experience}}
+								{{#each data.crewExperiences as |key char|}}
+								<option value="{{char}}">{{localize key}}</option>
+								{{/each}}
+								{{/select}}
+							</select>
+						</div>
+					</li>
+					<li class="flexrow">
+						<div class="item-name ">{{localize "SPACE1889.VehicleCrewTemper"}}</div>
+						<div class="resource-content flexrow flex-center flex-between item-marginlr5px">
+							<select name="data.crew.temper" data-dtype="String">
+								{{#select data.crew.temper}}
+								{{#each data.crewTempers as |key char|}}
+								<option value="{{char}}">{{localize key}}</option>
+								{{/each}}
+								{{/select}}
+							</select>
+						</div>
+					</li>
+				</div>
+			</section>
+
+			<div class="abilities flexcol">
+
+
+				<li class="item flexrow items-header">
+					<div class="resource flex-group-center" title="{{localize "SPACE1889.VehicleSelectManoeuvre"}}">
+						<a class="do-pilot-maneuver-click">{{localize "SPACE1889.VehicleMovementManeuver"}}</a>
+					</div>
+					<div class="resource flex-group-center" title="{{localize "SPACE1889.VehicleSelectManoeuvre"}}">
+						<a class="do-gunner-maneuver-click">{{localize "SPACE1889.VehicleAttackManeuver"}}</a>
+					</div>
+					<div class="resource flex-group-center" title="{{localize "SPACE1889.ClickToRoll"}}">
+						<a class="resource-label roll-vehicle-defense-click" data-label='{{localize "SPACE1889.SecondaryAttributeDef"}}'>{{localize "SPACE1889.SecondaryAttributeDef"}}: </a>
+						<label class="items-list item-max-with60px">{{data.secondaries.defense.total}}</label>
+					</div>
+				</li>
+
+
+				<div class="items-header-center">{{localize "SPACE1889.VehicleCrewValues"}}</div>
+				<li class="item flexrow items-header">
+					<div class="item-name">{{localize "SPACE1889.VehicleCrewPosition"}}</div>
+					<div class="items-list item-max-with150px">{{localize "SPACE1889.Name"}}</div>
+					<div class="items-list item-max-with42px">{{#if (eq data.crew.experience 'custom')}}{{localize "SPACE1889.Base"}}{{else}}{{/if}}</div>
+					<div class="items-list item-max-with42px">{{localize "SPACE1889.Mod"}}</div>
+					<div title='{{localize "SPACE1889.Rating"}}' class="items-list item-max-with42px">{{localize "SPACE1889.Rating"}}</div>
+					<div class="items-list item-max-with20px"></div>
+				</li>
+				{{#each data.positions as |position key|}}
+				<li class="item row-section flexrow">
+					<label for="data.positions.{{key}}.value" class="rollable item-name" data-roll-key="{{key}}" data-roll-type="actor" data-roll-diecount="{{position.total}}" data-label="{{position.label}}">{{position.label}}</label>
+
+					<div title='{{localize "SPACE1889.VehicelScCrewPositionToolTip"}}' class="items-list item-max-with150px">
+						<a class="do-vehicle-{{key}}-click">{{position.actorName}}</a>
+					</div>
+
+					{{#if (doubleCheck ../data.crew.experience 'custom' position.actorId '')}}
+					<div class="item-max-with40px">
+						<a class="increment-{{key}}-click">{{position.value}}</a>
+					</div>
+					{{else}}
+					<div class="item-max-with40px"></div>
+					{{/if}}
+					<label class="items-list item-max-with42px">{{#if (eq position.actorId '')}}{{position.mod}}{{else}} {{/if}}</label>
+					<label class="items-list item-max-with42px resource-label">{{position.total}}</label>
+					<div class="position item-max-with20px" data-id="{{key}}">
+						{{#if position.staffed}}
+						<a class="condition-toggle" title="{{localize 'SPACE1889.VehicleCrewPosition'}} {{localize 'SPACE1889.Staffed'}}"><i class="far fa-check-circle"></i></a> 
+						{{else}}
+						<a class="condition-toggle" title="{{localize 'SPACE1889.VehicleCrewPosition'}} {{localize 'SPACE1889.NotStaffed'}}"><i class="far fa-circle"></i></a> 
+						{{/if}}
+					</div>
+				</li>
+				{{/each}}
+			</div>
+
+			<div>
+				{{> "systems/space1889/templates/actor/parts/vehicle-weapons.html"}}
+			</div>
+			<div>
+				{{> "systems/space1889/templates/actor/parts/vehicle-damage.html"}}
+			</div>
+		</div>
+
+		{{!-- Biography Tab --}}
+		<div class="tab biography" data-group="primary" data-tab="biography">
+			{{> "systems/space1889/templates/actor/parts/vehicle-biography.html"}}
+		</div>
+
+
+		{{!-- Active Effects Tab --}}
+		{{!-- <div class="tab effects" data-group="primary" data-tab="effects"> --}}
+		{{!--	{{> "systems/space1889/templates/actor/parts/actor-effects.html"}} 
+		{{!-- </div> --}}
+	</section>
+
+</form>
+
