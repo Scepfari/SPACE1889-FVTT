@@ -199,7 +199,8 @@ export class Space1889Item extends Item {
 			.replace(/\s+/g, '')
 			.replace(/\.+/g,'')
 			.replace(/-/g, '')
-			.replace(/\,+/g, '');
+			.replace(/\,+/g, '')
+			.replace(/["']/g, '');			;
 	}
 
 	replaceUmlaute(str) 

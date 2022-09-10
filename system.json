@@ -302,6 +302,50 @@
 			"entity": "Actor",
 			"type": "Actor",
 			"private": true
+		},
+		{
+			"name": "fahrzeugwaffen",
+			"label": "Waffen fuer Fahrzeuge",
+			"system": "space1889",
+			"path": "./packs/fahrzeugwaffen.db",
+			"entity": "Item",
+			"type": "Item"
+		},
+		{
+			"name": "atherfahrzeuge",
+			"label": "Aetherfahrzeuge",
+			"system": "space1889",
+			"path": "./packs/atherfahrzeuge.db",
+			"entity": "Actor",
+			"type": "Actor",
+			"private": true
+		},
+		{
+			"name": "landfahrzeuge",
+			"label": "Landfahrzeuge",
+			"system": "space1889",
+			"path": "./packs/landfahrzeuge.db",
+			"entity": "Actor",
+			"type": "Actor",
+			"private": true
+		},
+		{
+			"name": "luftfahrzeuge",
+			"label": "Luftfahrzeuge",
+			"system": "space1889",
+			"path": "./packs/luftfahrzeuge.db",
+			"entity": "Actor",
+			"type": "Actor",
+			"private": true
+		},
+		{
+			"name": "wasserfahrzeuge",
+			"label": "Wasserfahrzeuge",
+			"system": "space1889",
+			"path": "./packs/wasserfahrzeuge.db",
+			"entity": "Actor",
+			"type": "Actor",
+			"private": true
 		}
 	],
 	"languages": [
