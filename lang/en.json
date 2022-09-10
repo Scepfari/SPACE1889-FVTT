@@ -2658,6 +2658,8 @@
 	"SPACE1889.LockIdInfo": "Blocks editing of the SPACE1889 id.\nThe Id is used for internal identification, as well as for name generation in the actor item lists (the translation mechanism is based on this). If you create new items by duplicating existing ones that originally came from the compendium, this id should be changed as well, otherwise the item will still be displayed with the original name in the character sheet.",
 	"SPACE1889.Space1889Id": "Internal SPACE 1889 Id",
 	"SPACE1889.CreateSpace1889Id": "Create a new Space Id from the item name",
+	"SPACE1889.Understood": "Understood",
+	"SPACE1889.StayAway": "Stay away",
 
 	"SPACE1889.CompendiumFolderNameSkill": "Skills",
 	"SPACE1889.CompendiumFolderNameResource": "Resources",
@@ -3010,5 +3012,8 @@
 	"SPACE1889.CompendiumWasserfahrzeugp9ojKbow9KyHX3oK": "Paddle steamer",
 	"SPACE1889.CompendiumWasserfahrzeugvuryTCprseoHuAMI": "Rowboat, large",
 	"SPACE1889.CompendiumWasserfahrzeugwh636veavephWMn8": "Bathysphere",
-	"SPACE1889.CompendiumWasserfahrzeugytdKSQn6lE74irKQ": "Unit liner"
+	"SPACE1889.CompendiumWasserfahrzeugytdKSQn6lE74irKQ": "Unit liner",
+
+	"SPACE1889.NewVersion": "New Version",
+	"SPACE1889.VersionInfo0_8_0": "`<h1>SPACE 1889 - version 0.8.0 - The crystalline Revolution</h1><p>&nbsp;</p> <h4><strong>The crystalline Revolution</strong><strong>&nbsp;.0</strong></h4><ul><li>new actor type: vehicle</li><li>new vehicle character sheet</li><li>PCs and NPCs can be assigned positions in vehicles (by drag &amp; drop from actors directory)</li><li>automatic calculation also considering assigned PCs/NPCs</li><li>Maneuver dialog including available support</li><li>Vehicle compendiums (ether, land, air and water)</li><li>Vehicle weapons compendium</li><li>Bugfixes</li></ul><p>known issues:&nbsp;</p><ul><li>Still no Foundry VTT version 10 support</li><li>Vehicles are not supported by the Token Action HUD module. (Unlike SPACE 1889, the module has already migrated to Foundry VTT version 10 and no longer receives version 9 updates).&nbsp;</li></ul>`"
 }

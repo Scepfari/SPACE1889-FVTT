@@ -2658,6 +2658,8 @@
 	"SPACE1889.LockIdInfo": "Blockiert das Editieren der SPACE1889-Id.\rDie Id wird für die interne Identifikation, sowie für die Namensgenerierung in den Akteur-Item-Listen verwendet (darauf beruht der Übersetzungsmechanismus). Erzeugt man neue Items über das Duplizieren von bestehenden, die ursprünglich aus dem Kompendium stammen, sollte diese Id mitgeändert werden, da sonnst im Charakter-Bogen das Item noch mit dem ursprünglichen Namen angezeigt wird.",
 	"SPACE1889.Space1889Id": "Interne SPACE 1889 Id",
 	"SPACE1889.CreateSpace1889Id": "Erzeuge eine neue Space Id aus dem Item Namen",
+	"SPACE1889.Understood": "Verstanden",
+	"SPACE1889.StayAway": "Bleib weg",
 
 	"SPACE1889.CompendiumFolderNameSkill": "Fertigkeiten",
 	"SPACE1889.CompendiumFolderNameResource": "Ressourcen",
@@ -3010,5 +3012,8 @@
 	"SPACE1889.CompendiumWasserfahrzeugp9ojKbow9KyHX3oK": "Raddampfer",
 	"SPACE1889.CompendiumWasserfahrzeugvuryTCprseoHuAMI": "Ruderboot, groß",
 	"SPACE1889.CompendiumWasserfahrzeugwh636veavephWMn8": "Bathysphere",
-	"SPACE1889.CompendiumWasserfahrzeugytdKSQn6lE74irKQ": "Einheitslinienschiff"
+	"SPACE1889.CompendiumWasserfahrzeugytdKSQn6lE74irKQ": "Einheitslinienschiff",
+
+	"SPACE1889.NewVersion": "Neue Version",
+	"SPACE1889.VersionInfo0_8_0": "`<h1>SPACE 1889 - Version 0.8.0 - Die kristaline Revolution</h1><p>&nbsp;</p><h4><strong>Die kristaline Revolution .0</strong></h4><ul><li>neuer Akteur Typ: Fahrzeug</li><li>neuer Fahrzeug Charakterbogen</li><li>SCs und NSCs k&ouml;nnen Positionen in Fahrzeugen zugeordnet werden (durch Drag &amp; Drop vom Akteurverzeichnis)</li><li>Automatische Berechnung auch unter Ber&uuml;cksichtigung der zugeordneten SCs/NSCs</li><li>Man&ouml;verdialog einschlie&szlig;lich verf&uuml;gbarer Unterst&uuml;tzung</li><li>Fahrzeuge Kompendien (&Auml;ther, Land, Luft und Wasser)</li><li>Fahrzeugwaffen Kompendium</li><li>Bugfixes</li></ul><p>bekannte Probleme:&nbsp;</p><ul><li>Weiterhin keine Foundry VTT Version 10 Unterst&uuml;tzung</li>\t\t\t<li>Fahrzeuge werden nicht vom Modul Token Action HUD unsterst&uuml;tzt. (Das Modul ist im Gegensatz zu SPACE 1889 schon nach Foundry VTT Version 10 migriert und bekommt keine Version 9 Updates mehr).&nbsp;</li></ul>`"
 }
