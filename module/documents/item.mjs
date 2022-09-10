@@ -182,6 +182,9 @@ export class Space1889Item extends Item {
 		item.data.label = game.i18n.localize(item.data.nameLangId) ?? item.name;
 		if (item.data.label == item.data.nameLangId)
 			item.data.label = item.name;
+
+		if (item.data.unlockIdForUser == undefined)
+			item.data.unlockIdForUser = false;
 	}
 
 

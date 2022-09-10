@@ -2654,6 +2654,10 @@
 	"SPACE1889.VehicelScCrewPositionToolTip": "Click to open the character sheet \n[CTRL] + [SHIFT] + click to remove the character",
 	"SPACE1889.TranslationCanNotApply": "The translation of the compendiums may only be done by the game master!",
 	"SPACE1889.ClickToRoll": "Click to roll",
+	"SPACE1889.UnLockIdInfo": "Allows editing the SPACE1889 id.\nThe Id is used for internal identification, as well as for name generation in the actor item lists (the translation mechanism is based on this). If you create new items by duplicating existing ones that originally came from the compendium, this id should be changed as well, otherwise the item will still be displayed with the original name in the character sheet.",
+	"SPACE1889.LockIdInfo": "Blocks editing of the SPACE1889 id.\nThe Id is used for internal identification, as well as for name generation in the actor item lists (the translation mechanism is based on this). If you create new items by duplicating existing ones that originally came from the compendium, this id should be changed as well, otherwise the item will still be displayed with the original name in the character sheet.",
+	"SPACE1889.Space1889Id": "Internal SPACE 1889 Id",
+	"SPACE1889.CreateSpace1889Id": "Create a new Space Id from the item name",
 
 	"SPACE1889.CompendiumFolderNameSkill": "Skills",
 	"SPACE1889.CompendiumFolderNameResource": "Resources",

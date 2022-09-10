@@ -2654,6 +2654,10 @@
 	"SPACE1889.VehicelScCrewPositionToolTip": "Klicken zum öffnen des Charakterbogens \n[STRG] + [SHIFT] + Klick zum Entfenen des Charakters",
 	"SPACE1889.TranslationCanNotApply": "Die Übersetzung der Kompendien darf nur der Spielleiter ausführen!",
 	"SPACE1889.ClickToRoll": "Klicken zum würfeln",
+	"SPACE1889.UnLockIdInfo": "Erlaubt das Editieren der SPACE1889-Id.\rDie Id wird für die interne Identifikation, sowie für die Namensgenerierung in den Akteur-Item-Listen verwendet (darauf beruht der Übersetzungsmechanismus). Erzeugt man neue Items über das Duplizieren von bestehenden, die ursprünglich aus dem Kompendium stammen, sollte diese Id mitgeändert werden, da sonnst im Charakter-Bogen das Item noch mit dem ursprünglichen Namen angezeigt wird.",
+	"SPACE1889.LockIdInfo": "Blockiert das Editieren der SPACE1889-Id.\rDie Id wird für die interne Identifikation, sowie für die Namensgenerierung in den Akteur-Item-Listen verwendet (darauf beruht der Übersetzungsmechanismus). Erzeugt man neue Items über das Duplizieren von bestehenden, die ursprünglich aus dem Kompendium stammen, sollte diese Id mitgeändert werden, da sonnst im Charakter-Bogen das Item noch mit dem ursprünglichen Namen angezeigt wird.",
+	"SPACE1889.Space1889Id": "Interne SPACE 1889 Id",
+	"SPACE1889.CreateSpace1889Id": "Erzeuge eine neue Space Id aus dem Item Namen",
 
 	"SPACE1889.CompendiumFolderNameSkill": "Fertigkeiten",
 	"SPACE1889.CompendiumFolderNameResource": "Ressourcen",

@@ -123,5 +123,21 @@ export class Space1889ItemSheet extends ItemSheet {
 				this.item.update({ 'data.size': newValue });
 			}
 		});
+		html.find('.id-lock-toggle').mousedown(ev =>
+		{
+			if (this.item.data.data.unlockIdForUser != undefined)
+			{
+				const toggledValue = !this.item.data.data.unlockIdForUser;
+				this.item.update({ 'data.unlockIdForUser': toggledValue });
+			}
+		});
+		html.find('.create-new-id').mousedown(ev =>
+		{
+			if (this.item.data.name != "")
+			{
+				const newId = this.item.createId(this.item.data.name);
+				this.item.update({ 'data.id': newId });
+			}
+		});
 	}
 }

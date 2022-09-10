@@ -1,8 +1,9 @@
 <form class="{{cssClass}}" autocomplete="off">
 	<header class="sheet-header">
-		<img class="profile-img" src="{{item.img}}" data-edit="img" title="{{item.name}}"/>
+		<img class="profile-img" src="{{item.img}}" data-edit="img" title="{{item.name}}" />
 		<div class="header-fields">
-			<h1 class="charname"><input name="name" type="text" value="{{item.name}}" placeholder="Name"/></h1>
+			<h1 class="charname"><input name="name" type="text" value="{{item.name}}" placeholder="Name" /></h1>
+			{{> "systems/space1889/templates/item/item-sub-id.html"}}
 		</div>
 	</header>
 
@@ -46,19 +47,19 @@
 	</li>
 	<li class="item flex-group-center flexrow">
 		<div class="resource">
-			<input type="text" name="data.damage" value="{{data.damage}}" data-dtype="Number"/>
+			<input type="text" name="data.damage" value="{{data.damage}}" data-dtype="Number" />
 		</div>
 		<div class="resource">
 			<select name="data.damageType" data-dtype="String">
 				{{#select data.damageType}}
-					{{#each data.damageTypes as |ch char|}}
-					<option value="{{char}}">{{localize ch}}</option>
-					{{/each}}
+				{{#each data.damageTypes as |ch char|}}
+				<option value="{{char}}">{{localize ch}}</option>
+				{{/each}}
 				{{/select}}
 			</select>
 		</div>
 		<div class="resource-content flex-center flex-between">
-			<input type="checkbox" name="data.isAreaDamage" {{checked data.isAreaDamage}}/>
+			<input type="checkbox" name="data.isAreaDamage" {{checked data.isAreaDamage}} />
 		</div>
 	</li>
 
@@ -71,13 +72,13 @@
 	</li>
 	<li class="item flex-group-center flexrow">
 		<div class="resource-content flex-center flex-between">
-			<input type="text" name="data.strengthThreshold" value="{{data.strengthThreshold}}"/>
+			<input type="text" name="data.strengthThreshold" value="{{data.strengthThreshold}}" />
 		</div>
 		<div class="resource-content flex-center flex-between">
-			<input type="text" name="data.weight" value="{{data.weight}}" data-dtype="Number"/>
+			<input type="text" name="data.weight" value="{{data.weight}}" data-dtype="Number" />
 		</div>
 		<div class="resource-content flex-center flex-between">
-			<input type="text" name="data.price" value="{{data.price}}"/>
+			<input type="text" name="data.price" value="{{data.price}}" />
 		</div>
 	</li>
 
@@ -120,13 +121,13 @@
 	</li>
 	<li class="item flex-group-center flexrow">
 		<div class="resource-content flex-center flex-between">
-			<input type="text" name="data.ammunitionType" value="{{data.ammunitionType}}"/>
+			<input type="text" name="data.ammunitionType" value="{{data.ammunitionType}}" />
 		</div>
 		<select name="data.location" data-dtype="String">
 			{{#select data.location}}
-				{{#each data.storageLocations as |ch char|}}
-				<option value="{{char}}">{{localize ch}}</option>
-				{{/each}}
+			{{#each data.storageLocations as |ch char|}}
+			<option value="{{char}}">{{localize ch}}</option>
+			{{/each}}
 			{{/select}}
 		</select>
 	</li>
