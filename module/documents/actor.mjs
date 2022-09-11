@@ -12,10 +12,16 @@ export class Space1889Actor extends Actor
 	async _preCreate(data, options, user)
 	{
 		await super._preCreate(data, options, user);
+	}
+
+	/** @override */
+	async _onCreate(data, options, userId)
+	{
+		super._onCreate(data, options, userId);
 
 		const actor = this;
 
-		if (data.type === "character")
+		if (actor.type === "character" || actor.type === "npc")
 		{
 			let resourcePack = game.packs.get("space1889.ressourcen");
 			let resources = await resourcePack.getDocuments();
@@ -30,7 +36,7 @@ export class Space1889Actor extends Actor
 				actor.update({ "items": toAddItems });
 		}
 
-		if (data.type === "creature" && actor.items.size == 0)
+		if (actor.type === "creature" && actor.items.size == 0)
 		{
 			let skillPack = game.packs.get("space1889.fertigkeiten");
 			let skills = await skillPack.getDocuments();
@@ -47,7 +53,8 @@ export class Space1889Actor extends Actor
 
 			if (toAddItems.length > 0)
 				actor.update({ "items": toAddItems });
-		}
+		}	
+
 	}
 
 	/** @override */
