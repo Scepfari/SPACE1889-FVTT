@@ -1,4 +1,4 @@
-{{#if resources}}
+{{#if system.resources}}
 <ol class="items-list">
 	<li class="item flexrow items-header">
 		<div class="item-name">{{localize "SPACE1889.ResourcePl"}}</div>
@@ -8,17 +8,18 @@
 			<a class="item-control item-create item-max-with75px" title="Create item" data-type="talent"><i class="fas fa-plus"></i> Add item</a>
 		</div>
 	</li>
-	{{#each resources as |item id|}}
+	{{#each system.resources as |item id|}}
+	{{log item}}
 		<li class="item flexrow" data-item-id="{{item._id}}">
 			<div class="item-name">
-				<h4 class="rollable" data-roll-type="item" title="{{localize item.data.infoLangId}}">{{item.data.label}} {{#if (eq item.data.isBase true)}} ({{localize "SPACE1889.BaseResource"}}) {{/if}}</h4>
+				<h4 class="rollable" data-roll-type="item" title="{{localize item.system.infoLangId}}">{{item.system.label}} {{#if (eq item.system.isBase true)}} ({{localize "SPACE1889.BaseResource"}}) {{/if}}</h4>
 			</div>
 			<div class="item-max-with40px resource-label">
-				<a class="increment-click">{{item.data.level.value}}</a>
+				<a class="increment-click">{{item.system.level.value}}</a>
 			</div>
-			<label class="items-list item-max-with40px">{{item.data.level.max}}</label>
+			<label class="items-list item-max-with40px">{{item.system.level.max}}</label>
 			<div class="item-controls item-max-with75px">
-				{{#if (eq item.data.isBase false)}}
+				{{#if (eq item.system.isBase false)}}
 				<a class="item-control item-edit" title="Edit Item"><i class="fas fa-edit"></i></a>
 				<a class="item-control item-delete" title="Delete Item"><i class="fas fa-trash"></i></a>
 				{{/if}}

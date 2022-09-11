@@ -89,7 +89,7 @@ export class Space1889ActorSheet extends ActorSheet {
 		context.system['archetypes'] = CONFIG.SPACE1889.archetypes;
 		context.system['species'] = CONFIG.SPACE1889.species;
 		context.system['motivations'] = CONFIG.SPACE1889.motivations;
-		context.system['resources'] = CONFIG.SPACE1889.resources;
+//		context.system['resources'] = CONFIG.SPACE1889.resources;
 		context.system['storageLocations'] = CONFIG.SPACE1889.storageLocation;
 	}
 
@@ -252,9 +252,14 @@ export class Space1889ActorSheet extends ActorSheet {
 		super.activateListeners(html);
 
 		// Render the item sheet for viewing/editing prior to the editable check.
-		html.find('.item-edit').click(ev => {
-			const li = $(ev.currentTarget).parents(".item");
-			const item = this.actor.items.get(li("itemId"));
+		html.find('.item-edit').click(ev =>
+		{
+			event.preventDefault();
+			const idToEdit = event.currentTarget.closest("[data-item-id]")?.dataset.itemId;
+			if (!idToEdit)
+				return;
+
+			const item = this.actor.items.get(idToEdit);
 			item.sheet.render(true);
 		});
 
@@ -269,12 +274,7 @@ export class Space1889ActorSheet extends ActorSheet {
 		html.find('.item-create').click(this._onItemCreate.bind(this));
 
 		// Delete Inventory Item
-		html.find('.item-delete').click(ev => {
-			const li = $(ev.currentTarget).parents(".item");
-			const item = this.actor.items.get(li("itemId"));
-			item.delete();
-			li.slideUp(200, () => this.render(false));
-		});
+		html.find('.item-delete').click(this._onItemDelete.bind(this));
 
 		// sub Skill update
 		html.find('.skill-level').change(async ev => {
@@ -769,7 +769,7 @@ export class Space1889ActorSheet extends ActorSheet {
 		const itemData = item.toObject();
 
 		// Handle item sorting within the same Actor
-		if ( await this._isFromSameActor(data) )
+		if (this.actor.items.get(item._id) != undefined)
 			return this._onSortItem(event, itemData);
 
 		if (this.isItemDropAllowed(itemData))
@@ -779,6 +779,7 @@ export class Space1889ActorSheet extends ActorSheet {
 		}
 		return false;
 	}
+
 
 	/**
 	 * Liefert false zurück falls die im Item verankerten Vorbedingung nicht erfüllt sind
@@ -1236,13 +1237,31 @@ export class Space1889ActorSheet extends ActorSheet {
 		// Finally, create the item!
 		const newItem = await Item.create(itemData, { parent: this.actor });
 
-		if (newItem.data.type == "damage")
+		if (newItem.type == "damage")
 		{
 			let isLethal = !(event.originalEvent.altKey || event.originalEvent.shiftKey || event.originalEvent.ctrKey);
 			SPACE1889RollHelper.showDamageDialog(this.actor, newItem, isLethal);
 		}
 
 		return newItem;
+	}
+
+	/**
+	 * Handle deleting an existing Item entry from the Advancement.
+	 * @param {Event} event  The originating click event.
+	 * @returns {Promise<Item5e>}  The promise for the updated parent Item which resolves after the application re-renders
+	 * @private
+	 */
+	async _onItemDelete(event) {
+		event.preventDefault();
+		const idToDelete = event.currentTarget.closest("[data-item-id]")?.dataset.itemId;
+		if (!idToDelete)
+			return;
+
+		const item = this.actor.items.get(idToDelete);
+		item.delete();
+//		li.slideUp(200, () => this.render(false));
+		this.render();
 	}
 
 	/**

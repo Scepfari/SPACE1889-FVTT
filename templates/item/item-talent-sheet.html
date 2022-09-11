@@ -6,12 +6,12 @@
 			{{> "systems/space1889/templates/item/item-sub-id.html"}}
 			<li class="item flex-group-center flexrow">
 				<div class="resource item-max-with60px">
-					<label for="data.health.value" class="resource-label">{{localize "SPACE1889.Level"}}</label>
+					<label for="system.health.value" class="resource-label">{{localize "SPACE1889.Level"}}</label>
 				</div>
 				<div class="resource-content flexrow flex-center flex-between">
-					<input type="text" name="data.level.value" value="{{data.level.value}}" data-dtype="Number" />
+					<input type="text" name="system.level.value" value="{{system.level.value}}" data-dtype="Number" />
 					<span class="resource flex-group-center item-margin5px"> / </span>
-					<input type="text" name="data.level.max" value="{{data.level.max}}" data-dtype="Number" />
+					<input type="text" name="system.level.max" value="{{system.level.max}}" data-dtype="Number" />
 				</div>
 			</li>
 		</div>
@@ -25,22 +25,22 @@
     </li>
     <li class="item flex-group-center flexrow">
         <div class="resource-content flex-center flex-between">
-            <input type="text" name="data.preconditionName" value="{{data.preconditionName}}" />
+            <input type="text" name="system.preconditionName" value="{{system.preconditionName}}" />
         </div>
         <div class="resource">
-            <select name="data.preconditionType" data-dtype="String">
-                {{#select data.preconditionType}}
-                {{#each data.preConditionTypes as |ch char|}}
+            <select name="system.preconditionType" data-dtype="String">
+                {{#select system.preconditionType}}
+                {{#each system.preConditionTypes as |ch char|}}
                 <option value="{{char}}">{{localize ch}}</option>
                 {{/each}}
                 {{/select}}
             </select>
         </div>
         <div class="resource-content flex-center flex-between">
-            <input type="text" name="data.preconditionLevel" value="{{data.preconditionLevel}}" data-dtype="Number" />
+            <input type="text" name="system.preconditionLevel" value="{{system.preconditionLevel}}" data-dtype="Number" />
         </div>
         <div class="resource-content flex-center flex-between">
-            <input type="checkbox" name="data.isGroup" {{checked data.isGroup}} />
+            <input type="checkbox" name="system.isGroup" {{checked system.isGroup}} />
         </div>
     </li>
     <hr />
@@ -52,37 +52,37 @@
     </li>
     <li class="item flex-group-center flexrow">
         <div class="resource-content flex-center flex-between">
-            <input type="text" name="data.secondPreconditionName" value="{{data.secondPreconditionName}}" />
+            <input type="text" name="system.secondPreconditionName" value="{{system.secondPreconditionName}}" />
         </div>
         <div class="resource">
-            <select name="data.secondPreconditionType" data-dtype="String">
-                {{#select data.secondPreconditionType}}
-                {{#each data.preConditionTypes as |ch char|}}
+            <select name="system.secondPreconditionType" data-dtype="String">
+                {{#select system.secondPreconditionType}}
+                {{#each system.preConditionTypes as |ch char|}}
                 <option value="{{char}}">{{localize ch}}</option>
                 {{/each}}
                 {{/select}}
             </select>
         </div>
         <div class="resource-content flex-center flex-between">
-            <input type="text" name="data.secondPreconditionLevel" value="{{data.secondPreconditionLevel}}" data-dtype="Number" />
+            <input type="text" name="system.secondPreconditionLevel" value="{{system.secondPreconditionLevel}}" data-dtype="Number" />
         </div>
         <div class="resource-content flex-center flex-between">
-            <input type="checkbox" name="data.isOrOperator" {{checked data.isOrOperator}} />
+            <input type="checkbox" name="system.isOrOperator" {{checked system.isOrOperator}} />
         </div>
     </li>
     <hr />
 
     <div class="resource">
         <label class="resource-label">{{ localize "SPACE1889.ChangedSkill" }}</label>
-        <input type="text" name="data.changedSkill" value="{{data.changedSkill}}" />
+        <input type="text" name="system.changedSkill" value="{{system.changedSkill}}" />
     </div>
     <div class="form-group">
         <label>{{ localize "SPACE1889.NewBase" }}</label>
-        <input type="text" name="data.newBase" value="{{data.newBase}}" />
+        <input type="text" name="system.newBase" value="{{system.newBase}}" />
     </div>
     <div class="form-group">
         <label>kurzinfo</label>
-        <input type="text" name="data.info" value="{{data.info}}" />
+        <input type="text" name="system.info" value="{{system.info}}" />
     </div>
 
     <hr>
@@ -94,16 +94,16 @@
 	</li>
 	<li class="item flex-group-center flexrow">
 		<div class="resource-content flex-center flex-between">
-			<input type="text" name="data.bonusTarget" value="{{data.bonusTarget}}" />
+			<input type="text" name="system.bonusTarget" value="{{system.bonusTarget}}" />
 		</div>
 		<div class="resource-content flex-center flex-between">
-			<input type="text" name="data.bonusTargetType" value="{{data.bonusTargetType}}" />
+			<input type="text" name="system.bonusTargetType" value="{{system.bonusTargetType}}" />
 		</div>
 		<div class="resource-content flex-center flex-between">
-			<input type="text" name="data.bonus" value="{{data.bonus}}" data-dtype="Number"/>
+			<input type="text" name="system.bonus" value="{{system.bonus}}" data-dtype="Number"/>
 		</div>
 		<div class="resource-content flex-center flex-between">
-			<input type="text" name="data.bonusStartLevel" value="{{data.bonusStartLevel}}"  data-dtype="Number"/>
+			<input type="text" name="system.bonusStartLevel" value="{{system.bonusStartLevel}}"  data-dtype="Number"/>
 		</div>
 	</li>
 
@@ -114,16 +114,16 @@
         </li>
         <li class="item flex-group-center flexrow">
             <div class="resource">
-                <select name="data.source.publication" data-dtype="String">
-                    {{#select data.source.publication}}
-                    {{#each data.publications as |ch char|}}
+                <select name="system.source.publication" data-dtype="String">
+                    {{#select system.source.publication}}
+                    {{#each system.publications as |ch char|}}
                     <option value="{{char}}">{{localize ch}}</option>
                     {{/each}}
                     {{/select}}
                 </select>
             </div>
             <div class="resource-content flex-center flex-between">
-                <input type="text" name="data.publication.page" value="{{data.publication.page}}" />
+                <input type="text" name="system.publication.page" value="{{system.publication.page}}" />
             </div>
         </li>
     </ol>
@@ -138,12 +138,12 @@
 
         {{!-- Description Tab --}}
         <div class="tab" data-group="primary" data-tab="description">
-			{{#if (ne data.descriptionLangId (localize data.descriptionLangId))}}
-				<p>{{{localize data.descriptionLangId}}}</p>
+			{{#if (ne system.descriptionLangId (localize system.descriptionLangId))}}
+				<p>{{{localize system.descriptionLangId}}}</p>
 				<hr />
 			{{/if}}
 			<div class="edit-special">
-				{{editor content=data.description target="data.description" rollData=rollData button=true owner=owner editable=editable}}
+				{{editor content=system.description target="system.description" rollData=rollData button=true owner=owner editable=editable}}
 			</div>
 		</div>
     </section>

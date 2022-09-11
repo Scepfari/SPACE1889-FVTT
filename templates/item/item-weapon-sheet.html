@@ -10,9 +10,9 @@
 	<li class="item flex-group-center flexrow">
 		<div class="resource">
 			<label class="resource-label">{{ localize "SPACE1889.CombatSkill" }}</label>
-			<select name="data.skillId" data-dtype="String">
-				{{#select data.skillId}}
-				{{#each data.combatSkills as |ch char|}}
+			<select name="system.skillId" data-dtype="String">
+				{{#select system.skillId}}
+				{{#each system.combatSkills as |ch char|}}
 				<option value="{{char}}">{{localize ch}}</option>
 				{{/each}}
 				{{/select}}
@@ -20,20 +20,20 @@
 		</div>
 		<div class="resource">
 			<label class="resource-label">{{ localize "SPACE1889.CombatSpecialization" }}</label>
-			<select name="data.specializationId" data-dtype="String">
-				{{#select data.specializationId}}
-				{{#each data.combatSpecializations as |ch char|}}
+			<select name="system.specializationId" data-dtype="String">
+				{{#select system.specializationId}}
+				{{#each system.combatSpecializations as |ch char|}}
 				<option value="{{char}}">{{localize ch}}</option>
 				{{/each}}
 				{{/select}}
 			</select>
 		</div>
 
-		{{#if (eq data.skillId 'geschuetze')}}
+		{{#if (eq system.skillId 'geschuetze')}}
 		<div class="resource">
 			<label class="resource-label">{{ localize "SPACE1889.SecondaryAttributeSiz" }}</label>
 			<div class="resource-content flex-center flex-between">
-				<a class="increment-weapon-size-click">{{data.size}}</a>
+				<a class="increment-weapon-size-click">{{system.size}}</a>
 			</div>
 		</div>
 		{{/if}}
@@ -47,19 +47,19 @@
 	</li>
 	<li class="item flex-group-center flexrow">
 		<div class="resource">
-			<input type="text" name="data.damage" value="{{data.damage}}" data-dtype="Number" />
+			<input type="text" name="system.damage" value="{{system.damage}}" data-dtype="Number" />
 		</div>
 		<div class="resource">
-			<select name="data.damageType" data-dtype="String">
-				{{#select data.damageType}}
-				{{#each data.damageTypes as |ch char|}}
+			<select name="system.damageType" data-dtype="String">
+				{{#select system.damageType}}
+				{{#each system.damageTypes as |ch char|}}
 				<option value="{{char}}">{{localize ch}}</option>
 				{{/each}}
 				{{/select}}
 			</select>
 		</div>
 		<div class="resource-content flex-center flex-between">
-			<input type="checkbox" name="data.isAreaDamage" {{checked data.isAreaDamage}} />
+			<input type="checkbox" name="system.isAreaDamage" {{checked system.isAreaDamage}} />
 		</div>
 	</li>
 
@@ -72,13 +72,13 @@
 	</li>
 	<li class="item flex-group-center flexrow">
 		<div class="resource-content flex-center flex-between">
-			<input type="text" name="data.strengthThreshold" value="{{data.strengthThreshold}}" />
+			<input type="text" name="system.strengthThreshold" value="{{system.strengthThreshold}}" />
 		</div>
 		<div class="resource-content flex-center flex-between">
-			<input type="text" name="data.weight" value="{{data.weight}}" data-dtype="Number" />
+			<input type="text" name="system.weight" value="{{system.weight}}" data-dtype="Number" />
 		</div>
 		<div class="resource-content flex-center flex-between">
-			<input type="text" name="data.price" value="{{data.price}}" />
+			<input type="text" name="system.price" value="{{system.price}}" />
 		</div>
 	</li>
 
@@ -93,23 +93,23 @@
 	</li>
 	<li class="item flex-group-center flexrow">
 		<div class="resource-content flex-center flex-between">
-			<input type="text" name="data.range" value="{{data.range}}" />
+			<input type="text" name="system.range" value="{{system.range}}" />
 		</div>
 		<div class="resource-content flex-center flex-between">
-			<input type="text" name="data.capacity" value="{{data.capacity}}" data-dtype="Number" />
+			<input type="text" name="system.capacity" value="{{system.capacity}}" data-dtype="Number" />
 		</div>
-		<select name="data.capacityType" data-dtype="String">
-			{{#select data.capacityType}}
-			{{#each data.capacityTypes as |ch char|}}
+		<select name="system.capacityType" system-dtype="String">
+			{{#select system.capacityType}}
+			{{#each system.capacityTypes as |ch char|}}
 			<option value="{{char}}">{{localize ch}}</option>
 			{{/each}}
 			{{/select}}
 		</select>
 		<div class="resource-content flex-center flex-between">
-			<input type="text" name="data.rateOfFire" value="{{data.rateOfFire}}" />
+			<input type="text" name="system.rateOfFire" value="{{system.rateOfFire}}" />
 		</div>
 		<div class="resource-content flex-center flex-between">
-			<input type="text" name="data.speed" value="{{data.speed}}" />
+			<input type="text" name="system.speed" value="{{system.speed}}" />
 		</div>
 	</li>
 
@@ -121,18 +121,18 @@
 	</li>
 	<li class="item flex-group-center flexrow">
 		<div class="resource-content flex-center flex-between">
-			<input type="text" name="data.ammunitionType" value="{{data.ammunitionType}}" />
+			<input type="text" name="system.ammunitionType" value="{{system.ammunitionType}}" />
 		</div>
-		<select name="data.location" data-dtype="String">
-			{{#select data.location}}
-			{{#each data.storageLocations as |ch char|}}
+		<select name="system.location" data-dtype="String">
+			{{#select system.location}}
+			{{#each system.storageLocations as |ch char|}}
 			<option value="{{char}}">{{localize ch}}</option>
 			{{/each}}
 			{{/select}}
 		</select>
 	</li>
 
-	{{#if (eq data.location 'mounted')}}
+	{{#if (eq system.location 'mounted')}}
 	<li class="item flexrow items-header">
 		<label class="resource-label">{{ localize "SPACE1889.WeaponGunPosition"}}</label>
 		<label class="resource-label">{{ localize "SPACE1889.WeaponIsSwivel"}}</label>
@@ -140,20 +140,20 @@
 	</li>
 	<li class="item flex-group-center flexrow">
 		<div class="resource">
-			<select name="data.vehicle.spot" data-dtype="String">
-				{{#select data.vehicle.spot}}
-				{{#each data.weaponMountSpots as |ch char|}}
+			<select name="system.vehicle.spot" data-dtype="String">
+				{{#select system.vehicle.spot}}
+				{{#each system.weaponMountSpots as |ch char|}}
 				<option value="{{char}}">{{localize ch}}</option>
 				{{/each}}
 				{{/select}}
 			</select>
 		</div>
 		<div class="resource-content flex-center flex-between">
-			<input type="checkbox" name="data.vehicle.isSwivelMounted" {{checked data.vehicle.isSwivelMounted}} />
+			<input type="checkbox" name="system.vehicle.isSwivelMounted" {{checked system.vehicle.isSwivelMounted}} />
 		</div>
-		{{#if data.vehicle.isSwivelMounted}}
+		{{#if system.vehicle.isSwivelMounted}}
 		<div class="resource">
-			<input type="text" name="data.vehicle.swivelingRange" value="{{data.vehicle.swivelingRange}}" />
+			<input type="text" name="system.vehicle.swivelingRange" value="{{system.vehicle.swivelingRange}}" />
 		</div>
 		{{else}}
 		<label class="item">0</label>
@@ -171,7 +171,7 @@
 
 		{{!-- Attributes Tab --}}
 		<div class="tab description" data-group="primary" data-tab="description">
-			{{editor content=data.description target="data.description" rollData=rollData button=true owner=owner editable=editable}}
+			{{editor content=system.description target="system.description" rollData=rollData button=true owner=owner editable=editable}}
 		</div>
 
 	</section>

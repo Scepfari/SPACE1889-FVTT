@@ -16,30 +16,30 @@
 	</li>
 	<li class="item flex-group-center flexrow">
 		<div class="resource">
-			<select name="data.familyId" data-dtype="String">
-				{{#select data.familyId}}
-					{{#each data.families as |ch char|}}
+			<select name="system.familyId" data-dtype="String">
+				{{#select system.familyId}}
+					{{#each system.families as |ch char|}}
 					<option value="{{char}}">{{localize ch}}</option>
 					{{/each}}
 				{{/select}}
 			</select>
 		</div>
 		<div class="resource">
-			<select name="data.originId" data-dtype="String">
-				{{#select data.originId}}
-					{{#each data.origins as |ch char|}}
+			<select name="system.originId" data-dtype="String">
+				{{#select system.originId}}
+					{{#each system.origins as |ch char|}}
 					<option value="{{char}}">{{localize ch}}</option>
 					{{/each}}
 				{{/select}}
 			</select>
 		</div>
 		<div class="resource">
-			<input type="checkbox" name="data.old" {{checked data.old}}/>
+			<input type="checkbox" name="system.old" {{checked system.old}}/>
 		</div>
 		<div class="resource">
-			<select name="data.isDialectSourceId" data-dtype="String">
-				{{#select data.isDialectSourceId}}
-					{{#each data.languages as |ch char|}}
+			<select name="system.isDialectSourceId" data-dtype="String">
+				{{#select system.isDialectSourceId}}
+					{{#each system.languages as |ch char|}}
 					<option value="{{char}}">{{localize ch}}</option>
 					{{/each}}
 				{{/select}}

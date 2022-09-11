@@ -8,22 +8,22 @@
 			<a class="item-control item-create item-max-with60px" title='{{localize "SPACE1889.CreateItem"}}' data-type="item"><i class="fas fa-plus"></i> Add</a>
 		</div>
 	</li>
-	{{#each gear as |item id|}}
+	{{#each system.gear as |item id|}}
 		<li class="item row-section flexrow" data-item-id="{{item._id}}">
 			<div class="item-name">
 				<div class="item-image-small">
-					<a class="rollable" data-roll-type="item" data-label="{{item.data.label}}"><img src="{{item.img}}" title="{{item.name}} Probe" width="18" height="18"/></a>
+					<a class="rollable" data-roll-type="item" data-label="{{item.system.label}}"><img src="{{item.img}}" title="{{item.name}} Probe" width="18" height="18"/></a>
 				</div>
 				<div class="item-name-name">
-					<h4 for="" class="rollable" data-roll-type="item" data-label="{{item.name}}">{{item.data.label}}</h4>
+					<h4 for="" class="rollable" data-roll-type="item" data-label="{{item.name}}">{{item.system.label}}</h4>
 				</div>
 			</div>
 			<div class="items-list item-max-with40px">
-				<a class="increment-click">{{item.data.quantity}}</a>
+				<a class="increment-click">{{item.system.quantity}}</a>
 			</div>
-			<label class="items-list item-max-with60px">{{item.data.weight}}kg</label>
+			<label class="items-list item-max-with60px">{{item.system.weight}}kg</label>
 			<div class="items-list item-max-with40px">
-				<a title='{{item.data.locationLong}}' class="location-click">{{item.data.display}}</a>
+				<a title='{{item.system.locationLong}}' class="location-click">{{item.system.display}}</a>
 			</div>
 			<div class="item-controls item-max-with60px">
 				<a class="item-control item-edit" title="Edit Item"><i class="fas fa-edit"></i></a>

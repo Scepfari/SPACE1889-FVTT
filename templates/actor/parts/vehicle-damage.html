@@ -1,4 +1,4 @@
-{{#if injuries}}
+{{#if system.injuries}}
 <ol class="items-list">
 	<li class="item flexrow items-header">
 		<div class="item-name">{{localize "SPACE1889.VehicleDamagePl"}}</div>
@@ -7,11 +7,11 @@
 			<a class="item-control item-create item-max-with60px damage-lethal" title='{{localize "SPACE1889.CreateItem"}}' data-type="damage"><i class="fas fa-plus"></i> Add</a>
 		</div>
 	</li>
-	{{#each injuries as |item id|}}
+	{{#each system.injuries as |item id|}}
 	<li class="item row-section flexrow" data-item-id="{{item._id}}">
 		<div class="item-name">{{item.name}}</div>
 		<div class="resource-label items-list item-max-with75px">
-			<a class="increment-click items-list item-max-with75px">{{item.data.damage}} {{item.data.damageTypeDisplay}}</a>
+			<a class="increment-click items-list item-max-with75px">{{item.system.damage}} {{item.system.damageTypeDisplay}}</a>
 		</div>
 		<div class="item-controls item-max-with60px">
 			<a class="item-control item-edit" title="Edit Item"><i class="fas fa-edit"></i></a>

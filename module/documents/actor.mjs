@@ -156,9 +156,9 @@ export class Space1889Actor extends Actor
 		const injuries = [];
 		for (let item of items)
 		{
-			if (item.system.type === 'weapon')
+			if (item.type === 'weapon')
 				weapons.push(item);
-			else if (item.system.type === 'damage')
+			else if (item.type === 'damage')
 				injuries.push(item.system);
 		}
 
@@ -296,7 +296,7 @@ export class Space1889Actor extends Actor
 	getWeaponLoad(actor)
 	{
 		let load = 0;
-		for (let weapon of actor.weapons)
+		for (let weapon of actor.system.weapons)
 		{
 			if (weapon.system.location == "lager")
 				continue;
@@ -399,7 +399,7 @@ export class Space1889Actor extends Actor
 		this.calcAndSetSkillsAndSpecializations(actor)
 
 		this.prepareWeapons(actor, weapons);
-		actor.weapons = weapons;
+		actor.system.weapons = weapons;
 
 		for (let injury of injuries)
 		{
@@ -1378,18 +1378,18 @@ export class Space1889Actor extends Actor
 
 		// Copy the ability scores to the top level, so that rolls can use
 		// formulas like `@str.mod + 4`.
-		if (data.system.abilities)
+		if (data.abilities)
 		{
-			for (let [k, v] of Object.entries(data.system.abilities))
+			for (let [k, v] of Object.entries(data.abilities))
 			{
 				data[k] = foundry.utils.deepClone(v);
 			}
 		}
 
 		// Add level for easier access, or fall back to 0.
-		if (system.attributes.xp)
+		if (data.attributes.xp)
 		{
-			system.xp = system.attributes.xp.value ?? 0;
+			data.xp = data.attributes.xp.value ?? 0;
 		}
 	}
 
