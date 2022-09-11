@@ -166,7 +166,7 @@ export class Space1889Actor extends Actor
 			if (item.type === 'weapon')
 				weapons.push(item);
 			else if (item.type === 'damage')
-				injuries.push(item.system);
+				injuries.push(item);
 		}
 
 		actor.system.injuries = injuries;
