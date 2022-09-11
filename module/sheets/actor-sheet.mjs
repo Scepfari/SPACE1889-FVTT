@@ -21,7 +21,7 @@ export class Space1889ActorSheet extends ActorSheet {
 
 	/** @override */
 	get template() {
-		return `systems/space1889/templates/actor/actor-${this.actor.data.type}-sheet.html`;
+		return `systems/space1889/templates/actor/actor-${this.actor.type}-sheet.html`;
 	}
 
 	/* -------------------------------------------- */
@@ -35,31 +35,31 @@ export class Space1889ActorSheet extends ActorSheet {
 		const context = super.getData();
 
 		// Use a safe clone of the actor data for further operations.
-		const actorData = this.actor.data.toObject(false);
+		const actor = this.actor.toObject(false);
 
 		// Add the actor's data to context.data for easier access, as well as flags.
-		context.data = actorData.data;
-		context.flags = actorData.flags;
+		context.system = actor.system;
+		context.flags = actor.flags;
 
 		// Prepare character data and items.
-		if (actorData.type == 'character') {
+		if (actor.type == 'character') {
 			this._prepareItems(context);
 			this._prepareCharacterData(context);
 		}
 
 		// Prepare NPC data and items.
-		if (actorData.type == 'npc') {
+		if (actor.type == 'npc') {
 			this._prepareItems(context);
 			this._prepareCharacterData(context);
 		}
 
-		if (actorData.type == 'creature')
+		if (actor.type == 'creature')
 		{
 			this._prepareItems(context);
 			this._prepareCreatureData(context);
 		}
 
-		if (actorData.type == 'vehicle')
+		if (actor.type == 'vehicle')
 		{
 			this._prepareVehicleItems(context); 
 			this._prepareVehicleData(context);
@@ -86,42 +86,42 @@ export class Space1889ActorSheet extends ActorSheet {
 		// Handle ability scores.
 		this._prepareAttributes(context);
 
-		context.data['archetypes'] = CONFIG.SPACE1889.archetypes;
-		context.data['species'] = CONFIG.SPACE1889.species;
-		context.data['motivations'] = CONFIG.SPACE1889.motivations;
-		context.data['resources'] = CONFIG.SPACE1889.resources;
-		context.data['storageLocations'] = CONFIG.SPACE1889.storageLocation;
+		context.system['archetypes'] = CONFIG.SPACE1889.archetypes;
+		context.system['species'] = CONFIG.SPACE1889.species;
+		context.system['motivations'] = CONFIG.SPACE1889.motivations;
+		context.system['resources'] = CONFIG.SPACE1889.resources;
+		context.system['storageLocations'] = CONFIG.SPACE1889.storageLocation;
 	}
 
 	_prepareCreatureData(context)
 	{
 		this._prepareAttributes(context);
-		context.data['archetypes'] = CONFIG.SPACE1889.creatureArchetypes;
-		context.data['movementTypes'] = CONFIG.SPACE1889.creatureMovementType;
-		context.data['origins'] = CONFIG.SPACE1889.creatureOrigins;
+		context.system['archetypes'] = CONFIG.SPACE1889.creatureArchetypes;
+		context.system['movementTypes'] = CONFIG.SPACE1889.creatureMovementType;
+		context.system['origins'] = CONFIG.SPACE1889.creatureOrigins;
 	}
 
 	_prepareVehicleData(context)
 	{
-		context.data['crewExperiences'] = CONFIG.SPACE1889.crewExperience;
-		context.data['crewTempers'] = CONFIG.SPACE1889.crewTemper;
-		context.data['pilotSkills'] = CONFIG.SPACE1889.pilotSkills;
+		context.system['crewExperiences'] = CONFIG.SPACE1889.crewExperience;
+		context.system['crewTempers'] = CONFIG.SPACE1889.crewTemper;
+		context.system['pilotSkills'] = CONFIG.SPACE1889.pilotSkills;
 	}
 
 	_prepareAttributes(context)
 	{
 		let primaereAttribute = [];
 
-		for (let [k, v] of Object.entries(context.data.abilities)) 
+		for (let [k, v] of Object.entries(context.system.abilities)) 
 		{
 			primaereAttribute.push(k);
 			v.label = game.i18n.localize(CONFIG.SPACE1889.abilities[k]) ?? k;
 		}
-		for (let [key, element] of Object.entries(context.data.secondaries)) 
+		for (let [key, element] of Object.entries(context.system.secondaries)) 
 		{
 			element.label = game.i18n.localize(CONFIG.SPACE1889.secondaries[key]) ?? key;
 		}
-		context.data['primaereAttribute'] = primaereAttribute;
+		context.system['primaereAttribute'] = primaereAttribute;
 	}
 
 	/**
@@ -140,41 +140,41 @@ export class Space1889ActorSheet extends ActorSheet {
 
 		let weaknessLeft = [];
 		let weaknessRight = [];
-		for (let i = 0; i < this.actor.data.weakness.length; ++i)
+		for (let i = 0; i < this.actor.system.weakness.length; ++i)
 		{
 			if (i%2 == 0)
-				weaknessLeft.push(this.actor.data.weakness[i]);
+				weaknessLeft.push(this.actor.system.weakness[i]);
 			else 
-				weaknessRight.push(this.actor.data.weakness[i]);
+				weaknessRight.push(this.actor.system.weakness[i]);
 		}
 
 		let languageLeft = [];
 		let languageRight = [];
-		for (let i = 0; i < this.actor.data.language.length; ++i)
+		for (let i = 0; i < this.actor.system.language.length; ++i)
 		{
 			if (i%2 == 0)
-				languageLeft.push(this.actor.data.language[i]);
+				languageLeft.push(this.actor.system.language[i]);
 			else 
-				languageRight.push(this.actor.data.language[i]);
+				languageRight.push(this.actor.system.language[i]);
 		}
 
 
 		// Assign and return
-		context.gear = this.actor.data.gear;
-		context.talents = this.actor.data.talents;
-		context.skills = this.actor.data.skills;
-		context.speciSkills = this.actor.data.speciSkills;
-		context.resources = this.actor.data.resources;
-		context.weapons = this.actor.data.weapons;
-		context.armors = this.actor.data.armors;
-		context.weakness = this.actor.data.weakness;
-		context.weaknessLeft = weaknessLeft;
-		context.weaknessRight = weaknessRight;
-		context.language = this.actor.data.language;
-		context.languageLeft = languageLeft;
-		context.languageRight = languageRight;
-		context.injuries = this.actor.data.injuries;
-		context.money = this.actor.data.money;
+		context.system.gear = this.actor.system.gear;
+		context.system.talents = this.actor.system.talents;
+		context.system.skills = this.actor.system.skills;
+		context.system.speciSkills = this.actor.system.speciSkills;
+		context.system.resources = this.actor.system.resources;
+		context.system.weapons = this.actor.system.weapons;
+		context.system.armors = this.actor.system.armors;
+		context.system.weakness = this.actor.system.weakness;
+		context.system.weaknessLeft = weaknessLeft;
+		context.system.weaknessRight = weaknessRight;
+		context.system.language = this.actor.system.language;
+		context.system.languageLeft = languageLeft;
+		context.system.languageRight = languageRight;
+		context.system.injuries = this.actor.system.injuries;
+		context.system.money = this.actor.system.money;
 	}
 
 
@@ -185,8 +185,8 @@ export class Space1889ActorSheet extends ActorSheet {
 		{
 			i.img = i.img || DEFAULT_TOKEN;
 		}
-		context.weapons = this.actor.data.weapons;
-		context.injuries = this.actor.data.injuries;
+		context.weapons = this.actor.system.weapons;
+		context.injuries = this.actor.system.injuries;
 	}
 
 	GetMaxSkillLevel()
@@ -254,7 +254,7 @@ export class Space1889ActorSheet extends ActorSheet {
 		// Render the item sheet for viewing/editing prior to the editable check.
 		html.find('.item-edit').click(ev => {
 			const li = $(ev.currentTarget).parents(".item");
-			const item = this.actor.items.get(li.data("itemId"));
+			const item = this.actor.items.get(li("itemId"));
 			item.sheet.render(true);
 		});
 
@@ -271,7 +271,7 @@ export class Space1889ActorSheet extends ActorSheet {
 		// Delete Inventory Item
 		html.find('.item-delete').click(ev => {
 			const li = $(ev.currentTarget).parents(".item");
-			const item = this.actor.items.get(li.data("itemId"));
+			const item = this.actor.items.get(li("itemId"));
 			item.delete();
 			li.slideUp(200, () => this.render(false));
 		});
@@ -281,15 +281,15 @@ export class Space1889ActorSheet extends ActorSheet {
 			const itemId = this._getItemId(ev);
 			const item = this.actor.items.get(itemId);
 			const newValue = Math.max( Math.min(5, Number(ev.target.value)), 0);
-			await this.actor.updateEmbeddedDocuments("Item", [{ _id: itemId, "data.level": newValue }]);
-			this.currentFocus = $(document.activeElement).closest('.row-section').attr('data-item-id');
+			await this.actor.updateEmbeddedDocuments("Item", [{ _id: itemId, "system.level": newValue }]);
+			this.currentFocus = $(document.activeElement).closest('.row-section').attr('system-item-id');
 		});
 
 		html.find('.talent-level').change(async ev => {
 			const itemId = this._getItemId(ev);
 			const item = this.actor.items.get(itemId);
-			const newValue = Math.max( Math.min(item.data.data.level.max, Number(ev.target.value)), item.data.data.level.min);
-			await this.actor.updateEmbeddedDocuments("Item", [{ _id: itemId, "data.level.value": newValue }]);
+			const newValue = Math.max( Math.min(item.system.level.max, Number(ev.target.value)), item.system.level.min);
+			await this.actor.updateEmbeddedDocuments("Item", [{ _id: itemId, "system.level.value": newValue }]);
 			$(document.activeElement).focus();
 		//	this.currentFocus = $(document.activeElement); //.closest('.item-name').attr('data-item-id');
 		});
@@ -298,43 +298,43 @@ export class Space1889ActorSheet extends ActorSheet {
 		{
 			const itemId = this._getItemId(ev);
 			const item = this.actor.items.get(itemId);
-			const isSkill = item.data.type == "skill";
+			const isSkill = item.type == "skill";
 
-			if (item.data.type == "talent" || item.data.type == "resource")
+			if (item.type == "talent" || item.type == "resource")
 			{
-				const newValue = this.incrementValue(ev, item.data.data.level.value, item.data.data.level.min, item.data.data.level.max);
-				this.actor.updateEmbeddedDocuments("Item", [{ _id: itemId, "data.level.value": newValue }]);
+				const newValue = this.incrementValue(ev, item.system.level.value, item.system.level.min, item.system.level.max);
+				this.actor.updateEmbeddedDocuments("Item", [{ _id: itemId, "system.level.value": newValue }]);
 			}
-			else if (isSkill || item.data.type == "specialization")
+			else if (isSkill || item.type == "specialization")
 			{
-				const max = this.actor.data.type == "character" ? (isSkill ? this.GetMaxSkillLevel() : 5) : 10;
+				const max = this.actor.type == "character" ? (isSkill ? this.GetMaxSkillLevel() : 5) : 10;
 				const min = isSkill ? 0 : 1;
-				const newValue = this.incrementValue(ev, item.data.data.level, min, max, true);
-				this.actor.updateEmbeddedDocuments("Item", [{ _id: itemId, "data.level": newValue }]);
+				const newValue = this.incrementValue(ev, item.system.level, min, max, true);
+				this.actor.updateEmbeddedDocuments("Item", [{ _id: itemId, "system.level": newValue }]);
 			}
-			else if (item.data.type == "weapon")
+			else if (item.type == "weapon")
 			{
-				const newValue = this.incrementValue(ev, item.data.data.damage, -10, undefined);
-				this.actor.updateEmbeddedDocuments("Item", [{ _id: itemId, "data.damage": newValue }]);
+				const newValue = this.incrementValue(ev, item.system.damage, -10, undefined);
+				this.actor.updateEmbeddedDocuments("Item", [{ _id: itemId, "system.damage": newValue }]);
 			}
-			else if (item.data.type == "item")
+			else if (item.type == "item")
 			{
-				const newValue = this.incrementValue(ev, item.data.data.quantity, 0);
-				this.actor.updateEmbeddedDocuments("Item", [{ _id: itemId, "data.quantity": newValue }]);
+				const newValue = this.incrementValue(ev, item.system.quantity, 0);
+				this.actor.updateEmbeddedDocuments("Item", [{ _id: itemId, "system.quantity": newValue }]);
 			}
-			else if (item.data.type == "currency")
+			else if (item.type == "currency")
 			{
-				let newValue = this.incrementValue(ev, item.data.data.quantity, 0);
+				let newValue = this.incrementValue(ev, item.system.quantity, 0);
 				if (newValue != Math.round(newValue))
 				{
 					newValue = +(newValue.toFixed(2));
 				}
-				this.actor.updateEmbeddedDocuments("Item", [{ _id: itemId, "data.quantity": newValue }]);
+				this.actor.updateEmbeddedDocuments("Item", [{ _id: itemId, "system.quantity": newValue }]);
 			}
-			else if (item.data.type == "damage")
+			else if (item.type == "damage")
 			{
-				const newValue = this.incrementValue(ev, item.data.data.damage, 1, undefined);
-				this.actor.updateEmbeddedDocuments("Item", [{ _id: itemId, "data.damage": newValue }]);
+				const newValue = this.incrementValue(ev, item.system.damage, 1, undefined);
+				this.actor.updateEmbeddedDocuments("Item", [{ _id: itemId, "system.damage": newValue }]);
 			}
 		});
 
@@ -342,23 +342,23 @@ export class Space1889ActorSheet extends ActorSheet {
 		{
 			const itemId = this._getItemId(ev);
 			const item = this.actor.items.get(itemId);
-			const newValue = this.incrementValue(ev, item.data.data.healingFactor, 1, undefined);
-			this.actor.updateEmbeddedDocuments("Item", [{ _id: itemId, "data.healingFactor": newValue }]);
+			const newValue = this.incrementValue(ev, item.system.healingFactor, 1, undefined);
+			this.actor.updateEmbeddedDocuments("Item", [{ _id: itemId, "system.healingFactor": newValue }]);
 		});
 
 		html.find('.location-click').mousedown(ev =>
 		{
 			const itemId = this._getItemId(ev);
 			const item = this.actor.items.get(itemId);
-			if (this.actor.data.type == 'vehicle')
+			if (this.actor.type == 'vehicle')
 			{
-				const newLocationAndSpot = this.incrementVehicleMountLocation(ev, item.data.data.location, item.data.data.vehicle.spot);
-				item.update({ 'data.location': newLocationAndSpot[0], 'data.vehicle.spot': newLocationAndSpot[1] });
+				const newLocationAndSpot = this.incrementVehicleMountLocation(ev, item.system.location, item.system.vehicle.spot);
+				item.update({ 'system.location': newLocationAndSpot[0], 'system.vehicle.spot': newLocationAndSpot[1] });
 			}
 			else
 			{
-				const newLocation = this.incrementLocation(ev, item.data.data.location);
-				item.update({ 'data.location': newLocation });
+				const newLocation = this.incrementLocation(ev, item.system.location);
+				item.update({ 'system.location': newLocation });
 			}
 		});
 
@@ -366,170 +366,170 @@ export class Space1889ActorSheet extends ActorSheet {
 		{
 			const itemId = this._getItemId(ev);
 			const item = this.actor.items.get(itemId);
-			if (this.actor.data.type == 'vehicle' && item.data.type == 'weapon')
+			if (this.actor.type == 'vehicle' && item.type == 'weapon')
 			{
-				const newValue = this.incrementValue(ev, Number(item.data.data.vehicle.swivelingRange), 0, 360);
-				let isSwivelMounted = item.data.data.vehicle.isSwivelMounted;
+				const newValue = this.incrementValue(ev, Number(item.system.vehicle.swivelingRange), 0, 360);
+				let isSwivelMounted = item.system.vehicle.isSwivelMounted;
 				if (newValue == 0 && isSwivelMounted)
 					isSwivelMounted = false;
 				else if (newValue > 0 && !isSwivelMounted)
 					isSwivelMounted = true;
 
-				this.actor.updateEmbeddedDocuments("Item", [{ _id: itemId, "data.vehicle.swivelingRange": newValue, "data.vehicle.isSwivelMounted": isSwivelMounted }]);
+				this.actor.updateEmbeddedDocuments("Item", [{ _id: itemId, "system.vehicle.swivelingRange": newValue, "system.vehicle.isSwivelMounted": isSwivelMounted }]);
 			}
 		});
 
-		const isCharacter = this.actor.data.type == "character";
-		const isNpc = this.actor.data.type == "npc"
+		const isCharacter = this.actor.type == "character";
+		const isNpc = this.actor.type == "npc"
 		const primaryMin = (isCharacter || isNpc) ? 1 : 0;
 		const primaryMax = isCharacter ? this.GetMaxPrimaryAttributeLevel() : undefined;
 
 		html.find('.increment-con-click').mousedown(ev =>
 		{
-			const newValue = this.incrementValue(ev, this.actor.data.data.abilities.con.value, primaryMin, primaryMax, true);
-			this.actor.update({ 'data.abilities.con.value': newValue });
+			const newValue = this.incrementValue(ev, this.actor.system.abilities.con.value, primaryMin, primaryMax, true);
+			this.actor.update({ 'system.abilities.con.value': newValue });
 		});
 
 		html.find('.increment-dex-click').mousedown(ev =>
 		{
-			const newValue = this.incrementValue(ev, this.actor.data.data.abilities.dex.value, primaryMin, primaryMax, true);
-			this.actor.update({ 'data.abilities.dex.value': newValue });
+			const newValue = this.incrementValue(ev, this.actor.system.abilities.dex.value, primaryMin, primaryMax, true);
+			this.actor.update({ 'system.abilities.dex.value': newValue });
 		});
 		html.find('.increment-str-click').mousedown(ev =>
 		{
-			const newValue = this.incrementValue(ev, this.actor.data.data.abilities.str.value, primaryMin, primaryMax, true);
-			this.actor.update({ 'data.abilities.str.value': newValue });
+			const newValue = this.incrementValue(ev, this.actor.system.abilities.str.value, primaryMin, primaryMax, true);
+			this.actor.update({ 'system.abilities.str.value': newValue });
 		});
 		html.find('.increment-cha-click').mousedown(ev =>
 		{
-			const newValue = this.incrementValue(ev, this.actor.data.data.abilities.cha.value, primaryMin, primaryMax, true);
-			this.actor.update({ 'data.abilities.cha.value': newValue });
+			const newValue = this.incrementValue(ev, this.actor.system.abilities.cha.value, primaryMin, primaryMax, true);
+			this.actor.update({ 'system.abilities.cha.value': newValue });
 		});
 		html.find('.increment-int-click').mousedown(ev =>
 		{
-			const newValue = this.incrementValue(ev, this.actor.data.data.abilities.int.value, primaryMin, primaryMax, true);
-			this.actor.update({ 'data.abilities.int.value': newValue });
+			const newValue = this.incrementValue(ev, this.actor.system.abilities.int.value, primaryMin, primaryMax, true);
+			this.actor.update({ 'system.abilities.int.value': newValue });
 		});
 		html.find('.increment-wil-click').mousedown(ev =>
 		{
-			const newValue = this.incrementValue(ev, this.actor.data.data.abilities.wil.value, primaryMin, primaryMax, true);
-			this.actor.update({ 'data.abilities.wil.value': newValue });
+			const newValue = this.incrementValue(ev, this.actor.system.abilities.wil.value, primaryMin, primaryMax, true);
+			this.actor.update({ 'system.abilities.wil.value': newValue });
 		});
 
 		html.find('.increment-style-click').mousedown(ev =>
 		{
-			const newValue = this.incrementValue(ev, this.actor.data.data.style.value, 0, undefined);
-			this.actor.update({ 'data.style.value': newValue });
+			const newValue = this.incrementValue(ev, this.actor.system.style.value, 0, undefined);
+			this.actor.update({ 'system.style.value': newValue });
 		});
 
 		html.find('.increment-xp-click').mousedown(ev =>
 		{
-			const newValue = this.incrementValue(ev, this.actor.data.data.attributes.xp.value, 0, undefined);
-			this.actor.update({ 'data.attributes.xp.value': newValue });
+			const newValue = this.incrementValue(ev, this.actor.system.attributes.xp.value, 0, undefined);
+			this.actor.update({ 'system.attributes.xp.value': newValue });
 		});
 
 		html.find('.increment-animalcompanionlevel-click').mousedown(ev =>
 		{
-			const newValue = this.incrementValue(ev, this.actor.data.data.animalCompanionLevel, 0, 5);
-			this.actor.update({ 'data.animalCompanionLevel': newValue });
+			const newValue = this.incrementValue(ev, this.actor.system.animalCompanionLevel, 0, 5);
+			this.actor.update({ 'system.animalCompanionLevel': newValue });
 		});
 
 		html.find('.increment-creaturesize-click').mousedown(ev =>
 		{
-			const newValue = this.incrementValue(ev, this.actor.data.data.secondaries.size.value, -5, 20);
-			this.actor.update({ 'data.secondaries.size.value': newValue });
+			const newValue = this.incrementValue(ev, this.actor.system.secondaries.size.value, -5, 20);
+			this.actor.update({ 'system.secondaries.size.value': newValue });
 		});
 
 		html.find('.increment-structure-max-click').mousedown(ev =>
 		{
-			const newValue = this.incrementValue(ev, this.actor.data.data.health.max, 0, undefined);
-			this.actor.update({ 'data.health.max': newValue });
+			const newValue = this.incrementValue(ev, this.actor.system.health.max, 0, undefined);
+			this.actor.update({ 'system.health.max': newValue });
 		});
 		html.find('.increment-speed-max-click').mousedown(ev =>
 		{
-			const newValue = this.incrementValue(ev, this.actor.data.data.speed.max, 0, undefined);
-			this.actor.update({ 'data.speed.max': newValue });
+			const newValue = this.incrementValue(ev, this.actor.system.speed.max, 0, undefined);
+			this.actor.update({ 'system.speed.max': newValue });
 		});
 		html.find('.increment-maneuverability-max-click').mousedown(ev =>
 		{
-			const newValue = this.incrementValue(ev, this.actor.data.data.maneuverability.max, -5, 5);
-			this.actor.update({ 'data.maneuverability.max': newValue });
+			const newValue = this.incrementValue(ev, this.actor.system.maneuverability.max, -5, 5);
+			this.actor.update({ 'system.maneuverability.max': newValue });
 		});
 		html.find('.increment-passiveDefense-click').mousedown(ev =>
 		{
-			const newValue = this.incrementValue(ev, this.actor.data.data.passiveDefense, 0, undefined);
-			this.actor.update({ 'data.passiveDefense': newValue });
+			const newValue = this.incrementValue(ev, this.actor.system.passiveDefense, 0, undefined);
+			this.actor.update({ 'system.passiveDefense': newValue });
 		});
 		html.find('.increment-vehicleSize-click').mousedown(ev =>
 		{
-			const newValue = SPACE1889Helper.incrementVehicleSizeValue(ev, this.actor.data.data.size);
-			this.actor.update({ 'data.size': newValue });
+			const newValue = SPACE1889Helper.incrementVehicleSizeValue(ev, this.actor.system.size);
+			this.actor.update({ 'system.size': newValue });
 		});
 
 		html.find('.increment-captain-click').mousedown(ev =>
 		{
-			const newValue = this.incrementValue(ev, this.actor.data.data.positions.captain.value, 0, undefined);
-			this.actor.update({ 'data.positions.captain.value': newValue });
+			const newValue = this.incrementValue(ev, this.actor.system.positions.captain.value, 0, undefined);
+			this.actor.update({ 'system.positions.captain.value': newValue });
 		});
 		html.find('.increment-copilot-click').mousedown(ev =>
 		{
-			const newValue = this.incrementValue(ev, this.actor.data.data.positions.copilot.value, 0, undefined);
-			this.actor.update({ 'data.positions.copilot.value': newValue });
+			const newValue = this.incrementValue(ev, this.actor.system.positions.copilot.value, 0, undefined);
+			this.actor.update({ 'system.positions.copilot.value': newValue });
 		});
 		html.find('.increment-gunner-click').mousedown(ev =>
 		{
-			const newValue = this.incrementValue(ev, this.actor.data.data.positions.gunner.value, 0, undefined);
-			this.actor.update({ 'data.positions.gunner.value': newValue });
+			const newValue = this.incrementValue(ev, this.actor.system.positions.gunner.value, 0, undefined);
+			this.actor.update({ 'system.positions.gunner.value': newValue });
 		});
 		html.find('.increment-signaler-click').mousedown(ev =>
 		{
-			const newValue = this.incrementValue(ev, this.actor.data.data.positions.signaler.value, 0, undefined);
-			this.actor.update({ 'data.positions.signaler.value': newValue });
+			const newValue = this.incrementValue(ev, this.actor.system.positions.signaler.value, 0, undefined);
+			this.actor.update({ 'system.positions.signaler.value': newValue });
 		});
 		html.find('.increment-lookout-click').mousedown(ev =>
 		{
-			const newValue = this.incrementValue(ev, this.actor.data.data.positions.lookout.value, 0, undefined);
-			this.actor.update({ 'data.positions.lookout.value': newValue });
+			const newValue = this.incrementValue(ev, this.actor.system.positions.lookout.value, 0, undefined);
+			this.actor.update({ 'system.positions.lookout.value': newValue });
 		});
 		html.find('.increment-mechanic-click').mousedown(ev =>
 		{
-			const newValue = this.incrementValue(ev, this.actor.data.data.positions.mechanic.value, 0, undefined);
-			this.actor.update({ 'data.positions.mechanic.value': newValue });
+			const newValue = this.incrementValue(ev, this.actor.system.positions.mechanic.value, 0, undefined);
+			this.actor.update({ 'system.positions.mechanic.value': newValue });
 		});
 		html.find('.increment-medic-click').mousedown(ev =>
 		{
-			const newValue = this.incrementValue(ev, this.actor.data.data.positions.medic.value, 0, undefined);
-			this.actor.update({ 'data.positions.medic.value': newValue });
+			const newValue = this.incrementValue(ev, this.actor.system.positions.medic.value, 0, undefined);
+			this.actor.update({ 'system.positions.medic.value': newValue });
 		});
 		html.find('.increment-crew-max-click').mousedown(ev =>
 		{
-			const newValue = this.incrementValue(ev, this.actor.data.data.crew.max, 1, undefined);
-			this.actor.update({ 'data.crew.max': newValue });
+			const newValue = this.incrementValue(ev, this.actor.system.crew.max, 1, undefined);
+			this.actor.update({ 'system.crew.max': newValue });
 		});
 		html.find('.increment-crew-current-click').mousedown(ev =>
 		{
-			const newValue = this.incrementValue(ev, this.actor.data.data.crew.value, 0, this.actor.data.data.crew.max);
-			this.actor.update({ 'data.crew.value': newValue });
+			const newValue = this.incrementValue(ev, this.actor.system.crew.value, 0, this.actor.system.crew.max);
+			this.actor.update({ 'system.crew.value': newValue });
 		});
 		html.find('.increment-passenger-max-click').mousedown(ev =>
 		{
-			const newValue = this.incrementValue(ev, this.actor.data.data.passenger.max, 0, undefined);
-			this.actor.update({ 'data.passenger.max': newValue });
+			const newValue = this.incrementValue(ev, this.actor.system.passenger.max, 0, undefined);
+			this.actor.update({ 'system.passenger.max': newValue });
 		});
 		html.find('.increment-passenger-current-click').mousedown(ev =>
 		{
-			const newValue = this.incrementValue(ev, this.actor.data.data.passenger.value, 0, this.actor.data.data.passenger.max);
-			this.actor.update({ 'data.passenger.value': newValue });
+			const newValue = this.incrementValue(ev, this.actor.system.passenger.value, 0, this.actor.system.passenger.max);
+			this.actor.update({ 'system.passenger.value': newValue });
 		});
 		html.find('.increment-strengthTempoFactor-click').mousedown(ev =>
 		{
-			const newValue = this.incrementValue(ev, this.actor.data.data.strengthTempoFactor.value, 0, this.actor.data.data.strengthTempoFactor.max);
-			this.actor.update({ 'data.strengthTempoFactor.value': newValue });
+			const newValue = this.incrementValue(ev, this.actor.system.strengthTempoFactor.value, 0, this.actor.system.strengthTempoFactor.max);
+			this.actor.update({ 'system.strengthTempoFactor.value': newValue });
 		});
 		html.find('.increment-vehicle-size-click').mousedown(ev =>
 		{
-			const newValue = this.incrementValue(ev, this.actor.data.data.size, 0, undefined);
-			this.actor.update({ 'data.size': newValue });
+			const newValue = this.incrementValue(ev, this.actor.system.size, 0, undefined);
+			this.actor.update({ 'system.size': newValue });
 		});
 		html.find('.do-vehicle-captain-click').mousedown(ev =>
 		{
@@ -574,21 +574,21 @@ export class Space1889ActorSheet extends ActorSheet {
 		html.find('.roll-vehicle-attack-click').mousedown(ev =>
 		{
 			const itemId = this._getItemId(ev);
-			if (this.actor.data.type == 'vehicle')
+			if (this.actor.type == 'vehicle')
 			{
 				SPACE1889RollHelper.rollManoeuver('Attack', this.actor, ev, itemId);
 			}
 		});
 		html.find('.roll-vehicle-defense-click').mousedown(ev =>
 		{
-			if (this.actor.data.type == 'vehicle')
+			if (this.actor.type == 'vehicle')
 				SPACE1889RollHelper.rollManoeuver('defense', this.actor, ev);
 		});
 		html.find('.condition-toggle').mousedown(ev =>
 		{
 			const positionId = this._getDataId(ev);
-			const toggledValue = !this.actor.data.data.positions[positionId].staffed;
-			const key = 'data.positions.' + positionId + '.staffed';
+			const toggledValue = !this.actor.system.positions[positionId].staffed;
+			const key = 'system.positions.' + positionId + '.staffed';
 			let updateObject = {};
 			updateObject[key] = toggledValue;
 			this.actor.update(updateObject);
@@ -610,18 +610,18 @@ export class Space1889ActorSheet extends ActorSheet {
 
 	_doVehiclePositionClick(event, positionKey)
 	{
-		if (this.actor.data.type == "vehicle")
+		if (this.actor.type == "vehicle")
 		{
 			const eventInfo = SPACE1889RollHelper.getEventEvaluation(event);
 			if (eventInfo.specialDialog)
 			{
-				const key = 'data.positions.' + positionKey + '.actorId';
+				const key = 'system.positions.' + positionKey + '.actorId';
 				let updateObject = {};
 				updateObject[key] = "";
 				this.actor.update(updateObject);
 			}
 			else
-				SPACE1889Helper.showActorSheet(this.actor.data.data.positions[positionKey].actorId);
+				SPACE1889Helper.showActorSheet(this.actor.system.positions[positionKey].actorId);
 		}
 	}
 
@@ -739,7 +739,7 @@ export class Space1889ActorSheet extends ActorSheet {
 		if (!this.actor.isOwner)
 			return false;
 
-		if (this.actor.data.type != 'vehicle')
+		if (this.actor.type != 'vehicle')
 			return false;
 
 		let dropedActor = null;
@@ -782,70 +782,70 @@ export class Space1889ActorSheet extends ActorSheet {
 
 	/**
 	 * Liefert false zurück falls die im Item verankerten Vorbedingung nicht erfüllt sind
-	 * @param itemData 
+	 * @param item 
 	 * @returns {boolean}
 	 */
-	isItemDropAllowed(itemData)
+	isItemDropAllowed(item)
 	{
-		const actor = this.actor.data;
+		const actor = this.actor;
 
 		if (actor.type == 'creature' &&
-			(itemData.type == "resource" || itemData.type == "language"))
+			(item.type == "resource" || item.type == "language"))
 			return false;
 
-		if (itemData.type == "weapon")
+		if (item.type == "weapon")
 		{
 			if (actor.type == "vehicle")
 			{
-				if (itemData.data.skillId != "geschuetze")
+				if (item.system.skillId != "geschuetze")
 				{
-					ui.notifications.error(game.i18n.format("SPACE1889.canNotBeAdded", { item: itemData.name }))
+					ui.notifications.error(game.i18n.format("SPACE1889.canNotBeAdded", { item: item.name }))
 					return false;
 				}
 			}
-			else if (itemData.data.strengthThreshold > actor.data.abilities["str"].total)
+			else if (item.system.strengthThreshold > actor.system.abilities["str"].total)
 			{
-				ui.notifications.error(game.i18n.format("SPACE1889.canNotBeAdded", { item: itemData.name }))
+				ui.notifications.error(game.i18n.format("SPACE1889.canNotBeAdded", { item: item.name }))
 				return false;
 			}	
 		}
-		if (itemData.type == "specialization")
+		if (item.type == "specialization")
 		{
-			let skill = actor.items.find(entry => entry.data.data.id == itemData.data.underlyingSkillId);
-			if (skill == undefined || skill.data.data.level <= 0)
+			let skill = actor.items.find(entry => entry.system.id == item.system.underlyingSkillId);
+			if (skill == undefined || skill.system.level <= 0)
 			{
-				ui.notifications.error(game.i18n.format("SPACE1889.canNotBeAdded", { item: itemData.name }))
+				ui.notifications.error(game.i18n.format("SPACE1889.canNotBeAdded", { item: item.name }))
 				return false;
 			}
 		}
-		if (itemData.type == "talent")
+		if (item.type == "talent")
 		{
-			const isValid = this.isTalentPossible(itemData);
-			if (isValid && itemData.data.id == "begabung")
+			const isValid = this.isTalentPossible(item);
+			if (isValid && item.system.id == "begabung")
 			{
-				this.showTalentSkillSelectionDialog(itemData);
+				this.showTalentSkillSelectionDialog(item);
 			}
-			if (isValid && itemData.data.id == "geschaerfterSinn")
-				this.showGeschaerfterSinnDialog(itemData);
-			if (isValid && itemData.data.id == "eigenartigerKampfstil")
-				this.showTalentSkillSelectionDialog(itemData);
+			if (isValid && item.system.id == "geschaerfterSinn")
+				this.showGeschaerfterSinnDialog(item);
+			if (isValid && item.system.id == "eigenartigerKampfstil")
+				this.showTalentSkillSelectionDialog(item);
 			return isValid;
 		}
 		return true;		
 	}
 
 
-	showTalentSkillSelectionDialog(itemData)
+	showTalentSkillSelectionDialog(item)
 	{
 		let optionen = '';
-		let actor = this.actor.data;
+		let actor = this.actor;
 
-		for (let item of actor.skills)
+		for (let item of actor.system.skills)
 		{
-			optionen += '<option value="' + item.data.id + '" selected="selected">' + item.data.label + '</option>';
+			optionen += '<option value="' + item.system.id + '" selected="selected">' + item.system.label + '</option>';
 		}
 
-		let talentName = game.i18n.localize(itemData.data.nameLangId);;
+		let talentName = game.i18n.localize(item.system.nameLangId);;
 		let text = game.i18n.localize("SPACE1889.ChooseSkill") + " " + talentName;
 		let choices = game.i18n.localize("SPACE1889.Choices");
 		let selectedOption;
@@ -881,21 +881,21 @@ export class Space1889ActorSheet extends ActorSheet {
 			{
 				if (selectedOption) 
 				{
-					let newTalent = actor.talents.find(e => e.data.id == itemData.data.id && e.data.bonusTarget == "");
+					let newTalent = actor.system.talents.find(e => e.system.id == item.system.id && e.system.bonusTarget == "");
 					if (newTalent != undefined)
-						this.actor.updateEmbeddedDocuments("Item", [{ _id: newTalent._id, "data.bonusTarget": selectedOption }]);
+						this.actor.updateEmbeddedDocuments("Item", [{ _id: newTalent._id, "system.bonusTarget": selectedOption }]);
 
-					console.log("set data.bonusTarget to: " + selectedOption);
+					console.log("set system.bonusTarget to: " + selectedOption);
 				}
 			}
 		});
 		dialog.render(true);
 	}
 
-	showGeschaerfterSinnDialog(itemData)
+	showGeschaerfterSinnDialog(item)
 	{
 		
-		let actor = this.actor.data;
+		let actor = this.actor;
 
 		let optionen = '<option value="hearing" selected="selected">' + game.i18n.localize("SPACE1889.SenseHearing") + '</option>';
 		optionen += '<option value="smell" selected="selected">' + game.i18n.localize("SPACE1889.SenseSmell") + '</option>';
@@ -939,11 +939,11 @@ export class Space1889ActorSheet extends ActorSheet {
 			{
 				if (selectedOption) 
 				{
-					let newTalent = actor.talents.find(e => e.data.id == "geschaerfterSinn" && e.data.bonusTarget == "");
+					let newTalent = actor.system.talents.find(e => e.system.id == "geschaerfterSinn" && e.system.bonusTarget == "");
 					if (newTalent != undefined)
-						this.actor.updateEmbeddedDocuments("Item", [{ _id: newTalent._id, "data.bonusTarget": selectedOption, "data.bonusTargetType": "sense" }]);
+						this.actor.updateEmbeddedDocuments("Item", [{ _id: newTalent._id, "system.bonusTarget": selectedOption, "system.bonusTargetType": "sense" }]);
 
-					console.log("set data.bonusTarget to: " + selectedOption);
+					console.log("set system.bonusTarget to: " + selectedOption);
 				}
 			}
 		});
@@ -963,7 +963,7 @@ export class Space1889ActorSheet extends ActorSheet {
 		if (type == "nothing")
 			return true;
 
-		const actor = this.actor.data;
+		const actor = this.actor;
 
 		if (type == "actor")
 		{
@@ -972,12 +972,12 @@ export class Space1889ActorSheet extends ActorSheet {
 		}
 		else if (type == "primary")
 		{
-			if (threshold <= actor.data.abilities[id].total)
+			if (threshold <= actor.system.abilities[id].total)
 				return true;
 		}
 		else if (type == "secondary")
 		{
-			if (threshold <= actor.data.secondaries[id].total)
+			if (threshold <= actor.system.secondaries[id].total)
 				return true;
 		}
 		else if (type == "skill" && id == "nichtkampffertigkeit")
@@ -985,19 +985,19 @@ export class Space1889ActorSheet extends ActorSheet {
 			let maxLevel = 0;
 			for (let item of actor.items)
 			{
-				if (item.data.type != "skill")
+				if (item.type != "skill")
 					continue;
 				
-				if (!item.data.data.isFightingSkill)
-					maxLevel = Math.max(maxLevel, item.data.data.level);
+				if (!item.system.isFightingSkill)
+					maxLevel = Math.max(maxLevel, item.system.level);
 			}
 			if (maxLevel >= threshold)
 				return true;			
 		}
 		else if (type == "skill" && !isGroup)
 		{
-			let skill = actor.items.find(entry => entry.data.data.id == id);
-			if (skill != undefined && threshold <= skill.data.data.level)
+			let skill = actor.items.find(entry => entry.system.id == id);
+			if (skill != undefined && threshold <= skill.system.level)
 			{
 				return true;
 			}
@@ -1007,11 +1007,11 @@ export class Space1889ActorSheet extends ActorSheet {
 			let maxLevel = 0;
 			for (let item of actor.items)
 			{
-				if (item.data.type != "skill")
+				if (item.type != "skill")
 					continue;
 				
-				if (item.data.data.skillGroupName == id)
-					maxLevel = Math.max(maxLevel, item.data.data.level);
+				if (item.system.skillGroupName == id)
+					maxLevel = Math.max(maxLevel, item.system.level);
 			}
 			if (maxLevel >= threshold)
 				return true;
@@ -1020,10 +1020,10 @@ export class Space1889ActorSheet extends ActorSheet {
 		{
 			for (let item of actor.items)
 			{
-				if (item.data.type != "talent")
+				if (item.type != "talent")
 					continue;
 				
-				if (item.data.data.id == id)
+				if (item.system.id == id)
 					return true;
 			}
 		}
@@ -1035,7 +1035,7 @@ export class Space1889ActorSheet extends ActorSheet {
 			var ids = id.split(";");
 			for (let i of ids)
 			{
-				if (actor.data.attributes?.species?.value == i)
+				if (actor.system.attributes?.species?.value == i)
 					return true;
 			}
 		}
@@ -1043,10 +1043,10 @@ export class Space1889ActorSheet extends ActorSheet {
 		{
 			for (let item of actor.items)
 			{
-				if (item.data.type != "weakness")
+				if (item.type != "weakness")
 					continue;
 				
-				if (item.data.data.id == id)
+				if (item.system.id == id)
 					return true;
 			}
 		}
@@ -1054,25 +1054,25 @@ export class Space1889ActorSheet extends ActorSheet {
 
 	}
 
-	isTalentPossible(itemData)
+	isTalentPossible(item)
 	{
-		const isPossible1 = this.isPreConditionValid(itemData.data.preconditionType, itemData.data.preconditionName, itemData.data.isGroup, itemData.data.preconditionLevel);
-		const isPossible2 = this.isPreConditionValid(itemData.data.secondPreconditionType, itemData.data.secondPreconditionName, false, itemData.data.secondPreconditionLevel);
-		const isPossible = (itemData.data.isOrOperator ? (isPossible1 || isPossible2) : (isPossible1 && isPossible2));
+		const isPossible1 = this.isPreConditionValid(item.system.preconditionType, item.system.preconditionName, item.system.isGroup, item.system.preconditionLevel);
+		const isPossible2 = this.isPreConditionValid(item.system.secondPreconditionType, item.system.secondPreconditionName, false, item.system.secondPreconditionLevel);
+		const isPossible = (item.system.isOrOperator ? (isPossible1 || isPossible2) : (isPossible1 && isPossible2));
 		if (isPossible)
 			return true;
 
-		const talentName = itemData.name;
-		const preConType = game.i18n.format(CONFIG.SPACE1889.preConditionTypes[itemData.data.preconditionType]);
-		const preCon2Type = game.i18n.format(CONFIG.SPACE1889.preConditionTypes[itemData.data.secondPreconditionType]);
-		const group = itemData.data.isGroup ? "Group" : "";
-		const preConNameList = itemData.data.preconditionName.split(";");
+		const talentName = item.name;
+		const preConType = game.i18n.format(CONFIG.SPACE1889.preConditionTypes[item.system.preconditionType]);
+		const preCon2Type = game.i18n.format(CONFIG.SPACE1889.preConditionTypes[item.system.secondPreconditionType]);
+		const group = item.system.isGroup ? "Group" : "";
+		const preConNameList = item.system.preconditionName.split(";");
 
 		let preConNames = "";
 
 		for (const preCon of preConNameList)
 		{
-			const preConNameLangId = "SPACE1889." + this.mapPreconditionTypeToLangIdSubString(itemData.data.preconditionType) + group + this.firstLetterToUpperCase(preCon);
+			const preConNameLangId = "SPACE1889." + this.mapPreconditionTypeToLangIdSubString(item.system.preconditionType) + group + this.firstLetterToUpperCase(preCon);
 			let preConName = game.i18n.format(preConNameLangId);
 			if (preConName == preConNameLangId)
 				preConName = this.firstLetterToUpperCase(preCon);
@@ -1081,39 +1081,39 @@ export class Space1889ActorSheet extends ActorSheet {
 
 
 		let info = "";
-		if (itemData.data.isOrOperator && !isPossible1 && !isPossible2)
+		if (item.system.isOrOperator && !isPossible1 && !isPossible2)
 		{
-			const preConLevel = itemData.data.preconditionLevel.toString();
+			const preConLevel = item.system.preconditionLevel.toString();
 
-			const preCon2Type = game.i18n.format(CONFIG.SPACE1889.preConditionTypes[itemData.data.secondPreconditionType]);
-			const preCon2NameLangId = "SPACE1889." + this.mapPreconditionTypeToLangIdSubString(itemData.data.secondPreconditionType) + this.firstLetterToUpperCase(itemData.data.secondPreconditionName);
+			const preCon2Type = game.i18n.format(CONFIG.SPACE1889.preConditionTypes[item.system.secondPreconditionType]);
+			const preCon2NameLangId = "SPACE1889." + this.mapPreconditionTypeToLangIdSubString(item.system.secondPreconditionType) + this.firstLetterToUpperCase(item.system.secondPreconditionName);
 			let preCon2Name = game.i18n.format(preCon2NameLangId);
 			if (preCon2Name == preCon2NameLangId)
-				preCon2Name = this.firstLetterToUpperCase(itemData.data.secondPreconditionName);
-			const preCon2Level = itemData.data.secondPreconditionLevel.toString();
+				preCon2Name = this.firstLetterToUpperCase(item.system.secondPreconditionName);
+			const preCon2Level = item.system.secondPreconditionLevel.toString();
 
 			info = game.i18n.format("SPACE1889.CanNotAddTalentTwoPreCons", {
 				talentName: talentName, preConType: preConType, preConName: preConNames, preConLevel: preConLevel, preCon2Type: preCon2Type, preCon2Name: preCon2Name, preCon2Level: preCon2Level
 			})
 		}
-		else if (!isPossible1 && !itemData.data.isOrOperator)
+		else if (!isPossible1 && !item.system.isOrOperator)
 		{
-			const preConLevel = itemData.data.preconditionLevel.toString();
+			const preConLevel = item.system.preconditionLevel.toString();
 
-			if (itemData.data.preconditionType == "species")
+			if (item.system.preconditionType == "species")
 				info = game.i18n.format("SPACE1889.CanNotAddTalentWrongSpecies", { talentName: talentName, preConName: preConNames });
 			else
 				info = game.i18n.format("SPACE1889.CanNotAddTalentOnePreCons", { talentName: talentName, preConType: preConType, preConName: preConNames, preConLevel: preConLevel });
 		}
-		else if (!isPossible2 && !itemData.data.isOrOperator)
+		else if (!isPossible2 && !item.system.isOrOperator)
 		{
-			const preCon2NameLangId = "SPACE1889." + this.mapPreconditionTypeToLangIdSubString(itemData.data.secondPreconditionType) + this.firstLetterToUpperCase(itemData.data.secondPreconditionName);
+			const preCon2NameLangId = "SPACE1889." + this.mapPreconditionTypeToLangIdSubString(item.system.secondPreconditionType) + this.firstLetterToUpperCase(item.system.secondPreconditionName);
 			let preCon2Name = game.i18n.format(preCon2NameLangId);
 			if (preCon2Name == preCon2NameLangId)
-				preCon2Name = this.firstLetterToUpperCase(itemData.data.secondPreconditionName);
-			const preCon2Level = itemData.data.secondPreconditionLevel.toString();
+				preCon2Name = this.firstLetterToUpperCase(item.system.secondPreconditionName);
+			const preCon2Level = item.system.secondPreconditionLevel.toString();
 
-			if (itemData.data.preconditionType == "species")
+			if (item.system.preconditionType == "species")
 				info = game.i18n.format("SPACE1889.CanNotAddTalentWrongSpecies", { talentName: talentName, preConName: preCon2Name });
 			else
 				info = game.i18n.format("SPACE1889.CanNotAddTalentOnePreCons", { talentName: talentName, preConType: preCon2Type, preConName: preCon2Name, preConLevel: preCon2Level });
@@ -1122,7 +1122,7 @@ export class Space1889ActorSheet extends ActorSheet {
 		if (info != "")
 			ui.notifications.error(info);
 		else
-			ui.notifications.error(game.i18n.format("SPACE1889.canNotBeAdded", { item: itemData.name }));
+			ui.notifications.error(game.i18n.format("SPACE1889.canNotBeAdded", { item: item.name }));
 
 		return false;
 	}
@@ -1278,38 +1278,38 @@ export class Space1889ActorSheet extends ActorSheet {
 			{
 				const itemId = element.closest('.item').dataset.itemId;
 				const item = this.actor.items.get(itemId);
-				if (item && item.data.type == "talent" && item.data.data.isRollable)
+				if (item && item.type == "talent" && item.system.isRollable)
 				{
 					const showDialog = (event.shiftKey || event.ctrlKey);
-					if (item.data.data.id == "geschaerfterSinn" && canRoll)
+					if (item.system.id == "geschaerfterSinn" && canRoll)
 					{
-						const dieCount = Math.max(this.actor.data.data.secondaries.perception.total + Number(item.data.data.bonus), 0);
+						const dieCount = Math.max(this.actor.system.secondaries.perception.total + Number(item.system.bonus), 0);
 						return item.rollSpecialTalent(dieCount, showDialog)
 					}
-					else if (item.data.data.id == "paralysierenderSchlag" && canRoll)
+					else if (item.system.id == "paralysierenderSchlag" && canRoll)
 					{
-						const skillItem = this.actor.items.find(e => e.data.data.id == "waffenlos");
+						const skillItem = this.actor.items.find(e => e.system.id == "waffenlos");
 						if (skillItem != undefined)
 						{
-							const dieCount = Math.max(0, skillItem.data.data.rating + ((item.data.data.level.value - 1) * 2));
+							const dieCount = Math.max(0, skillItem.system.rating + ((item.system.level.value - 1) * 2));
 							return item.rollSpecialTalent(dieCount, showDialog);
 						}
 					}
-					else if (item.data.data.id == "assassine" && canRoll)
+					else if (item.system.id == "assassine" && canRoll)
 					{
-						const skillItem = this.actor.items.find(e => e.data.data.id == "heimlichkeit");
+						const skillItem = this.actor.items.find(e => e.system.id == "heimlichkeit");
 						if (skillItem != undefined)
 						{
-							const dieCount = Math.max(0, skillItem.data.data.rating + ((item.data.data.level.value - 1) * 2));
+							const dieCount = Math.max(0, skillItem.system.rating + ((item.system.level.value - 1) * 2));
 							return item.rollSpecialTalent(dieCount, showDialog);
 						}
 					}
-					else if (item.data.data.id == "eigenartigerKampfstil" && canRoll)
+					else if (item.system.id == "eigenartigerKampfstil" && canRoll)
 					{
-						const skillItem = this.actor.items.find(e => e.data.data.id == item.data.data.bonusTarget);
+						const skillItem = this.actor.items.find(e => e.system.id == item.system.bonusTarget);
 						if (skillItem != undefined)
 						{
-							const dieCount = SPACE1889RollHelper.getTalentDieCount(item.data, this.actor);
+							const dieCount = SPACE1889RollHelper.getTalentDieCount(item, this.actor);
 							return item.rollSpecialTalent(dieCount, showDialog);
 						}
 					}
@@ -1361,7 +1361,7 @@ export class Space1889ActorSheet extends ActorSheet {
 
 	render(force, options)
 	{
-		if (force && this.actor.data.type == "vehicle")
+		if (force && this.actor.type == "vehicle")
 			this.actor.prepareDerivedData();
 
 		super.render(force, options);

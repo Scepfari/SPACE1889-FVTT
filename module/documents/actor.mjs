@@ -13,7 +13,7 @@ export class Space1889Actor extends Actor
 	{
 		await super._preCreate(data, options, user);
 
-		const actorData = this.data;
+		const actor = this;
 
 		if (data.type === "character")
 		{
@@ -22,31 +22,31 @@ export class Space1889Actor extends Actor
 			let toAddItems = [];
 			for (let item of resources)
 			{
-				if (item.data.data.isBase && actorData.items.find(e => e.data.data.id == item.data.data.id) == undefined)
+				if (item.system.isBase && actor.items.find(e => e.system.id == item.system.id) == undefined)
 					toAddItems.push(item.toObject());
 			}
 
 			if (toAddItems.length > 0)
-				actorData.update({ "items": toAddItems });
+				actor.update({ "items": toAddItems });
 		}
 
-		if (data.type === "creature" && actorData.items.size == 0)
+		if (data.type === "creature" && actor.items.size == 0)
 		{
 			let skillPack = game.packs.get("space1889.fertigkeiten");
 			let skills = await skillPack.getDocuments();
 			let toAddItems = [];
 			for (let item of skills)
 			{
-				if (item.data.data.id == "waffenlos")
+				if (item.system.id == "waffenlos")
 					toAddItems.push(item.toObject());
-				else if (item.data.data.id == "heimlichkeit")
+				else if (item.system.id == "heimlichkeit")
 					toAddItems.push(item.toObject());
-				else if (item.data.data.id == "ueberleben")
+				else if (item.system.id == "ueberleben")
 					toAddItems.push(item.toObject());
 			}
 
 			if (toAddItems.length > 0)
-				actorData.update({ "items": toAddItems });
+				actor.update({ "items": toAddItems });
 		}
 	}
 
@@ -78,48 +78,46 @@ export class Space1889Actor extends Actor
 	 */
 	prepareDerivedData()
 	{
-		const actorData = this.data;
-		const data = actorData.data;
-		const flags = actorData.flags.space1889 || {};
+		const actor = this;
+		const flags = actor.flags.space1889 || {};
 
-		if (actorData.type == 'vehicle')
-			this._prepareVehicleData(actorData);
+		if (actor.type == 'vehicle')
+			this._prepareVehicleData(actor);
 		else
-			this._prepareCharacterData(actorData);
+			this._prepareCharacterData(actor);
 	}
 
 
 	/**
 	 * Prepare Character type specific data
 	 */
-	_prepareVehicleData(actorData)
+	_prepareVehicleData(actor)
 	{
-		if (actorData.type !== 'vehicle')
+		if (actor.type !== 'vehicle')
 			return;
 
 		// Make modifications to data here. For example:
-		const data = actorData.data;
-		const items = actorData.items;
+		const items = actor.items;
 
-		actorData.talents = [];
-		actorData.skills = [];
-		actorData.speciSkills = [];
-		actorData.data.secondaries.defense.total = 0; //toDo mit was sinnvollem füllen
-		actorData.data.secondaries.perception.total = 0;
+		actor.system.talents = [];
+		actor.system.skills = [];
+		actor.system.speciSkills = [];
+		actor.system.secondaries.defense.total = 0; //toDo mit was sinnvollem füllen
+		actor.system.secondaries.perception.total = 0;
 		
 
-		const useCustomValue = actorData.data.crew.experience == "custom";
-		const defaultValue = useCustomValue ? actorData.data.crew.experienceValue : SPACE1889Helper.getCrewExperienceValue(actorData.data.crew.experience);
-		const mod = SPACE1889Helper.getCrewTemperModificator(actorData.data.crew.temper);
+		const useCustomValue = actor.system.crew.experience == "custom";
+		const defaultValue = useCustomValue ? actor.system.crew.experienceValue : SPACE1889Helper.getCrewExperienceValue(actor.system.crew.experience);
+		const mod = SPACE1889Helper.getCrewTemperModificator(actor.system.crew.temper);
 		
-		for (let [key, position] of Object.entries(data.positions))
+		for (let [key, position] of Object.entries(actor.system.positions))
 		{
 			position.actorName = game.i18n.localize("SPACE1889.VehicleCrew") +  " (" + game.i18n.localize(CONFIG.SPACE1889.vehicleCrewPositions[key]) + ")";
 			if (position.actorId != "" && game.actors != undefined && position.staffed)
 			{
 				const posActor = game.actors.get(position.actorId);
-				position.total = this._GetVehiclePositionSkillValue(actorData, key, posActor);
-				position.actorName = posActor.data.name;
+				position.total = this._GetVehiclePositionSkillValue(actor, key, posActor);
+				position.actorName = posActor.name;
 				position.mod = 0;
 			}
 			else if (!position.staffed)
@@ -143,114 +141,114 @@ export class Space1889Actor extends Actor
 			position.label = game.i18n.localize(CONFIG.SPACE1889.vehicleCrewPositions[key]);
 		}
 
-		if (actorData.data.isStrengthBasedTempo)
+		if (actor.system.isStrengthBasedTempo)
 		{
-			let strValue = Math.round(actorData.data.positions.pilot.total / 2);
-			if (actorData.data.positions.pilot.actorId != "" && game.actors != undefined)
+			let strValue = Math.round(actor.system.positions.pilot.total / 2);
+			if (actor.system.positions.pilot.actorId != "" && game.actors != undefined)
 			{
-				const pilot = game.actors.get(actorData.data.positions.pilot.actorId);
-				strValue = pilot.data.data.abilities.str.total;
+				const pilot = game.actors.get(actor.system.positions.pilot.actorId);
+				strValue = pilot.system.abilities.str.total;
 			}
-			actorData.data.speed.max = strValue * actorData.data.strengthTempoFactor.value;
+			actor.system.speed.max = strValue * actor.system.strengthTempoFactor.value;
 		}
 
 		const weapons = [];
 		const injuries = [];
 		for (let item of items)
 		{
-			if (item.data.type === 'weapon')
-				weapons.push(item.data);
-			else if (item.data.type === 'damage')
-				injuries.push(item.data);
+			if (item.system.type === 'weapon')
+				weapons.push(item);
+			else if (item.system.type === 'damage')
+				injuries.push(item.system);
 		}
 
-		actorData.injuries = injuries;
+		actor.system.injuries = injuries;
 
-		this.prepareVehicleWeapons(actorData, weapons);
-		actorData.weapons = weapons;
+		this.prepareVehicleWeapons(actor, weapons);
+		actor.system.weapons = weapons;
 
 		for (let injury of injuries)
 		{
-			const isLethal = injury.data.damageType == "lethal";
-			const healingDurationInDays = (isLethal ? 7 : 1) * injury.data.damage / injury.data.healingFactor;
-			injury.data.damageTypeDisplay = game.i18n.localize(CONFIG.SPACE1889.vehicleDamageTypeAbbreviations[injury.data.damageType]);
-			injury.data.healingDuration = this.FormatHealingDuration(healingDurationInDays);
-			injury.data.timeToNextCure = this.FormatHealingDuration(healingDurationInDays / injury.data.damage);
+			const isLethal = injury.system.damageType == "lethal";
+			const healingDurationInDays = (isLethal ? 7 : 1) * injury.system.damage / injury.system.healingFactor;
+			injury.system.damageTypeDisplay = game.i18n.localize(CONFIG.SPACE1889.vehicleDamageTypeAbbreviations[injury.system.damageType]);
+			injury.system.healingDuration = this.FormatHealingDuration(healingDurationInDays);
+			injury.system.timeToNextCure = this.FormatHealingDuration(healingDurationInDays / injury.system.damage);
 		}
 
-		this._CalcVehicleThings(actorData);
+		this._CalcVehicleThings(actor);
 	}
 
-	_GetVehiclePositionSkillValue(vehicleData, position, actorOnPosition)
+	_GetVehiclePositionSkillValue(vehicle, position, actorOnPosition)
 	{
-		if (actorOnPosition == undefined || actorOnPosition == null || actorOnPosition.data.type == "vehicle")
+		if (actorOnPosition == undefined || actorOnPosition == null || actorOnPosition.type == "vehicle")
 			return 0;
 
 		if (position == "pilot" || position == "copilot")
 		{
 			// toDo: Spezialisierung beachten
-			if (vehicleData.data.pilotSkill == "fahren" || vehicleData.data.pilotSkill == "reiten")
-				return this._GetSkillLevel(actorOnPosition.data, vehicleData.data.pilotSkill, "");
+			if (vehicle.system.pilotSkill == "fahren" || vehicle.system.pilotSkill == "reiten")
+				return this._GetSkillLevel(actorOnPosition, vehicle.system.pilotSkill, "");
 
-			return this._GetSkillLevel(actorOnPosition.data, vehicleData.data.pilotSkill, "", "spezielleFahrzeuge" );
+			return this._GetSkillLevel(actorOnPosition, vehicle.system.pilotSkill, "", "spezielleFahrzeuge" );
 		}
 
 		if (position == "captain")
 		{
-			const first = this._GetSkillLevel(actorOnPosition.data, "diplomatie", "fuehrungsstaerke");
-			const second = this._GetSkillLevel(actorOnPosition.data, "einschuechtern", "befehle");
+			const first = this._GetSkillLevel(actorOnPosition, "diplomatie", "fuehrungsstaerke");
+			const second = this._GetSkillLevel(actorOnPosition, "einschuechtern", "befehle");
 			return Math.max(first, second);
 		}
 		if (position == "gunner")
 		{
-			return this._GetSkillLevel(actorOnPosition.data, "geschuetze", "");
+			return this._GetSkillLevel(actorOnPosition, "geschuetze", "");
 		}
 		if (position == "signaler")
 		{
-			return this._GetSkillLevel(actorOnPosition.data, "linguistik", "codes");
+			return this._GetSkillLevel(actorOnPosition, "linguistik", "codes");
 		}
 		if (position == "lookout")
 		{
-			return actorOnPosition.data.data.secondaries.perception.total;
+			return actorOnPosition.system.secondaries.perception.total;
 		}
 		if (position == "mechanic")
 		{
-			return this._GetSkillLevel(actorOnPosition.data, "mechaniker", "", "handwerk");
+			return this._GetSkillLevel(actorOnPosition, "mechaniker", "", "handwerk");
 			// alternativ andere Handwerk-Fertigkeiten
 		}
 		if (position == "medic")
 		{
-			return this._GetSkillLevel(actorOnPosition.data, "medizin", "ersteHilfe");
+			return this._GetSkillLevel(actorOnPosition, "medizin", "ersteHilfe");
 		}
 		return 0;
 	}
 
-	_CalcVehicleThings(actorData)
+	_CalcVehicleThings(actor)
 	{
-		const crewMax = actorData.data.crew.max;
-		const crewCurrent = actorData.data.crew.value;
+		const crewMax = actor.system.crew.max;
+		const crewCurrent = actor.system.crew.value;
 		const disabled = game.i18n.localize("SPACE1889.VehicleManeuverabilityDisabledAbbr");
 		let isDisabled = false;
 
-		this.CalcAndSetHealth(actorData);
+		this.CalcAndSetHealth(actor);
 
-		let malus = SPACE1889Helper.getStructureMalus(actorData.data.health.value, actorData.data.health.max, actorData.data.speed.max, actorData.data.health.controlDamage, actorData.data.health.propulsionDamage );
+		let malus = SPACE1889Helper.getStructureMalus(actor.system.health.value, actor.system.health.max, actor.system.speed.max, actor.system.health.controlDamage, actor.system.health.propulsionDamage );
 
-		actorData.data.weaponLoad.max = actorData.data.isAirship ? actorData.data.size / 2 : actorData.data.size;
-		actorData.data.weaponLoad.maxWithOverload = actorData.data.health.max;
+		actor.system.weaponLoad.max = actor.system.isAirship ? actor.system.size / 2 : actor.system.size;
+		actor.system.weaponLoad.maxWithOverload = actor.system.health.max;
 
-		actorData.data.weaponLoad.value = this.getWeaponLoad(actorData);
-		actorData.data.weaponLoad.maneuverabilityMalus = 0;
-		actorData.data.weaponLoad.isOverloaded = false;
-		if (actorData.data.weaponLoad.value > actorData.data.weaponLoad.max)
+		actor.system.weaponLoad.value = this.getWeaponLoad(actor);
+		actor.system.weaponLoad.maneuverabilityMalus = 0;
+		actor.system.weaponLoad.isOverloaded = false;
+		if (actor.system.weaponLoad.value > actor.system.weaponLoad.max)
 		{
-			actorData.data.weaponLoad.maneuverabilityMalus = (actorData.data.weaponLoad.max - actorData.data.weaponLoad.value) * (actorData.data.isAirship ? 2 : 1);
-			//ui.notifications?.info(game.i18n.format("SPACE1889.VehicleIsOverloaded", {name: actorData.name}));
+			actor.system.weaponLoad.maneuverabilityMalus = (actor.system.weaponLoad.max - actor.system.weaponLoad.value) * (actor.system.isAirship ? 2 : 1);
+			//ui.notifications?.info(game.i18n.format("SPACE1889.VehicleIsOverloaded", {name: actor.name}));
 		}
-		if (actorData.data.weaponLoad.value > actorData.data.weaponLoad.maxWithOverload)
+		if (actor.system.weaponLoad.value > actor.system.weaponLoad.maxWithOverload)
 		{
-			actorData.data.weaponLoad.isOverloaded = true;
-			ui.notifications?.info(game.i18n.format("SPACE1889.VehicleExceedingOverloadMax", {name: actorData.name}));
+			actor.system.weaponLoad.isOverloaded = true;
+			ui.notifications?.info(game.i18n.format("SPACE1889.VehicleExceedingOverloadMax", {name: actor.name}));
 		}
 
 		const rate = crewCurrent / crewMax;
@@ -265,44 +263,44 @@ export class Space1889Actor extends Actor
 				mod += -4;
 		}
 
-		if (rate < 0.25 || actorData.data.health.value <= 0)
+		if (rate < 0.25 || actor.system.health.value <= 0)
 		{
-			actorData.data.maneuverability.value = disabled;
+			actor.system.maneuverability.value = disabled;
 			isDisabled = true;
 		}
 		else
-			actorData.data.maneuverability.value = actorData.data.maneuverability.max + mod + actorData.data.weaponLoad.maneuverabilityMalus;
+			actor.system.maneuverability.value = actor.system.maneuverability.max + mod + actor.system.weaponLoad.maneuverabilityMalus;
 
-		actorData.data.speed.value = actorData.data.speed.max - malus.speed;
+		actor.system.speed.value = actor.system.speed.max - malus.speed;
 
-		actorData.data.secondaries.initiative.total = isDisabled ? 0 : actorData.data.positions.pilot.total + Number(actorData.data.maneuverability.value);
+		actor.system.secondaries.initiative.total = isDisabled ? 0 : actor.system.positions.pilot.total + Number(actor.system.maneuverability.value);
 
-		if (!isDisabled && actorData.data.positions.copilot.staffed && actorData.data.positions.copilot.total >= 4 &&
-			(actorData.data.positions.copilot.actorId == "" || actorData.data.positions.copilot.actorId != actorData.data.positions.pilot.actorId))
-			actorData.data.secondaries.initiative.total += 2;
-		if (!isDisabled && actorData.data.positions.captain.staffed && actorData.data.positions.captain.total >= 4 &&
-			(actorData.data.positions.captain.actorId == "" || actorData.data.positions.captain.actorId != actorData.data.positions.pilot.actorId))
-			actorData.data.secondaries.initiative.total += 2;
+		if (!isDisabled && actor.system.positions.copilot.staffed && actor.system.positions.copilot.total >= 4 &&
+			(actor.system.positions.copilot.actorId == "" || actor.system.positions.copilot.actorId != actor.system.positions.pilot.actorId))
+			actor.system.secondaries.initiative.total += 2;
+		if (!isDisabled && actor.system.positions.captain.staffed && actor.system.positions.captain.total >= 4 &&
+			(actor.system.positions.captain.actorId == "" || actor.system.positions.captain.actorId != actor.system.positions.pilot.actorId))
+			actor.system.secondaries.initiative.total += 2;
 
-		actorData.data.secondaries.defense.value = actorData.data.passiveDefense;
-		if (actorData.data.maneuverability.value == disabled)
-			actorData.data.secondaries.defense.total = actorData.data.passiveDefense
+		actor.system.secondaries.defense.value = actor.system.passiveDefense;
+		if (actor.system.maneuverability.value == disabled)
+			actor.system.secondaries.defense.total = actor.system.passiveDefense
 		else
-			actorData.data.secondaries.defense.total = actorData.data.passiveDefense + actorData.data.positions.pilot.total + actorData.data.maneuverability.value;
+			actor.system.secondaries.defense.total = actor.system.passiveDefense + actor.system.positions.pilot.total + actor.system.maneuverability.value;
 
-		if (actorData.data.health.value < 0)
-			actorData.data.secondaries.defense.total = Math.max(0, actorData.data.secondaries.defense.total + actorData.data.health.value);
+		if (actor.system.health.value < 0)
+			actor.system.secondaries.defense.total = Math.max(0, actor.system.secondaries.defense.total + actor.system.health.value);
 
 	}
 
-	getWeaponLoad(actorData)
+	getWeaponLoad(actor)
 	{
 		let load = 0;
-		for (let weapon of actorData.weapons)
+		for (let weapon of actor.weapons)
 		{
-			if (weapon.data.location == "lager")
+			if (weapon.system.location == "lager")
 				continue;
-			load += weapon.data.size;
+			load += weapon.system.size;
 		}
 		return load;
 	}
@@ -310,29 +308,28 @@ export class Space1889Actor extends Actor
 	/**
 	 * Prepare Character type specific data
 	 */
-	_prepareCharacterData(actorData)
+	_prepareCharacterData(actor)
 	{
-		if (actorData.type !== 'character' && actorData.type !== 'npc' && actorData.type !== 'creature')
+		if (actor.type !== 'character' && actor.type !== 'npc' && actor.type !== 'creature')
 			return;
 
 		// Make modifications to data here. For example:
-		const data = actorData.data;
-		const items = actorData.items;
+		const items = actor.items;
 
 		let primaereAttribute = [];
 
-		for (let [key, ability] of Object.entries(data.abilities))
+		for (let [key, ability] of Object.entries(actor.system.abilities))
 		{
 			ability.talentBonus = this.getBonusFromTalents(key, "ability", items);
 			ability.total = ability.value + ability.talentBonus;
 			primaereAttribute.push(key);
 		}
-		actorData.data['primaereAttribute'] = primaereAttribute;
+		actor.system['primaereAttribute'] = primaereAttribute;
 
 		const armorData = this.getArmorBonusMalus(items);
 		if (armorData.malus > 0)
-			data.abilities["dex"].total -= armorData.malus;
-		data.armorTotal = armorData;
+			actor.system.abilities["dex"].total -= armorData.malus;
+		actor.system.armorTotal = armorData;
 
 		const skills = [];
 		const speciSkills = [];
@@ -347,35 +344,35 @@ export class Space1889Actor extends Actor
 		const money = [];
 		for (let item of items)
 		{
-			if (item.data.type === 'skill')
+			if (item.type === 'skill')
 			{
-				item.data.data.talentBonus = this.getBonusFromTalents(item.data.data.id, item.data.type, items);
-				skills.push(item.data);
+				item.system.talentBonus = this.getBonusFromTalents(item.system.id, item.type, items);
+				skills.push(item);
 			}
 			// Append to specialization.
-			else if (item.data.type === 'specialization')
+			else if (item.type === 'specialization')
 			{
-				item.data.data.talentBonus = this.getBonusFromTalents(item.data.data.id, item.data.type, items);
-				speciSkills.push(item.data);
+				item.system.talentBonus = this.getBonusFromTalents(item.system.id, item.type, items);
+				speciSkills.push(item);
 			}
-			else if (item.data.type === 'talent')
-				talents.push(item.data);
-			else if (item.data.type === 'weapon')
-				weapons.push(item.data);
-			else if (item.data.type === 'armor')
-				armors.push(item.data);
-			else if (item.data.type === 'item')
-				gear.push(item.data);
-			else if (item.data.type === 'damage')
-				injuries.push(item.data);
-			else if (item.data.type === 'resource')
-				resources.push(item.data);
-			else if (item.data.type === 'weakness')
-				weakness.push(item.data);
-			else if (item.data.type === 'language')
-				language.push(item.data);
-			else if (item.data.type === 'currency')
-				money.push(item.data);
+			else if (item.type === 'talent')
+				talents.push(item);
+			else if (item.type === 'weapon')
+				weapons.push(item);
+			else if (item.type === 'armor')
+				armors.push(item);
+			else if (item.type === 'item')
+				gear.push(item);
+			else if (item.type === 'damage')
+				injuries.push(item);
+			else if (item.type === 'resource')
+				resources.push(item);
+			else if (item.type === 'weakness')
+				weakness.push(item);
+			else if (item.type === 'language')
+				language.push(item);
+			else if (item.type === 'currency')
+				money.push(item);
 		}
 
 		SPACE1889Helper.sortByName(skills);
@@ -385,39 +382,39 @@ export class Space1889Actor extends Actor
 		SPACE1889Helper.sortByName(weakness);
 		SPACE1889Helper.sortByName(language);
 
-		actorData.talents = talents;
-		actorData.skills = skills;
-		actorData.speciSkills = speciSkills;
-		actorData.injuries = injuries;
-		actorData.armors = armors;
-		actorData.gear = gear;
-		actorData.resources = resources;
-		actorData.weakness = weakness;
-		actorData.language = language;
-		actorData.money = money;
+		actor.system.talents = talents;
+		actor.system.skills = skills;
+		actor.system.speciSkills = speciSkills;
+		actor.system.injuries = injuries;
+		actor.system.armors = armors;
+		actor.system.gear = gear;
+		actor.system.resources = resources;
+		actor.system.weakness = weakness;
+		actor.system.language = language;
+		actor.system.money = money;
 
-		this.calcAndSetSecondaries(actorData)
-		data.health.max = data.abilities.con.total + data.abilities.wil.total + data.secondaries.size.total + this.getBonusFromTalents("max", "health", items);
+		this.calcAndSetSecondaries(actor)
+		actor.system.health.max = actor.system.abilities.con.total + actor.system.abilities.wil.total + actor.system.secondaries.size.total + this.getBonusFromTalents("max", "health", items);
 
-		this.calcAndSetSkillsAndSpecializations(actorData)
+		this.calcAndSetSkillsAndSpecializations(actor)
 
-		this.prepareWeapons(actorData, weapons);
-		actorData.weapons = weapons;
+		this.prepareWeapons(actor, weapons);
+		actor.weapons = weapons;
 
 		for (let injury of injuries)
 		{
-			const isLethal = injury.data.damageType == "lethal";
-			const healingDurationInDays = (isLethal ? 7 : 1) * injury.data.damage / injury.data.healingFactor;
-			injury.data.damageTypeDisplay = game.i18n.localize(CONFIG.SPACE1889.damageTypeAbbreviations[injury.data.damageType]);
-			injury.data.healingDuration = this.FormatHealingDuration(healingDurationInDays);
-			injury.data.timeToNextCure = this.FormatHealingDuration(healingDurationInDays / injury.data.damage);
+			const isLethal = injury.system.damageType == "lethal";
+			const healingDurationInDays = (isLethal ? 7 : 1) * injury.system.damage / injury.system.healingFactor;
+			injury.system.damageTypeDisplay = game.i18n.localize(CONFIG.SPACE1889.damageTypeAbbreviations[injury.system.damageType]);
+			injury.system.healingDuration = this.FormatHealingDuration(healingDurationInDays);
+			injury.system.timeToNextCure = this.FormatHealingDuration(healingDurationInDays / injury.system.damage);
 		}
 
-		if (SPACE1889Helper.isCreature(actorData))
+		if (SPACE1889Helper.isCreature(actor))
 		{
-			this.setCreatureMovementDisplay(actorData);
-			this.CalcAndSetHealth(actorData);
-			this.CalcAndSetEP(actorData);
+			this.setCreatureMovementDisplay(actor);
+			this.CalcAndSetHealth(actor);
+			this.CalcAndSetEP(actor);
 		}
 		else
 		{
@@ -427,89 +424,89 @@ export class Space1889Actor extends Actor
 			{
 				for (let element of list)
 				{
-					let langIdAbbr = CONFIG.SPACE1889.storageLocationAbbreviations[element.data.location] ?? "";
-					let longId = CONFIG.SPACE1889.storageLocations[element.data.location] ?? "";
-					element.data.display = (langIdAbbr != "" ? game.i18n.localize(langIdAbbr) : "?");
-					element.data.locationLong = (longId != "" ? game.i18n.localize(longId) : "?");
+					let langIdAbbr = CONFIG.SPACE1889.storageLocationAbbreviations[element.system.location] ?? "";
+					let longId = CONFIG.SPACE1889.storageLocations[element.system.location] ?? "";
+					element.system.display = (langIdAbbr != "" ? game.i18n.localize(langIdAbbr) : "?");
+					element.system.locationLong = (longId != "" ? game.i18n.localize(longId) : "?");
 				}
 			}
 
-			this._CalcThings(actorData);
+			this._CalcThings(actor);
 		}
 	}
 
 	/**
 	 * 
-	 * @param {object} actorData
+	 * @param {object} actor
 	 */
-	calcAndSetSecondaries(actorData)
+	calcAndSetSecondaries(actor)
 	{
-		const data = actorData.data;
-		data.secondaries.move.value = data.abilities.str.total + data.abilities.dex.total;
-		data.secondaries.move.talentBonus = this.getBonusFromTalents("move", "secondary", actorData.items);
-		data.secondaries.move.total = data.secondaries.move.value + data.secondaries.move.talentBonus;
-		data.secondaries.perception.value = data.abilities.int.total + data.abilities.wil.total;
-		data.secondaries.perception.talentBonus = this.getBonusFromTalents("perception", "secondary", actorData.items);
-		data.secondaries.perception.total = data.secondaries.perception.value + data.secondaries.perception.talentBonus;
-		data.secondaries.initiative.value = data.abilities.dex.total + data.abilities.int.total;
-		data.secondaries.initiative.talentBonus = this.getBonusFromTalents("initiative", "secondary", actorData.items);
-		data.secondaries.initiative.total = data.secondaries.initiative.value + data.secondaries.initiative.talentBonus;
-		data.secondaries.stun.value = Math.max(data.abilities.con.total, SPACE1889Helper.getTalentLevel(actorData, "dickkopf") > 0 ? data.abilities.wil.total : 0);
-		data.secondaries.stun.talentBonus = this.getBonusFromTalents("stun", "secondary", actorData.items);
-		data.secondaries.stun.total = data.secondaries.stun.value + data.secondaries.stun.talentBonus;
-		data.secondaries.size.talentBonus = this.getBonusFromTalents("size", "secondary", actorData.items);
-		data.secondaries.size.total = data.secondaries.size.value + data.secondaries.size.talentBonus;
-		data.secondaries.defense.value = this.getPassiveDefence(actorData) + this.getActiveDefence(actorData) - data.secondaries.size.total;
-		data.secondaries.defense.talentBonus = this.getBonusFromTalents("defense", "secondary", actorData.items);
-		data.secondaries.defense.armorBonus = data.armorTotal.bonus;
-		data.secondaries.defense.total = data.secondaries.defense.value + data.secondaries.defense.talentBonus + data.secondaries.defense.armorBonus;
+		const system = actor.system;
+		system.secondaries.move.value = system.abilities.str.total + system.abilities.dex.total;
+		system.secondaries.move.talentBonus = this.getBonusFromTalents("move", "secondary", actor.items);
+		system.secondaries.move.total = system.secondaries.move.value + system.secondaries.move.talentBonus;
+		system.secondaries.perception.value = system.abilities.int.total + system.abilities.wil.total;
+		system.secondaries.perception.talentBonus = this.getBonusFromTalents("perception", "secondary", actor.items);
+		system.secondaries.perception.total = system.secondaries.perception.value + system.secondaries.perception.talentBonus;
+		system.secondaries.initiative.value = system.abilities.dex.total + system.abilities.int.total;
+		system.secondaries.initiative.talentBonus = this.getBonusFromTalents("initiative", "secondary", actor.items);
+		system.secondaries.initiative.total = system.secondaries.initiative.value + system.secondaries.initiative.talentBonus;
+		system.secondaries.stun.value = Math.max(system.abilities.con.total, SPACE1889Helper.getTalentLevel(actor, "dickkopf") > 0 ? system.abilities.wil.total : 0);
+		system.secondaries.stun.talentBonus = this.getBonusFromTalents("stun", "secondary", actor.items);
+		system.secondaries.stun.total = system.secondaries.stun.value + system.secondaries.stun.talentBonus;
+		system.secondaries.size.talentBonus = this.getBonusFromTalents("size", "secondary", actor.items);
+		system.secondaries.size.total = system.secondaries.size.value + system.secondaries.size.talentBonus;
+		system.secondaries.defense.value = this.getPassiveDefence(actor) + this.getActiveDefence(actor) - system.secondaries.size.total;
+		system.secondaries.defense.talentBonus = this.getBonusFromTalents("defense", "secondary", actor.items);
+		system.secondaries.defense.armorBonus = system.armorTotal.bonus;
+		system.secondaries.defense.total = system.secondaries.defense.value + system.secondaries.defense.talentBonus + system.secondaries.defense.armorBonus;
 	}
 
-	calcAndSetCharacterNpcSiMoveUnits(actorData)
+	calcAndSetCharacterNpcSiMoveUnits(actor)
 	{
-		const siMoveDistance = actorData.data.secondaries.move.total * 1.5;
+		const siMoveDistance = actor.system.secondaries.move.total * 1.5;
 		const meter = "m";
 		const meterWithSeparator = "m; ";
-		const runFactor = SPACE1889Helper.getTalentLevel(actorData, "sprinter") > 0 ?  4 : 2;
+		const runFactor = SPACE1889Helper.getTalentLevel(actor, "sprinter") > 0 ?  4 : 2;
 		const sprintFactor = 4;
 		let info =  game.i18n.localize("SPACE1889.Move") + ": " + siMoveDistance.toString() + meterWithSeparator;
 		info += game.i18n.localize("SPACE1889.Run") + ": " + (siMoveDistance * runFactor).toString() + meterWithSeparator;
 		info += game.i18n.localize("SPACE1889.Sprint") + ": " + (siMoveDistance * sprintFactor).toString() + meter;
-		actorData.data.secondaries.move.inSiUnits = info;
+		actor.system.secondaries.move.inSiUnits = info;
 	}
 
 
 	/**
 	 *
-	 * @param {object} actorData
+	 * @param {object} actor
 	 */
-	calcAndSetSkillsAndSpecializations(actorData)
+	calcAndSetSkillsAndSpecializations(actor)
 	{
-		for (let skl of actorData.skills)
+		for (let skl of actor.system.skills)
 		{
-			let underlyingAttribute = this._GetAttributeBase(actorData, skl);
-			skl.data.basis = actorData.data.abilities[underlyingAttribute].total;
-			skl.data.baseAbilityAbbr = game.i18n.localize(CONFIG.SPACE1889.abilityAbbreviations[underlyingAttribute]);
+			let underlyingAttribute = this._GetAttributeBase(actor, skl);
+			skl.system.basis = actor.system.abilities[underlyingAttribute].total;
+			skl.system.baseAbilityAbbr = game.i18n.localize(CONFIG.SPACE1889.abilityAbbreviations[underlyingAttribute]);
 			let sizeMod = 0;
-			if (skl.data.id == 'heimlichkeit' && actorData.data.secondaries.size.total != 0)
-				sizeMod = actorData.data.secondaries.size.total;
+			if (skl.system.id == 'heimlichkeit' && actor.system.secondaries.size.total != 0)
+				sizeMod = actor.system.secondaries.size.total;
 
-			skl.data.rating = Math.max(0, skl.data.basis + skl.data.level + skl.data.talentBonus - sizeMod);
-			if (skl.data.isSkillGroup && skl.data.skillGroupName.length > 0)
-				skl.data.skillGroup = game.i18n.localize(CONFIG.SPACE1889.skillGroups[skl.data.skillGroupName]);
+			skl.system.rating = Math.max(0, skl.system.basis + skl.system.level + skl.system.talentBonus - sizeMod);
+			if (skl.system.isSkillGroup && skl.system.skillGroupName.length > 0)
+				skl.system.skillGroup = game.i18n.localize(CONFIG.SPACE1889.skillGroups[skl.system.skillGroupName]);
 
-			if (skl.data.id == 'sportlichkeit' && skl.data.rating > actorData.data.secondaries.move.value)
+			if (skl.system.id == 'sportlichkeit' && skl.system.rating > actor.system.secondaries.move.value)
 			{
-				actorData.data.secondaries.move.value = skl.data.rating;
-				actorData.data.secondaries.move.total = skl.data.rating + actorData.data.secondaries.move.talentBonus;
+				actor.system.secondaries.move.value = skl.system.rating;
+				actor.system.secondaries.move.total = skl.system.rating + actor.system.secondaries.move.talentBonus;
 			}
 
-			for (let spe of actorData.speciSkills)
+			for (let spe of actor.system.speciSkills)
 			{
-				if (spe.data.underlyingSkillId == skl.data.id)
+				if (spe.system.underlyingSkillId == skl.system.id)
 				{
-					spe.data.basis = skl.data.rating;
-					spe.data.rating = spe.data.basis + spe.data.level + spe.data.talentBonus;
+					spe.system.basis = skl.system.rating;
+					spe.system.rating = spe.system.basis + spe.system.level + spe.system.talentBonus;
 				}
 			}
 		}
@@ -518,33 +515,33 @@ export class Space1889Actor extends Actor
 
 	/**
 	 * 
-	 * @param {object} actorData
+	 * @param {object} actor
 	 * @param {Array<object>} weapons
 	 */
-	prepareWeapons(actorData, weapons)
+	prepareWeapons(actor, weapons)
 	{
-		let sizeMod = (-1) * actorData.data.secondaries.size.total;
+		let sizeMod = (-1) * actor.system.secondaries.size.total;
 		for (let weapon of weapons)
 		{
-			if (weapon.data.skillId == "none" && weapon.data.isAreaDamage)
+			if (weapon.system.skillId == "none" && weapon.system.isAreaDamage)
 			{
-				weapon.data.sizeMod = "-";
-				weapon.data.skillRating = "-";
-				weapon.data.attack = weapon.data.damage;
-				weapon.data.attackAverage = (Math.floor(weapon.data.attack / 2)).toString() + (weapon.data.attack % 2 == 0 ? "" : "+");
+				weapon.system.sizeMod = "-";
+				weapon.system.skillRating = "-";
+				weapon.system.attack = weapon.system.damage;
+				weapon.system.attackAverage = (Math.floor(weapon.system.attack / 2)).toString() + (weapon.system.attack % 2 == 0 ? "" : "+");
 			}
 			else
 			{
-				weapon.data.sizeMod = sizeMod;
-				weapon.data.skillRating = this._GetSkillLevel(actorData, weapon.data.skillId, weapon.data.specializationId);
-				weapon.data.attack = Math.max(0, weapon.data.damage + weapon.data.skillRating + weapon.data.sizeMod);
-				weapon.data.attackAverage = (Math.floor(weapon.data.attack / 2)).toString() + (weapon.data.attack % 2 == 0 ? "" : "+");
+				weapon.system.sizeMod = sizeMod;
+				weapon.system.skillRating = this._GetSkillLevel(actor, weapon.system.skillId, weapon.system.specializationId);
+				weapon.system.attack = Math.max(0, weapon.system.damage + weapon.system.skillRating + weapon.system.sizeMod);
+				weapon.system.attackAverage = (Math.floor(weapon.system.attack / 2)).toString() + (weapon.system.attack % 2 == 0 ? "" : "+");
 			}
-			weapon.data.damageTypeDisplay = game.i18n.localize(CONFIG.SPACE1889.damageTypeAbbreviations[weapon.data.damageType]);
-			if (!SPACE1889Helper.isCreature(actorData))
+			weapon.system.damageTypeDisplay = game.i18n.localize(CONFIG.SPACE1889.damageTypeAbbreviations[weapon.system.damageType]);
+			if (!SPACE1889Helper.isCreature(actor))
 			{
-				weapon.data.locationDisplay = game.i18n.localize(CONFIG.SPACE1889.storageLocationAbbreviations[weapon.data.location]);
-				weapon.data.locationDisplayLong = game.i18n.localize(CONFIG.SPACE1889.storageLocations[weapon.data.location]);
+				weapon.system.locationDisplay = game.i18n.localize(CONFIG.SPACE1889.storageLocationAbbreviations[weapon.system.location]);
+				weapon.system.locationDisplayLong = game.i18n.localize(CONFIG.SPACE1889.storageLocations[weapon.system.location]);
 			}
 		}
 
@@ -553,52 +550,52 @@ export class Space1889Actor extends Actor
 
 	/**
 	 * 
-	 * @param {object} actorData
+	 * @param {object} actor
 	 * @param {Array<object>} weapons
 	 */
-	prepareVehicleWeapons(actorData, weapons)
+	prepareVehicleWeapons(actor, weapons)
 	{
 		let gunner = null;
-		if (actorData.data.positions.gunner.actorId != "" && game.actors != undefined)
-			gunner = game.actors.get(actorData.data.positions.gunner.actorId);
+		if (actor.system.positions.gunner.actorId != "" && game.actors != undefined)
+			gunner = game.actors.get(actor.system.positions.gunner.actorId);
 
 		const useGunner = gunner != undefined && gunner != null;
 
 		for (let weapon of weapons)
 		{
-			if (weapon.data.skillId == "none" && weapon.data.isAreaDamage)
+			if (weapon.system.skillId == "none" && weapon.system.isAreaDamage)
 			{
-				weapon.data.sizeMod = "-";
-				weapon.data.skillRating = "-";
-				weapon.data.attack = weapon.data.damage;
-				weapon.data.attackAverage = (Math.floor(weapon.data.attack / 2)).toString() + (weapon.data.attack % 2 == 0 ? "" : "+");
+				weapon.system.sizeMod = "-";
+				weapon.system.skillRating = "-";
+				weapon.system.attack = weapon.system.damage;
+				weapon.system.attackAverage = (Math.floor(weapon.system.attack / 2)).toString() + (weapon.system.attack % 2 == 0 ? "" : "+");
 			}
 			else
 			{
-				weapon.data.sizeMod = 0;
-				weapon.data.skillRating = useGunner ? this._GetSkillLevel(gunner.data, weapon.data.skillId, weapon.data.specializationId) : actorData.data.positions.gunner.total;
-				weapon.data.attack = Math.max(0, weapon.data.damage + weapon.data.skillRating);
-				weapon.data.attackAverage = (Math.floor(weapon.data.attack / 2)).toString() + (weapon.data.attack % 2 == 0 ? "" : "+");
+				weapon.system.sizeMod = 0;
+				weapon.system.skillRating = useGunner ? this._GetSkillLevel(gunner.system, weapon.system.skillId, weapon.system.specializationId) : actor.system.positions.gunner.total;
+				weapon.system.attack = Math.max(0, weapon.system.damage + weapon.system.skillRating);
+				weapon.system.attackAverage = (Math.floor(weapon.system.attack / 2)).toString() + (weapon.system.attack % 2 == 0 ? "" : "+");
 			}
-			weapon.data.damageTypeDisplay = game.i18n.localize(CONFIG.SPACE1889.damageTypeAbbreviations[weapon.data.damageType]);
+			weapon.system.damageTypeDisplay = game.i18n.localize(CONFIG.SPACE1889.damageTypeAbbreviations[weapon.system.damageType]);
 
-			if (weapon.data.location != "lager" && weapon.data.location != "mounted")
-				weapon.data.location = "mounted";
+			if (weapon.system.location != "lager" && weapon.system.location != "mounted")
+				weapon.system.location = "mounted";
 
-			weapon.data.locationDisplay = game.i18n.localize(CONFIG.SPACE1889.allStorageLocationsAbbreviations[weapon.data.location]);
-			weapon.data.locationDisplayLong = game.i18n.localize(CONFIG.SPACE1889.allStorageLocations[weapon.data.location]);
+			weapon.system.locationDisplay = game.i18n.localize(CONFIG.SPACE1889.allStorageLocationsAbbreviations[weapon.system.location]);
+			weapon.system.locationDisplayLong = game.i18n.localize(CONFIG.SPACE1889.allStorageLocations[weapon.system.location]);
 
-			if (weapon.data.location == "mounted")
+			if (weapon.system.location == "mounted")
 			{
-				const mountPos = game.i18n.localize(CONFIG.SPACE1889.weaponMountSpots[weapon.data.vehicle.spot]);
-				if (weapon.data.vehicle.isSwivelMounted)
-					weapon.data.vehicleInfo = game.i18n.format("SPACE1889.VehicleInfoSwivelMountPos", { spot: mountPos, swivelingRange: weapon.data.vehicle.swivelingRange });
+				const mountPos = game.i18n.localize(CONFIG.SPACE1889.weaponMountSpots[weapon.system.vehicle.spot]);
+				if (weapon.system.vehicle.isSwivelMounted)
+					weapon.system.vehicleInfo = game.i18n.format("SPACE1889.VehicleInfoSwivelMountPos", { spot: mountPos, swivelingRange: weapon.system.vehicle.swivelingRange });
 				else
-					weapon.data.vehicleInfo = game.i18n.format("SPACE1889.VehicleInfoRigidlyMountPos", { spot: mountPos });
+					weapon.system.vehicleInfo = game.i18n.format("SPACE1889.VehicleInfoRigidlyMountPos", { spot: mountPos });
 			}
 			else
 			{
-				weapon.data.vehicleInfo = game.i18n.localize("SPACE1889.VehicleInfoNotMounted");
+				weapon.system.vehicleInfo = game.i18n.localize("SPACE1889.VehicleInfoNotMounted");
 			}
 		}
 
@@ -608,46 +605,46 @@ export class Space1889Actor extends Actor
 
 	/**
 	 * 
-	 * @param {object} actorData
+	 * @param {object} actor
 	 */
-	setCreatureMovementDisplay(actorData)
+	setCreatureMovementDisplay(actor)
 	{
-		if (actorData.type != "creature")
+		if (actor.type != "creature")
 			return;
 
-		const data = actorData.data;
+		const system = actor.system;
 		let movement = "";
 		let siUnits = "";
-		const siMoveDistance = data.secondaries.move.total * 1.5;
+		const siMoveDistance = system.secondaries.move.total * 1.5;
 		const meter = "m";
 		const meterWithSeparator = "m; ";
-		switch (data.movementType)
+		switch (system.movementType)
 		{
 			case "amphibious":
 			case "flying":
-				const second = Math.floor(data.secondaries.move.total / 2);
-				movement = data.secondaries.move.total.toString() + " (" + second.toString() + ")";
-				siUnits = game.i18n.localize(CONFIG.SPACE1889.creatureMovementType[data.movementType]) + ": ";
+				const second = Math.floor(system.secondaries.move.total / 2);
+				movement = system.secondaries.move.total.toString() + " (" + second.toString() + ")";
+				siUnits = game.i18n.localize(CONFIG.SPACE1889.creatureMovementType[system.movementType]) + ": ";
 				siUnits += siMoveDistance.toString() + meterWithSeparator;
-				siUnits += (data.movementType == "flying") ? game.i18n.localize("SPACE1889.OnTheGround") : game.i18n.localize("SPACE1889.OnLand") + ": ";
+				siUnits += (system.movementType == "flying") ? game.i18n.localize("SPACE1889.OnTheGround") : game.i18n.localize("SPACE1889.OnLand") + ": ";
 				siUnits += (siMoveDistance/2).toString() + meter;
 				break;
 			case "fossorial":
-				movement = data.secondaries.move.total.toString() + " (" + (data.secondaries.move.total * 2).toString() + ")";
+				movement = system.secondaries.move.total.toString() + " (" + (system.secondaries.move.total * 2).toString() + ")";
 				siUnits = game.i18n.localize("SPACE1889.Move") + ": " + siMoveDistance.toString() + meterWithSeparator;
 				siUnits += game.i18n.localize("SPACE1889.Run") + ": " + (siMoveDistance * 2).toString() + meterWithSeparator;
-				siUnits += game.i18n.localize(CONFIG.SPACE1889.creatureMovementType[data.movementType]) + ": ";
-				siUnits += (data.secondaries.move.total * 2 * 0.3).toString() + "m/h";
+				siUnits += game.i18n.localize(CONFIG.SPACE1889.creatureMovementType[system.movementType]) + ": ";
+				siUnits += (system.secondaries.move.total * 2 * 0.3).toString() + "m/h";
 				break;
 			case "jumper":
 			case "manylegged":
-				movement = data.secondaries.move.total.toString() + " (" + (data.secondaries.move.total * 2).toString() + ")";
+				movement = system.secondaries.move.total.toString() + " (" + (system.secondaries.move.total * 2).toString() + ")";
 				siUnits = game.i18n.localize("SPACE1889.Move") + ": " + siMoveDistance.toString() + meterWithSeparator;
 				siUnits += game.i18n.localize("SPACE1889.Run") + ": " + (siMoveDistance * 4).toString() + meter;
 				break;
 			case "swimming":
-				movement = (data.secondaries.move.total * 2).toString() + " (0)";
-				siUnits = game.i18n.localize(CONFIG.SPACE1889.creatureMovementType[data.movementType]) + ": ";
+				movement = (system.secondaries.move.total * 2).toString() + " (0)";
+				siUnits = game.i18n.localize(CONFIG.SPACE1889.creatureMovementType[system.movementType]) + ": ";
 				siUnits += (siMoveDistance * 2).toString() + meterWithSeparator;
 				siUnits += game.i18n.localize("SPACE1889.OnLand") + ": 0m";
 				break;
@@ -656,14 +653,14 @@ export class Space1889Actor extends Actor
 				siUnits += game.i18n.localize("SPACE1889.CreatureMovementTypeImmobile") + ": 0m";
 				break;
 			default:
-				movement = data.secondaries.move.total.toString();
-				this.calcAndSetCharacterNpcSiMoveUnits(actorData)
+				movement = system.secondaries.move.total.toString();
+				this.calcAndSetCharacterNpcSiMoveUnits(actor)
 				break;
 		}
 
-		data.secondaries.move.display = movement;
-		if (data.movementType != "ground")
-			data.secondaries.move.inSiUnits = siUnits;
+		system.secondaries.move.display = movement;
+		if (system.movementType != "ground")
+			system.secondaries.move.inSiUnits = siUnits;
 	}
 
 	/**
@@ -677,52 +674,52 @@ export class Space1889Actor extends Actor
 		let bonus = 0;
 		for (let item of items)
 		{
-			if (item.data.type != "talent")
+			if (item.type != "talent")
 				continue;
 
-			if (item.data.data.bonusTargetType == type && item.data.data.bonusTarget == whatId)
+			if (item.system.bonusTargetType == type && item.system.bonusTarget == whatId)
 			{
-				let factor = item.data.data.level.value;
-				if (item.data.data.bonusStartLevel > 1)
-					factor = Math.max(0, item.data.data.level.value + 1 - item.data.data.bonusStartLevel);
-				bonus += (factor * item.data.data.bonus);
+				let factor = item.system.level.value;
+				if (item.system.bonusStartLevel > 1)
+					factor = Math.max(0, item.system.level.value + 1 - item.system.bonusStartLevel);
+				bonus += (factor * item.system.bonus);
 			}
 		}
 
 		return bonus;
 	}
 
-	getActiveDefence(actorData)
+	getActiveDefence(actor)
 	{
-		let active = actorData.data.abilities.dex.total;
+		let active = actor.system.abilities.dex.total;
 
-		for (let item of actorData.items)
+		for (let item of actor.items)
 		{
-			if (item.data.type != 'talent')
+			if (item.type != 'talent')
 				continue;
 
-			if (item.data.data.id == 'berechneteAbwehr')
-				active = actorData.data.abilities.int.total;
-			else if (item.data.data.id == 'strahlendeAbwehr')
-				active = actorData.data.abilities.cha.total;
+			if (item.system.id == 'berechneteAbwehr')
+				active = actor.system.abilities.int.total;
+			else if (item.system.id == 'strahlendeAbwehr')
+				active = actor.system.abilities.cha.total;
 		}
 
 		return active;
 	}
 
-	getPassiveDefence(actorData)
+	getPassiveDefence(actor)
 	{
-		let passive = actorData.data.abilities.con.total;
+		let passive = actor.system.abilities.con.total;
 
-		for (let item of actorData.items)
+		for (let item of actor.items)
 		{
-			if (item.data.type != 'talent')
+			if (item.type != 'talent')
 				continue;
 
-			if (item.data.data.id == 'kraftvolleAbwehr')
-				passive = actorData.data.abilities.str.total;
-			else if (item.data.data.id == 'ueberzeugteAbwehr')
-				passive = actorData.data.abilities.wil.total;
+			if (item.system.id == 'kraftvolleAbwehr')
+				passive = actor.system.abilities.str.total;
+			else if (item.system.id == 'ueberzeugteAbwehr')
+				passive = actor.system.abilities.wil.total;
 		}
 
 		return passive;
@@ -734,13 +731,13 @@ export class Space1889Actor extends Actor
 		let defenseBonus = 0;
 		for (let item of items)
 		{
-			if (item.data.type != "armor")
+			if (item.type != "armor")
 				continue;
 
-			if (item.data.data.location == "koerper")
+			if (item.system.location == "koerper")
 			{
-				defenseBonus += item.data.data.defenseBonus;
-				dexMalus += item.data.data.dexPenalty;
+				defenseBonus += item.system.defenseBonus;
+				dexMalus += item.system.dexPenalty;
 			}
 		}
 		const returnData = {
@@ -753,43 +750,43 @@ export class Space1889Actor extends Actor
 
 	/**
 	 * 
-	 * @param {Object} actorData
+	 * @param {Object} actor
 	 * @param {Object} skill
 	 * @returns {string} abilityKey
 	 */
-	_GetAttributeBase(actorData, skill)
+	_GetAttributeBase(actor, skill)
 	{
-		for (let talent of actorData.talents)
+		for (let talent of actor.system.talents)
 		{
-			if (talent.data.changedSkill == skill.data.id && talent.data.newBase != "") //besser prüfen obs eine der 6 primären Attribute ist
-				return talent.data.newBase;
+			if (talent.system.changedSkill == skill.system.id && talent.system.newBase != "") //besser prüfen obs eine der 6 primären Attribute ist
+				return talent.system.newBase;
 		}
-		return skill.data.underlyingAttribute
+		return skill.system.underlyingAttribute
 	}
 
 
 	/**
 	 * 
-	 * @param {Object} actorData 
+	 * @param {Object} actor 
 	 * @param {string} skillId 
 	 * @param {string} specializationId
   	 * @param {string} skillGroupId
 	 * @returns {number}
 	 */
-	_GetSkillLevel(actorData, skillId, specializationId, skillGroupId = "")
+	_GetSkillLevel(actor, skillId, specializationId, skillGroupId = "")
 	{
-		for (let speci of actorData.speciSkills)
+		for (let speci of actor.system.speciSkills)
 		{
-			if (specializationId == speci.data.id)
-				return speci.data.rating;
+			if (specializationId == speci.system.id)
+				return speci.system.rating;
 		}
 
 		let skillGroups = [];
-		for (let skill of actorData.skills)
+		for (let skill of actor.system.skills)
 		{
-			if (skillId == skill.data.id)
-				return skill.data.rating;
-			if (skill.data.isSkillGroup && skillGroupId == skill.data.skillGroupName)
+			if (skillId == skill.system.id)
+				return skill.system.rating;
+			if (skill.system.isSkillGroup && skillGroupId == skill.system.skillGroupName)
 				skillGroups.push(skill);
 		}
 
@@ -800,23 +797,23 @@ export class Space1889Actor extends Actor
 			if (skillGroups.length == 0)
 			{
 				// kein Fachbereich aus der Fertigkeitsgruppe gelernt
-				const uni = actorData.talents.find(v => v.data.id == "universalist");
+				const uni = actor.system.talents.find(v => v.system.id == "universalist");
 				if (uni != undefined && uni != null)
 				{
-					rating = this.GetSkillRating(actorData, skillId, "");  // Funktion behandelt fertigkeitsgruppen wie fertigkeiten
-					rating += (uni.data.data.level - 1);
+					rating = this.GetSkillRating(actor, skillId, "");  // Funktion behandelt fertigkeitsgruppen wie fertigkeiten
+					rating += (uni.system.level - 1);
 				}
 				return rating;
 			}
 
 			for (let skill of skillGroups)
 			{
-				if (skill.data.rating > rating)
-					rating = skill.data.rating;
+				if (skill.system.rating > rating)
+					rating = skill.system.rating;
 			}
 
 			const vielseitigId = "vielseitig" + skillGroupId.replace(/^(.)/, function (b) { return b.toUpperCase(); });
-			const talent = actorData.talents.find(v => v.data.id == vielseitigId);
+			const talent = actor.system.talents.find(v => v.system.id == vielseitigId);
 			let malus = 2;
 			if (talent != undefined && talent != null)
 				malus = 0;
@@ -824,33 +821,33 @@ export class Space1889Actor extends Actor
 			return Math.max(0, rating - malus);
 		}
 
-		return this.GetSkillRating(actorData, skillId, "");
+		return this.GetSkillRating(actor, skillId, "");
 	}
 
-	_CalcThings(actorData)
+	_CalcThings(actor)
 	{
-		actorData.data.foreignLanguageLimit = this.GetForeignLanguageLimit(actorData);
-		this.CalcAndSetBlockData(actorData);
-		this.CalcAndSetParryData(actorData);
-		this.CalcAndSetEvasionData(actorData);
-		this.CalcAndSetLoad(actorData);
-		this.CalcAndSetEP(actorData);
-		this.CalcAndSetHealth(actorData);
-		this.calcAndSetCharacterNpcSiMoveUnits(actorData);
+		actor.system.foreignLanguageLimit = this.GetForeignLanguageLimit(actor);
+		this.CalcAndSetBlockData(actor);
+		this.CalcAndSetParryData(actor);
+		this.CalcAndSetEvasionData(actor);
+		this.CalcAndSetLoad(actor);
+		this.CalcAndSetEP(actor);
+		this.CalcAndSetHealth(actor);
+		this.calcAndSetCharacterNpcSiMoveUnits(actor);
 	}
 
 	_GetId(item)
 	{
 		if (item != null)
-			return item.data.data.id;
+			return item.system.id;
 		return "";
 	}
 
-	GetForeignLanguageLimit(actorData)
+	GetForeignLanguageLimit(actor)
 	{
 		let linguistikId = "linguistik";
 		let underlyingAbility = "int";
-		let rating = this.GetSkillRating(actorData, linguistikId, underlyingAbility);
+		let rating = this.GetSkillRating(actor, linguistikId, underlyingAbility);
 
 		var isHausregel = game.settings.get("space1889", "improvedForeignLanguageCountCalculation");
 
@@ -875,191 +872,191 @@ export class Space1889Actor extends Actor
 	}
 
 
-	CalcAndSetBlockData(actorData)
+	CalcAndSetBlockData(actor)
 	{
 		const id = "waffenlos";
 		let underlyingAbility = "str";
-		let rating = this.GetSkillRating(actorData, id, underlyingAbility);
+		let rating = this.GetSkillRating(actor, id, underlyingAbility);
 		let instinctive = false;
 		let riposte = false;
-		rating += actorData.data.armorTotal.bonus;
-		rating += actorData.data.secondaries.defense.talentBonus;
+		rating += actor.system.armorTotal.bonus;
+		rating += actor.system.secondaries.defense.talentBonus;
 
-		for (let item of actorData.items)
+		for (let item of actor.items)
 		{
-			if (item.data.type != "talent")
+			if (item.type != "talent")
 				continue;
 
-			if (item.data.data.id == "blocken")
+			if (item.system.id == "blocken")
 			{
 				instinctive = true;
-				rating += item.data.data.level.value;
+				rating += item.system.level.value;
 			}
-			else if (item.data.data.id == "gegenschlag" && item.data.data.level.value > 1)
+			else if (item.system.id == "gegenschlag" && item.system.level.value > 1)
 			{
-				rating += (item.data.data.level.value - 1) * 2;
+				rating += (item.system.level.value - 1) * 2;
 				riposte = true;
 			}
 		}
 
 		if (game.settings.get("space1889", "optionalBlockDogeParryRule"))
-			rating += this.getPassiveDefence(actorData);
+			rating += this.getPassiveDefence(actor);
 
-		actorData.data.block.value = rating;
-		actorData.data.block.instinctive = instinctive;
-		actorData.data.block.riposte = riposte;
-		actorData.data.block.info = "";
-		const defence = actorData.data.secondaries.defense.total;
+		actor.system.block.value = rating;
+		actor.system.block.instinctive = instinctive;
+		actor.system.block.riposte = riposte;
+		actor.system.block.info = "";
+		const defence = actor.system.secondaries.defense.total;
 		const name = game.i18n.format("SPACE1889.Block");
 		const waffenlos = game.i18n.format("SPACE1889.SkillWaffenlos");
 		const nahkampf = game.i18n.format("SPACE1889.SkillNahkampf");
 		if (instinctive)
 		{
 			if (defence < rating)
-				actorData.data.block.info = game.i18n.format("SPACE1889.UseInstinctiveBlockParry", { rating: rating.toString(), rating2: (rating - 2).toString(), attackType1: waffenlos, attackType2: nahkampf, defence: defence.toString()});
+				actor.system.block.info = game.i18n.format("SPACE1889.UseInstinctiveBlockParry", { rating: rating.toString(), rating2: (rating - 2).toString(), attackType1: waffenlos, attackType2: nahkampf, defence: defence.toString()});
 			else
-				actorData.data.block.info = game.i18n.format("SPACE1889.UselessInstinctiveBlockParryEvasion", { talentName: name });
+				actor.system.block.info = game.i18n.format("SPACE1889.UselessInstinctiveBlockParryEvasion", { talentName: name });
 		}
 		else
 		{
 			if (defence + 4 < rating)
-				actorData.data.block.info = game.i18n.format("SPACE1889.UseBlockParryEvasion", { fullDefence: (defence + 4).toString(), talentName: name });
+				actor.system.block.info = game.i18n.format("SPACE1889.UseBlockParryEvasion", { fullDefence: (defence + 4).toString(), talentName: name });
 			else
-				actorData.data.block.info = game.i18n.format("SPACE1889.UselessBlockParryEvasion", { defence: (defence + 4).toString(), talentName: name });
+				actor.system.block.info = game.i18n.format("SPACE1889.UselessBlockParryEvasion", { defence: (defence + 4).toString(), talentName: name });
 		}
 	}
 
-	CalcAndSetParryData(actorData)
+	CalcAndSetParryData(actor)
 	{
 		const id = "nahkampf";
 		let skillRating = 0;
-		for (let item of actorData.items)
+		for (let item of actor.items)
 		{
-			if (item.data.type != "weapon")
+			if (item.type != "weapon")
 				continue;
-			if (item.data.data.skillId == id && item.data.data.skillRating > skillRating)
-				skillRating = item.data.data.skillRating;
+			if (item.system.skillId == id && item.system.skillRating > skillRating)
+				skillRating = item.system.skillRating;
 		}
 
 		let instinctive = false;
 		let riposte = false;
-		skillRating += actorData.data.armorTotal.bonus;
-		skillRating += actorData.data.secondaries.defense.talentBonus;
+		skillRating += actor.system.armorTotal.bonus;
+		skillRating += actor.system.secondaries.defense.talentBonus;
 
-		for (let item of actorData.items)
+		for (let item of actor.items)
 		{
-			if (item.data.type != "talent")
+			if (item.type != "talent")
 				continue;
 
-			if (item.data.data.id == "parade")
+			if (item.system.id == "parade")
 			{
 				instinctive = true;
-				skillRating += item.data.data.level.value;
+				skillRating += item.system.level.value;
 			}
-			else if (item.data.data.id == "riposte" && item.data.data.level.value > 1)
+			else if (item.system.id == "riposte" && item.system.level.value > 1)
 			{
-				skillRating += (item.data.data.level.value-1) * 2;
+				skillRating += (item.system.level.value-1) * 2;
 				riposte = true;
 			}
 		}
 
 		if (game.settings.get("space1889", "optionalBlockDogeParryRule"))
-			skillRating += this.getPassiveDefence(actorData);
+			skillRating += this.getPassiveDefence(actor);
 
-		actorData.data.parry.value = skillRating;
-		actorData.data.parry.instinctive = instinctive;
-		actorData.data.parry.riposte = riposte;
-		actorData.data.parry.info = "";
-		const defence = actorData.data.secondaries.defense.total;
+		actor.system.parry.value = skillRating;
+		actor.system.parry.instinctive = instinctive;
+		actor.system.parry.riposte = riposte;
+		actor.system.parry.info = "";
+		const defence = actor.system.secondaries.defense.total;
 		const name = game.i18n.format("SPACE1889.Parry");
 		const waffenlos = game.i18n.format("SPACE1889.SkillWaffenlos");
 		const nahkampf = game.i18n.format("SPACE1889.SkillNahkampf");
 		if (instinctive)
 		{
 			if (defence < skillRating)
-				actorData.data.parry.info = game.i18n.format("SPACE1889.UseInstinctiveBlockParry", { rating: skillRating.toString(), rating2: skillRating.toString(), attackType1: nahkampf, attackType2: waffenlos, defence: defence.toString()});
+				actor.system.parry.info = game.i18n.format("SPACE1889.UseInstinctiveBlockParry", { rating: skillRating.toString(), rating2: skillRating.toString(), attackType1: nahkampf, attackType2: waffenlos, defence: defence.toString()});
 			else
-				actorData.data.parry.info = game.i18n.format("SPACE1889.UselessInstinctiveBlockParryEvasion", { talentName: name });
+				actor.system.parry.info = game.i18n.format("SPACE1889.UselessInstinctiveBlockParryEvasion", { talentName: name });
 		}
 		else
 		{
 			if (defence + 4 < skillRating)
-				actorData.data.parry.info = game.i18n.format("SPACE1889.UseBlockParryEvasion", { fullDefence: (defence + 4).toString(), talentName: name });
+				actor.system.parry.info = game.i18n.format("SPACE1889.UseBlockParryEvasion", { fullDefence: (defence + 4).toString(), talentName: name });
 			else
-				actorData.data.parry.info = game.i18n.format("SPACE1889.UselessBlockParryEvasion", { defence: (defence + 4).toString(), talentName: name });
+				actor.system.parry.info = game.i18n.format("SPACE1889.UselessBlockParryEvasion", { defence: (defence + 4).toString(), talentName: name });
 		}
 	}
 
-	CalcAndSetEvasionData(actorData)
+	CalcAndSetEvasionData(actor)
 	{
 		const id1 = "sportlichkeit";
 		const id2 = "akrobatik";
 		let underlyingAbility1 = "str";
 		let underlyingAbility2 = "dex";
 		let instinctive = false;
-		let rating = this.GetSkillRating(actorData, id1, underlyingAbility1);
-		rating = Math.max(rating, this.GetSkillRating(actorData, id2, underlyingAbility2));
-		rating += actorData.data.armorTotal.bonus;
-		rating += actorData.data.secondaries.defense.talentBonus;
+		let rating = this.GetSkillRating(actor, id1, underlyingAbility1);
+		rating = Math.max(rating, this.GetSkillRating(actor, id2, underlyingAbility2));
+		rating += actor.system.armorTotal.bonus;
+		rating += actor.system.secondaries.defense.talentBonus;
 
-		for (let item of actorData.items)
+		for (let item of actor.items)
 		{
-			if (item.data.type != "talent")
+			if (item.type != "talent")
 				continue;
 
-			if (item.data.data.id == "ausweichen")
+			if (item.system.id == "ausweichen")
 			{
 				instinctive = true;
-				rating += item.data.data.level.value;
+				rating += item.system.level.value;
 				break;
 			}
 		}
 
 		if (game.settings.get("space1889", "optionalBlockDogeParryRule"))
-			rating += this.getPassiveDefence(actorData);
+			rating += this.getPassiveDefence(actor);
 
-		actorData.data.evasion.value = rating;
-		actorData.data.evasion.instinctive = instinctive;
+		actor.system.evasion.value = rating;
+		actor.system.evasion.instinctive = instinctive;
 
-		actorData.data.evasion.info = "";
-		const defence = actorData.data.secondaries.defense.total;
+		actor.system.evasion.info = "";
+		const defence = actor.system.secondaries.defense.total;
 		const name = game.i18n.format("SPACE1889.Evasion");
 		const waffenlos = game.i18n.format("SPACE1889.SkillWaffenlos");
 		const nahkampf = game.i18n.format("SPACE1889.SkillNahkampf");
 		if (instinctive)
 		{
 			if (defence < rating)
-				actorData.data.evasion.info = game.i18n.format("SPACE1889.UseInstinctiveEvasion", { rating: rating.toString(), defence: defence.toString()});
+				actor.system.evasion.info = game.i18n.format("SPACE1889.UseInstinctiveEvasion", { rating: rating.toString(), defence: defence.toString()});
 			else
-				actorData.data.evasion.info = game.i18n.format("SPACE1889.UselessInstinctiveBlockParryEvasion", { talentName: name });
+				actor.system.evasion.info = game.i18n.format("SPACE1889.UselessInstinctiveBlockParryEvasion", { talentName: name });
 		}
 		else
 		{
 			if (defence + 4 < rating)
-				actorData.data.evasion.info = game.i18n.format("SPACE1889.UseBlockParryEvasion", { fullDefence: (defence + 4).toString(), talentName: name });
+				actor.system.evasion.info = game.i18n.format("SPACE1889.UseBlockParryEvasion", { fullDefence: (defence + 4).toString(), talentName: name });
 			else
-				actorData.data.evasion.info = game.i18n.format("SPACE1889.UselessBlockParryEvasion", { defence: (defence + 4).toString(), talentName: name });
+				actor.system.evasion.info = game.i18n.format("SPACE1889.UselessBlockParryEvasion", { defence: (defence + 4).toString(), talentName: name });
 		}
 	}
 
-	CalcAndSetLoad(actorData)
+	CalcAndSetLoad(actor)
 	{
-		let str = actorData.data.abilities["str"].total;
+		let str = actor.system.abilities["str"].total;
 
-		for (let item of actorData.items)
+		for (let item of actor.items)
 		{
-			if (item.data.type != "talent")
+			if (item.type != "talent")
 				continue;
 
-			if (item.data.data.id == "packesel")
+			if (item.system.id == "packesel")
 			{
-				str += item.data.data.level.value;
+				str += item.system.level.value;
 				break;
 			}
 		}
 
-		if (actorData.data.health.value < 0)
-			str = Math.max(0, str + actorData.data.health.value);
+		if (actor.system.health.value < 0)
+			str = Math.max(0, str + actor.system.health.value);
 
 		let levels = [4, 10, 20, 40, 100, 150, 250, 300, 350, 400, 450, 500];
 		str = Math.max(str, 1);
@@ -1069,18 +1066,18 @@ export class Space1889Actor extends Actor
 		let loadBackpack = 0;
 		let loadStorage = 0;
 		let itemWeight = 0;
-		for (let item of actorData.items)
+		for (let item of actor.items)
 		{
 			if (item.type == "item")
-				itemWeight = item.data.data.weight * item.data.data.quantity;
+				itemWeight = item.system.weight * item.system.quantity;
 			else if (item.type == "weapon" || item.type == "armor")
-				itemWeight = item.data.data.weight;
+				itemWeight = item.system.weight;
 			else
 				continue;
 
-			if (item.data.data.location == "koerper")
+			if (item.system.location == "koerper")
 				loadBody += itemWeight;
-			else if (item.data.data.location == "rucksack")
+			else if (item.system.location == "rucksack")
 				loadBackpack += itemWeight;
 			else
 				loadStorage += itemWeight;
@@ -1104,7 +1101,7 @@ export class Space1889Actor extends Actor
 			maxLoad: 2 * levels[str + 1]
 		}
 
-		actorData.data.load = loadInfo;
+		actor.system.load = loadInfo;
 	}
 
 	/**
@@ -1131,40 +1128,40 @@ export class Space1889Actor extends Actor
 	/**
 	* Falls der Skill im Charakter enthalten ist liefert die funktion das Rating zurück
 	* Ist der Skill nicht enthalten dann wird auf das Primäre Atribut zurückgeriffen und das Abzüglich 2 zurückgeliefert
-	* @param {object} actorData
+	* @param {object} actor
 	* @param {string} skillId  
 	* @param {string} underlyingAbility
 	* @returns {number}
 	*/
-	GetSkillRating(actorData, skillId, underlyingAbility)
+	GetSkillRating(actor, skillId, underlyingAbility)
 	{
 		let rating = 0;
 
-		let skill = actorData.skills.find(entry => entry.data.id == skillId);
+		let skill = actor.system.skills.find(entry => entry.system.id == skillId);
 		if (skill != null && skill != undefined)
-			return skill.data.rating;
+			return skill.system.rating;
 
-		if (underlyingAbility != "" && actorData.data.primaereAttribute.indexOf(underlyingAbility) >= 0)
-			return Math.max(0, actorData.data.abilities[underlyingAbility].total - 2);
+		if (underlyingAbility != "" && actor.system.primaereAttribute.indexOf(underlyingAbility) >= 0)
+			return Math.max(0, actor.system.abilities[underlyingAbility].total - 2);
 
-		let underlying = this.FindUnderlyingAbility(actorData, skillId);
+		let underlying = this.FindUnderlyingAbility(actor, skillId);
 		if (underlying != "")
-			return Math.max(0, actorData.data.abilities[underlying].total - 2);
+			return Math.max(0, actor.system.abilities[underlying].total - 2);
 		return 0;
 	}
 
 	/**
 	 * 
-	 * @param actorData
+	 * @param actor
 	 * @param skillId
 	 * @returns {string} 
 	 */
-	FindUnderlyingAbility(actorData, skillId)
+	FindUnderlyingAbility(actor, skillId)
 	{
 		//Talente überprüfen ob ein rerouting auf ein anderes Attribut aktiv ist
-		const talent = actorData.talents.find(t => t.data.changedSkill == skillId && t.data.newBase != "");
+		const talent = actor.system.talents.find(t => t.system.changedSkill == skillId && t.system.newBase != "");
 		if (talent != undefined)
-			return talent.data.newBase;
+			return talent.system.newBase;
 
 		const element = CONFIG.SPACE1889.skillUnderlyingAttribute.find(e => e[0] === skillId);
 		if (element != undefined)
@@ -1178,77 +1175,77 @@ export class Space1889Actor extends Actor
 		// über die Game Items kann man zu dem Zeitpunkt noch nicht suchen, da die noch nicht angelegt sind
 		// dafür müsste die funktion zu einem späteren Zeitpunkt noch aufgerufen werden
 /*
-		skill = game.items.find(entry => entry.data.data.id == skillId);
+		skill = game.items.find(entry => entry.system.id == skillId);
 		if (skill != null && skill != undefined)
-			return skill.data.data.underlyingAttribute;
+			return skill.system.underlyingAttribute;
 		return "";*/
 	}
 
 	/**
 	 * 
-	 * @param actorData
+	 * @param actor
 	 */
-	CalcAndSetEP(actorData)
+	CalcAndSetEP(actor)
 	{
 		let xp = 0;
 		const baseXp = 15; //talent, resource
 		const houseRoule = this.IsHouseRouleXpCalculationActive();
 		let primaryBaseXp = houseRoule ? 10 : 5;
 
-		xp += this.CalcPartialSum(actorData.data.abilities["con"].value) * primaryBaseXp;
-		xp += this.CalcPartialSum(actorData.data.abilities["dex"].value) * primaryBaseXp;
-		xp += this.CalcPartialSum(actorData.data.abilities["str"].value) * primaryBaseXp;
-		xp += this.CalcPartialSum(actorData.data.abilities["cha"].value) * primaryBaseXp;
-		xp += this.CalcPartialSum(actorData.data.abilities["int"].value) * primaryBaseXp;
-		xp += this.CalcPartialSum(actorData.data.abilities["wil"].value) * primaryBaseXp;
+		xp += this.CalcPartialSum(actor.system.abilities["con"].value) * primaryBaseXp;
+		xp += this.CalcPartialSum(actor.system.abilities["dex"].value) * primaryBaseXp;
+		xp += this.CalcPartialSum(actor.system.abilities["str"].value) * primaryBaseXp;
+		xp += this.CalcPartialSum(actor.system.abilities["cha"].value) * primaryBaseXp;
+		xp += this.CalcPartialSum(actor.system.abilities["int"].value) * primaryBaseXp;
+		xp += this.CalcPartialSum(actor.system.abilities["wil"].value) * primaryBaseXp;
 
-		for (let item of actorData.items)
+		for (let item of actor.items)
 		{
-			if (item.data.type == "skill")
+			if (item.type == "skill")
 			{
-				xp += this.CalcPartialSum(item.data.data.level) * 2;
+				xp += this.CalcPartialSum(item.system.level) * 2;
 			}
-			else if (item.data.type == "specialization")
+			else if (item.type == "specialization")
 			{
 				if (houseRoule)
-					xp += this.CalcPartialSum(item.data.data.level);
+					xp += this.CalcPartialSum(item.system.level);
 				else
-					xp += item.data.data.level * 3;
+					xp += item.system.level * 3;
 			}
-			else if (item.data.type == "talent")
+			else if (item.type == "talent")
 			{
-				xp += item.data.data.level.value * baseXp;
+				xp += item.system.level.value * baseXp;
 			}
-			else if (item.data.type == "resource")
+			else if (item.type == "resource")
 			{
-				if (item.data.data.isBase)
+				if (item.system.isBase)
 				{
-					if (item.data.data.level.value >= 1)
+					if (item.system.level.value >= 1)
 					{
-						xp += 8 + ((item.data.data.level.value - 1) * baseXp);
+						xp += 8 + ((item.system.level.value - 1) * baseXp);
 					}
-					else if (item.data.data.level.value <= -1)
+					else if (item.system.level.value <= -1)
 					{
-						xp += -8 + ((item.data.data.level.value + 1) * baseXp);
+						xp += -8 + ((item.system.level.value + 1) * baseXp);
 					}
 				}
 				else
 				{
-					if (item.data.data.level.value == 0)
+					if (item.system.level.value == 0)
 						xp += 7;
 					else
-						xp += (item.data.data.level.value * baseXp);
+						xp += (item.system.level.value * baseXp);
 				}
 			}
 		}
 
-		if (actorData.type == 'character')
+		if (actor.type == 'character')
 		{
-			actorData.data.attributes.xp.used = xp;
-			actorData.data.attributes.xp.available = actorData.data.attributes.xp.value - xp;
+			actor.system.attributes.xp.used = xp;
+			actor.system.attributes.xp.available = actor.system.attributes.xp.value - xp;
 		}
 		else 
-			actorData.data.powerEquivalentInXp  = xp;
+			actor.system.powerEquivalentInXp  = xp;
 	}
 
 
@@ -1270,53 +1267,53 @@ export class Space1889Actor extends Actor
 		return game.settings.get("space1889", "improvedEpCalculation");
 	}
 
-	CalcAndSetHealth(actorData)
+	CalcAndSetHealth(actor)
 	{
 		let damage = 0;
 		let controlDamage = 0;
 		let propulsionDamage = 0;
 		let gunDamage = 0;
 
-		for (const injury of actorData.injuries)
+		for (const injury of actor.system.injuries)
 		{
-			const healthOrStructureDamage = this.GetDamageFromType(injury.data.damage, injury.data.damageType, actorData.type);
+			const healthOrStructureDamage = this.GetDamageFromType(injury.system.damage, injury.system.damageType, actor.type);
 
 			damage += healthOrStructureDamage;
 
-			if (actorData.type == "vehicle")
+			if (actor.type == "vehicle")
 			{
-				switch (injury.data.damageType)
+				switch (injury.system.damageType)
 				{
 					case "controls":
-						controlDamage += (2*injury.data.damage) - healthOrStructureDamage;
+						controlDamage += (2*injury.system.damage) - healthOrStructureDamage;
 						break;
 					case "propulsion":
-						propulsionDamage += (2*injury.data.damage) - healthOrStructureDamage;
+						propulsionDamage += (2*injury.system.damage) - healthOrStructureDamage;
 						break;
 					case "guns":
 						gunDamage += damage;
 						break;
 					case "crew":
-						crewDamage += injury.data.damage;
+						crewDamage += injury.system.damage;
 						break;
 				}
 			}
 		}
-		const newHealth = actorData.data.health.max - damage;
+		const newHealth = actor.system.health.max - damage;
 
-		actorData.data.health.value = newHealth;
-		if (actorData.type == "vehicle")
+		actor.system.health.value = newHealth;
+		if (actor.type == "vehicle")
 		{
-			actorData.data.health.controlDamage = controlDamage;
-			actorData.data.health.propulsionDamage = propulsionDamage;
-			actorData.data.health.gunDamage = gunDamage;
+			actor.system.health.controlDamage = controlDamage;
+			actor.system.health.propulsionDamage = propulsionDamage;
+			actor.system.health.gunDamage = gunDamage;
 		}
 
 		if (newHealth < 0)
 		{
-			actorData.data.secondaries.move.total = Math.max(0, actorData.data.secondaries.move.total + newHealth);
-			if (actorData.type != 'vehicle')
-				this.CalcAndSetLoad(actorData);
+			actor.system.secondaries.move.total = Math.max(0, actor.system.secondaries.move.total + newHealth);
+			if (actor.type != 'vehicle')
+				this.CalcAndSetLoad(actor);
 		}
 	}
 
@@ -1377,22 +1374,22 @@ export class Space1889Actor extends Actor
 	 */
 	_getCharacterRollData(data)
 	{
-		if (this.data.type !== 'character') return;
+		if (this.type !== 'character') return;
 
 		// Copy the ability scores to the top level, so that rolls can use
 		// formulas like `@str.mod + 4`.
-		if (data.abilities)
+		if (data.system.abilities)
 		{
-			for (let [k, v] of Object.entries(data.abilities))
+			for (let [k, v] of Object.entries(data.system.abilities))
 			{
 				data[k] = foundry.utils.deepClone(v);
 			}
 		}
 
 		// Add level for easier access, or fall back to 0.
-		if (data.attributes.xp)
+		if (system.attributes.xp)
 		{
-			data.xp = data.attributes.xp.value ?? 0;
+			system.xp = system.attributes.xp.value ?? 0;
 		}
 	}
 
@@ -1401,7 +1398,7 @@ export class Space1889Actor extends Actor
 	 */
 	_getNpcRollData(data)
 	{
-		if (this.data.type !== 'npc') return;
+		if (this.type !== 'npc') return;
 
 		// Process additional NPC data here.
 	}
@@ -1492,7 +1489,7 @@ export class Space1889Actor extends Actor
 
 	rollPrimary(key, event)
 	{
-		const dieCount = this.data.data.abilities[key]?.total;
+		const dieCount = this.system.abilities[key]?.total;
 		const evaluation = SPACE1889RollHelper.getEventEvaluation(event);
 		if (evaluation.showInfoOnly)
 			return this.showAttributeInfo(game.i18n.localize(CONFIG.SPACE1889.abilities[key]), key, evaluation.whisperInfo);
@@ -1502,7 +1499,7 @@ export class Space1889Actor extends Actor
 
 	rollSecondary(key, event)
 	{
-		const dieCount = this.data.data.secondaries[key]?.total;
+		const dieCount = this.system.secondaries[key]?.total;
 		const evaluation = SPACE1889RollHelper.getEventEvaluation(event);
 		if (evaluation.showInfoOnly)
 			return this.showAttributeInfo(game.i18n.localize(CONFIG.SPACE1889.secondaries[key]), key, evaluation.whisperInfo);
@@ -1512,7 +1509,7 @@ export class Space1889Actor extends Actor
 
 	rollSkill(key, event)
 	{
-		const item = this.data.skills.find(e => e.data.id == key);
+		const item = this.system.skills.find(e => e.system.id == key);
 		if (item != undefined)
 		{
 			SPACE1889RollHelper.rollItem(item, this, event);
@@ -1521,7 +1518,7 @@ export class Space1889Actor extends Actor
 
 	rollSpecialization(key, event)
 	{
-		const item = this.data.speciSkills.find(e => e.data.id == key);
+		const item = this.system.speciSkills.find(e => e.system.id == key);
 		if (item != undefined)
 		{
 			SPACE1889RollHelper.rollItem(item, this, event);
@@ -1530,10 +1527,10 @@ export class Space1889Actor extends Actor
 
 	rollAttack(key, event)
 	{
-		const item = this.data.weapons.find(e => e.data.id == key);
+		const item = this.system.weapons.find(e => e.system.id == key);
 		if (item != undefined)
 		{
-			if (this.data.type == "vehicle")
+			if (this.type == "vehicle")
 				SPACE1889RollHelper.rollManoeuver("Attack", this, event, item._id);
 			else
 				SPACE1889RollHelper.rollItem(item, this, event);
@@ -1542,7 +1539,7 @@ export class Space1889Actor extends Actor
 
 	rollTalent(key, event)
 	{
-		const item = this.data.talents.find(e => e.data.id == key);
+		const item = this.system.talents.find(e => e.system.id == key);
 		if (item != undefined)
 		{
 			SPACE1889RollHelper.rollItem(item, this, event);
@@ -1556,23 +1553,23 @@ export class Space1889Actor extends Actor
 		switch (key)
 		{
 			case 'block':
-				dieCount = this.data.data.block.value;
+				dieCount = this.system.block.value;
 				label = game.i18n.localize("SPACE1889.Block");
 				break;
 			case 'parry':
-				dieCount = this.data.data.parry.value;
+				dieCount = this.system.parry.value;
 				label = game.i18n.localize("SPACE1889.Parry");
 				break;
 			case 'evasion':
-				dieCount = this.data.data.evasion.value;
+				dieCount = this.system.evasion.value;
 				label = game.i18n.localize("SPACE1889.Evasion");
 				break;
 			case 'defense':
-				dieCount = this.data.data.secondaries.defense.total;
+				dieCount = this.system.secondaries.defense.total;
 				label = game.i18n.localize("SPACE1889.SecondaryAttributeDef");
 				break;
 			case 'totalDefense':
-				dieCount = this.data.data.secondaries.defense.total + 4;
+				dieCount = this.system.secondaries.defense.total + 4;
 				label = game.i18n.localize("SPACE1889.TalentVolleAbwehr");
 				break;			
 		}
@@ -1581,7 +1578,7 @@ export class Space1889Actor extends Actor
 		if (evaluation.showInfoOnly)
 			return this.showAttributeInfo(label, key, evaluation.whisperInfo);
 
-		if (this.data.type == "vehicle")
+		if (this.type == "vehicle")
 			return SPACE1889RollHelper.rollManoeuver(key, this, event);
 		else
 			return this.rollAttribute(dieCount, evaluation.showDialog, key);

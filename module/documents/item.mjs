@@ -20,62 +20,62 @@ export class Space1889Item extends Item {
 	{
 		try 
 		{
-			const item = this.data;
-			if (item.name.length > 0 && item.data.id == "")
-				item.data.id = this.createId(item.name);
+			const item = this;
+			if (item.name.length > 0 && item.system.id == "")
+				item.system.id = this.createId(item.name);
 			
-			if (item.type == "skill" && item.data.id !== "")
+			if (item.type == "skill" && item.system.id !== "")
 			{
 				this.setLangIdAndLabel(item, "Skill", true);
 				this.setFightingSkill(item);
 			}
-			else if (item.type == "specialization" && item.data.id !== "")
+			else if (item.type == "specialization" && item.system.id !== "")
 			{
 				this.setLangIdAndLabel(item, "SpeciSkill", true);
 			}
 			else if (item.type == "talent")
 			{
-				if (item.data.id !== "")
+				if (item.system.id !== "")
 				{
 					this.setLangIdAndLabel(item, "Talent", true, true);
 				}
 
-				if (item.data.bonusTarget != "")
+				if (item.system.bonusTarget != "")
 				{
-					const base = item.data.bonusTargetType != "" ? item.data.bonusTargetType.replace(/^(.)/, function (c) { return c.toUpperCase(); }) : "Skill";
-					item.data.bonusTargetLangId = 'SPACE1889.' + base + item.data.bonusTarget.replace(/^(.)/, function (b) { return b.toUpperCase(); });
+					const base = item.system.bonusTargetType != "" ? item.system.bonusTargetType.replace(/^(.)/, function (c) { return c.toUpperCase(); }) : "Skill";
+					item.system.bonusTargetLangId = 'SPACE1889.' + base + item.system.bonusTarget.replace(/^(.)/, function (b) { return b.toUpperCase(); });
 					if (this.ShowTalentDetail(item))
 					{
-						item.data.showDetail = true;
-						const bonusTarget = game.i18n.localize(item.data.bonusTargetLangId);
-						if (bonusTarget != item.data.bonusTargetLangId)
-							item.data.label += " (" + bonusTarget + ")";
+						item.system.showDetail = true;
+						const bonusTarget = game.i18n.localize(item.system.bonusTargetLangId);
+						if (bonusTarget != item.system.bonusTargetLangId)
+							item.system.label += " (" + bonusTarget + ")";
 					}
 				}
 
 				if (this.IsTalentRollable(item))
-					item.data.isRollable = true;
+					item.system.isRollable = true;
 
 			}
-			else if (item.type == "weakness" && item.data.id !== "")
+			else if (item.type == "weakness" && item.system.id !== "")
 			{
 				this.setLangIdAndLabel(item, "Weakness", true);
 				if (item.img == "icons/svg/item-bag.svg")
 					item.img = "icons/svg/paralysis.svg";
 			}
-			else if (item.type == "resource" && item.data.id !== "")
+			else if (item.type == "resource" && item.system.id !== "")
 			{
 				this.setLangIdAndLabel(item, "Resource", true, true);
 				if (item.img == "icons/svg/item-bag.svg")
 					item.img = "icons/svg/card-joker.svg";
 			}
-			else if (item.type == "weapon" && item.data.id !== "")
+			else if (item.type == "weapon" && item.system.id !== "")
 			{
 				this.setLangIdAndLabel(item, "Weapon", true);
 				if (item.img == "icons/svg/item-bag.svg")
 					item.img = "icons/svg/sword.svg";
 			}
-			else if (item.type == "armor" && item.data.id !== "")
+			else if (item.type == "armor" && item.system.id !== "")
 			{
 				this.setLangIdAndLabel(item, "Armor", true);
 				if (item.img == "icons/svg/item-bag.svg")
@@ -85,27 +85,27 @@ export class Space1889Item extends Item {
 			{
 				this.setLangIdAndLabel(item, "Item", true);
 			}
-			else if (item.type == "language" && item.data.id !== "")
+			else if (item.type == "language" && item.system.id !== "")
 			{
 				this.setLangIdAndLabel(item, "Language", false);
-				item.data.origin = game.i18n.localize(CONFIG.SPACE1889.languageOrigins[item.data.originId]);
-				item.data.family = game.i18n.localize(CONFIG.SPACE1889.familyOflanguages[item.data.familyId]);
-				item.data.dialect = game.i18n.localize(CONFIG.SPACE1889.languages[item.data.isDialectSourceId]);
-				item.data.oldInfo = item.data.old ? game.i18n.localize('SPACE1889.OldLanguageInfo') : "";
+				item.system.origin = game.i18n.localize(CONFIG.SPACE1889.languageOrigins[item.system.originId]);
+				item.system.family = game.i18n.localize(CONFIG.SPACE1889.familyOflanguages[item.system.familyId]);
+				item.system.dialect = game.i18n.localize(CONFIG.SPACE1889.languages[item.system.isDialectSourceId]);
+				item.system.oldInfo = item.system.old ? game.i18n.localize('SPACE1889.OldLanguageInfo') : "";
 				if (item.img == "icons/svg/item-bag.svg")
 					item.img = "icons/svg/sound.svg";
 			}
 			else if (item.type == "currency")
 			{
 				this.setLangIdAndLabel(item, "Currency", false, false);
-				const abbrLangId = item.data.nameLangId + "Abbr";
-				item.data.abbr = game.i18n.localize(abbrLangId);
-				if (item.data.abbr == "" || item.data.abbr == abbrLangId)
-					item.data.abbr = item.data.label;
+				const abbrLangId = item.system.nameLangId + "Abbr";
+				item.system.abbr = game.i18n.localize(abbrLangId);
+				if (item.system.abbr == "" || item.system.abbr == abbrLangId)
+					item.system.abbr = item.system.label;
 				if (item.img == "icons/svg/item-bag.svg")
 					item.img = "icons/svg/coins.svg";
 
-				item.data.exchangeValue = SPACE1889Helper.getExchangeValue(item);
+				item.system.exchangeValue = SPACE1889Helper.getExchangeValue(item);
 			}
 			
 		}
@@ -117,15 +117,15 @@ export class Space1889Item extends Item {
 
 	/**
 	 * 
-	 * @param {object} itemData
+	 * @param {object} item
 	 * @returns {boolean}
 	 */
-	IsTalentRollable(itemData)
+	IsTalentRollable(item)
 	{
-		if (itemData.data.id == "geschaerfterSinn"
-			|| itemData.data.id == "paralysierenderSchlag"
-			|| itemData.data.id == "assassine"
-			|| itemData.data.id == "eigenartigerKampfstil")
+		if (item.system.id == "geschaerfterSinn"
+			|| item.system.id == "paralysierenderSchlag"
+			|| item.system.id == "assassine"
+			|| item.system.id == "eigenartigerKampfstil")
 		{
 			return true;
 		}
@@ -134,14 +134,14 @@ export class Space1889Item extends Item {
 
 	/**
 	 *
-	 * @param {object} itemData
+	 * @param {object} item
 	 * @returns {boolean}
 	 */
-	ShowTalentDetail(itemData)
+	ShowTalentDetail(item)
 	{
-		if (itemData.data.id == "geschaerfterSinn"
-			|| itemData.data.id == "begabung"
-			|| itemData.data.id == "eigenartigerKampfstil")
+		if (item.system.id == "geschaerfterSinn"
+			|| item.system.id == "begabung"
+			|| item.system.id == "eigenartigerKampfstil")
 		{
 			return true;
 		}
@@ -157,34 +157,34 @@ export class Space1889Item extends Item {
 	 */
 	setLangIdAndLabel(item, base, setDescription, setInfo = false)
 	{
-		if (item == undefined || item.data.id == undefined || item.data.id == "")
+		if (item == undefined || item.system.id == undefined || item.system.id == "")
 			return;
 
-		const upperCaseId = item.data.id.replace(/^(.)/, function(b){return b.toUpperCase();});
-		item.data.nameLangId = 'SPACE1889.' + base + upperCaseId;
+		const upperCaseId = item.system.id.replace(/^(.)/, function(b){return b.toUpperCase();});
+		item.system.nameLangId = 'SPACE1889.' + base + upperCaseId;
 		if (setDescription)
 		{
-			if (item.type == "skill" && item.data.isSkillGroup && item.data.skillGroupName.length > 0)
-				item.data.descriptionLangId = CONFIG.SPACE1889.skillGroupDescriptions[item.data.skillGroupName];
+			if (item.type == "skill" && item.system.isSkillGroup && item.system.skillGroupName.length > 0)
+				item.system.descriptionLangId = CONFIG.SPACE1889.skillGroupDescriptions[item.system.skillGroupName];
 			else
-				item.data.descriptionLangId = 'SPACE1889.' + base + 'Desc' + upperCaseId;
+				item.system.descriptionLangId = 'SPACE1889.' + base + 'Desc' + upperCaseId;
 		}
 		if (setInfo)
 		{
-			item.data.infoLangId = 'SPACE1889.' + base + 'Info' + upperCaseId;
+			item.system.infoLangId = 'SPACE1889.' + base + 'Info' + upperCaseId;
 			if (base == "Talent")
 			{
-				const toolTip = game.i18n.localize(item.data.infoLangId);
-				item.data.toolTip = item.data.info != "" && toolTip == item.data.infoLangId ? item.data.info : toolTip;
+				const toolTip = game.i18n.localize(item.system.infoLangId);
+				item.system.toolTip = item.system.info != "" && toolTip == item.system.infoLangId ? item.system.info : toolTip;
 			}
 		}
 
-		item.data.label = game.i18n.localize(item.data.nameLangId) ?? item.name;
-		if (item.data.label == item.data.nameLangId)
-			item.data.label = item.name;
+		item.system.label = game.i18n.localize(item.system.nameLangId) ?? item.name;
+		if (item.system.label == item.system.nameLangId)
+			item.system.label = item.name;
 
-		if (item.data.unlockIdForUser == undefined)
-			item.data.unlockIdForUser = false;
+		if (item.system.unlockIdForUser == undefined)
+			item.system.unlockIdForUser = false;
 	}
 
 
@@ -222,7 +222,7 @@ export class Space1889Item extends Item {
 	setFightingSkill(item)
 	{
 		let fightingSkills = ["geschuetze", "nahkampf", "primitiverFernkampf", "schusswaffen", "sprengstoffe", "Waffenlos"];
-		item.data.isFightingSkill = fightingSkills.includes(item.data.id);
+		item.system.isFightingSkill = fightingSkills.includes(item.system.id);
 	}
 
 	/**
@@ -233,7 +233,7 @@ export class Space1889Item extends Item {
 		// If present, return the actor's roll data.
 		if ( !this.actor ) return null;
 		const rollData = this.actor.getRollData();
-		rollData.item = foundry.utils.deepClone(this.data.data);
+		rollData.item = foundry.utils.deepClone(this.system);
 
 		return rollData;
 	}
@@ -244,22 +244,22 @@ export class Space1889Item extends Item {
 	 * @private
 	 */
 	async roll(event) {
-		const item = this.data;
+		const item = this;
 
-		if (!this.data.data.formula)
+		if (!this.system.formula)
 		{
 			SPACE1889RollHelper.rollItemInfo(item, this.actor, !event?.shiftKey && !event?.ctrlKey);
 			return;
 		}
 
 
-		if (this.data.data.formula)
+		if (this.system.formula)
 		{
 			// Initialize chat data.
 			const speaker = ChatMessage.getSpeaker({ actor: this.actor });
 			const rollMode = game.settings.get('core', 'rollMode');
 			let label = `[${item.type}] ${item.name}`;
-			let desc = item.data.description;
+			let desc = item.system.description;
 			// Retrieve roll data.
 			const rollData = this.getRollData();
 
@@ -283,7 +283,7 @@ export class Space1889Item extends Item {
 	*/
 	async rollSpecial(dieCount, showDialog) 
 	{
-		SPACE1889RollHelper.rollSpecial(this.data, this.actor, dieCount, showDialog);
+		SPACE1889RollHelper.rollSpecial(this, this.actor, dieCount, showDialog);
 	}
 
 	/**
@@ -293,7 +293,7 @@ export class Space1889Item extends Item {
 	*/
 	async rollSpecialTalent(dieCount, showDialog) 
 	{
-		SPACE1889RollHelper.rollSpecialTalent(this.data, this.actor, dieCount, showDialog);
+		SPACE1889RollHelper.rollSpecialTalent(this, this.actor, dieCount, showDialog);
 	}
 }
 

@@ -95,7 +95,7 @@ Hooks.once("ready", async function() {
 	// refresh Vehicle Data
 	game.actors.forEach((values, keys) =>
 	{
-		if (values.data.type == "vehicle")
+		if (values.type == "vehicle")
 			values.prepareDerivedData();
 	});
 });
@@ -115,7 +115,7 @@ Hooks.once("ready", async function() {
 async function createItemMacro(data, slot) {
 	if (data.type !== "Item") return;
 	if (!("data" in data)) return ui.notifications.warn("You can only create macro buttons for owned Items");
-	const item = data.data;
+	const item = data;
 
 	// Create the macro command
 	const command = `game.space1889.rollItemMacro("${item.name}");`;
@@ -150,10 +150,10 @@ function rollItemMacro(itemName) {
 
 
 	if (item.type === "skill" || item.type === "specialization")
-		return item.rollSpecial(item.data.data.rating, true);
+		return item.rollSpecial(item.system.rating, true);
 
 	if (item.type === "weapon")
-		return item.rollSpecial(item.data.data.attack, true);
+		return item.rollSpecial(item.system.attack, true);
 
 	// Trigger the item roll
 	return item.roll();
