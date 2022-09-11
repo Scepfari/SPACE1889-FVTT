@@ -24,15 +24,15 @@ export class Space1889ItemSheet extends ItemSheet {
 
 		// Alternatively, you could use the following return statement to do a
 		// unique item sheet by type, like `weapon-sheet.html`.
-		return `${path}/item-${this.item.data.type}-sheet.html`;
+		return `${path}/item-${this.item.type}-sheet.html`;
 	}
 
 	/* -------------------------------------------- */
 
 	/** @override */
-	getData() {
+	async getData(options) {
 		// Retrieve base data structure.
-		const context = super.getData();
+		const context = await super.getData(options);
 
 		// Use a safe clone of the item data for further operations.
 		const item = context.item;
@@ -102,6 +102,10 @@ export class Space1889ItemSheet extends ItemSheet {
 			context.system['storageLocations'] = CONFIG.SPACE1889.storageLocations;
 			context.system['storageLocationsAbbr'] = CONFIG.SPACE1889.storageLocationAbbreviations;
 		}
+
+		//TextEditor
+		context.enrichedDescription = await TextEditor.enrichHTML(this.object.system.description, { async: true });
+
 		return context;
 	}
 

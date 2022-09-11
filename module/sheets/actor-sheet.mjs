@@ -27,12 +27,12 @@ export class Space1889ActorSheet extends ActorSheet {
 	/* -------------------------------------------- */
 
 	/** @override */
-	getData() {
+	async getData(options) {
 		// Retrieve the data structure from the base sheet. You can inspect or log
 		// the context variable to see the structure, but some key properties for
 		// sheets are the actor object, the data object, whether or not it's
 		// editable, the items array, and the effects array.
-		const context = super.getData();
+		const context = await super.getData(options);
 
 		// Use a safe clone of the actor data for further operations.
 		const actor = this.actor.toObject(false);
@@ -70,6 +70,10 @@ export class Space1889ActorSheet extends ActorSheet {
 
 		// Prepare active effects
 		context.effects = prepareActiveEffectCategories(this.actor.effects);
+
+		//TextEditor
+		context.enrichedBiography = await TextEditor.enrichHTML(this.object.system.biography, { async: true });
+		context.enrichedDescription = await TextEditor.enrichHTML(this.object.system.description, {async: true});
 
 		return context;
 	}
