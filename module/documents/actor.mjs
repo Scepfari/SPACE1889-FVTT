@@ -582,7 +582,7 @@ export class Space1889Actor extends Actor
 			else
 			{
 				weapon.system.sizeMod = 0;
-				weapon.system.skillRating = useGunner ? this._GetSkillLevel(gunner.system, weapon.system.skillId, weapon.system.specializationId) : actor.system.positions.gunner.total;
+				weapon.system.skillRating = useGunner ? this._GetSkillLevel(gunner, weapon.system.skillId, weapon.system.specializationId) : actor.system.positions.gunner.total;
 				weapon.system.attack = Math.max(0, weapon.system.damage + weapon.system.skillRating);
 				weapon.system.attackAverage = (Math.floor(weapon.system.attack / 2)).toString() + (weapon.system.attack % 2 == 0 ? "" : "+");
 			}
