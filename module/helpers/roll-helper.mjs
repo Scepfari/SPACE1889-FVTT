@@ -178,12 +178,13 @@ export default class SPACE1889RollHelper
 
 		function getChatData(wurfelAnzahl)
 		{
+			const anzahl = Math.max(0, wurfelAnzahl);
 			const von = game.i18n.localize("SPACE1889.Of");
 			const dieType = game.settings.get("space1889", "dice");
 			let messageContent = `<div><h2>${item.system.label}</h2></div>`;
 			if (withExtraInfo)
 				messageContent += `${extraInfo} <br>`;
-			messageContent += `${info} <b>[[${wurfelAnzahl}${dieType}]] ${von}  ${wurfelAnzahl}</b> <br>`;
+			messageContent += `${info} <b>[[${anzahl}${dieType}]] ${von}  ${wurfelAnzahl}</b> <br>`;
 			let chatData =
 			{
 				user: game.user.id,
@@ -674,10 +675,10 @@ export default class SPACE1889RollHelper
 		const isDefense = key == "defense" || isTotalDefense;
 
 		if (isDefense && actorSystem.health.value > 0 && actorSystem.positions.pilot.staffed)
-			skillWithSpezAndValue += " + " + game.i18n.localize("SPACE1889.VehiclePassiveDefense") + " + " + game.i18n.localize("SPACE1889.VehicleManeuverability");
+			skillWithSpezAndValue += " + " + game.i18n.localize("SPACE1889.PassiveDefense") + " + " + game.i18n.localize("SPACE1889.VehicleManeuverability");
 		else if (isDefense)
 		{
-			skillWithSpezAndValue = game.i18n.localize("SPACE1889.VehiclePassiveDefense") + " + " + game.i18n.localize("SPACE1889.VehicleNegativeStructure");
+			skillWithSpezAndValue = game.i18n.localize("SPACE1889.PassiveDefense") + " + " + game.i18n.localize("SPACE1889.VehicleNegativeStructure");
 		}
 		skillWithSpezAndValue += isTotalDefense ? " + 4" : "";
 
@@ -913,11 +914,12 @@ export default class SPACE1889RollHelper
 						{
 							const input = html.find('#anzahlDerWuerfel').val();
 							const anzahl = input ? parseInt(input) : 1;
+							const realAnzahl = Math.max(0, anzahl);
 							const grund = manoeuvreAndName;
 
 							let messageContent = `<div><h2>${grund}</h2></div>`;
 							messageContent += `<p>${diceInfo}</p>`;
-							messageContent += `<b>[[${anzahl}${dieType}]] von ${anzahl}</b> <br>`;
+							messageContent += `<b>[[${realAnzahl}${dieType}]] von ${anzahl}</b> <br>`;
 							let chatData =
 							{
 								user: game.user.id,

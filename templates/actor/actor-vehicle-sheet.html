@@ -14,8 +14,8 @@
 					<div class="item item-max-with60px">{{localize "SPACE1889.VehicleStructure"}}</div>
 					<div class="item item-max-with75px">{{localize "SPACE1889.Speed"}}</div>
 					<div class="item item-max-with100px">{{localize "SPACE1889.VehicleManeuverability"}}</div>
-					<div class="item item-max-with75px" title="{{localize "SPACE1889.VehiclePassiveDefense"}} - {{localize "SPACE1889.ClickToRoll"}}">
-						<label class="resource-label rollable" data-roll-key="passiveDefence" data-roll-type="actor" data-roll-diecount="{{system.passiveDefense}}" data-label='{{localize "SPACE1889.VehiclePassiveDefense"}}'>{{localize "SPACE1889.VehiclePassiveDefenseAbbr"}}</label>
+					<div class="item item-max-with75px" title="{{localize "SPACE1889.PassiveDefense"}} - {{localize "SPACE1889.ClickToRoll"}}">
+						<label class="resource-label rollable" data-roll-key="passiveDefense" data-roll-type="actor" data-roll-diecount="{{system.passiveDefense}}" data-label='{{localize "SPACE1889.PassiveDefense"}}'>{{localize "SPACE1889.PassiveDefenseAbbr"}}</label>
 					</div>
 					<div class="item-name item-max-with60px">{{localize "SPACE1889.SecondaryAttributeSiz"}}</div>
 				</li>
@@ -50,8 +50,12 @@
 						</div>
 					</div>
 					<div class="flexrow item-max-with75px">
-						<div class="item-margintb2px">
-							<a class="increment-passiveDefense-click">{{system.passiveDefense}}</a>
+						<div style="display: grid; grid-template-columns: 45% 10% 45%; grid-template-rows: 100%;">
+							<div class="item-margintb2px item-right">{{system.secondaries.defense.passiveTotal}}</div>
+							<div class="item-margintb2px"> / </div>
+							<div class="item-margintb2px item-left">
+								<a class="increment-maneuverability-max-click">{{system.passiveDefense}}</a>
+							</div>
 						</div>
 					</div>
 					<div class="flexrow item-max-with60px">

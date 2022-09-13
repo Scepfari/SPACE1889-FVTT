@@ -289,15 +289,15 @@ export class Space1889Actor extends Actor
 			(actor.system.positions.captain.actorId == "" || actor.system.positions.captain.actorId != actor.system.positions.pilot.actorId))
 			actor.system.secondaries.initiative.total += 2;
 
-		actor.system.secondaries.defense.value = actor.system.passiveDefense;
+		actor.system.secondaries.defense.passiveTotal = this.getPassiveDefense(actor);
+		actor.system.secondaries.defense.value = actor.system.secondaries.defense.passiveTotal;
 		if (actor.system.maneuverability.value == disabled)
-			actor.system.secondaries.defense.total = actor.system.passiveDefense
+			actor.system.secondaries.defense.total = actor.system.secondaries.defense.passiveTotal;
 		else
-			actor.system.secondaries.defense.total = actor.system.passiveDefense + actor.system.positions.pilot.total + actor.system.maneuverability.value;
-
-		if (actor.system.health.value < 0)
-			actor.system.secondaries.defense.total = Math.max(0, actor.system.secondaries.defense.total + actor.system.health.value);
-
+		{
+			actor.system.secondaries.defense.total = actor.system.secondaries.defense.passiveTotal + actor.system.positions.pilot.total + actor.system.maneuverability.value;
+			actor.system.secondaries.defense.total = Math.max(actor.system.secondaries.defense.total, actor.system.secondaries.defense.passiveTotal);
+		}
 	}
 
 	getWeaponLoad(actor)
@@ -463,7 +463,9 @@ export class Space1889Actor extends Actor
 		system.secondaries.stun.total = system.secondaries.stun.value + system.secondaries.stun.talentBonus;
 		system.secondaries.size.talentBonus = this.getBonusFromTalents("size", "secondary", actor.items);
 		system.secondaries.size.total = system.secondaries.size.value + system.secondaries.size.talentBonus;
-		system.secondaries.defense.value = this.getPassiveDefence(actor) + this.getActiveDefence(actor) - system.secondaries.size.total;
+		system.secondaries.defense.passiveTotal = this.getPassiveDefense(actor) - system.secondaries.size.total;
+		system.secondaries.defense.activeTotal = this.getActiveDefense(actor) - system.secondaries.size.total;
+		system.secondaries.defense.value = this.getPassiveDefense(actor) + this.getActiveDefense(actor) - system.secondaries.size.total;
 		system.secondaries.defense.talentBonus = this.getBonusFromTalents("defense", "secondary", actor.items);
 		system.secondaries.defense.armorBonus = system.armorTotal.bonus;
 		system.secondaries.defense.total = system.secondaries.defense.value + system.secondaries.defense.talentBonus + system.secondaries.defense.armorBonus;
@@ -696,7 +698,7 @@ export class Space1889Actor extends Actor
 		return bonus;
 	}
 
-	getActiveDefence(actor)
+	getActiveDefense(actor)
 	{
 		let active = actor.system.abilities.dex.total;
 
@@ -714,22 +716,31 @@ export class Space1889Actor extends Actor
 		return active;
 	}
 
-	getPassiveDefence(actor)
+	getPassiveDefense(actor)
 	{
-		let passive = actor.system.abilities.con.total;
-
-		for (let item of actor.items)
+		if (actor.type != "vehicle")
 		{
-			if (item.type != 'talent')
-				continue;
+			let passive = actor.system.abilities.con.total;
 
-			if (item.system.id == 'kraftvolleAbwehr')
-				passive = actor.system.abilities.str.total;
-			else if (item.system.id == 'ueberzeugteAbwehr')
-				passive = actor.system.abilities.wil.total;
+			for (let item of actor.items)
+			{
+				if (item.type != 'talent')
+					continue;
+
+				if (item.system.id == 'kraftvolleAbwehr')
+					passive = actor.system.abilities.str.total;
+				else if (item.system.id == 'ueberzeugteAbwehr')
+					passive = actor.system.abilities.wil.total;
+			}
+			return passive;
 		}
-
-		return passive;
+		else
+		{
+			if (actor.system.health.value < 0)
+				return actor.system.passiveDefense + actor.system.health.value;
+			else
+				return actor.system.passiveDefense;
+		}
 	}
 
 	getArmorBonusMalus(items)
@@ -907,29 +918,29 @@ export class Space1889Actor extends Actor
 		}
 
 		if (game.settings.get("space1889", "optionalBlockDogeParryRule"))
-			rating += this.getPassiveDefence(actor);
+			rating += this.getPassiveDefense(actor);
 
 		actor.system.block.value = rating;
 		actor.system.block.instinctive = instinctive;
 		actor.system.block.riposte = riposte;
 		actor.system.block.info = "";
-		const defence = actor.system.secondaries.defense.total;
+		const defense = actor.system.secondaries.defense.total;
 		const name = game.i18n.format("SPACE1889.Block");
 		const waffenlos = game.i18n.format("SPACE1889.SkillWaffenlos");
 		const nahkampf = game.i18n.format("SPACE1889.SkillNahkampf");
 		if (instinctive)
 		{
-			if (defence < rating)
-				actor.system.block.info = game.i18n.format("SPACE1889.UseInstinctiveBlockParry", { rating: rating.toString(), rating2: (rating - 2).toString(), attackType1: waffenlos, attackType2: nahkampf, defence: defence.toString()});
+			if (defense < rating)
+				actor.system.block.info = game.i18n.format("SPACE1889.UseInstinctiveBlockParry", { rating: rating.toString(), rating2: (rating - 2).toString(), attackType1: waffenlos, attackType2: nahkampf, defence: defense.toString()});
 			else
 				actor.system.block.info = game.i18n.format("SPACE1889.UselessInstinctiveBlockParryEvasion", { talentName: name });
 		}
 		else
 		{
-			if (defence + 4 < rating)
-				actor.system.block.info = game.i18n.format("SPACE1889.UseBlockParryEvasion", { fullDefence: (defence + 4).toString(), talentName: name });
+			if (defense + 4 < rating)
+				actor.system.block.info = game.i18n.format("SPACE1889.UseBlockParryEvasion", { fullDefence: (defense + 4).toString(), talentName: name });
 			else
-				actor.system.block.info = game.i18n.format("SPACE1889.UselessBlockParryEvasion", { defence: (defence + 4).toString(), talentName: name });
+				actor.system.block.info = game.i18n.format("SPACE1889.UselessBlockParryEvasion", { defence: (defense + 4).toString(), talentName: name });
 		}
 	}
 
@@ -968,29 +979,29 @@ export class Space1889Actor extends Actor
 		}
 
 		if (game.settings.get("space1889", "optionalBlockDogeParryRule"))
-			skillRating += this.getPassiveDefence(actor);
+			skillRating += this.getPassiveDefense(actor);
 
 		actor.system.parry.value = skillRating;
 		actor.system.parry.instinctive = instinctive;
 		actor.system.parry.riposte = riposte;
 		actor.system.parry.info = "";
-		const defence = actor.system.secondaries.defense.total;
+		const defense = actor.system.secondaries.defense.total;
 		const name = game.i18n.format("SPACE1889.Parry");
 		const waffenlos = game.i18n.format("SPACE1889.SkillWaffenlos");
 		const nahkampf = game.i18n.format("SPACE1889.SkillNahkampf");
 		if (instinctive)
 		{
-			if (defence < skillRating)
-				actor.system.parry.info = game.i18n.format("SPACE1889.UseInstinctiveBlockParry", { rating: skillRating.toString(), rating2: skillRating.toString(), attackType1: nahkampf, attackType2: waffenlos, defence: defence.toString()});
+			if (defense < skillRating)
+				actor.system.parry.info = game.i18n.format("SPACE1889.UseInstinctiveBlockParry", { rating: skillRating.toString(), rating2: skillRating.toString(), attackType1: nahkampf, attackType2: waffenlos, defence: defense.toString()});
 			else
 				actor.system.parry.info = game.i18n.format("SPACE1889.UselessInstinctiveBlockParryEvasion", { talentName: name });
 		}
 		else
 		{
-			if (defence + 4 < skillRating)
-				actor.system.parry.info = game.i18n.format("SPACE1889.UseBlockParryEvasion", { fullDefence: (defence + 4).toString(), talentName: name });
+			if (defense + 4 < skillRating)
+				actor.system.parry.info = game.i18n.format("SPACE1889.UseBlockParryEvasion", { fullDefence: (defense + 4).toString(), talentName: name });
 			else
-				actor.system.parry.info = game.i18n.format("SPACE1889.UselessBlockParryEvasion", { defence: (defence + 4).toString(), talentName: name });
+				actor.system.parry.info = game.i18n.format("SPACE1889.UselessBlockParryEvasion", { defence: (defense + 4).toString(), talentName: name });
 		}
 	}
 
@@ -1020,29 +1031,29 @@ export class Space1889Actor extends Actor
 		}
 
 		if (game.settings.get("space1889", "optionalBlockDogeParryRule"))
-			rating += this.getPassiveDefence(actor);
+			rating += this.getPassiveDefense(actor);
 
 		actor.system.evasion.value = rating;
 		actor.system.evasion.instinctive = instinctive;
 
 		actor.system.evasion.info = "";
-		const defence = actor.system.secondaries.defense.total;
+		const defense = actor.system.secondaries.defense.total;
 		const name = game.i18n.format("SPACE1889.Evasion");
 		const waffenlos = game.i18n.format("SPACE1889.SkillWaffenlos");
 		const nahkampf = game.i18n.format("SPACE1889.SkillNahkampf");
 		if (instinctive)
 		{
-			if (defence < rating)
-				actor.system.evasion.info = game.i18n.format("SPACE1889.UseInstinctiveEvasion", { rating: rating.toString(), defence: defence.toString()});
+			if (defense < rating)
+				actor.system.evasion.info = game.i18n.format("SPACE1889.UseInstinctiveEvasion", { rating: rating.toString(), defence: defense.toString()});
 			else
 				actor.system.evasion.info = game.i18n.format("SPACE1889.UselessInstinctiveBlockParryEvasion", { talentName: name });
 		}
 		else
 		{
-			if (defence + 4 < rating)
-				actor.system.evasion.info = game.i18n.format("SPACE1889.UseBlockParryEvasion", { fullDefence: (defence + 4).toString(), talentName: name });
+			if (defense + 4 < rating)
+				actor.system.evasion.info = game.i18n.format("SPACE1889.UseBlockParryEvasion", { fullDefence: (defense + 4).toString(), talentName: name });
 			else
-				actor.system.evasion.info = game.i18n.format("SPACE1889.UselessBlockParryEvasion", { defence: (defence + 4).toString(), talentName: name });
+				actor.system.evasion.info = game.i18n.format("SPACE1889.UselessBlockParryEvasion", { defence: (defense + 4).toString(), talentName: name });
 		}
 	}
 
@@ -1458,11 +1469,12 @@ export class Space1889Actor extends Actor
 			}
 		}
 
-		if (key == 'totalDefence')
+		if (key == 'totalDefense')
 			return "SPACE1889.TotalDefense";
-		if (key == 'passiveDefence')
-			return "SPACE1889.VehiclePassiveDefense";
-
+		if (key == 'passiveDefense')
+			return "SPACE1889.PassiveDefense";
+		if (key == 'activeDefense')
+			return "SPACE1889.ActiveDefense";
 		if (langId == "")
 		{
 			langId = "SPACE1889." + key.replace(/^(.)/, function (b) { return b.toUpperCase(); });
@@ -1553,7 +1565,7 @@ export class Space1889Actor extends Actor
 		}
 	}
 
-	rollDefence(key, event)
+	rollDefense(key, event)
 	{
 		let dieCount = 0;
 		let label = "";
@@ -1575,6 +1587,14 @@ export class Space1889Actor extends Actor
 				dieCount = this.system.secondaries.defense.total;
 				label = game.i18n.localize("SPACE1889.SecondaryAttributeDef");
 				break;
+			case 'activeDefense':
+				dieCount = this.system.secondaries.defense.activeTotal;
+				label = game.i18n.localize("SPACE1889.ActiveDefense");
+				break;
+			case 'passiveDefense':
+				dieCount = this.system.secondaries.defense.passiveTotal;
+				label = game.i18n.localize("SPACE1889.PassiveDefense");
+				break;
 			case 'totalDefense':
 				dieCount = this.system.secondaries.defense.total + 4;
 				label = game.i18n.localize("SPACE1889.TalentVolleAbwehr");
@@ -1585,7 +1605,7 @@ export class Space1889Actor extends Actor
 		if (evaluation.showInfoOnly)
 			return this.showAttributeInfo(label, key, evaluation.whisperInfo);
 
-		if (this.type == "vehicle")
+		if (this.type == "vehicle" && key != 'passiveDefense')
 			return SPACE1889RollHelper.rollManoeuver(key, this, event);
 		else
 			return this.rollAttribute(dieCount, evaluation.showDialog, key);
@@ -1668,9 +1688,10 @@ export class Space1889Actor extends Actor
 
 		function getChatData(wurfelAnzahl)
 		{
+			const anzahl = Math.max(0, wurfelAnzahl);
 			let messageContent = `<div><h2>${name}</h2></div>`;
 			const dieType = SPACE1889RollHelper.getDieType();
-			messageContent += `${info} <b>[[${wurfelAnzahl}${dieType}]] von ${wurfelAnzahl}</b> <br>`;
+			messageContent += `${info} <b>[[${anzahl}${dieType}]] von ${wurfelAnzahl}</b> <br>`;
 			let chatData =
 			{
 				user: game.user.id,
