@@ -1,52 +1,55 @@
 <form class="{{cssClass}}" autocomplete="off">
 	<header class="sheet-header">
-		<img class="profile-img" src="{{item.img}}" data-edit="img" title="{{item.name}}"/>
+		<img class="profile-img" src="{{item.img}}" data-edit="img" title="{{item.name}}" />
 		<div class="header-fields">
 			<h1 class="charname"><input name="name" type="text" value="{{item.name}}" placeholder="Name" /></h1>
 			{{> "systems/space1889/templates/item/item-sub-id.html"}}
 		</div>
 	</header>
 	<hr>
-	
+
 	<li class="item flexrow items-header">
 		<label class="resource-label">{{localize "SPACE1889.FamilyOfLanguages"}}</label>
 		<label class="resource-label">{{ localize "SPACE1889.LanguageOrigin"}}</label>
-		<label class="resource-label">{{ localize "SPACE1889.OldLanguage"}}</label>
-		<label class="resource-label">{{ localize "SPACE1889.IsDialectFrom"}}</label>
 	</li>
 	<li class="item flex-group-center flexrow">
 		<div class="resource">
 			<select name="system.familyId" data-dtype="String">
 				{{#select system.familyId}}
-					{{#each system.families as |ch char|}}
-					<option value="{{char}}">{{localize ch}}</option>
-					{{/each}}
+				{{#each system.families as |ch char|}}
+				<option value="{{char}}">{{localize ch}}</option>
+				{{/each}}
 				{{/select}}
 			</select>
 		</div>
 		<div class="resource">
 			<select name="system.originId" data-dtype="String">
 				{{#select system.originId}}
-					{{#each system.origins as |ch char|}}
-					<option value="{{char}}">{{localize ch}}</option>
-					{{/each}}
-				{{/select}}
-			</select>
-		</div>
-		<div class="resource">
-			<input type="checkbox" name="system.old" {{checked system.old}}/>
-		</div>
-		<div class="resource">
-			<select name="system.isDialectSourceId" data-dtype="String">
-				{{#select system.isDialectSourceId}}
-					{{#each system.languages as |ch char|}}
-					<option value="{{char}}">{{localize ch}}</option>
-					{{/each}}
+				{{#each system.origins as |ch char|}}
+				<option value="{{char}}">{{localize ch}}</option>
+				{{/each}}
 				{{/select}}
 			</select>
 		</div>
 	</li>
-
+	<li class="item flexrow items-header">
+		<label class="resource-label">{{ localize "SPACE1889.OldLanguage"}}</label>
+		<label class="resource-label">{{ localize "SPACE1889.IsDialectFrom"}}</label>
+	</li>
+	<li class="item flex-group-center flexrow">
+		<div class="resource">
+			<input type="checkbox" name="system.old" {{checked system.old}} />
+		</div>
+		<div class="resource">
+			<select name="system.isDialectSourceId" data-dtype="String">
+				{{#select system.isDialectSourceId}}
+				{{#each system.languages as |ch char|}}
+				<option value="{{char}}">{{localize ch}}</option>
+				{{/each}}
+				{{/select}}
+			</select>
+		</div>
+	</li>
 
 </form>
 
