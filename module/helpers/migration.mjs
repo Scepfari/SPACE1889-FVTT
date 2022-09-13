@@ -53,7 +53,7 @@ export class Space1889Migration
 		const currentVersion = game.system.version;
 		if (game.user.isGM && (isNewerVersion(currentVersion, info[1]) || info[0] > 0))
 		{
-			let content = game.i18n.localize("SPACE1889.VersionInfo0_8_0");
+			let content = game.i18n.localize("SPACE1889.VersionInfo");
 			const understood = game.i18n.localize("SPACE1889.Understood");
 			const stayAway = game.i18n.localize("SPACE1889.StayAway");
 			const newVersion = game.i18n.localize("SPACE1889.NewVersion");
