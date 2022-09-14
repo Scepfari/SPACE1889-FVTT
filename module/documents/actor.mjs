@@ -1185,7 +1185,7 @@ export class Space1889Actor extends Actor
 		if (element != undefined)
 			return element[1];
 
-		ui.notifications.info("Fertigkeit " + skillId.toString() + " ist nicht im Compendium, darauf basierende Berechnungen der Waffenstärke können falsch sein.");
+		ui.notifications?.info("Fertigkeit " + skillId.toString() + " ist nicht im Compendium, darauf basierende Berechnungen der Waffenstärke können falsch sein.");
 
 		return "";
 

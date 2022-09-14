@@ -229,26 +229,6 @@ export class Space1889ActorSheet extends ActorSheet {
 		return 9;
 	}
 
-	GetHeroLevelName()
-	{
-		const heroLevel = game.settings.get("space1889", "heroLevel");
-		let id = "";
-		if (heroLevel == 0)
-			id = "SPACE1889.HeroLevelPechvogel";
-		else if (heroLevel == 1)
-			id = "SPACE1889.HeroLevelDurchschnittsbuerger";
-		else if (heroLevel == 2)
-			id = "SPACE1889.HeroLevelVielversprechend";
-		else if (heroLevel == 3)
-			id = "SPACE1889.HeroLevelVeteran";
-		else if (heroLevel == 4)
-			id = "SPACE1889.HeroLevelWeltspitze";
-		else
-			id = "SPACE1889.HeroLevelUebermensch";
-		return game.i18n.localize(id);
-	}
-
-
 	/* -------------------------------------------- */
 
 	/** @override */
