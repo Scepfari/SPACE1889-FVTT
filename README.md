@@ -3,6 +3,16 @@ Unofficial SPACE 1889 Ubiquity system for FoundryVTT
 
 English version below
 
+Attention
+* From version 1.0.0 Foundry VTT version 10.284 upwards is required. The old version 9.x is no longer supported. Last suitable version for this is 0.8.0.
+* Foundry version 10.285 contains a migration error (https://github.com/foundryvtt/foundryvtt/issues/8180) which can lead to data losses. Therefore you should first install version 10.284, migrate the 9.x worlds there and only then switch to 10.285.
+
+
+Achtung: 
+* Ab Version 1.0.0 wird Foundry VTT version 10.284 aufwärts benötigt. Die alte Version 9.x wird nun nicht mehr unterstützt. Letzte taugliche Version dafür ist 0.8.0.
+* Die Foundry Version 10.285 enthält einen Migrationsfehler (https://github.com/foundryvtt/foundryvtt/issues/8180) der zu Datenverlust führen kann. Daher sollte erst Version 10.284 installiert werden, dort die 9.x Welten migrieren und erst dann auf 10.285 wechseln
+
+
 Das ist eine Fanprojekt, um das vom Uhrwerk Verlag veröffentlichte SPACE 1889 für Foundry Virtual Tabletop nutzbar zu machen. 
 
 Neben einem funktionierenden Charakterbogen, mit dem sich alle wesentliche Charakterfunktionen und Proben abbilden lassen, existiert auch einen Kreaturenbogen, sowie ein Bogen für die Nichtspielercharakter. Der NSC Bogen ist zwar kompakter als der Charakterbogen gehalten, kann aber trotzdem alle Daten eines Charakters aufnehmen. Entscheidender Unterschied zum Charakterbogen ist die fehlende Kopplung an die in den System Settings einstellbare Heldenstufe. D.h. NSCs können beliebig hohe Primäre Attributswerte habe und die Maximalstufe von Fertigkeiten und Spezialisierungen liegt bei 10.
@@ -26,6 +36,7 @@ Empfohlene Module:
 * Token Action HUD: ermöglicht direkten Zugriff auf fast alle Würfe, ohne den Bogen des Akteurs öffnen zu müssen. Auch hier haben die zusätzlich zum Mausklick gedrückten Tasten [Strg], [Shift] und [Alt] die gleiche Funktion wie in den Bögen.
 * Journal Anchor Links: ermöglicht Sprungmarken innerhalb eines Dokumentes
 * Compendium Folders: ermöglicht Verzeichnisstrukturen auch bei den Kompendien
+
 
 
 Unofficial SPACE 1889 Ubiquity system for FoundryVTT
