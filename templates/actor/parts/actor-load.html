@@ -13,10 +13,10 @@
 	</div>
 </li>
 <li class="item row-section flexrow">
-	<label class="items-list flex-group-center">{{data.load.lightLoad}}kg</label>
-	<label class="items-list flex-group-center">{{data.load.mediumLoad}}kg</label>
-	<label class="items-list flex-group-center">{{data.load.havyLoad}}kg</label>
-	<label class="items-list flex-group-center">{{data.load.maxLoad}}kg</label>
+	<label class="items-list flex-group-center">{{system.load.lightLoad}}kg</label>
+	<label class="items-list flex-group-center">{{system.load.mediumLoad}}kg</label>
+	<label class="items-list flex-group-center">{{system.load.havyLoad}}kg</label>
+	<label class="items-list flex-group-center">{{system.load.maxLoad}}kg</label>
 </li>
 
 <hr>
@@ -30,19 +30,19 @@
 	</li>
 	<li class="flexrow item">
 		<label class=" item-max-with75px">{{localize "SPACE1889.StorageLocationKoerper"}}</label>
-		<label class=" item-max-with75px">{{data.load.bodyLoad}}kg</label>
-		<label class=" item-max-with75px">{{localize data.load.bodyLoadLevel}}</label>
-		<label class=" flex-group-center">{{localize data.load.bodyLoadConsequence}}</label>
+		<label class=" item-max-with75px">{{system.load.bodyLoad}}kg</label>
+		<label class=" item-max-with75px">{{localize system.load.bodyLoadLevel}}</label>
+		<label class=" flex-group-center">{{localize system.load.bodyLoadConsequence}}</label>
 	</li>
 	<li class="item row-section flexrow">
 		<label class="item-max-with75px">{{localize "SPACE1889.StorageLocationWithBackpack"}}</label>
-		<label title='{{localize "SPACE1889.StorageLocationRucksack"}}: {{data.load.backpackLoad}}kg' class="item-max-with75px">{{data.load.bodyAndBackpackLoad}}kg</label>
-		<label class="item-max-with75px">{{localize data.load.bodyAndBackpackLoadLevel}}</label>
-		<label class="flex-group-center">{{localize data.load.bodyAndBackpackLoadConsequence}}</label>
+		<label title='{{localize "SPACE1889.StorageLocationRucksack"}}: {{system.load.backpackLoad}}kg' class="item-max-with75px">{{system.load.bodyAndBackpackLoad}}kg</label>
+		<label class="item-max-with75px">{{localize system.load.bodyAndBackpackLoadLevel}}</label>
+		<label class="flex-group-center">{{localize system.load.bodyAndBackpackLoadConsequence}}</label>
 	</li>
 	<li class="flexrow item">
 		<label class=" item-max-with75px">{{localize "SPACE1889.StorageLocationLager"}}</label>
-		<label class=" item-max-with75px">{{data.load.storageLoad}}kg</label>
+		<label class=" item-max-with75px">{{system.load.storageLoad}}kg</label>
 		<label class=" item-max-with75px"></label>
 		<label class=" flex-group-center"></label>
 	</li>

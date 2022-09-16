@@ -9,10 +9,10 @@
 
 	<section style="display: grid; grid-template-columns: 49% 2% 49%; ">
 		<div class="left flexcol" style="grid-column: 1 / span 1">
-			{{#each weaknessLeft as |item id|}}
+			{{#each system.weaknessLeft as |item id|}}
 			<li class="item flexrow" data-item-id="{{item._id}}">
 				<div class="item-name">
-					<h4 class="rollable" data-roll-type="item" title="{{#if (eq item.data.descriptionLangId (localize item.data.descriptionLangId))}} {{item.data.description}} {{else}} {{localize item.data.descriptionLangId}} {{/if}}">{{item.data.label}}</h4>
+					<h4 class="rollable" data-roll-type="item" title="{{#if (eq item.system.descriptionLangId (localize item.system.descriptionLangId))}} {{item.system.description}} {{else}} {{localize item.system.descriptionLangId}} {{/if}}">{{item.system.label}}</h4>
 				</div>
 				<div class="item-controls item-max-with60px">
 					<a class="item-control item-edit" title="Edit Item"><i class="fas fa-edit"></i></a>
@@ -22,10 +22,10 @@
 		{{/each}}
 		</div>
 		<div class="right flexcol" style="grid-column: 3 / span 1">
-			{{#each weaknessRight as |item id|}}
+			{{#each system.weaknessRight as |item id|}}
 			<li class="item flexrow" data-item-id="{{item._id}}">
 				<div class="item-name">
-					<h4 class="rollable" data-roll-type="item" title="{{#if (eq item.data.descriptionLangId (localize item.data.descriptionLangId))}} {{item.data.description}} {{else}} {{localize item.data.descriptionLangId}} {{/if}}">{{item.data.label}}</h4>
+					<h4 class="rollable" data-roll-type="item" title="{{#if (eq item.system.descriptionLangId (localize item.system.descriptionLangId))}} {{item.system.description}} {{else}} {{localize item.system.descriptionLangId}} {{/if}}">{{item.system.label}}</h4>
 				</div>
 				<div class="item-controls item-max-with60px">
 					<a class="item-control item-edit" title="Edit Item"><i class="fas fa-edit"></i></a>

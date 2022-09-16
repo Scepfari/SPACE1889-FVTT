@@ -1,16 +1,16 @@
 <div class="resource">
 	<li class="items-list flex-group-center flexrow">
 		<label class="resource-label item-max-with20px" title="{{localize "SPACE1889.Space1889Id"}}">{{ localize "SPACE1889.Id" }}</label>
-		<div class="items-list item-max-with20px" data-id="{{key}}">
-			{{#if data.unlockIdForUser}}
+		<div class="items-list item-max-with20px" system-id="{{key}}">
+			{{#if system.unlockIdForUser}}
 			<a class="id-lock-toggle" title="{{localize "SPACE1889.LockIdInfo"}}"><i class="fa fa-lock-open"></i></a>
 			{{else}}
 			<a class="id-lock-toggle" title="{{ localize "SPACE1889.UnLockIdInfo"}}"><i class="fa fa-lock"></i></a>
 			{{/if}}
 		</div>
-		<input type="text" name="data.id" value="{{data.id}}" {{#if (eq data.unlockIdForUser false)}} disabled="disabled" {{/if}} />
+		<input type="text" name="system.id" value="{{system.id}}" {{#if (eq system.unlockIdForUser false)}} disabled="disabled" {{/if}} />
 		<div class="items-list item-max-with20px" data-id="{{key}}">
-			{{#if data.unlockIdForUser}}
+			{{#if system.unlockIdForUser}}
 			<a class="create-new-id" title="{{localize "SPACE1889.CreateSpace1889Id"}}"><i class="fa fa-reply"></i></a>
 			{{/if}}
 		</div>

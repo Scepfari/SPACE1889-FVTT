@@ -1,6 +1,6 @@
 <ol class="items-list">
 	<li class="item flexrow items-header">
-		<div class="item-name">{{localize "SPACE1889.LanguagePl"}} ({{localize "SPACE1889.ForeignLanguagePl"}} {{localize "SPACE1889.Max"}}: {{data.foreignLanguageLimit}}) </div>
+		<div class="item-name">{{localize "SPACE1889.LanguagePl"}} ({{localize "SPACE1889.ForeignLanguagePl"}} {{localize "SPACE1889.Max"}}: {{system.foreignLanguageLimit}}) </div>
 		<div class="item-controls item-max-with75px">
 			<a class="item-control item-create item-max-with75px" title="Create item" data-type="language"><i class="fas fa-plus"></i> Add item</a>
 		</div>
@@ -9,10 +9,10 @@
 
 	<section style="display: grid; grid-template-columns: 49% 2% 49%;">
 		<div class="left flexcol" style="grid-column: 1 / span 1 ">
-			{{#each languageLeft as |item key|}}
+			{{#each system.languageLeft as |item key|}}
 			<li class="item flexrow" data-item-id="{{item._id}}">
 				<div class="item-name">
-					<h4 class="rollable" data-roll-type="item" title='{{localize "SPACE1889.FamilyOfLanguages"}}: {{item.data.family}} , {{localize "SPACE1889.LanguageOrigin"}}: {{item.data.origin}} &#13;{{item.data.oldInfo}}'>{{item.data.label}}</h4>
+					<h4 class="rollable" data-roll-type="item" title='{{localize "SPACE1889.FamilyOfLanguages"}}: {{item.system.family}} , {{localize "SPACE1889.LanguageOrigin"}}: {{item.system.origin}} &#13;{{item.system.oldInfo}}'>{{item.system.label}}</h4>
 				</div>
 				<div class="item-controls item-max-with75px">
 					<a class="item-control item-edit" title="Edit Item"><i class="fas fa-edit"></i></a>
@@ -22,10 +22,10 @@
 			{{/each}}
 		</div>
 		<div class="right flexcol" style="grid-column: 3 / span 1 ">
-			{{#each languageRight as |item key|}}
+			{{#each system.languageRight as |item key|}}
 			<li class="item flexrow" data-item-id="{{item._id}}">
 				<div class="item-name">
-					<h4 class="rollable" data-roll-type="item" title='{{localize "SPACE1889.FamilyOfLanguages"}}: {{item.data.family}} , {{localize "SPACE1889.LanguageOrigin"}}: {{item.data.origin}} &#13;{{item.data.oldInfo}}'>{{item.data.label}}</h4>
+					<h4 class="rollable" data-roll-type="item" title='{{localize "SPACE1889.FamilyOfLanguages"}}: {{item.system.family}} , {{localize "SPACE1889.LanguageOrigin"}}: {{item.system.origin}} &#13;{{item.system.oldInfo}}'>{{item.system.label}}</h4>
 				</div>
 				<div class="item-controls item-max-with75px">
 					<a class="item-control item-edit" title="Edit Item"><i class="fas fa-edit"></i></a>

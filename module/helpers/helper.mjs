@@ -1,16 +1,16 @@
 export default class SPACE1889Helper
 {
-	static getTalentData(actorData, talentId)
+	static getTalentData(actor, talentId)
 	{
-		return actorData.talents?.find(entry => entry.data.id == talentId);
+		return actor.system.talents?.find(entry => entry.system.id == talentId);
 	}
 
-	static getTalentLevel(actorData, talentId)
+	static getTalentLevel(actor, talentId)
 	{
-		const talent = this.getTalentData(actorData, talentId);
+		const talent = this.getTalentData(actor, talentId);
 		if (talent != undefined)
 		{
-			return talent.data.level.value;
+			return talent.system.level.value;
 		}
 		return 0;
 	}
@@ -18,7 +18,7 @@ export default class SPACE1889Helper
 	static getDeathThreshold(actor)
 	{
 		let threshold = -5;
-		const level = this.getTalentLevel(actor.data, "zaeherHund");
+		const level = this.getTalentLevel(actor, "zaeherHund");
 		if (level > 0)
 			threshold -= (2 * level);
 
@@ -27,52 +27,52 @@ export default class SPACE1889Helper
 
 	static isAutoStabilize(actor)
 	{
-		return (this.getTalentLevel(actor.data, "zaeherHund") > 0);
+		return (this.getTalentLevel(actor, "zaeherHund") > 0);
 	}
 
 	static getIncapacitateThreshold(actor)
 	{
 		let threshold = 0;
-		const level = this.getTalentLevel(actor.data, "schmerzresistenz");
+		const level = this.getTalentLevel(actor, "schmerzresistenz");
 		if (level > 0)
 			threshold -= (2 * level);
 
 		return threshold;
 	}
 
-	static getDamageTuple(actorData, ignoreThisItemId = "")
+	static getDamageTuple(actor, ignoreThisItemId = "")
 	{
 		let lethal = 0;
 		let nonLethal = 0;
-		for (const item of actorData.items)
+		for (const item of actor.items)
 		{
-			if (item.data.type != "damage")
+			if (item.type != "damage")
 				continue;
 
-			if (item.data._id == ignoreThisItemId)
+			if (item._id == ignoreThisItemId)
 				continue;
 
-			if (item.data.data.damageType == "lethal")
-				lethal += item.data.data.damage;
+			if (item.system.damageType == "lethal")
+				lethal += item.system.damage;
 			else
-				nonLethal += item.data.data.damage;
+				nonLethal += item.system.damage;
 		}
 
 		return { lethal: lethal, nonLethal: nonLethal };
 	}
 
-	static isCreature(actorData)
+	static isCreature(actor)
 	{
-		return actorData.type == 'creature';
+		return actor.type == 'creature';
 	}
 
-	static getExchangeValue(itemData)
+	static getExchangeValue(item)
 	{
-		const exchangeRatio = 20 / itemData.data.exchangeRateForOnePound;
+		const exchangeRatio = 20 / item.system.exchangeRateForOnePound;
 		if (exchangeRatio == 0)
 			return "?";
 
-		const sumShilling = Number(itemData.data.quantity) * exchangeRatio;
+		const sumShilling = Number(item.system.quantity) * exchangeRatio;
 
 		const pound = Math.floor(sumShilling / 20);
 		const shilling = Math.round(sumShilling - (pound * 20));
@@ -114,6 +114,25 @@ export default class SPACE1889Helper
 		}
 
 		return newValue;
+	}
+
+	static GetHeroLevelName()
+	{
+		const heroLevel = game.settings.get("space1889", "heroLevel");
+		let id = "";
+		if (heroLevel == 0)
+			id = "SPACE1889.HeroLevelPechvogel";
+		else if (heroLevel == 1)
+			id = "SPACE1889.HeroLevelDurchschnittsbuerger";
+		else if (heroLevel == 2)
+			id = "SPACE1889.HeroLevelVielversprechend";
+		else if (heroLevel == 3)
+			id = "SPACE1889.HeroLevelVeteran";
+		else if (heroLevel == 4)
+			id = "SPACE1889.HeroLevelWeltspitze";
+		else
+			id = "SPACE1889.HeroLevelUebermensch";
+		return game.i18n.localize(id);
 	}
 
 	static incrementVehicleSizeValue(ev, currentValue)
@@ -200,7 +219,7 @@ export default class SPACE1889Helper
 	{
 		if (dropedActor == undefined || dropedActor == null || vehicle == undefined || vehicle == null)
 			return "";
-		if (dropedActor.data.type == "vehicle" || vehicle.data.type != "vehicle")
+		if (dropedActor.type == "vehicle" || vehicle.type != "vehicle")
 			return ;
 
 		let optionen = '<option value="all"' + ' selected="selected">' + game.i18n.localize("SPACE1889.VehicleAllPositions") + '</option>';
@@ -211,8 +230,8 @@ export default class SPACE1889Helper
 		}
 
 
-		const vehicleName = vehicle.data.name;
-		const actorName = dropedActor.data.name;
+		const vehicleName = vehicle.name;
+		const actorName = dropedActor.name;
 
 		const text = "Welche Position soll " + actorName + " auf dem Fahrzeug " + vehicleName + " einnehmen?";
 
@@ -224,7 +243,7 @@ export default class SPACE1889Helper
 
 
 		let dialog = new Dialog({
-			title: `${vehicle.data.name} : ${dropedActor.data.name}`,
+			title: `${vehicle.name} : ${dropedActor.name}`,
 			content: `
 				<form class="flexcol">
 					<p>${text}</p>
@@ -258,24 +277,24 @@ export default class SPACE1889Helper
 				if (selectedOption)
 				{
 					let all = selectedOption == "all";
-					const id = dropedActor.data._id;
+					const id = dropedActor._id;
 
 					if (selectedOption == "captain" || all)
-						vehicle.update({ 'data.positions.captain.actorId': id, 'data.positions.captain.actorName': actorName });
+						vehicle.update({ 'system.positions.captain.actorId': id, 'system.positions.captain.actorName': actorName });
 					if (selectedOption == "pilot" || all)
-						vehicle.update({ 'data.positions.pilot.actorId': id, 'data.positions.pilot.actorName': actorName });
+						vehicle.update({ 'system.positions.pilot.actorId': id, 'system.positions.pilot.actorName': actorName });
 					if (selectedOption == "copilot" || all)
-						vehicle.update({ 'data.positions.copilot.actorId': id, 'data.positions.copilot.actorName': actorName });
+						vehicle.update({ 'system.positions.copilot.actorId': id, 'system.positions.copilot.actorName': actorName });
 					if (selectedOption == "gunner" || all)
-						vehicle.update({ 'data.positions.gunner.actorId': id, 'data.positions.gunner.actorName': actorName });
+						vehicle.update({ 'system.positions.gunner.actorId': id, 'system.positions.gunner.actorName': actorName });
 					if (selectedOption == "signaler" || all)
-						vehicle.update({ 'data.positions.signaler.actorId': id, 'data.positions.signaler.actorName': actorName });
+						vehicle.update({ 'system.positions.signaler.actorId': id, 'system.positions.signaler.actorName': actorName });
 					if (selectedOption == "lookout" || all)
-						vehicle.update({ 'data.positions.lookout.actorId': id, 'data.positions.lookout.actorName': actorName });
+						vehicle.update({ 'system.positions.lookout.actorId': id, 'system.positions.lookout.actorName': actorName });
 					if (selectedOption == "mechanic" || all)
-						vehicle.update({ 'data.positions.mechanic.actorId': id, 'data.positions.mechanic.actorName': actorName });
+						vehicle.update({ 'system.positions.mechanic.actorId': id, 'system.positions.mechanic.actorName': actorName });
 					if (selectedOption == "medic" || all)
-						vehicle.update({ 'data.positions.medic.actorId': id, 'data.positions.medic.actorName': actorName });
+						vehicle.update({ 'system.positions.medic.actorId': id, 'system.positions.medic.actorName': actorName });
 				}
 			}
 		});

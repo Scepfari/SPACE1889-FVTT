@@ -6,7 +6,7 @@
 		<div class="header-fields">
 			<h2 class="charname"><input name="name" type="text" value="{{actor.name}}" placeholder="Name" /></h2>
 			<h3 class="resource-content flex-center flex-between">
-				<input type="text" name="data.typeOrClass" value="{{data.typeOrClass}}" placeholder="{{localize "SPACE1889.VehicleTypeOrClass"}}"/>
+				<input type="text" name="system.typeOrClass" value="{{system.typeOrClass}}" placeholder="{{localize "SPACE1889.VehicleTypeOrClass"}}"/>
 			</h3>
 
 			<div class="abilities flexcol items-list">
@@ -14,8 +14,8 @@
 					<div class="item item-max-with60px">{{localize "SPACE1889.VehicleStructure"}}</div>
 					<div class="item item-max-with75px">{{localize "SPACE1889.Speed"}}</div>
 					<div class="item item-max-with100px">{{localize "SPACE1889.VehicleManeuverability"}}</div>
-					<div class="item item-max-with75px" title="{{localize "SPACE1889.VehiclePassiveDefense"}} - {{localize "SPACE1889.ClickToRoll"}}">
-						<label class="resource-label rollable" data-roll-key="passiveDefence" data-roll-type="actor" data-roll-diecount="{{data.passiveDefense}}" data-label='{{localize "SPACE1889.VehiclePassiveDefense"}}'>{{localize "SPACE1889.VehiclePassiveDefenseAbbr"}}</label>
+					<div class="item item-max-with75px" title="{{localize "SPACE1889.PassiveDefense"}} - {{localize "SPACE1889.ClickToRoll"}}">
+						<label class="resource-label rollable" data-roll-key="passiveDefense" data-roll-type="actor" data-roll-diecount="{{system.passiveDefense}}" data-label='{{localize "SPACE1889.PassiveDefense"}}'>{{localize "SPACE1889.PassiveDefenseAbbr"}}</label>
 					</div>
 					<div class="item-name item-max-with60px">{{localize "SPACE1889.SecondaryAttributeSiz"}}</div>
 				</li>
@@ -23,40 +23,44 @@
 					<div class="flexrow item-max-with60px">
 						<div style="display: grid; grid-template-columns: 45% 10% 45%; grid-template-rows: 100%;">
 							<div class="item-margintb2px item-right">
-								<a class="item-create item-margintb2px" align="right" title='{{localize "SPACE1889.InfoAddDamage"}}' data-type="damage">{{data.health.value}}</a>
+								<a class="item-create item-margintb2px" align="right" title='{{localize "SPACE1889.InfoAddDamage"}}' data-type="damage">{{system.health.value}}</a>
 							</div>
 							<div class="item-margintb2px"> / </div>
 							<div class="item-margintb2px item-left">
-								<a class="increment-structure-max-click">{{data.health.max}}</a>
+								<a class="increment-structure-max-click">{{system.health.max}}</a>
 							</div>
 						</div>
 					</div>
 					<div class="flexrow item-max-with75px">
 						<div style="display: grid; grid-template-columns: 45% 10% 45%; grid-template-rows: 100%;">
-							<div class="item-margintb2px item-right">{{data.speed.value}}</div>
+							<div class="item-margintb2px item-right">{{system.speed.value}}</div>
 							<div class="item-margintb2px"> / </div>
 							<div class="item-margintb2px item-left">
-								<a class="increment-speed-max-click">{{data.speed.max}}</a>
+								<a class="increment-speed-max-click">{{system.speed.max}}</a>
 							</div>
 						</div>
 					</div>
 					<div class="flexrow item-max-with100px">
 						<div style="display: grid; grid-template-columns: 45% 10% 45%; grid-template-rows: 100%;">
-							<div class="item-margintb2px item-right">{{data.maneuverability.value}}</div>
+							<div class="item-margintb2px item-right">{{system.maneuverability.value}}</div>
 							<div class="item-margintb2px"> / </div>
 							<div class="item-margintb2px item-left">
-								<a class="increment-maneuverability-max-click">{{data.maneuverability.max}}</a>
+								<a class="increment-maneuverability-max-click">{{system.maneuverability.max}}</a>
 							</div>
 						</div>
 					</div>
 					<div class="flexrow item-max-with75px">
-						<div class="item-margintb2px">
-							<a class="increment-passiveDefense-click">{{data.passiveDefense}}</a>
+						<div style="display: grid; grid-template-columns: 45% 10% 45%; grid-template-rows: 100%;">
+							<div class="item-margintb2px item-right">{{system.secondaries.defense.passiveTotal}}</div>
+							<div class="item-margintb2px"> / </div>
+							<div class="item-margintb2px item-left">
+								<a class="increment-maneuverability-max-click">{{system.passiveDefense}}</a>
+							</div>
 						</div>
 					</div>
 					<div class="flexrow item-max-with60px">
 						<div class="item-margintb2px">
-							<a class="increment-vehicleSize-click">{{data.size}}</a>
+							<a class="increment-vehicleSize-click">{{system.size}}</a>
 						</div>
 					</div>
 				</li>
@@ -81,8 +85,8 @@
 						<div class="item-name ">{{localize "SPACE1889.VehiclePilotSkill"}}</div>
 						<div class="resource-content flexrow flex-center flex-between item-marginlr5px">
 							<select name="data.pilotSkill" data-dtype="String">
-								{{#select data.pilotSkill}}
-								{{#each data.pilotSkills as |key char|}}
+								{{#select system.pilotSkill}}
+								{{#each system.pilotSkills as |key char|}}
 								<option value="{{char}}">{{localize key}}</option>
 								{{/each}}
 								{{/select}}
@@ -92,18 +96,18 @@
 					<li class="flexrow">
 						<div class="item-name " title="{{localize "SPACE1889.VehicleIsAirshipInfo"}}">{{localize "SPACE1889.VehicleIsAirship"}}</div>
 						<div class="item flexrow flex-group-center" title="{{localize "SPACE1889.VehicleIsAirshipInfo"}}">
-							<input type="checkbox" name="data.isAirship" {{checked data.isAirship}} />
+							<input type="checkbox" name="system.isAirship" {{checked system.isAirship}} />
 						</div>
 					</li>
 					<li class="flexrow">
 						<div class="item-name " title="{{localize "SPACE1889.VehicleIsStrengthBasedTempoInfo"}}">{{localize "SPACE1889.VehicleIsStrengthBasedTempo"}}</div>
 						<div style="display: grid; grid-template-columns: 55% 45%; grid-template-rows: 100%;">
 							<div class="item flexrow flex-group-right" title="{{localize "SPACE1889.VehicleIsPureMusclePowerInfo"}}">
-								<input type="checkbox" name="data.isStrengthBasedTempo" {{checked data.isStrengthBasedTempo}} />
+								<input type="checkbox" name="system.isStrengthBasedTempo" {{checked system.isStrengthBasedTempo}} />
 							</div>
-							{{#if data.isStrengthBasedTempo}}
+							{{#if system.isStrengthBasedTempo}}
 							<div class="item flexrow flex-group-center" title="{{localize "SPACE1889.VehicleStrengthTempoFactor"}}">
-								<a class="increment-strengthTempoFactor-click">{{data.strengthTempoFactor.value}}</a>
+								<a class="increment-strengthTempoFactor-click">{{system.strengthTempoFactor.value}}</a>
 							</div>
 							{{/if}}
 						</div>
@@ -116,20 +120,20 @@
 
 						<div style="display: grid; grid-template-columns: 42% 13% 45%; grid-template-rows: 100%;">
 							<div class="item-right">
-								<a class="increment-crew-current-click" align="right" data-type="passenger">{{data.crew.value}}</a>
+								<a class="increment-crew-current-click" align="right" data-type="passenger">{{system.crew.value}}</a>
 							</div>
 							<div class="item" align="center"> / </div>
 							<div class="item-left">
-								<a class="increment-crew-max-click">{{data.crew.max}}</a>
+								<a class="increment-crew-max-click">{{system.crew.max}}</a>
 							</div>
 						</div>
 					</li>
 					<li class="flexrow">
 						<div class="item-name ">{{localize "SPACE1889.VehicleCrewExperience"}}</div>
 						<div class="resource-content flexrow flex-center flex-between item-marginlr5px">
-							<select name="data.crew.experience" data-dtype="String">
-								{{#select data.crew.experience}}
-								{{#each data.crewExperiences as |key char|}}
+							<select name="system.crew.experience" data-dtype="String">
+								{{#select system.crew.experience}}
+								{{#each system.crewExperiences as |key char|}}
 								<option value="{{char}}">{{localize key}}</option>
 								{{/each}}
 								{{/select}}
@@ -139,9 +143,9 @@
 					<li class="flexrow">
 						<div class="item-name ">{{localize "SPACE1889.VehicleCrewTemper"}}</div>
 						<div class="resource-content flexrow flex-center flex-between item-marginlr5px">
-							<select name="data.crew.temper" data-dtype="String">
-								{{#select data.crew.temper}}
-								{{#each data.crewTempers as |key char|}}
+							<select name="system.crew.temper" data-dtype="String">
+								{{#select system.crew.temper}}
+								{{#each system.crewTempers as |key char|}}
 								<option value="{{char}}">{{localize key}}</option>
 								{{/each}}
 								{{/select}}
@@ -163,7 +167,7 @@
 					</div>
 					<div class="resource flex-group-center" title="{{localize "SPACE1889.ClickToRoll"}}">
 						<a class="resource-label roll-vehicle-defense-click" data-label='{{localize "SPACE1889.SecondaryAttributeDef"}}'>{{localize "SPACE1889.SecondaryAttributeDef"}}: </a>
-						<label class="items-list item-max-with60px">{{data.secondaries.defense.total}}</label>
+						<label class="items-list item-max-with60px">{{system.secondaries.defense.total}}</label>
 					</div>
 				</li>
 
@@ -172,20 +176,20 @@
 				<li class="item flexrow items-header">
 					<div class="item-name">{{localize "SPACE1889.VehicleCrewPosition"}}</div>
 					<div class="items-list item-max-with150px">{{localize "SPACE1889.Name"}}</div>
-					<div class="items-list item-max-with42px">{{#if (eq data.crew.experience 'custom')}}{{localize "SPACE1889.Base"}}{{else}}{{/if}}</div>
+					<div class="items-list item-max-with42px">{{#if (eq system.crew.experience 'custom')}}{{localize "SPACE1889.Base"}}{{else}}{{/if}}</div>
 					<div class="items-list item-max-with42px">{{localize "SPACE1889.Mod"}}</div>
 					<div title='{{localize "SPACE1889.Rating"}}' class="items-list item-max-with42px">{{localize "SPACE1889.Rating"}}</div>
 					<div class="items-list item-max-with20px"></div>
 				</li>
-				{{#each data.positions as |position key|}}
+				{{#each system.positions as |position key|}}
 				<li class="item row-section flexrow">
-					<label for="data.positions.{{key}}.value" class="rollable item-name" data-roll-key="{{key}}" data-roll-type="actor" data-roll-diecount="{{position.total}}" data-label="{{position.label}}">{{position.label}}</label>
+					<label for="system.positions.{{key}}.value" class="rollable item-name" data-roll-key="{{key}}" data-roll-type="actor" data-roll-diecount="{{position.total}}" data-label="{{position.label}}">{{position.label}}</label>
 
 					<div title='{{localize "SPACE1889.VehicelScCrewPositionToolTip"}}' class="items-list item-max-with150px">
 						<a class="do-vehicle-{{key}}-click">{{position.actorName}}</a>
 					</div>
 
-					{{#if (doubleCheck ../data.crew.experience 'custom' position.actorId '')}}
+					{{#if (doubleCheck ../system.crew.experience 'custom' position.actorId '')}}
 					<div class="item-max-with40px">
 						<a class="increment-{{key}}-click">{{position.value}}</a>
 					</div>

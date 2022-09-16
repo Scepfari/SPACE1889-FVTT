@@ -24,18 +24,18 @@ export class Space1889ItemSheet extends ItemSheet {
 
 		// Alternatively, you could use the following return statement to do a
 		// unique item sheet by type, like `weapon-sheet.html`.
-		return `${path}/item-${this.item.data.type}-sheet.html`;
+		return `${path}/item-${this.item.type}-sheet.html`;
 	}
 
 	/* -------------------------------------------- */
 
 	/** @override */
-	getData() {
+	async getData(options) {
 		// Retrieve base data structure.
-		const context = super.getData();
+		const context = await super.getData(options);
 
 		// Use a safe clone of the item data for further operations.
-		const itemData = context.item.data;
+		const item = context.item;
 
 		// Retrieve the roll data for TinyMCE editors.
 		context.rollData = {};
@@ -45,63 +45,67 @@ export class Space1889ItemSheet extends ItemSheet {
 		}
 
 		// Add the actor's data to context.data for easier access, as well as flags.
-		context.data = itemData.data;
-		context.flags = itemData.flags;
+		context.system = item.system;
+		context.flags = item.flags;
 
-		context.data['abilities'] = CONFIG.SPACE1889.abilities;
+		context.system['abilities'] = CONFIG.SPACE1889.abilities;
 
-		if (itemData.type == "specialization")
-			context.data['nonGroupSkills'] = CONFIG.SPACE1889.nonGroupSkills;
-		else if (itemData.type == "skill")
+		if (item.type == "specialization")
+			context.system['nonGroupSkills'] = CONFIG.SPACE1889.nonGroupSkills;
+		else if (item.type == "skill")
 		{
-			context.data['publications'] = CONFIG.SPACE1889.publications;
-			context.data['skillGroups'] = CONFIG.SPACE1889.skillGroups;
+			context.system['publications'] = CONFIG.SPACE1889.publications;
+			context.system['skillGroups'] = CONFIG.SPACE1889.skillGroups;
 		}
-		else if (itemData.type == "talent")
+		else if (item.type == "talent")
 		{
-			context.data['preConditionTypes'] = CONFIG.SPACE1889.preConditionTypes;
-			context.data['publications'] = CONFIG.SPACE1889.publications;
+			context.system['preConditionTypes'] = CONFIG.SPACE1889.preConditionTypes;
+			context.system['publications'] = CONFIG.SPACE1889.publications;
 		}
-		else if (itemData.type == "weapon")
+		else if (item.type == "weapon")
 		{
-			context.data['combatSkills'] = CONFIG.SPACE1889.combatSkills;
-			context.data['combatSpecializations'] = CONFIG.SPACE1889.combatSpecializations;
-			context.data['damageTypes'] = CONFIG.SPACE1889.damageTypes;
-			context.data['damageTypeAbbr'] = CONFIG.SPACE1889.damageTypeAbbreviations;
-			context.data['capacityTypes'] = CONFIG.SPACE1889.weaponCapacityTypes;
+			context.system['combatSkills'] = CONFIG.SPACE1889.combatSkills;
+			context.system['combatSpecializations'] = CONFIG.SPACE1889.combatSpecializations;
+			context.system['damageTypes'] = CONFIG.SPACE1889.damageTypes;
+			context.system['damageTypeAbbr'] = CONFIG.SPACE1889.damageTypeAbbreviations;
+			context.system['capacityTypes'] = CONFIG.SPACE1889.weaponCapacityTypes;
 		}
-		else if (itemData.type == "weakness")
+		else if (item.type == "weakness")
 		{
-			context.data['weaknessTypes'] = CONFIG.SPACE1889.weaknessTypes;
+			context.system['weaknessTypes'] = CONFIG.SPACE1889.weaknessTypes;
 		}
-		else if (itemData.type == "currency")
+		else if (item.type == "currency")
 		{
-			context.data['moneyTypes'] = CONFIG.SPACE1889.moneyTypes;
+			context.system['moneyTypes'] = CONFIG.SPACE1889.moneyTypes;
 		}
-		else if (itemData.type == "language")
+		else if (item.type == "language")
 		{
-			context.data['origins'] = CONFIG.SPACE1889.languageOrigins;
-			context.data['families'] = CONFIG.SPACE1889.familyOflanguages;
-			context.data['languages'] = CONFIG.SPACE1889.languages;
+			context.system['origins'] = CONFIG.SPACE1889.languageOrigins;
+			context.system['families'] = CONFIG.SPACE1889.familyOflanguages;
+			context.system['languages'] = CONFIG.SPACE1889.languages;
 		}
-		else if (itemData.type == "damage")
+		else if (item.type == "damage")
 		{
-			context.data['damageTypes'] = CONFIG.SPACE1889.vehicleDamageTypes;
-			context.data['damageTypeAbbr'] = CONFIG.SPACE1889.vehicleDamageTypeAbbreviations;
-		}
-
-		if (itemData.type == "weapon")
-		{
-			context.data['storageLocations'] = CONFIG.SPACE1889.allStorageLocations;
-			context.data['storageLocationsAbbr'] = CONFIG.SPACE1889.allStorageLocationsAbbreviations;
-			context.data['weaponMountSpots'] = CONFIG.SPACE1889.weaponMountSpots;
+			context.system['damageTypes'] = CONFIG.SPACE1889.vehicleDamageTypes;
+			context.system['damageTypeAbbr'] = CONFIG.SPACE1889.vehicleDamageTypeAbbreviations;
 		}
 
-		if (itemData.type == "armor" || itemData.type == "item")
+		if (item.type == "weapon")
 		{
-			context.data['storageLocations'] = CONFIG.SPACE1889.storageLocations;
-			context.data['storageLocationsAbbr'] = CONFIG.SPACE1889.storageLocationAbbreviations;
+			context.system['storageLocations'] = CONFIG.SPACE1889.allStorageLocations;
+			context.system['storageLocationsAbbr'] = CONFIG.SPACE1889.allStorageLocationsAbbreviations;
+			context.system['weaponMountSpots'] = CONFIG.SPACE1889.weaponMountSpots;
 		}
+
+		if (item.type == "armor" || item.type == "item")
+		{
+			context.system['storageLocations'] = CONFIG.SPACE1889.storageLocations;
+			context.system['storageLocationsAbbr'] = CONFIG.SPACE1889.storageLocationAbbreviations;
+		}
+
+		//TextEditor
+		context.enrichedDescription = await TextEditor.enrichHTML(this.object.system.description, { async: true });
+
 		return context;
 	}
 
@@ -117,26 +121,26 @@ export class Space1889ItemSheet extends ItemSheet {
 		// Roll handlers, click handlers, etc. would go here.
 		html.find('.increment-weapon-size-click').mousedown(ev =>
 		{
-			if (this.item.data.type == "weapon")
+			if (this.item.type == "weapon")
 			{
-				const newValue = SPACE1889Helper.incrementValue(ev, this.item.data.data.size, 0, undefined);
-				this.item.update({ 'data.size': newValue });
+				const newValue = SPACE1889Helper.incrementValue(ev, this.item.system.size, 0, undefined);
+				this.item.update({ 'system.size': newValue });
 			}
 		});
 		html.find('.id-lock-toggle').mousedown(ev =>
 		{
-			if (this.item.data.data.unlockIdForUser != undefined)
+			if (this.item.system.unlockIdForUser != undefined)
 			{
-				const toggledValue = !this.item.data.data.unlockIdForUser;
-				this.item.update({ 'data.unlockIdForUser': toggledValue });
+				const toggledValue = !this.item.system.unlockIdForUser;
+				this.item.update({ 'system.unlockIdForUser': toggledValue });
 			}
 		});
 		html.find('.create-new-id').mousedown(ev =>
 		{
-			if (this.item.data.name != "")
+			if (this.item.name != "")
 			{
-				const newId = this.item.createId(this.item.data.name);
-				this.item.update({ 'data.id': newId });
+				const newId = this.item.createId(this.item.name);
+				this.item.update({ 'system.id': newId });
 			}
 		});
 	}

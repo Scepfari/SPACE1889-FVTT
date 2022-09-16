@@ -8,15 +8,15 @@
 				<a class="item-control item-create item-max-with60px" title='{{localize "SPACE1889.CreateItem"}}' data-type="currency"><i class="fas fa-plus"></i> Add</a>
 			</div>
 		</li>
-		{{#each money as |item id|}}
+		{{#each system.money as |item id|}}
 		<li class="item row-section flexrow" data-item-id="{{item._id}}">
 			<div class="item-name">
-				<h4 for="" class="rollable" data-roll-type="item" data-label="{{item.name}}" title="{{item.data.label}}">{{item.data.abbr}}</h4>
+				<h4 for="" class="rollable" data-roll-type="item" data-label="{{item.name}}" title="{{item.system.label}}">{{item.system.abbr}}</h4>
 			</div>
 			<div class="items-list item-max-with60px">
-				<a class="increment-click">{{item.data.quantity}}</a>
+				<a class="increment-click">{{item.system.quantity}}</a>
 			</div>
-			<label class="items-list item-max-with60px">{{item.data.exchangeValue}}</label>
+			<label class="items-list item-max-with60px">{{item.system.exchangeValue}}</label>
 			<div class="item-controls item-max-with60px">
 				<a class="item-control item-edit" title="Edit Item"><i class="fas fa-edit"></i></a>
 				<a class="item-control item-delete" title="Delete Item"><i class="fas fa-trash"></i></a>

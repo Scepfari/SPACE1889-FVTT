@@ -1,9 +1,9 @@
-{{#if data.movementType}}
+{{#if system.movementType}}
 <div class="resource">
 	<label class="resource-label">{{ localize "SPACE1889.LanguageOrigin" }}: </label>
-	<select name="data.origin" data-dtype="String">
-		{{#select data.origin}}
-		{{#each data.origins as |ch char|}}
+	<select name="system.origin" data-dtype="String">
+		{{#select system.origin}}
+		{{#each system.origins as |ch char|}}
 		<option value="{{char}}">{{localize ch}}</option>
 		{{/each}}
 		{{/select}}
@@ -14,25 +14,25 @@
 	<div class="item flex-group-center flexrow" style="grid-row: 1 / span 1; grid-column: 1 / span 1;">
 		<label class="resource-label">{{localize "SPACE1889.Height"}}</label>
 		<div class="resource-content flex-center flex-between">
-			<input type="text" name="data.height" value="{{data.height}}" />
+			<input type="text" name="system.height" value="{{system.height}}" />
 		</div>
 	</div>
 	<div class="item flex-group-center flexrow" style="grid-row: 2 / span 1; grid-column: 1 / span 1;">
 		<label class="resource-label">{{localize "SPACE1889.Weight"}}</label>
 		<div class="resource-content flex-center flex-between">
-			<input type="text" name="data.weight" value="{{data.weight}}" />
+			<input type="text" name="system.weight" value="{{system.weight}}" />
 		</div>
 	</div>
 	<div class="item flex-group-center flexrow" style="grid-row: 3 / span 1; grid-column: 1 / span 1;">
 		<label class="resource-label">{{localize "SPACE1889.Age"}}</label>
 		<div class="resource-content flex-center flex-between">
-			<input type="text" name="data.age" value="{{data.age}}" />
+			<input type="text" name="system.age" value="{{system.age}}" />
 		</div>
 	</div>
 	<div class="item flex-group-center flexrow" style="grid-row: 4 / span 1; grid-column: 1 / span 1;">
 		<label class="resource-label">{{localize "SPACE1889.DateOfBirth"}}</label>
 		<div class="resource-content flex-center flex-between">
-			<input type="text" name="data.dateOfBirth" value="{{data.dateOfBirth}}" />
+			<input type="text" name="system.dateOfBirth" value="{{system.dateOfBirth}}" />
 		</div>
 	</div>
 	<div class="flex-group-center" grid-row-start="2" style="grid-row: 1 / span 4; grid-column: 3 / span 1;">
@@ -43,5 +43,5 @@
 </div>
 	{{/if}}
 <div class="tab" data-group="primary" data-tab="biography">
-	{{editor content=data.biography target="data.biography" rollData=rollData button=true owner=owner editable=editable}}
+	{{editor enrichedBiography target="system.biography" button=true editable=editable}}
 </div>

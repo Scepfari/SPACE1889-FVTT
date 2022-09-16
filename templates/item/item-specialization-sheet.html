@@ -7,18 +7,18 @@
 			<div class="grid grid-2col">
 				<div class="resource">
 					<label class="resource-label">{{ localize "SPACE1889.Level" }}</label>
-					<input type="text" name="data.level" value="{{data.level}}" data-dtype="Number" />
+					<input type="text" name="system.level" value="{{system.level}}" data-dtype="Number" />
 				</div>
 				<div class="resource">
 					<label class="resource-label">{{ localize "SPACE1889.Rating" }}</label>
-					<input type="text" name="data.rating" value="{{data.rating}}" data-dtype="Number" />
+					<input type="text" name="system.rating" value="{{system.rating}}" data-dtype="Number" />
 				</div>
 			</div>
 			<div class="resource">
 				<label class="resource-label">{{ localize "SPACE1889.BaseSkill" }}</label>
-				<select name="data.underlyingSkillId" data-dtype="String">
-					{{#select data.underlyingSkillId}}
-					{{#each data.nonGroupSkills as |ch char|}}
+				<select name="system.underlyingSkillId" data-dtype="String">
+					{{#select system.underlyingSkillId}}
+					{{#each system.nonGroupSkills as |ch char|}}
 					<option value="{{char}}">{{localize ch}}</option>
 					{{/each}}
 					{{/select}}
@@ -38,11 +38,11 @@
 		{{!-- Description Tab --}}
 		<div class="tab" data-group="primary" data-tab="description">
 			<div class="edit-special">
-				{{editor content=data.description target="data.description" rollData=rollData button=true owner=owner editable=editable}}
+				{{editor enrichedDescription target="system.description" button=true editable=editable}}
 			</div>
-			{{#if (ne data.descriptionLangId (localize data.descriptionLangId))}}
+			{{#if (ne system.descriptionLangId (localize system.descriptionLangId))}}
 				<hr />
-				<p>{{{localize data.descriptionLangId}}}</p>
+				<p>{{{localize system.descriptionLangId}}}</p>
 			{{/if}}
 		</div>
 	</section>

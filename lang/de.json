@@ -46,6 +46,9 @@
 	"SPACE1889.Block": "Blocken",
 	"SPACE1889.Parry": "Parade",
 	"SPACE1889.Evasion": "Ausweichen",
+	"SPACE1889.ActiveDefense": "Aktive Abwehr",
+	"SPACE1889.PassiveDefense": "Passive Abwehr",
+	"SPACE1889.PassiveDefenseAbbr": "pAbw",
 	"SPACE1889.Xp": "EP",
 	"SPACE1889.Ability": "Attribut",
 	"SPACE1889.AbilityPl": "Attribute",
@@ -225,8 +228,6 @@
 	"SPACE1889.VehicleIsStrengthBasedTempoInfo": "Stärkebasiertes Tempo",
 	"SPACE1889.VehicleIsPureMusclePowerInfo": "Fahrzeug wird allein über reine Muskelkraft bewegt",
 	"SPACE1889.VehicleStrengthTempoFactor": "Stärke-Tempo-Faktor",
-	"SPACE1889.VehiclePassiveDefense": "Passive Abwehr",
-	"SPACE1889.VehiclePassiveDefenseAbbr": "pAbw",
 	"SPACE1889.VehicleStructure": "Struktur",
 	"SPACE1889.VehicleNegativeStructure": "Negative Struktur",
 	"SPACE1889.VehicleDamagePl": "Schäden",
@@ -3014,6 +3015,8 @@
 	"SPACE1889.CompendiumWasserfahrzeugwh636veavephWMn8": "Bathysphere",
 	"SPACE1889.CompendiumWasserfahrzeugytdKSQn6lE74irKQ": "Einheitslinienschiff",
 
+	"SPACE1889.Warning": "Warnung",
+	"SPACE1889.FoundryBug8180": "<h1>Stopp und aufgepasst!&nbsp;</h1><p><br />Du hast diese V9 Welt gerade auf Foundry 10.285 migriert. Dabei sind alle nicht mit dem Akteur verlinkten Tokens, die sich in ihren Items vom Original Akteur unterscheiden (Schaden ist auch ein Item) leider irreperabel besch&auml;digt wurden, indem alle Item Werte auf ihren Standardwert zur&uuml;ckgesetzt wurden. Siehe Bug <a title=\"Foundry Bug 8180\" href=\"https://github.com/foundryvtt/foundryvtt/issues/8180\" target=\"_blank\" rel=\"noopener\">https://github.com/foundryvtt/foundryvtt/issues/8180</a><br /><br /></p><h3>Du hast zwei M&ouml;glichkeiten den Migrationsfehler zu vermeiden:</h3><ol style=\"list-style-type: decimal;\"><li>Zur&uuml;ck zu Foundry 9.280 wechseln, Backup einspielen und auf das n&auml;chste Foundry Release warten, in dem der Bug 8180 gefixed wurde<br /><br /></li><li><ol style=\"list-style-type: lower-latin;\"><li><span style=\"font-family: var(--font-primary); font-size: var(--font-size-14);\">Foundry Version 10.284 installieren und Backup einspielen</span></li><li>alle Space Welten von V9 auf 10.284 migrieren (das Space 1889 System fasst die Tokens dabei automatisch an, um den bug-bedingten Datenverlust bei einem sp&auml;teren Update auf 10.285 zu vermeiden)</li><li>Foundry Version 10.285 installieren und damit die Welten von 10.284 auf 10.285migrieren</li><li>Spa&szlig; an Foundry 10 haben</li></ol></li></ol><p>&nbsp;</p>",
 	"SPACE1889.NewVersion": "Neue Version",
-	"SPACE1889.VersionInfo0_8_0": "`<h1>SPACE 1889 - Version 0.8.0 - Die kristaline Revolution</h1><p>&nbsp;</p><h4><strong>Die kristaline Revolution .0</strong></h4><ul><li>neuer Akteur Typ: Fahrzeug</li><li>neuer Fahrzeug Charakterbogen</li><li>SCs und NSCs k&ouml;nnen Positionen in Fahrzeugen zugeordnet werden (durch Drag &amp; Drop vom Akteurverzeichnis)</li><li>Automatische Berechnung auch unter Ber&uuml;cksichtigung der zugeordneten SCs/NSCs</li><li>Man&ouml;verdialog einschlie&szlig;lich verf&uuml;gbarer Unterst&uuml;tzung</li><li>Fahrzeuge Kompendien (&Auml;ther, Land, Luft und Wasser)</li><li>Fahrzeugwaffen Kompendium</li><li>Bugfixes</li></ul><p>bekannte Probleme:&nbsp;</p><ul><li>Weiterhin keine Foundry VTT Version 10 Unterst&uuml;tzung</li>\t\t\t<li>Fahrzeuge werden nicht vom Modul Token Action HUD unsterst&uuml;tzt. (Das Modul ist im Gegensatz zu SPACE 1889 schon nach Foundry VTT Version 10 migriert und bekommt keine Version 9 Updates mehr).&nbsp;</li></ul>`"
+	"SPACE1889.VersionInfo": "`<h1>SPACE 1889 - Version 1.0.0 - Marsianische Moderne</h1><p>&nbsp;</p><p><strong>Marsianische Moderne&nbsp;</strong></p><ul><li>Umstieg auf Foundry VTT Version 10</li><li>Fahrzeuge werden von Token Action HUD (ab v3.0.6) unterst&uuml;tzt</li><li>aktive und passive Verteidigung kann direkt &uuml;ber Token Action HUD angesto&szlig;en werden</li><li>Bugfix: Fahrzeugverteidigung kann nicht mehr unter den Wert der passiven Verteidigung fallen (passiert in 0.8.0 bei gro&szlig;en negativen Werten f&uuml;r die Man&ouml;vrierf&auml;higkeit</li></ul><p>&nbsp;</p><hr /><h4>&nbsp;</h4><h4><strong>Die kristaline Revolution v0.8.0</strong></h4><ul><li>neuer Akteur Typ: Fahrzeug</li><li>neuer Fahrzeug Charakterbogen</li><li>SCs und NSCs k&ouml;nnen Positionen in Fahrzeugen zugeordnet werden (durch Drag &amp; Drop vom Akteurverzeichnis)</li><li>Automatische Berechnung auch unter Ber&uuml;cksichtigung der zugeordneten SCs/NSCs</li><li>Man&ouml;verdialog mit einschlie&szlig;lich verf&uuml;gbarer Unterst&uuml;tzung</li><li>Fahrzeuge Kompendien (&Auml;ther, Land, Luft und Wasser)</li><li>Fahrzeugwaffen Kompendium</li><li>Bugfixes</li></ul><p>&nbsp;</p>`"
 }

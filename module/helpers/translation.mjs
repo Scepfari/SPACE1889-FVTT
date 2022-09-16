@@ -126,11 +126,11 @@ export class Space1889Translation
 				let langId = key[1];
 				if (isActor)
 				{
-					langId += item.data._id;
+					langId += item._id;
 				}
 				else
 				{
-					const id = item.data.data.id;
+					const id = item.system.id;
 					const upperCaseId = id.replace(/^(.)/, function (b) { return b.toUpperCase(); });
 					langId = key[1] + upperCaseId;
 				}
@@ -139,7 +139,7 @@ export class Space1889Translation
 					await item.update({ "name": newName });
 				else
 				{
-					console.log("Missing translation data for id: " + langId + " (current name: " + item.data.name + ")");
+					console.log("Missing translation data for id: " + langId + " (current name: " + item.name + ")");
 					++errorCount;
 				}
 			}
@@ -152,7 +152,7 @@ export class Space1889Translation
 	static async runInitTranslationAction()
 	{
 		const currentLanguage = game.settings.get('core', 'language');
-		const currentVersion = game.system.data.version;
+		const currentVersion = game.system.version;
 		if (game.user.isGM)
 		{
 			// check translation state

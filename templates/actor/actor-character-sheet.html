@@ -14,14 +14,14 @@
 				and it will add a small amount of padding, a border, and will
 				center all of its child elements content and text. --}}
 				<div class="resource flex-group-center">
-					<label for="data.health.value" class="resource-label rollable" data-roll-key="health" data-roll-type="actorinfo" data-label='{{localize "SPACE1889.Health"}}'>{{localize "SPACE1889.Health"}}</label>
+					<label for="system.health.value" class="resource-label rollable" data-roll-key="health" data-roll-type="actorinfo" data-label='{{localize "SPACE1889.Health"}}'>{{localize "SPACE1889.Health"}}</label>
 					<div class="resource-content flexrow item-max-with75px">
 						<div style="display: grid; grid-template-columns: 40% 20% 40%; grid-template-rows: 100%;">
 							<div class="item-margintb4px item-right">
-								<a class="item-create item-margintb4px" align="right" title='{{localize "SPACE1889.InfoAddDamage"}}' data-type="damage">{{data.health.value}}</a>
+								<a class="item-create item-margintb4px" align="right" title='{{localize "SPACE1889.InfoAddDamage"}}' data-type="damage">{{system.health.value}}</a>
 							</div>
 							<div class="item-margintb4px"> / </div>
-							<div class="item-margintb4px item-left">{{data.health.max}}</div>
+							<div class="item-margintb4px item-left">{{system.health.max}}</div>
 						</div>
 					</div>
 
@@ -29,23 +29,23 @@
 				</div>
 
 				<div class="resource flex-group-center">
-					<label for="data.style.value" class="resource-label rollable" data-roll-key="style" data-roll-type="actorinfo" data-label='{{localize "SPACE1889.Style"}}'>{{localize "SPACE1889.Style"}}</label>
+					<label for="system.style.value" class="resource-label rollable" data-roll-key="style" data-roll-type="actorinfo" data-label='{{localize "SPACE1889.Style"}}'>{{localize "SPACE1889.Style"}}</label>
 					<div class="resource-content flexrow flex-center flex-between item-margin5px">
-						<a class="increment-style-click">{{data.style.value}}</a>
+						<a class="increment-style-click">{{system.style.value}}</a>
 					</div>
 				</div>
 
 				<div class="resource flex-group-center">
-					<label for="data.attributes.xp.value" class="resource-label rollable" data-roll-key="xp" data-roll-type="actorinfo" data-label='{{localize "SPACE1889.Xp"}}'>{{localize "SPACE1889.Xp"}}</label>
+					<label for="system.attributes.xp.value" class="resource-label rollable" data-roll-key="xp" data-roll-type="actorinfo" data-label='{{localize "SPACE1889.Xp"}}'>{{localize "SPACE1889.Xp"}}</label>
 					<div class="resource-content flexrow flex-center flex-between item-margin5px">
-						<a class="increment-xp-click">{{data.attributes.xp.value}}</a>
+						<a class="increment-xp-click">{{system.attributes.xp.value}}</a>
 					</div>
 				</div>
 
 				<div class="resource flex-group-center">
-					<label for="data.attributes.xp.used">used {{localize "SPACE1889.Xp"}}</label>
+					<label for="system.attributes.xp.used">used {{localize "SPACE1889.Xp"}}</label>
 					<div class="resource-content flexrow flex-center flex-between">
-						<div title='{{localize "SPACE1889.CharacterSheetAvailableAre"}}: {{data.attributes.xp.available}}{{localize "SPACE1889.Xp"}}' class="resource flex-group-center item-margin5px">{{data.attributes.xp.used}}</div>
+						<div title='{{localize "SPACE1889.CharacterSheetAvailableAre"}}: {{system.attributes.xp.available}}{{localize "SPACE1889.Xp"}}' class="resource flex-group-center item-margin5px">{{system.attributes.xp.used}}</div>
 					</div>
 				</div>
 
@@ -72,9 +72,9 @@
 			<li class="item flex-group-center flexrow">
 				<div class="resource">
 					<label class="resource-label">{{ localize "SPACE1889.Species" }}</label>
-					<select name="data.attributes.species.value" data-dtype="String">
-						{{#select data.attributes.species.value}}
-							{{#each data.species as |ch char|}}
+					<select name="system.attributes.species.value" data-dtype="String">
+						{{#select system.attributes.species.value}}
+							{{#each system.species as |ch char|}}
 							<option value="{{char}}">{{localize ch}}</option>
 							{{/each}}
 						{{/select}}
@@ -82,9 +82,9 @@
 				</div>
 				<div class="resource">
 					<label class="resource-label">{{ localize "SPACE1889.Archetype" }}</label>
-					<select name="data.attributes.archetype.value" data-dtype="String">
-						{{#select data.attributes.archetype.value}}
-							{{#each data.archetypes as |ch char|}}
+					<select name="system.attributes.archetype.value" data-dtype="String">
+						{{#select system.attributes.archetype.value}}
+							{{#each system.archetypes as |ch char|}}
 							<option value="{{char}}">{{localize ch}}</option>
 							{{/each}}
 						{{/select}}
@@ -92,9 +92,9 @@
 				</div>
 				<div class="resource">
 					<label class="resource-label">{{ localize "SPACE1889.Motivation" }}</label>
-					<select name="data.attributes.motivation.value" data-dtype="String">
-						{{#select data.attributes.motivation.value}}
-							{{#each data.motivations as |ch char|}}
+					<select name="system.attributes.motivation.value" data-dtype="String">
+						{{#select system.attributes.motivation.value}}
+							{{#each system.motivations as |ch char|}}
 							<option value="{{char}}">{{localize ch}}</option>
 							{{/each}}
 						{{/select}}
@@ -114,9 +114,9 @@
 						<div title='{{localize "SPACE1889.TalentBonus"}}' class="items-list item-max-with40px">{{localize "SPACE1889.Mod"}}</div>
 						<div title='{{localize "SPACE1889.Rating"}}' class="items-list item-max-with42px">{{localize "SPACE1889.Rating"}}</div>
 					</li>
-					{{#each data.abilities as |ability key|}}
+					{{#each system.abilities as |ability key|}}
 					<li class="flexrow">
-						<label for="data.abilities.{{key}}.value" class="rollable flexlarge align-left" data-roll-key="{{key}}" data-roll-type="actor" data-roll-diecount="{{ability.total}}" data-label="{{ability.label}}">{{ability.label}}</label>
+						<label for="system.abilities.{{key}}.value" class="rollable flexlarge align-left" data-roll-key="{{key}}" data-roll-type="actor" data-roll-diecount="{{ability.total}}" data-label="{{ability.label}}">{{ability.label}}</label>
 						<div class="item-max-with40px">
 							<a class="increment-{{key}}-click">{{ability.value}}</a>
 						</div>
@@ -133,12 +133,12 @@
 						<div title='{{localize "SPACE1889.TalentBonus"}}' class="items-list item-max-with40px">{{localize "SPACE1889.Mod"}}</div>
 						<div title='{{localize "SPACE1889.Rating"}}' class="items-list item-max-with40px">{{localize "SPACE1889.Rating"}}</div>
 					</li>
-					{{#each data.secondaries as |secondary key|}}
+					{{#each system.secondaries as |secondary key|}}
 					<li class="secondary flexrow">
 						{{#if (eq key 'move')}}
-							<label for="data.secondaries.{{key}}.value" class="rollable flexlarge align-left" data-roll-key="{{key}}" data-roll-type="actor" data-roll-diecount="{{secondary.total}}" data-label="{{secondary.label}}"  title="{{secondary.inSiUnits}}">{{secondary.label}}</label>
+							<label for="system.secondaries.{{key}}.value" class="rollable flexlarge align-left" data-roll-key="{{key}}" data-roll-type="actor" data-roll-diecount="{{secondary.total}}" data-label="{{secondary.label}}"  title="{{secondary.inSiUnits}}">{{secondary.label}}</label>
 						{{else}}
-							<label for="data.secondaries.{{key}}.value" class="rollable flexlarge align-left" data-roll-key="{{key}}" data-roll-type="actor" data-roll-diecount="{{secondary.total}}" data-label="{{secondary.label}}">{{secondary.label}}</label>
+							<label for="system.secondaries.{{key}}.value" class="rollable flexlarge align-left" data-roll-key="{{key}}" data-roll-type="actor" data-roll-diecount="{{secondary.total}}" data-label="{{secondary.label}}">{{secondary.label}}</label>
 						{{/if}}
 						<label class="items-list item-max-with40px">{{secondary.value}}</label>
 						<label class="items-list item-max-with40px">{{secondary.talentBonus}}</label>

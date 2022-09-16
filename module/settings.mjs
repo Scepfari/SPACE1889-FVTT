@@ -106,4 +106,14 @@ export const registerSystemSettings = function ()
 			default: "1|0.7.4",
 			type: String
 		});
+
+	game.settings.register("space1889", "lastUsedFoundryVersion",
+		{
+			name: "last foundry version",
+			hint: "Foundry VTT version",
+			scope: "world",
+			config: false,
+			default: "9.28",
+			type: String
+		});
 }
