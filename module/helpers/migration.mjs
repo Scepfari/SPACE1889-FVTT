@@ -53,15 +53,6 @@ export class Space1889Migration
 	{
 		if (game.version === "10.284")
 		{
-
-			let resourcePack = game.packs.get("space1889.gegenstaende");
-			if (resourcePack == undefined)
-				return;
-			let resources = await resourcePack.getDocuments();
-			const item = resources.find(e => e._id == "LdpVmKRjCyVbfyF9");
-			if (item == undefined)
-				return;
-
 			for (const scene of game.scenes)
 			{
 				for (let token of scene.tokens)
