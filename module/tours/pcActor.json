@@ -1,0 +1,68 @@
+{
+	"title": "SPACE1889.TourScSheetTitleStep0",
+	"module": "space1889",
+	"id": "pcActor",
+	"canBeResumed": false,
+	"display": true,
+	"preCommand": "const actor = game.actors.find(e => e.type == \"character\" );if(!actor) return ui.notifications.warn(game.i18n.localize(\"SPACE1889.TourPcNoCharacter\"));this.app=actor.sheet;",
+	"steps": [
+
+		{
+			"id": "step-0",
+			"selector": ".actor.sheet",
+			"title": "SPACE1889.TourScSheetTitleStep0",
+			"content": "SPACE1889.TourScSheetStep0",
+			"appTab": "abilities"
+		},
+		{
+			"id": "step-1",
+			"selector": ".actor.sheet .sheet-header",
+			"title": "SPACE1889.TourScSheetTitleStep1",
+			"content": "SPACE1889.TourScSheetStep1",
+			"appTab": "abilities"
+		},
+		{
+			"id": "step-2",
+			"selector": ".actor.sheet .tab.abilities",
+			"title": "SPACE1889.AbilityPl",
+			"content": "SPACE1889.TourScSheetStep2",
+			"appTab": "abilities"
+		},
+		{
+			"id": "step-3",
+			"selector": ".actor.sheet .tab.skills",
+			"title": "SPACE1889.SkillPl",
+			"content": "SPACE1889.TourScSheetStep3",
+			"appTab": "skills"
+		},
+		{
+			"id": "step-4",
+			"selector": ".actor.sheet .tab.talents",
+			"title": "SPACE1889.TalentPl",
+			"content": "SPACE1889.TourScSheetStep4",
+			"appTab": "talents"
+		},
+		{
+			"id": "step-5",
+			"selector": ".actor.sheet .tab.items",
+			"title": "SPACE1889.ItemPl",
+			"content": "SPACE1889.TourScSheetStep5",
+			"appTab": "items"
+		},
+		{
+			"id": "step-6",
+			"selector": ".actor.sheet .tab.weapons",
+			"title": "SPACE1889.WeaponPl",
+			"content": "SPACE1889.TourScSheetStep6",
+			"appTab": "weapons"
+		},
+		{
+			"id": "step-7",
+			"selector": ".actor.sheet .tab.biography",
+			"title": "SPACE1889.Biography",
+			"content": "SPACE1889.TourScSheetStep7",
+			"appTab": "biography"
+		}
+	]
+}
+  

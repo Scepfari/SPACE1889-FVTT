@@ -3,12 +3,12 @@
 	"id": "space1889",
 	"title": "Space 1889",
 	"description": "The SPACE 1889 Ubiquity system for FoundryVTT!",
-	"version": "1.0.1",
+	"version": "1.0.2",
 	"minimumCoreVersion": "10",
 	"compatibleCoreVersion": "10",
 	"compatibility": {
 		"minimum": 10,
-		"verified": "10.285",
+		"verified": "10.286",
 		"maximum": 10
 	},
 
@@ -358,6 +358,13 @@
 			"entity": "Actor",
 			"type": "Actor",
 			"private": true
+		},
+		{
+			"name": "help",
+			"label": "SPACE1889 Hilfe",
+			"system": "space1889",
+			"path": "./packs/space-1889-hilfe.db",
+			"type": "JournalEntry"
 		}
 	],
 	"languages": [
@@ -377,6 +384,6 @@
 	"primaryTokenAttribute": "health",
 	"url": "https://github.com/Scepfari/SPACE1889-FVTT",
 	"manifest": "https://github.com/Scepfari/SPACE1889-FVTT/releases/latest/download/system.json",
-	"download": "https://github.com/Scepfari/SPACE1889-FVTT/releases/download/1.0.1/space1889-foundry-1.0.1.zip",
+	"download": "https://github.com/Scepfari/SPACE1889-FVTT/releases/download/1.0.2/space1889-foundry-1.0.2.zip",
 	"license": "LICENSE.txt"
 }

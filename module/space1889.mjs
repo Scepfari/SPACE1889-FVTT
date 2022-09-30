@@ -10,6 +10,7 @@ import { SPACE1889 } from "./helpers/config.mjs";
 import { registerSystemSettings } from "./settings.mjs";
 import { Space1889Translation } from "./helpers/translation.mjs";
 import { Space1889Migration } from "./helpers/migration.mjs";
+import { Space1889Tour } from "./tours/space1889_tour.mjs";
 
 
 /* -------------------------------------------- */
@@ -98,6 +99,7 @@ Hooks.once("ready", async function() {
 		if (values.type == "vehicle")
 			values.prepareDerivedData();
 	});
+	Space1889Tour.registerTours()
 });
 
 
