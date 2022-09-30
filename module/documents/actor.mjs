@@ -21,6 +21,11 @@ export class Space1889Actor extends Actor
 
 		const actor = this;
 
+		if (actor.type === "character")
+		{
+			actor.update({ "prototypeToken.actorLink" : true })
+		}
+
 		if (actor.type === "character" || actor.type === "npc")
 		{
 			let resourcePack = game.packs.get("space1889.ressourcen");
