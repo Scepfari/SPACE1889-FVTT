@@ -4,6 +4,20 @@
 		<label class="items-list item-max-with60px">{{system.secondaries.defense.total}}</label>
 	</div>
 	<div class="resource flex-group-center">
+		<label class="resource-label rollable" data-roll-key="activeDefense" data-roll-type="actor" data-roll-diecount="{{system.secondaries.defense.activeTotal}}" data-label='{{localize "SPACE1889.ActiveDefense"}}'>{{localize "SPACE1889.ActiveDefense"}}: </label>
+		<label class="items-list item-max-with60px">{{system.secondaries.defense.activeTotal}}</label>
+	</div>
+	<div class="resource flex-group-center">
+		<label class="resource-label rollable" data-roll-key="passiveDefense" data-roll-type="actor" data-roll-diecount="{{actor.system.secondaries.defense.passiveTotal}}" data-label='{{localize "SPACE1889.PassiveDefense"}}'>{{localize "SPACE1889.PassiveDefense"}}: </label>
+		<label class="items-list item-max-with60px">{{system.secondaries.defense.passiveTotal}}</label>
+	</div>
+	<div class="resource flex-group-center">
+		<label class="resource-label rollable" data-roll-key="totalDefense" data-roll-type="actor" data-roll-diecount="{{actor.system.secondaries.defense.totalDefense}}" data-label='{{localize "SPACE1889.TalentVolleAbwehr"}}'>{{localize "SPACE1889.TalentVolleAbwehr"}}: </label>
+		<label class="items-list item-max-with60px">{{system.secondaries.defense.totalDefense}}</label>
+	</div>
+</li>
+<li class="item flexrow items-header">
+	<div class="resource flex-group-center">
 		<label title="{{system.block.info}}" class="resource-label rollable" data-roll-key="block" data-roll-type="actor" data-roll-diecount="{{system.block.value}}" data-label='{{localize "SPACE1889.Block"}}'>{{localize "SPACE1889.Block"}}: </label>
 		<label class="items-list item-max-with60px">{{system.block.value}}</label>
 	</div>
@@ -16,4 +30,3 @@
 		<label class="items-list item-max-with60px">{{system.evasion.value}}</label>
 	</div>
 </li>
-
