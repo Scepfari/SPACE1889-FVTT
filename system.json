@@ -379,11 +379,22 @@
 			"path": "lang/en.json"
 		}
 	],
+	"media": [
+		{
+			"type": "cover",
+			"url": "https://github.com/Scepfari/SPACE1889-FVTT/blob/main/icons/Space1889Background.jpg"
+		}
+	],
 	"gridDistance": 1.5,
 	"gridUnits": "m",
 	"primaryTokenAttribute": "health",
 	"url": "https://github.com/Scepfari/SPACE1889-FVTT",
 	"manifest": "https://github.com/Scepfari/SPACE1889-FVTT/releases/latest/download/system.json",
 	"download": "https://github.com/Scepfari/SPACE1889-FVTT/releases/download/1.0.2/space1889-foundry-1.0.2.zip",
+	"bugs": "https://github.com/Scepfari/SPACE1889-FVTT/issues",
+	"flags": 
+	{
+		"allowBugReporter": true
+	},
 	"license": "LICENSE.txt"
 }
