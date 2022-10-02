@@ -128,9 +128,18 @@ export class Space1889Actor extends Actor
 			if (position.actorId != "" && game.actors != undefined && position.staffed)
 			{
 				const posActor = game.actors.get(position.actorId);
-				position.total = this._GetVehiclePositionSkillValue(actor, key, posActor);
-				position.actorName = posActor.name;
-				position.mod = 0;
+				if (posActor)
+				{
+					position.total = this._GetVehiclePositionSkillValue(actor, key, posActor);
+					position.actorName = posActor.name;
+					position.mod = 0;
+				}
+				else
+				{
+					position.actorName = game.i18n.localize("SPACE1889.VehicleNoActorName");
+					position.mod = 0;
+					position.total = 0;
+				}
 			}
 			else if (!position.staffed)
 			{

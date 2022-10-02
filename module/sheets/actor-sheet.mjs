@@ -726,19 +726,17 @@ export class Space1889ActorSheet extends ActorSheet {
 		if (this.actor.type != 'vehicle')
 			return false;
 
-		let dropedActor = null;
-		if (data.pack)
-		{
-			const pack = game.packs.find(p => p.collection === data.pack);
-			dropedActor = await pack.getDocument(data.id);
-		}
-		else
-		{
-			dropedActor = game.actors.get(data.id);
-		}
-
+		const actorClass = getDocumentClass("Actor");
+		const dropedActor = await actorClass.fromDropData(data);
 		if (!dropedActor)
-			return;
+			return false;
+
+		const uuidElemnts = data.uuid.split(".");
+		if (uuidElemnts.length > 0 && uuidElemnts[0] == "Compendium")
+		{
+			ui.notifications.info(game.i18n.localize("SPACE1889.VehicleNoCompendiumActor"));
+			return false;
+		}
 
 		await SPACE1889Helper.setVehicleActorPositionFromDialog(this.actor, dropedActor);
 		

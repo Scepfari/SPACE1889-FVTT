@@ -264,6 +264,8 @@
 	"SPACE1889.VehicleMechanicDesc": "Ein Mechaniker kümmert sich um die Technik an Bord und würfelt Proben auf Handwerk-Fertigkeiten, insbesondere Mechaniker.",
 	"SPACE1889.VehicleMedicDesc": "Ein Sanitäter kann jeder Spielercharakter mit der Fertigkeit Medizin sein, der oder die nicht für andere Aktionen benötigt wird. Er oder sie kann Erste Hilfe während und nach Gefechten leisten (vgl. EE Seite 153).",
 	"SPACE1889.VehicleNoGunner": "Das Abfeuern der Schiffswaffen ohne Kanonier ist nicht möglich.",
+	"SPACE1889.VehicleNoActorName": "gelöschter Akteur",
+	"SPACE1889.VehicleNoCompendiumActor": "Das funktioniert so nicht! Der Akteur muss zuerst in die Welt importiert werden, bevor er als Besatzungsmitglied hinzugefügt werden kann.",
 	"SPACE1889.Staffed": "besetzt",
 	"SPACE1889.NotStaffed": "nicht besetzt",
 	"SPACE1889.SpaceDisadvantage": "Raumnachteil",

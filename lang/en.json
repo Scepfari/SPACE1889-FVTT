@@ -264,6 +264,8 @@
 	"SPACE1889.VehicleMechanicDesc": "A mechanic takes care of the technology on board and rolls samples for Craft skills, especially mechanic.",
 	"SPACE1889.VehicleMedicDesc": "A medic can be any player character with the Medicine skill who is not needed for other actions. He or she can provide first aid during and after combat (see EE page 153).",
 	"SPACE1889.VehicleNoGunner": "Firing the ship's weapons without a gunner is not possible.",
+	"SPACE1889.VehicleNoActorName": "deleted actor",
+	"SPACE1889.VehicleNoCompendiumActor": "This does not work like that! The actor must first be imported into the world before he can be added as a crew member.",
 	"SPACE1889.Staffed": "staffed",
 	"SPACE1889.NotStaffed": "not staffed",
 	"SPACE1889.SpaceDisadvantage": "Space Disadvantage",
