@@ -14,16 +14,32 @@
 					<input type="text" name="system.rating" value="{{system.rating}}" data-dtype="Number" />
 				</div>
 			</div>
-			<div class="resource">
-				<label class="resource-label">{{ localize "SPACE1889.BaseSkill" }}</label>
-				<select name="system.underlyingSkillId" data-dtype="String">
-					{{#select system.underlyingSkillId}}
-					{{#each system.nonGroupSkills as |ch char|}}
-					<option value="{{char}}">{{localize ch}}</option>
-					{{/each}}
-					{{/select}}
-				</select>
+			<div class="resource flex-group-left flexrow ">
+				<div style="display: grid; grid-template-columns: 35% 55% 10%; grid-template-rows: 100%;">
+					{{#if system.noSelection}}
+					<label class="resource-label item-margintb2px">{{ localize "SPACE1889.BaseSkill" }}</label>
+					<div class="resource-content" title="{{localize "SPACE1889.UnderlyingSkillIdInfo"}}">
+						<input type="text" name="system.underlyingSkillId" value="{{system.underlyingSkillId}}" />
+					</div>
+					<div class="resource-content flex-group-center item-margintb2px">
+						<a class="noSelection-toggle" title="{{localize "SPACE1889.UnderlyingSkillSelection"}}"><i class="fa fa-toggle-off"></i></a>
+					</div>
+					{{else}}
+					<label class="resource-label item-margintb2px">{{ localize "SPACE1889.BaseSkill" }}</label>
+					<select name="system.underlyingSkillId" data-dtype="String">
+						{{#select system.underlyingSkillId}}
+						{{#each system.nonGroupSkills as |ch char|}}
+						<option value="{{char}}">{{localize ch}}</option>
+						{{/each}}
+						{{/select}}
+					</select>
+					<div class="resource-content flex-group-center item-margintb2px">
+						<a class="noSelection-toggle" title="{{ localize "SPACE1889.UnderlyingSkillNoSelection"}}"><i class="fa fa-toggle-on"></i></a>
+					</div>
+					{{/if}}
+				</div>
 			</div>
+		
 		</div>
 	</header>
 

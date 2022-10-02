@@ -2666,6 +2666,9 @@
 	"SPACE1889.CreateSpace1889Id": "Create a new Space Id from the item name",
 	"SPACE1889.Understood": "Understood",
 	"SPACE1889.StayAway": "Stay away",
+	"SPACE1889.UnderlyingSkillIdInfo": "The SPACE 1889 Id of the underlying skill must be entered here. It is shown in the skill sheet. It's case sensitive!",
+	"SPACE1889.UnderlyingSkillNoSelection": "Unlock the restriction to the skills from the rulebooks\nMandatory if you want to create specializations for self-defined skills.",
+	"SPACE1889.UnderlyingSkillSelection": "Activate the restriction to the skills from the rulebooks",
 
 	"SPACE1889.CompendiumFolderNameSkill": "Skills",
 	"SPACE1889.CompendiumFolderNameResource": "Resources",

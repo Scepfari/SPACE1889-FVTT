@@ -2666,6 +2666,9 @@
 	"SPACE1889.CreateSpace1889Id": "Erzeuge eine neue Space Id aus dem Item Namen",
 	"SPACE1889.Understood": "Verstanden",
 	"SPACE1889.StayAway": "Bleib weg",
+	"SPACE1889.UnderlyingSkillIdInfo": "Hier muss die SPACE 1889 Id der zugrundeliegenden Fertigkeit eingetragen werden. Sie wird im Fertigkeiten Bogen angezeigt. Groß- und Kleinschreibung beachten!",
+	"SPACE1889.UnderlyingSkillNoSelection": "Aufheben der Beschränkung auf die Fertigkeiten aus den Regelwerken\nZwingend nötig falls man Spezialisierungen zu selbst definierten Fertigkeiten anlegen möchte.",
+	"SPACE1889.UnderlyingSkillSelection": "Aktivieren der Beschränkung auf die Fertigkeiten aus den Regelwerken",
 
 	"SPACE1889.CompendiumFolderNameSkill": "Fertigkeiten",
 	"SPACE1889.CompendiumFolderNameResource": "Ressourcen",

@@ -135,6 +135,14 @@ export class Space1889ItemSheet extends ItemSheet {
 				this.item.update({ 'system.unlockIdForUser': toggledValue });
 			}
 		});
+		html.find('.noSelection-toggle').mousedown(ev =>
+		{
+			if (this.item.system.noSelection != undefined)
+			{
+				const toggledValue = !this.item.system.noSelection;
+				this.item.update({ 'system.noSelection': toggledValue });
+			}
+		});
 		html.find('.create-new-id').mousedown(ev =>
 		{
 			if (this.item.name != "")

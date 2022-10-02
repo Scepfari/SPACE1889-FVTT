@@ -273,7 +273,8 @@
 		},
 		"specialization": {
 			"templates": [ "description", "skillbase", "id" ],
-			"underlyingSkillId": "akrobatik"
+			"underlyingSkillId": "akrobatik",
+			"noSelection": false
 		},
 		"weapon": {
 			"templates": [ "description", "weight", "id", "location", "price" ],

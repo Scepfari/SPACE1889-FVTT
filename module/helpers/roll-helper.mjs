@@ -226,7 +226,14 @@ export default class SPACE1889RollHelper
 		else if (item.type == "specialization")
 		{
 			desc = game.i18n.localize(item.system.descriptionLangId);
-			const skillName = game.i18n.localize(item.system.nameLangId = 'SPACE1889.Skill' + item.system.underlyingSkillId.replace(/^(.)/, function (b) { return b.toUpperCase(); }));
+			if (desc == item.system.descriptionLangId && item.system.description != "")
+				desc = item.system.description;
+
+			const skillLangId = item.system.nameLangId = 'SPACE1889.Skill' + item.system.underlyingSkillId.replace(/^(.)/, function (b) { return b.toUpperCase(); });
+
+			let skillName = game.i18n.localize(skillLangId);
+			if (skillName == skillLangId)
+				skillName = item.system.underlyingSkillId;
 			const specialization = game.i18n.localize("SPACE1889.Specialization") ?? item.type;
 			label = `<h2><strong>${item.system.label}</strong></h2> <h3>[${skillName} ${specialization}]</h3>`;
 		}
