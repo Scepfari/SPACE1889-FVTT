@@ -493,14 +493,24 @@ export default class SPACE1889RollHelper
 			stunned = true;
 
 		let trefferInfo = "";
+		let effectNames = [];
 		if (recoil > 0)
 			trefferInfo += "<b>" + game.i18n.localize("SPACE1889.Recoil") + ":</b> " + recoil.toString() + "m<br>";
 		if (liegend)
+		{
 			trefferInfo += "<b>" + game.i18n.localize("SPACE1889.Knockdown") + ":</b> " + game.i18n.format("SPACE1889.ChatInfoKnockdown", { actorName: actor.name }) + "<br>";
+			effectNames.push("prone");
+		}
 		if (unconsciousStrike > 0)
+		{
 			trefferInfo += "<b>" + game.i18n.localize("SPACE1889.Unconscious") + ":</b> " + game.i18n.format("SPACE1889.ChatInfoDuration", { count: unconsciousStrike.toString() }) + "<br>";
+			effectNames.push("unconscious");
+		}
 		else if (stunned)
+		{
 			trefferInfo += "<b>" + game.i18n.localize("SPACE1889.Stunned") + ":</b> " + game.i18n.localize("SPACE1889.ChatInfoStunned") + "<br>";
+			effectNames.push("stun");
+		}
 
 		let damageTuple = SPACE1889Helper.getDamageTuple(actor, itemId);
 		if (dmgType == "lethal")
@@ -551,6 +561,7 @@ export default class SPACE1889RollHelper
 			{
 				gesamtInfo += "<b>" + game.i18n.localize("SPACE1889.Dead") + ":</b> ";
 				gesamtInfo += game.i18n.localize("SPACE1889.ChatInfoDead") + "<br>";
+				effectNames.push("dead");
 			}
 			if (damageTuple.nonLethal > 0)
 			{
@@ -561,7 +572,10 @@ export default class SPACE1889RollHelper
 			}
 		}
 		else if (newHealth <= 0)
+		{
 			gesamtInfo += "<b>" + game.i18n.localize("SPACE1889.Vanquished") + "!</b>";
+			effectNames.push("dead");
+		}
 
 		const usePercentage = !isCharakter && this.usePercentForNpcAndCreatureDamageInfo();
 
@@ -588,6 +602,8 @@ export default class SPACE1889RollHelper
 
 
 		ChatMessage.create(chatData, {});
+		if (effectNames.length > 0)
+			SPACE1889Helper.addEffects(actor, effectNames);
 	}
 
 	static usePercentForNpcAndCreatureDamageInfo()

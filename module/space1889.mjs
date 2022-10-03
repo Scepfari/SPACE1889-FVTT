@@ -11,6 +11,7 @@ import { registerSystemSettings } from "./settings.mjs";
 import { Space1889Translation } from "./helpers/translation.mjs";
 import { Space1889Migration } from "./helpers/migration.mjs";
 import { Space1889Tour } from "./tours/space1889_tour.mjs";
+import SPACE1889Helper from "./helpers/helper.mjs";
 
 
 /* -------------------------------------------- */
@@ -56,6 +57,22 @@ Hooks.once('init', async function() {
 
 	// Preload Handlebars templates.
 	return preloadHandlebarsTemplates();
+});
+
+Hooks.on("chatMessage", (html, content, msg) =>
+{
+	let cmd = content.match(/^\/(help|space1889)/)
+	cmd = cmd ? cmd[0] : ""
+	switch (cmd)
+	{
+		case "/space1889":
+			ui.notifications.info("Gl&uuml;ckwunsch, du hast ein nicht dokumentiertes Testkommando gefunden");
+			console.log(SPACE1889Helper.getEffectData("paralysis"));
+			return false;
+		case "/help":
+			SPACE1889Helper.showHelpJournal();
+			return false;
+	}
 });
 
 /* -------------------------------------------- */
