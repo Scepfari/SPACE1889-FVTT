@@ -133,7 +133,7 @@ export class Space1889Migration
 						callback: () => game.settings.set("space1889", "newVersionPopup", `0|${currentVersion}`),
 					},
 				},
-			}).render(true);
+			}).render(true, { height: 750 });
 		}
 	}
 }
