@@ -137,7 +137,8 @@ export default class SPACE1889RollHelper
 		const titelPartOne = game.i18n.localize("SPACE1889.ModifiedRoll");
 		const inputDesc = game.i18n.localize("SPACE1889.NumberOfModificationDice");
 		const diceDesc = game.i18n.localize("SPACE1889.ConfigDice");
-
+		let addAutoDefense = item.type == 'weapon' && game.settings.get("space1889", "autoDefense");
+		
 		let info = titelInfo + ":";
 		if (showDialog)
 		{
@@ -181,10 +182,13 @@ export default class SPACE1889RollHelper
 			const anzahl = Math.max(0, wurfelAnzahl);
 			const von = game.i18n.localize("SPACE1889.Of");
 			const dieType = game.settings.get("space1889", "dice");
+			const targetId = game.user.targets.first() ? game.user.targets.first().id : "";
 			let messageContent = `<div><h2>${item.system.label}</h2></div>`;
 			if (withExtraInfo)
 				messageContent += `${extraInfo} <br>`;
-			messageContent += `${info} <b>[[${anzahl}${dieType}]] ${von}  ${wurfelAnzahl}</b> <br>`;
+			messageContent += `${info} <b class="space1889-roll">[[${anzahl}${dieType}]] ${von}  ${wurfelAnzahl}</b> <br>`;
+			if (addAutoDefense && targetId && targetId.length > 0)
+				messageContent += `<button class="autoDefence" data-action="defence" data-actor-id="${actor._id}" data-target-id="${targetId}" data-attack-name="${item.name}" data-damage-type="${item.system.damageType}">Automatische Verteidigung</button>`;
 			let chatData =
 			{
 				user: game.user.id,
@@ -983,5 +987,93 @@ export default class SPACE1889RollHelper
 			whisper: whisper ? [game.user.id] : [],
 			content: desc ?? ''
 		});
+	}
+
+	static onAutoDefense(ev)
+	{
+		if (!game.settings.get("space1889", "autoDefense"))
+		{
+			ui.notifications.info(game.i18n.localize("SPACE1889.ConfigNoAutoDefenseInfo"));
+			return;
+		}
+
+		const button = $(ev.currentTarget);
+		if (!button)
+			return;
+
+		const innerHtml = ev.delegateTarget.children[1].children[1].children[0].getInnerHTML();
+		const count = Number(innerHtml.substring(innerHtml.lastIndexOf('>') + 1));
+	
+		const actorId = button[0].dataset.actorId;
+		const targetId = button[0].dataset.targetId;
+		const attackName = button[0].dataset.attackName;
+		const damageType = button[0].dataset.damageType;
+
+		if (targetId == "")
+			return;
+
+		const token = game.scenes.viewed.tokens.get(targetId);
+		if (!token)
+			return;
+
+		const attackerToken = game.scenes.viewed.tokens.find(e => e.actor._id == actorId);
+		const actorName = !attackerToken ? 'unbekannt' : attackerToken.name;
+		const permissions = token._actor.ownership;
+		if (game.user.isGM || (permissions["default"] && permissions["default"] == 3) || (permissions["game.userId"] && permissions["game.userId"] == 3))
+		{
+			this.rollDefenseAndAddDamage({actorName: actorName, targetId: targetId, attackName: attackName, damageType: damageType, attackValue: count });
+		}
+	}
+
+/**
+ * 
+ * @param {Object} data
+ * @param {string} data.actorName
+ * @param {string} data.targetId
+ * @param {string} data.attackName
+ * @param {string} data.damageType
+ * @param {number} data.attackValue
+ *  
+ */
+	static async rollDefenseAndAddDamage(data)
+	{
+		let target = game.scenes.viewed.tokens.get(data.targetId);
+		if (!target)
+			return;
+
+		const diceCount = Math.max(0, target.actor.system.secondaries.defense.total);
+
+		let r = new Roll(diceCount.toString() + game.settings.get("space1889", "dice"));
+		await r.evaluate({ async: true });
+		const htmlAn = await r.toAnchor();
+		let outerHtml = htmlAn.outerHTML;
+		const index = outerHtml.indexOf('class=""');
+		const fullHtml = outerHtml.substring(0, index) + `class="inline-roll inline-result" ` + outerHtml.substring(index + 8);
+
+		let title = game.i18n.localize("SPACE1889.SecondaryAttributeDef");
+		let info = game.i18n.localize("SPACE1889.Probe") + ": <b>";
+		let post = " " + game.i18n.localize("SPACE1889.Of") + " " + diceCount.toString() + "</b>";
+		let content = `<div><h2>${title}</h2></div>${info}` + fullHtml + post;
+		const chatData =
+		{
+			user: game.user.id,
+			speaker: ChatMessage.getSpeaker({ actor: target.actor }),
+			content: content
+		};
+		await ChatMessage.create(chatData, {});
+
+		if (data.attackValue > r.total)
+		{
+			await SPACE1889Helper.sleep(2000);
+			let damageAmount = data.attackValue - r.total;
+			const damageName = (data.attackName != "" ? data.attackName + " von " : "Wunde verursacht von ") + data.actorName;
+			const damageData = [{ name: 'Wunde in Bearbeitung', type: 'damage' }];
+			const items = await Item.create(damageData, { parent: target.actor });
+			const item = items.shift();
+			const path = data.damageType == "lethal" ? "icons/skills/wounds/blood-drip-droplet-red.webp" : "icons/skills/wounds/injury-pain-body-orange.webp";
+			target.actor.updateEmbeddedDocuments("Item", [{ _id: item._id, "system.damageType": data.damageType, "name": damageName, "img": path, "system.damage": damageAmount }]);
+
+			SPACE1889RollHelper.doDamageChatMessage(target.actor, item._id, damageAmount, data.damageType);
+		}
 	}
 }

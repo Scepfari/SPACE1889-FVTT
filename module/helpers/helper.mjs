@@ -424,4 +424,9 @@ export default class SPACE1889Helper
 		}
 		await actor.createEmbeddedDocuments("ActiveEffect", [effectData]);
 	}
+
+	static async sleep(sleeptimeInMilliSeconds)
+	{
+		await new Promise(resolve => setTimeout(resolve, sleeptimeInMilliSeconds));
+	}
 }

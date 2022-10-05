@@ -12,6 +12,7 @@ import { Space1889Translation } from "./helpers/translation.mjs";
 import { Space1889Migration } from "./helpers/migration.mjs";
 import { Space1889Tour } from "./tours/space1889_tour.mjs";
 import SPACE1889Helper from "./helpers/helper.mjs";
+import SPACE1889RollHelper from "./helpers/roll-helper.mjs";
 
 
 /* -------------------------------------------- */
@@ -67,12 +68,22 @@ Hooks.on("chatMessage", (html, content, msg) =>
 	{
 		case "/space1889":
 			ui.notifications.info("Gl&uuml;ckwunsch, du hast ein nicht dokumentiertes Testkommando gefunden");
-			console.log(SPACE1889Helper.getEffectData("paralysis"));
+			//console.log(SPACE1889Helper.getEffectData("paralysis"));
 			return false;
 		case "/help":
 			SPACE1889Helper.showHelpJournal();
 			return false;
 	}
+});
+
+Hooks.on("renderChatMessage", (app, html, msg) => 
+{
+	// toDo: Buttons bei Bedarf ausblenden
+
+	html.on('click', '.autoDefence', ev =>
+	{
+		SPACE1889RollHelper.onAutoDefense(ev);
+	})
 });
 
 /* -------------------------------------------- */

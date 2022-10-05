@@ -67,6 +67,17 @@ export const registerSystemSettings = function ()
             type: Boolean
         });
 
+    game.settings.register("space1889", "autoDefense",
+        {
+            name: "SPACE1889.ConfigAutoDefense",
+            hint: "SPACE1889.ConfigAutoDefenseInfo",
+            scope: "world",
+            config: true,
+            default: "false",
+            type: Boolean
+        }
+	);
+
     game.settings.register("space1889", "usePercentForNpcAndCreatureDamageInfo",
 	    {
             name: "SPACE1889.ConfigUsePercentForNpcAndCreatureDamageInfo",
