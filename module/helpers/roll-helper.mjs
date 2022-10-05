@@ -1021,13 +1021,14 @@ export default class SPACE1889RollHelper
 		const permissions = token._actor.ownership;
 		if (game.user.isGM || (permissions["default"] && permissions["default"] == 3) || (permissions["game.userId"] && permissions["game.userId"] == 3))
 		{
-			this.rollDefenseAndAddDamage({actorName: actorName, targetId: targetId, attackName: attackName, damageType: damageType, attackValue: count });
+			this.rollDefenseAndAddDamage({event: ev, actorName: actorName, targetId: targetId, attackName: attackName, damageType: damageType, attackValue: count });
 		}
 	}
 
 /**
  * 
  * @param {Object} data
+ * @param {Object} data.event
  * @param {string} data.actorName
  * @param {string} data.targetId
  * @param {string} data.attackName
@@ -1042,6 +1043,20 @@ export default class SPACE1889RollHelper
 			return;
 
 		const diceCount = Math.max(0, target.actor.system.secondaries.defense.total);
+		if (this.getEventEvaluation(data.event).showDialog)
+		{
+			this.rollDefenseAndAddDamageWithDialog(data, diceCount);
+			return;
+		}
+
+		this.rollDefenseAndAddDamageSub(data, diceCount)
+	}
+
+	static async rollDefenseAndAddDamageSub(data, diceCount)
+	{
+		let target = game.scenes.viewed.tokens.get(data.targetId);
+		if (!target)
+			return;
 
 		let r = new Roll(diceCount.toString() + game.settings.get("space1889", "dice"));
 		await r.evaluate({ async: true });
@@ -1074,6 +1089,44 @@ export default class SPACE1889RollHelper
 			target.actor.updateEmbeddedDocuments("Item", [{ _id: item._id, "system.damageType": data.damageType, "name": damageName, "img": path, "system.damage": damageAmount }]);
 
 			SPACE1889RollHelper.doDamageChatMessage(target.actor, item._id, damageAmount, data.damageType);
+		}
+	}
+
+	static async rollDefenseAndAddDamageWithDialog(data, diceCount)
+	{
+		const titelPartOne = game.i18n.localize("SPACE1889.ModifiedRoll");
+		const inputDesc = game.i18n.localize("SPACE1889.NumberOfModificationDice");
+		const diceDesc = game.i18n.localize("SPACE1889.ConfigDice");
+		const titel = game.i18n.localize("SPACE1889.SecondaryAttributeDef");
+
+		let dialogue = new Dialog(
+			{ 
+				title: `${titelPartOne}: ${titel} (${diceCount} ${diceDesc})`,
+				content: `<p>${inputDesc}: <input type="number" id="anzahlDerWuerfel" value = "0"></p>`,
+				buttons:
+				{
+					ok:
+					{
+						icon: '',
+						label: 'Los!',
+						callback: (html) => myCallback(html)
+					},
+					abbruch:
+					{
+						label: 'Abbrechen',
+						callback: () => { ui.notifications.info(game.i18n.localize("SPACE1889.ConfigNoAutoDefenseCancel")) },
+						icon: `<i class="fas fa-times"></i>`
+					}
+				},
+				default: "ok"
+			}).render(true);
+
+		function myCallback(html)
+		{
+			const input = html.find('#anzahlDerWuerfel').val();
+			let anzahl = input ? parseInt(input) : 0;
+			anzahl += diceCount;
+			SPACE1889RollHelper.rollDefenseAndAddDamageSub(data, anzahl);
 		}
 	}
 }
