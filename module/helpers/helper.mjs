@@ -429,4 +429,32 @@ export default class SPACE1889Helper
 	{
 		await new Promise(resolve => setTimeout(resolve, sleeptimeInMilliSeconds));
 	}
+
+	static isDiceSoNiceEnabled()
+	{
+		return this.isModuleEnabled("dice-so-nice");
+	}
+
+	static isModuleEnabled(id)
+	{
+		return game.modules.get(id) && game.modules.get(id).active;
+	}
+
+	static getDsnRollAnimationTime()
+	{
+		if (!this.isDiceSoNiceEnabled())
+			return 0;
+
+		const speed = game.dice3d.box?.speed;
+		if (!speed)
+			speed = 3;
+
+		if (speed <= 0)
+			speed = 1;
+		if (speed > 3)
+			speed = 3;
+
+		const list = [3000, 2000, 1000];
+		return list[speed - 1];
+	}
 }

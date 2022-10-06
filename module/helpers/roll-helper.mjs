@@ -188,7 +188,7 @@ export default class SPACE1889RollHelper
 				messageContent += `${extraInfo} <br>`;
 			messageContent += `${info} <b class="space1889-roll">[[${anzahl}${dieType}]] ${von}  ${wurfelAnzahl}</b> <br>`;
 			if (addAutoDefense && targetId && targetId.length > 0)
-				messageContent += `<button class="autoDefence" data-action="defence" data-actor-id="${actor._id}" data-target-id="${targetId}" data-attack-name="${item.name}" data-damage-type="${item.system.damageType}">Automatische Verteidigung</button>`;
+				messageContent += `<button class="autoDefence chatButton" data-action="defence" data-actor-id="${actor._id}" data-target-id="${targetId}" data-attack-name="${item.name}" data-damage-type="${item.system.damageType}" data-skill-id="${item.system.skillId}">Automatische Verteidigung</button>`;
 			let chatData =
 			{
 				user: game.user.id,
@@ -993,7 +993,7 @@ export default class SPACE1889RollHelper
 	{
 		if (!game.settings.get("space1889", "autoDefense"))
 		{
-			ui.notifications.info(game.i18n.localize("SPACE1889.ConfigNoAutoDefenseInfo"));
+			ui.notifications.info(game.i18n.localize("SPACE1889.NoAutoDefenseInfo"));
 			return;
 		}
 
@@ -1008,6 +1008,7 @@ export default class SPACE1889RollHelper
 		const targetId = button[0].dataset.targetId;
 		const attackName = button[0].dataset.attackName;
 		const damageType = button[0].dataset.damageType;
+		const combatSkillId = button[0].dataset.skillId;
 
 		if (targetId == "")
 			return;
@@ -1021,7 +1022,7 @@ export default class SPACE1889RollHelper
 		const permissions = token._actor.ownership;
 		if (game.user.isGM || (permissions["default"] && permissions["default"] == 3) || (permissions["game.userId"] && permissions["game.userId"] == 3))
 		{
-			this.rollDefenseAndAddDamage({event: ev, actorName: actorName, targetId: targetId, attackName: attackName, damageType: damageType, attackValue: count });
+			this.rollDefenseAndAddDamage({event: ev, actorName: actorName, targetId: targetId, attackName: attackName, damageType: damageType, combatSkillId: combatSkillId, attackValue: count });
 		}
 	}
 
@@ -1034,6 +1035,7 @@ export default class SPACE1889RollHelper
  * @param {string} data.attackName
  * @param {string} data.damageType
  * @param {number} data.attackValue
+ * @param {string} data.combatSkillId
  *  
  */
 	static async rollDefenseAndAddDamage(data)
@@ -1077,9 +1079,11 @@ export default class SPACE1889RollHelper
 		};
 		await ChatMessage.create(chatData, {});
 
+		if (SPACE1889Helper.isDiceSoNiceEnabled())
+			await SPACE1889Helper.sleep(SPACE1889Helper.getDsnRollAnimationTime());
+
 		if (data.attackValue > r.total)
 		{
-			await SPACE1889Helper.sleep(2000);
 			let damageAmount = data.attackValue - r.total;
 			const damageName = (data.attackName != "" ? data.attackName + " von " : "Wunde verursacht von ") + data.actorName;
 			const damageData = [{ name: 'Wunde in Bearbeitung', type: 'damage' }];
@@ -1089,6 +1093,18 @@ export default class SPACE1889RollHelper
 			target.actor.updateEmbeddedDocuments("Item", [{ _id: item._id, "system.damageType": data.damageType, "name": damageName, "img": path, "system.damage": damageAmount }]);
 
 			SPACE1889RollHelper.doDamageChatMessage(target.actor, item._id, damageAmount, data.damageType);
+		}
+		else
+		{
+			const combatSkill = game.i18n.localize(CONFIG.SPACE1889.combatSkills[data.combatSkillId]) 
+
+			const chatData =
+			{
+				user: game.user.id,
+				speaker: ChatMessage.getSpeaker({ actor: target.actor }),
+				content: game.i18n.format("SPACE1889.AutoDefenseAttackMiss", { attackerName: data.actorName, skill: combatSkill })
+			};
+			ChatMessage.create(chatData, {});
 		}
 	}
 
@@ -1114,7 +1130,7 @@ export default class SPACE1889RollHelper
 					abbruch:
 					{
 						label: 'Abbrechen',
-						callback: () => { ui.notifications.info(game.i18n.localize("SPACE1889.ConfigNoAutoDefenseCancel")) },
+						callback: () => { ui.notifications.info(game.i18n.localize("SPACE1889.NoAutoDefenseCancel")) },
 						icon: `<i class="fas fa-times"></i>`
 					}
 				},

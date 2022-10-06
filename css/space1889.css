@@ -238,6 +238,18 @@
 	color: var(--border-color);
 }
 
+.chatButton {
+	border: 1px solid var(--border-color);
+	padding: 2px;
+	border-radius: 5px;
+	box-shadow: 0 0 12px #444 inset;
+	display: inline-block;
+	-webkit-box-align: center;
+	-ms-flex-align: center;
+	align-items: center;
+	margin-top: 5px;
+}
+
 /* Styles limited to space1889 sheets */
 .space1889 {
 	/* ----------------------------------------- */
