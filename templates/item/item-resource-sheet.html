@@ -1,6 +1,6 @@
 <form class="{{cssClass}}" autocomplete="off">
 	<header class="sheet-header">
-		<img class="profile-img" src="{{item.img}}" data-edit="img" title="{{item.name}}"/>
+		<img class="profile-img" src="{{item.img}}" data-edit="img" title="{{item.name}}" />
 		<div class="header-fields">
 			<h1 class="charname"><input name="name" type="text" value="{{item.name}}" placeholder="Name" /></h1>
 			{{> "systems/space1889/templates/item/item-sub-id.html"}}
@@ -16,23 +16,29 @@
 		</li>
 		<li class="item flex-group-center flexrow">
 			<div class="resource-content flex-center flex-between">
-				<input type="text" name="system.level.value" value="{{system.level.value}}" data-dtype="Number"/>
+				<input type="text" name="system.level.value" value="{{system.level.value}}" data-dtype="Number" />
 			</div>
 			<div class="resource-content flex-center flex-between">
-				<input type="text" name="system.level.min" value="{{system.level.min}}" data-dtype="Number"/>
+				<input type="text" name="system.level.min" value="{{system.level.min}}" data-dtype="Number" />
 			</div>
 			<div class="resource-content flex-center flex-between">
-				<input type="text" name="system.level.max" value="{{system.level.max}}" data-dtype="Number"/>
+				<input type="text" name="system.level.max" value="{{system.level.max}}" data-dtype="Number" />
 			</div>
 		</li>
 	</ol>
 
 	<hr>
 	<li class="item flexrow items-header">
-		<div class="resource">
-			<label class="resource-label">{{ localize "SPACE1889.IsBaseResource" }}</label>
-			<input type="checkbox" name="system.isBase" {{checked system.isBase}}>
-		 </div>
+		<label class="resource-label">{{ localize "SPACE1889.IsBaseResource"}}</label>
+		<label class="resource-label">{{ localize "SPACE1889.IsCampaingnEffect"}}</label>
+	</li>
+	<li class="item flex-group-center flexrow">
+		<div class="resource-content flex-center flex-between">
+			<input type="checkbox" name="system.isBase" {{checked system.isBase}} />
+		</div>
+		<div class="resource-content flex-center flex-between">
+			<input title="{{localize "SPACE1889.NoEpCauseTempCampaingnEffect"}}" type="checkbox" name="system.noEp" {{checked system.noEp}} />
+		</div>
 	</li>
 
 
@@ -50,8 +56,8 @@
 				{{editor enrichedDescription target="system.description" button=true editable=editable}}
 			</div>
 			{{#if (ne system.descriptionLangId (localize system.descriptionLangId))}}
-				<hr />
-				<p>{{{localize system.descriptionLangId}}}</p>
+			<hr />
+			<p>{{{localize system.descriptionLangId}}}</p>
 			{{/if}}
 		</div>
 	</section>

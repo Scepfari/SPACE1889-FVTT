@@ -309,7 +309,8 @@
 				"min": 0,
 				"max": 5
 			},
-			"isBase": false
+			"isBase": false,
+			"noEp" :  false
 		},
 		"language": {
 			"templates": [ "id" ],

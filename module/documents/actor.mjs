@@ -1260,6 +1260,8 @@ export class Space1889Actor extends Actor
 			}
 			else if (item.type == "resource")
 			{
+				if (item.system.noEp)
+					continue;
 				if (item.system.isBase)
 				{
 					if (item.system.level.value >= 1)
