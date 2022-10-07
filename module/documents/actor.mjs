@@ -559,7 +559,8 @@ export class Space1889Actor extends Actor
 			{
 				weapon.system.sizeMod = sizeMod;
 				weapon.system.skillRating = this._GetSkillLevel(actor, weapon.system.skillId, weapon.system.specializationId);
-				weapon.system.attack = Math.max(0, weapon.system.damage + weapon.system.skillRating + weapon.system.sizeMod);
+				const attackBonusFromDamage = (weapon.system.isAreaDamage && actor.type != 'vehicle') ? 0 : weapon.system.damage;
+				weapon.system.attack = Math.max(0, attackBonusFromDamage + weapon.system.skillRating + weapon.system.sizeMod);
 				weapon.system.attackAverage = (Math.floor(weapon.system.attack / 2)).toString() + (weapon.system.attack % 2 == 0 ? "" : "+");
 			}
 			weapon.system.damageTypeDisplay = game.i18n.localize(CONFIG.SPACE1889.damageTypeAbbreviations[weapon.system.damageType]);
