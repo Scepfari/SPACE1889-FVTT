@@ -2641,6 +2641,7 @@
 	"SPACE1889.NoAutoDefenseInfo": "Die Automatische Verteidigung wurde in den Spieleinstellung abgeschaltet.",
 	"SPACE1889.NoAutoDefenseCancel": "Der Automatische Verteidigungswurf wurde abgebrochen",
 	"SPACE1889.AutoDefenseAttackMiss": "Der {skill} Angriff von {attackerName} war wirkungslos.",
+	"SPACE1889.AreaDamageWeaponUse": "Der Angriff erfolgt nur mit der Waffenfertigkeit gegen die Aktive Abwehr. Bei Erfolg erleidet das Ziel den Waffenschaden (ggf. modifiziert durch Zielgröße)",
 
 	"SPACE1889.Recoil": "Rückstoß",
 	"SPACE1889.Knockdown": "Niederschlag",

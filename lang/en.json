@@ -2641,6 +2641,7 @@
 	"SPACE1889.NoAutoDefenseInfo": "Automatic defense has been turned off in the game settings.",
 	"SPACE1889.NoAutoDefenseCancel": "The Automatic Defense roll was canceled",
 	"SPACE1889.AutoDefenseAttackMiss": "The {skill} attack of {attackerName} was ineffective.",
+	"SPACE1889.AreaDamageWeaponUse": "The attack is made only with the weapon skill against the Active Defense. If successful, the target suffers the weapon damage (modified by target size if necessary).",
 
 	"SPACE1889.Recoil": "Recoil",
 	"SPACE1889.Knockdown": "Knockdown",

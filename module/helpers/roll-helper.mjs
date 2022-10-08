@@ -131,7 +131,7 @@ export default class SPACE1889RollHelper
 	 * @param {boolean} showDialog
 	 * @param {string} titelInfo
 	*/
-	static rollSubSpecial(item, actor, dieCount, showDialog, titelInfo, withExtraInfo = false)
+	static async rollSubSpecial(item, actor, dieCount, showDialog, titelInfo, withExtraInfo = false)
 	{
 		const extraInfo = withExtraInfo ? game.i18n.localize(item.system.infoLangId) : "";
 		const titelPartOne = game.i18n.localize("SPACE1889.ModifiedRoll");
@@ -139,7 +139,6 @@ export default class SPACE1889RollHelper
 		const diceDesc = game.i18n.localize("SPACE1889.ConfigDice");
 		let addAutoDefense = item.type == 'weapon' && game.settings.get("space1889", "autoDefense");
 		
-		let info = titelInfo + ":";
 		if (showDialog)
 		{
 			let dialogue = new Dialog(
@@ -164,31 +163,42 @@ export default class SPACE1889RollHelper
 					default: "ok"
 				}).render(true);
 
-			function myCallback(html)
+			async function myCallback(html)
 			{
 				const input = html.find('#anzahlDerWuerfel').val();
 				let anzahl = input ? parseInt(input) : 0;
 				anzahl += dieCount;
-				ChatMessage.create(getChatData(anzahl), {});
+				const chatData = await getChatData(anzahl);
+				ChatMessage.create(chatData, {});
 			}
 		}
 		else
 		{
-			ChatMessage.create(getChatData(dieCount), {});
+			const chatData = await getChatData(dieCount);
+			ChatMessage.create(chatData, {});
 		}
 
-		function getChatData(wurfelAnzahl)
+		async function getChatData(wurfelAnzahl)
 		{
-			const anzahl = Math.max(0, wurfelAnzahl);
-			const von = game.i18n.localize("SPACE1889.Of");
-			const dieType = game.settings.get("space1889", "dice");
+			const rollWithHtml = await SPACE1889RollHelper.createInlineRollWithHtml(Math.max(0, wurfelAnzahl), titelInfo);
+
 			const targetId = game.user.targets.first() ? game.user.targets.first().id : "";
 			let messageContent = `<div><h2>${item.system.label}</h2></div>`;
+			let reducedDefense = "";
+			let areaDamage = "0";
+			if (item.system.isAreaDamage && actor.type != 'vehicle')
+			{
+				messageContent += `${game.i18n.localize("SPACE1889.AreaDamageWeaponUse")} <br>`;
+				reducedDefense = "onlyActive";
+				areaDamage = item.system.damage;
+			}
+
 			if (withExtraInfo)
 				messageContent += `${extraInfo} <br>`;
-			messageContent += `${info} <b class="space1889-roll">[[${anzahl}${dieType}]] ${von}  ${wurfelAnzahl}</b> <br>`;
+			messageContent += `${rollWithHtml.html} <br>`;
+
 			if (addAutoDefense && targetId && targetId.length > 0)
-				messageContent += `<button class="autoDefence chatButton" data-action="defence" data-actor-id="${actor._id}" data-target-id="${targetId}" data-attack-name="${item.name}" data-damage-type="${item.system.damageType}" data-skill-id="${item.system.skillId}">Automatische Verteidigung</button>`;
+				messageContent += `<button class="autoDefence chatButton" data-action="defence" data-actor-id="${actor._id}" data-target-id="${targetId}" data-attack-name="${item.name}" data-attack-successes="${rollWithHtml.roll.total}" data-damage-type="${item.system.damageType}" data-skill-id="${item.system.skillId}" data-reduced-defense="${reducedDefense}" data-area-damage="${areaDamage}">Automatische Verteidigung</button>`;
 			let chatData =
 			{
 				user: game.user.id,
@@ -1001,14 +1011,14 @@ export default class SPACE1889RollHelper
 		if (!button)
 			return;
 
-		const innerHtml = ev.delegateTarget.children[1].children[1].children[0].getInnerHTML();
-		const count = Number(innerHtml.substring(innerHtml.lastIndexOf('>') + 1));
-	
+		const count = button[0].dataset.attackSuccesses;
 		const actorId = button[0].dataset.actorId;
 		const targetId = button[0].dataset.targetId;
 		const attackName = button[0].dataset.attackName;
 		const damageType = button[0].dataset.damageType;
 		const combatSkillId = button[0].dataset.skillId;
+		const reducedDefense = button[0].dataset.reducedDefense;
+		const areaDamage = Number(button[0].dataset.areaDamage);
 
 		if (targetId == "")
 			return;
@@ -1022,7 +1032,17 @@ export default class SPACE1889RollHelper
 		const permissions = token._actor.ownership;
 		if (game.user.isGM || (permissions["default"] && permissions["default"] == 3) || (permissions["game.userId"] && permissions["game.userId"] == 3))
 		{
-			this.rollDefenseAndAddDamage({event: ev, actorName: actorName, targetId: targetId, attackName: attackName, damageType: damageType, combatSkillId: combatSkillId, attackValue: count });
+			this.rollDefenseAndAddDamage({
+				event: ev,
+				actorName: actorName,
+				targetId: targetId,
+				attackName: attackName,
+				damageType: damageType,
+				combatSkillId: combatSkillId,
+				attackValue: count,
+				reducedDefense: reducedDefense,
+				areaDamage: areaDamage
+			});
 		}
 	}
 
@@ -1036,6 +1056,8 @@ export default class SPACE1889RollHelper
  * @param {string} data.damageType
  * @param {number} data.attackValue
  * @param {string} data.combatSkillId
+ * @param {string} data.reducedDefense
+ * @param {number} data.areaDamage
  *  
  */
 	static async rollDefenseAndAddDamage(data)
@@ -1044,7 +1066,12 @@ export default class SPACE1889RollHelper
 		if (!target)
 			return;
 
-		const diceCount = Math.max(0, target.actor.system.secondaries.defense.total);
+		let diceCount = Math.max(0, target.actor.system.secondaries.defense.total);
+		if (data.reducedDefense == 'onlyActive')
+			diceCount = Math.max(0, target.actor.system.secondaries.defense.activeTotal);
+		if (data.reducedDefense == 'onlyPassive')
+			diceCount = Math.max(0, target.actor.system.secondaries.defense.passiveTotal);
+
 		if (this.getEventEvaluation(data.event).showDialog)
 		{
 			this.rollDefenseAndAddDamageWithDialog(data, diceCount);
@@ -1054,26 +1081,49 @@ export default class SPACE1889RollHelper
 		this.rollDefenseAndAddDamageSub(data, diceCount)
 	}
 
+	static async createInlineRollWithHtml(diceCount, probeName = "")
+	{
+		let r = new Roll(diceCount.toString() + game.settings.get("space1889", "dice"));
+		await r.evaluate({ async: true });
+		const htmlAn = await r.toAnchor();
+		let outerHtml = htmlAn.outerHTML;
+		const index = outerHtml.indexOf('class=""');
+		let pre = (probeName != "" ? probeName : game.i18n.localize("SPACE1889.Probe")) + ": <b>";
+		let post = " " + game.i18n.localize("SPACE1889.Of") + " " + diceCount.toString() + "</b>";
+		const fullHtml = pre + outerHtml.substring(0, index) + `class="inline-roll inline-result" ` + outerHtml.substring(index + 8) + post;
+		return { roll: r, html: fullHtml };
+	}
+
+	static async addDamageToActor(actor, actorName, attackName, damageAmount, damageType)
+	{
+		const damageName = (attackName != "" ? attackName + " von " : "Wunde verursacht von ") + actorName;
+		const damageData = [{ name: 'Wunde in Bearbeitung', type: 'damage' }];
+		const items = await Item.create(damageData, { parent: actor });
+		const item = items.shift();
+		const path = damageType == "lethal" ? "icons/skills/wounds/blood-drip-droplet-red.webp" : "icons/skills/wounds/injury-pain-body-orange.webp";
+		actor.updateEmbeddedDocuments("Item", [{ _id: item._id, "system.damageType": damageType, "name": damageName, "img": path, "system.damage": damageAmount }]);
+		return item._id;
+	}
+
 	static async rollDefenseAndAddDamageSub(data, diceCount)
 	{
 		let target = game.scenes.viewed.tokens.get(data.targetId);
 		if (!target)
 			return;
 
-		let r = new Roll(diceCount.toString() + game.settings.get("space1889", "dice"));
-		await r.evaluate({ async: true });
-		const htmlAn = await r.toAnchor();
-		let outerHtml = htmlAn.outerHTML;
-		const index = outerHtml.indexOf('class=""');
-		const fullHtml = outerHtml.substring(0, index) + `class="inline-roll inline-result" ` + outerHtml.substring(index + 8);
+		const rollWithHtml = await this.createInlineRollWithHtml(diceCount);
 
 		let title = game.i18n.localize("SPACE1889.SecondaryAttributeDef");
-		let info = game.i18n.localize("SPACE1889.Probe") + ": <b>";
-		let post = " " + game.i18n.localize("SPACE1889.Of") + " " + diceCount.toString() + "</b>";
-		let content = `<div><h2>${title}</h2></div>${info}` + fullHtml + post;
+		if (data.reducedDefense == 'onlyActive')
+			title = game.i18n.localize("SPACE1889.ActiveDefense");
+		else if (data.reducedDefense == 'onlyPassive')
+			title = game.i18n.localize("SPACE1889.PassiveDefense");
+
+		let content = `<div><h2>${title}</h2></div>` + rollWithHtml.html;
 		const chatData =
 		{
 			user: game.user.id,
+			speaker: ChatMessage.getSpeaker({ actor: target.actor }),
 			speaker: ChatMessage.getSpeaker({ actor: target.actor }),
 			content: content
 		};
@@ -1082,17 +1132,27 @@ export default class SPACE1889RollHelper
 		if (SPACE1889Helper.isDiceSoNiceEnabled())
 			await SPACE1889Helper.sleep(SPACE1889Helper.getDsnRollAnimationTime());
 
-		if (data.attackValue > r.total)
+		if (data.attackValue >= rollWithHtml.roll.total && data.reducedDefense != "" && data.areaDamage > 0 && target.type != 'vehicle')
 		{
-			let damageAmount = data.attackValue - r.total;
-			const damageName = (data.attackName != "" ? data.attackName + " von " : "Wunde verursacht von ") + data.actorName;
-			const damageData = [{ name: 'Wunde in Bearbeitung', type: 'damage' }];
-			const items = await Item.create(damageData, { parent: target.actor });
-			const item = items.shift();
-			const path = data.damageType == "lethal" ? "icons/skills/wounds/blood-drip-droplet-red.webp" : "icons/skills/wounds/injury-pain-body-orange.webp";
-			target.actor.updateEmbeddedDocuments("Item", [{ _id: item._id, "system.damageType": data.damageType, "name": damageName, "img": path, "system.damage": damageAmount }]);
+			let sizeMod = Math.floor(Math.abs(target.actor.system.secondaries.size.total) / 2);
+			const extraDice = Math.abs(target.actor.system.secondaries.size.total % 2);
+			const factor = target.actor.system.secondaries.size.total > 0 ? -1 : 1;
 
-			SPACE1889RollHelper.doDamageChatMessage(target.actor, item._id, damageAmount, data.damageType);
+			if (extraDice > 0)
+			{
+				let r = new Roll("1" + game.settings.get("space1889", "dice"));
+				await r.evaluate({ async: true });
+				sizeMod += factor * r.total;
+			}
+			const damageAmount = data.areaDamage + sizeMod;
+			const itemId = await this.addDamageToActor(target.actor, data.actorName, data.attackName, damageAmount, data.damageType);
+			SPACE1889RollHelper.doDamageChatMessage(target.actor, itemId, damageAmount, data.damageType);
+		}
+		else if (data.attackValue > rollWithHtml.roll.total)
+		{
+			let damageAmount = data.attackValue - rollWithHtml.roll.total;
+			const itemId = await this.addDamageToActor(target.actor, data.actorName, data.attackName, damageAmount, data.damageType);
+			SPACE1889RollHelper.doDamageChatMessage(target.actor, itemId, damageAmount, data.damageType);
 		}
 		else
 		{
@@ -1115,7 +1175,7 @@ export default class SPACE1889RollHelper
 		const diceDesc = game.i18n.localize("SPACE1889.ConfigDice");
 		const titel = game.i18n.localize("SPACE1889.SecondaryAttributeDef");
 
-		let dialogue = new Dialog(
+		new Dialog(
 			{ 
 				title: `${titelPartOne}: ${titel} (${diceCount} ${diceDesc})`,
 				content: `<p>${inputDesc}: <input type="number" id="anzahlDerWuerfel" value = "0"></p>`,
