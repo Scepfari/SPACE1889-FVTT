@@ -132,6 +132,29 @@ export class Space1889Item extends Item {
 		return false;
 	}
 
+	isAttackTalent()
+	{
+		if (this.type == "talent" &&
+			(this.system.id == "paralysierenderSchlag" || this.system.id == "assassine" ))
+			return true;
+
+		return false;
+	}
+
+	getDefenceTypeAgainstThisTalant()
+	{
+		const noType = "";
+		if (this.type != "talent")
+			return noType;
+
+		if (this.system.id == "assassine")
+			return "onlyPassive";
+
+		if (this.system.id == "paralysierenderSchlag")
+			return "onlyActiveParalyse";
+		return noType;
+	}
+
 	/**
 	 *
 	 * @param {object} item

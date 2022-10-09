@@ -932,7 +932,7 @@ export class Space1889Actor extends Actor
 				instinctive = true;
 				rating += item.system.level.value;
 			}
-			else if (item.system.id == "gegenschlag" && item.system.level.value > 1)
+			else if (item.system.id == "gegenschlag" && item.system.level.value > 0)
 			{
 				rating += (item.system.level.value - 1) * 2;
 				riposte = true;
@@ -994,7 +994,7 @@ export class Space1889Actor extends Actor
 				instinctive = true;
 				skillRating += item.system.level.value;
 			}
-			else if (item.system.id == "riposte" && item.system.level.value > 1)
+			else if (item.system.id == "riposte" && item.system.level.value > 0)
 			{
 				skillRating += (item.system.level.value-1) * 2;
 				riposte = true;
