@@ -1054,7 +1054,7 @@ export default class SPACE1889RollHelper
 		const attackerToken = game.scenes.viewed.tokens.find(e => e.actor._id == actorId);
 		const actorName = !attackerToken ? 'unbekannt' : attackerToken.name;
 		const permissions = token._actor.ownership;
-		if (game.user.isGM || (permissions["default"] && permissions["default"] == 3) || (permissions["game.userId"] && permissions["game.userId"] == 3))
+		if (game.user.isGM || (permissions["default"] && permissions["default"] == 3) || (permissions[game.userId] && permissions[game.userId] == 3))
 		{
 			this.rollDefenseAndAddDamage({
 				event: ev,
@@ -1068,6 +1068,17 @@ export default class SPACE1889RollHelper
 				areaDamage: areaDamage
 			});
 		}
+		else
+		{
+			let namensliste = "";
+			for (let user of game.users)
+			{
+				if (permissions[user._id] == 3)
+					namensliste += (namensliste.length > 0 ? ", " : "") + user.name;
+			}
+			ui.notifications.info(game.i18n.format("SPACE1889.NoTokenPermission", { player: namensliste }));
+		}
+		
 	}
 
 /**
