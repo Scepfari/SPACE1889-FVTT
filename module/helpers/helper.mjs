@@ -346,48 +346,54 @@ export default class SPACE1889Helper
 
 	static getEffectData(effectName)
 	{
+		const combatId = game.combat ? game.combat._id : 0;
+		let duration = game.combat ?
+			{ combat: game.combat._id, rounds: 1, seconds: 6, startRound: 0, startTime: game.time.worldTime, startTurn: 0 } :
+			{ seconds: 6, startTime: game.time.worldTime };
+
+		
 		const infos = [
 			{
 				name: "stun",
 				label: game.i18n.localize("EFFECT.StatusStunned"),
 				icon: "icons/svg/daze.svg",
 				flags: { core: { statusId: "stun" } },
-				duration: {combat: game.combat._id, rounds: 1, seconds: 6, startRound: 0, startTime: game.time.worldTime, startTurn: 0},
+				duration: duration,
 			},
 			{
 				name: "prone",
 				label: game.i18n.localize("EFFECT.StatusProne"),
 				icon: "icons/svg/falling.svg",
 				flags: { core: { statusId: "prone" } },
-				duration: {combat: game.combat._id, rounds: 1, seconds: 6, startRound: 0, startTime: game.time.worldTime, startTurn: 0},
+				duration: duration
 			},
 			{
 				name: "unconscious",
 				label: game.i18n.localize("EFFECT.StatusUnconscious"),
 				icon: "icons/svg/unconscious.svg",
 				flags: { core: { statusId: "unconscious" } },
-				duration: {combat: game.combat._id, rounds: 1, seconds: 6, startRound: 0, startTime: game.time.worldTime, startTurn: 0},
+				duration: duration,
 			},
 			{
 				name: "paralysis",
 				label: game.i18n.localize("EFFECT.StatusParalysis"),
 				icon: "icons/svg/paralysis.svg",
 				flags: { core: { statusId: "paralysis" } },
-				duration: {combat: game.combat._id, rounds: 1, seconds: 6, startRound: 0, startTime: game.time.worldTime, startTurn: 0},
+				duration: duration,
 			},
 			{
 				name: "fear",
 				label: game.i18n.localize("EFFECT.StatusFear"),
 				icon: "icons/svg/terror.svg",
 				flags: { core: { statusId: "fear" } },
-				duration: {combat: game.combat._id, rounds: 1, seconds: 6, startRound: 0, startTime: game.time.worldTime, startTurn: 0},
+				duration: duration,
 			},
 			{
 				name: "burning",
 				label: game.i18n.localize("EFFECT.StatusBurning"),
 				icon: "icons/svg/fire.svg",
 				flags: { core: { statusId: "burning" } },
-				duration: {combat: game.combat._id, rounds: 1, seconds: 6, startRound: 0, startTime: game.time.worldTime, startTurn: 0},
+				duration: duration,
 			},
 			{
 				name: "dead",
@@ -417,7 +423,7 @@ export default class SPACE1889Helper
 
 		const gameRound = game.combat ? game.combat.round : 0;
 		const gameTurn = game.combat ? game.combat.turn : 0;
-		if (effectData.duration)
+		if (game.combat && effectData.duration)
 		{
 			effectData.duration.startRound = gameRound;
 			effectData.duration.startTurn = gameTurn;
