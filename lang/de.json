@@ -2600,6 +2600,7 @@
 	"SPACE1889.UselessInstinctiveBlockParryEvasion": "{talentName} ist nutzlos da der Abwehrwert >= dem {talentName}-Wert ist.",
 	"SPACE1889.UseBlockParryEvasion": "{talentName} sollte anstelle von voller Abwehr ({fullDefence}) eingesetzt werden.",
 	"SPACE1889.UselessBlockParryEvasion": "{talentName} ist sinnlos, da volle Abwehr ( {defence} ) den höheren Wert hat.",
+	"SPACE1889.NoParryWithoutWeapon": "Ohne Nahkampfwaffe ist keine Parade möglich",
 
 	"SPACE1889.ChooseSkill": "Fertigkeitsauswahl für das Talent",
 	"SPACE1889.ChooseSense": "Sinnauswahl für das Talent",

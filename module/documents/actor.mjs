@@ -975,34 +975,41 @@ export class Space1889Actor extends Actor
 		{
 			if (item.type != "weapon")
 				continue;
+			if (item.system.location != "koerper")
+				continue;
 			if (item.system.skillId == id && item.system.skillRating > skillRating)
 				skillRating = item.system.skillRating;
 		}
 
+		const noWeapon = skillRating == 0;
 		let instinctive = false;
 		let riposte = false;
-		skillRating += actor.system.armorTotal.bonus;
-		skillRating += actor.system.secondaries.defense.talentBonus;
-
-		for (let item of actor.items)
+		if (!noWeapon)
 		{
-			if (item.type != "talent")
-				continue;
+			skillRating += actor.system.armorTotal.bonus;
+			skillRating += actor.system.secondaries.defense.talentBonus;
 
-			if (item.system.id == "parade")
+
+			for (let item of actor.items)
 			{
-				instinctive = true;
-				skillRating += item.system.level.value;
+				if (item.type != "talent")
+					continue;
+
+				if (item.system.id == "parade")
+				{
+					instinctive = true;
+					skillRating += item.system.level.value;
+				}
+				else if (item.system.id == "riposte" && item.system.level.value > 0)
+				{
+					skillRating += (item.system.level.value - 1) * 2;
+					riposte = true;
+				}
 			}
-			else if (item.system.id == "riposte" && item.system.level.value > 0)
-			{
-				skillRating += (item.system.level.value-1) * 2;
-				riposte = true;
-			}
+
+			if (game.settings.get("space1889", "optionalBlockDogeParryRule"))
+				skillRating += this.getPassiveDefense(actor);
 		}
-
-		if (game.settings.get("space1889", "optionalBlockDogeParryRule"))
-			skillRating += this.getPassiveDefense(actor);
 
 		actor.system.parry.value = skillRating;
 		actor.system.parry.instinctive = instinctive;
@@ -1022,7 +1029,9 @@ export class Space1889Actor extends Actor
 		else
 		{
 			const tdb = this.getTotalDefenseBonus();
-			if (defense + tdb < skillRating)
+			if (noWeapon)
+				actor.system.parry.info = game.i18n.localize("SPACE1889.NoParryWithoutWeapon");
+			else if (defense + tdb < skillRating)
 				actor.system.parry.info = game.i18n.format("SPACE1889.UseBlockParryEvasion", { fullDefence: (defense + tdb).toString(), talentName: name });
 			else
 				actor.system.parry.info = game.i18n.format("SPACE1889.UselessBlockParryEvasion", { defence: (defense + tdb).toString(), talentName: name });

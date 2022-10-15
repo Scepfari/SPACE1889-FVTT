@@ -2600,6 +2600,7 @@
 	"SPACE1889.UselessInstinctiveBlockParryEvasion": "{talentName} is useless since the defense value is >= the {talentName} value.",
 	"SPACE1889.UseBlockParryEvasion": "{talentName} should be used instead of full defense ({fullDefence}).",
 	"SPACE1889.UselessBlockParryEvasion": "{talentName} is useless, since full defense ( {defence} ) has the higher value.",
+	"SPACE1889.NoParryWithoutWeapon": "Parry is not possible without melee weapon",
 
 	"SPACE1889.ChooseSkill": "Skill selection for the talent",
 	"SPACE1889.ChooseSense": "Sense selection for the talent",
