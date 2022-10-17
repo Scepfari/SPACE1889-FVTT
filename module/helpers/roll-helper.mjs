@@ -197,8 +197,14 @@ export default class SPACE1889RollHelper
 		{
 			const rollWithHtml = await SPACE1889RollHelper.createInlineRollWithHtml(Math.max(0, wurfelAnzahl), titelInfo);
 			let weapon = undefined;
+			let weaponSkill = "";
+			let weaponDamageType = "";
 			if (item.type == "weapon")
+			{
 				weapon = item;
+				weaponSkill = weapon.system.skillId;
+				weaponDamageType = weapon.system.damageType
+			}
 
 			const targetId = game.user.targets.first() ? game.user.targets.first().id : "";
 			let messageContent = `<div><h2>${item.system.label}</h2></div>`;
@@ -214,7 +220,13 @@ export default class SPACE1889RollHelper
 			{
 				reducedDefense = item.getDefenceTypeAgainstThisTalant();
 				weapon = SPACE1889RollHelper.getWeaponFromTalent(actor, item);
-				messageContent += `<small>${ weapon ? weapon.name : game.i18n.localize("SPACE1889.SkillWaffenlos") }</small><br>`;
+				messageContent += `<small>${weapon ? weapon.name : game.i18n.localize("SPACE1889.SkillWaffenlos")}</small><br>`;
+				weaponSkill = weapon ? weapon.system.skillId : "waffenlos";
+				weaponDamageType = weapon ? weapon.system.damageType : "nonLethal";
+				if (reducedDefense == "onlyActiveParalyse")
+				{
+					weaponDamageType = "paralyse";
+				}
 			}
 
 			if (withExtraInfo)
@@ -222,7 +234,7 @@ export default class SPACE1889RollHelper
 			messageContent += `${rollWithHtml.html} <br>`;
 
 			if (addAutoDefense && targetId && targetId.length > 0)
-				messageContent += `<button class="autoDefence chatButton" data-action="defence" data-actor-id="${actor._id}" data-target-id="${targetId}" data-attack-name="${item.name}" data-attack-successes="${rollWithHtml.roll.total}" data-damage-type="${weapon?.system.damageType}" data-skill-id="${weapon?.system.skillId}" data-reduced-defense="${reducedDefense}" data-area-damage="${areaDamage}">Automatische Verteidigung</button>`;
+				messageContent += `<button class="autoDefence chatButton" data-action="defence" data-actor-id="${actor._id}" data-target-id="${targetId}" data-attack-name="${item.name}" data-attack-successes="${rollWithHtml.roll.total}" data-damage-type="${weaponDamageType}" data-skill-id="${weaponSkill}" data-reduced-defense="${reducedDefense}" data-area-damage="${areaDamage}">Automatische Verteidigung</button>`;
 			let chatData =
 			{
 				user: game.user.id,
@@ -1246,7 +1258,7 @@ export default class SPACE1889RollHelper
 		else if (data.attackValue > rollWithHtml.roll.total)
 		{
 			let damageAmount = data.attackValue - rollWithHtml.roll.total;
-			if (data.reducedDefense == 'onlyActiveParalyse')
+			if (data.damageType == 'paralyse')
 				SPACE1889RollHelper.doParalysisChatMessage(target.actor, data.actorName, damageAmount, target.actor.system.abilities.str.total);
 			else
 			{
