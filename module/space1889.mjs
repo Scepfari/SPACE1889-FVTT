@@ -13,6 +13,7 @@ import { Space1889Migration } from "./helpers/migration.mjs";
 import { Space1889Tour } from "./tours/space1889_tour.mjs";
 import SPACE1889Helper from "./helpers/helper.mjs";
 import SPACE1889RollHelper from "./helpers/roll-helper.mjs";
+import TurnMarker from "./helpers/turnMarker.mjs"
 
 
 /* -------------------------------------------- */
@@ -85,6 +86,40 @@ Hooks.on("renderChatMessage", (app, html, msg) =>
 		SPACE1889RollHelper.onAutoDefense(ev);
 	})
 });
+
+Hooks.on("canvasReady", function ()
+{
+	if (game.settings.get("space1889", "useCombatTurnMarker"))
+	{
+		new TurnMarker();
+
+		Hooks.once("renderCombatTracker", function ()
+		{
+			SPACE1889Helper.regenerateMarkers();
+			if (canvas.tokens.Space1889TurnMarker && !canvas.tokens.Space1889TurnMarker.token)
+				canvas.tokens.Space1889TurnMarker.MoveToCombatant()
+		});
+	}
+});
+
+Hooks.on("updateCombat", function () 
+{
+	SPACE1889Helper.regenerateMarkers();
+});
+
+Hooks.on("updateToken", function (token, updates)
+{
+	if (token.id === canvas.tokens.Space1889TurnMarker?.token?.id)
+	{
+		if ("texture" in updates)
+			canvas.tokens.Space1889TurnMarker.Update();
+	}
+});
+
+Hooks.on("deleteToken", (token) => {
+	SPACE1889Helper.regenerateMarkers();
+});
+
 
 /* -------------------------------------------- */
 /*  Handlebars Helpers                          */

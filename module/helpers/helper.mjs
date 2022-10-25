@@ -463,4 +463,21 @@ export default class SPACE1889Helper
 		const list = [3000, 2000, 1000];
 		return list[speed - 1];
 	}
+
+//function refreshSpaceCombatMarker()
+	static regenerateMarkers()
+	{
+		if (!game.combat?.started)
+			return;
+		if (!game.settings.get("space1889", "useCombatTurnMarker"))
+			return;
+		if (!canvas.tokens.Space1889TurnMarker)
+			new TurnMarker();
+		canvas.tokens.Space1889TurnMarker?.MoveToCombatant();
+	}
+
+	static refreshTurnMarker(reallyDestroy)
+	{
+		canvas.tokens?.Space1889TurnMarker?.Destroy(reallyDestroy);
+	}
 }
