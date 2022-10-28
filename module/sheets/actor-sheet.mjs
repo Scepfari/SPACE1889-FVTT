@@ -714,7 +714,7 @@ export class Space1889ActorSheet extends ActorSheet {
 		//this._handleDragData(dragData, event, await itemFromDrop(dragData, this.actor.id))
 
 
-		ui.notifications.error(game.i18n.format("SPACE1889.canNotBeAdded", { item: dragData.id }))
+		ui.notifications.error(game.i18n.format("SPACE1889.canNotBeAdded", { item: dragData.uuid }))
 		await super._onDrop(event);
 	}*/
 

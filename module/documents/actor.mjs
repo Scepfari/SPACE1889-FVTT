@@ -403,6 +403,9 @@ export class Space1889Actor extends Actor
 		SPACE1889Helper.sortByName(resources);
 		SPACE1889Helper.sortByName(weakness);
 		SPACE1889Helper.sortByName(language);
+		SPACE1889Helper.sortBySortFlag(gear);
+		SPACE1889Helper.sortBySortFlag(money);
+		SPACE1889Helper.sortBySortFlag(armors);
 
 		actor.system.talents = talents;
 		actor.system.skills = skills;
@@ -571,7 +574,7 @@ export class Space1889Actor extends Actor
 			}
 		}
 
-		SPACE1889Helper.sortByName(weapons);
+		SPACE1889Helper.sortBySortFlag(weapons);
 	}
 
 	/**

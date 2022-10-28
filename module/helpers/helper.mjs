@@ -332,6 +332,18 @@ export default class SPACE1889Helper
 		});
 	}
 
+	static sortBySortFlag(objectArray)
+	{
+		objectArray.sort((a, b) =>
+		{
+			if (a?.sort < b?.sort)
+				return -1;
+			if (a?.sort > b?.sort)
+				return 1;
+			return 0;
+		});
+	}
+
 	static async showHelpJournal()
 	{
 		let pac = game.packs.get("space1889.help");
