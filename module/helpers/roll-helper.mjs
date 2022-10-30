@@ -1113,7 +1113,7 @@ export default class SPACE1889RollHelper
 		if (!target)
 			return;
 
-		const rollAndDefense = SPACE1889RollHelper.getModifiedDefense(target.actor, data.reducedDefense, data.combatSkillId)
+		const rollAndDefense = SPACE1889RollHelper.getModifiedDefense(data.targetId, target.actor, data.reducedDefense, data.combatSkillId)
 		data.reducedDefense = rollAndDefense.defenseType;
 
 		if (this.getEventEvaluation(data.event).showDialog)
@@ -1125,12 +1125,16 @@ export default class SPACE1889RollHelper
 		this.rollDefenseAndAddDamageSub(data, rollAndDefense.diceCount)
 	}
 
-	static getModifiedDefense(actor, defenseType, combatSkillId)
+	static getModifiedDefense(tokenId, actor, defenseType, combatSkillId)
 	{
+		let defenseCount = this.getDefenseCount(tokenId);
+
+		const multiDefenseMalus = actor.getDefenseMalus(defenseCount + 1);
+
 		let diceCount = Math.max(0, actor.system.secondaries.defense.total);
 		if (defenseType == 'onlyPassive')
 		{
-			diceCount = Math.max(0, actor.system.secondaries.defense.passiveTotal);
+			diceCount = Math.max(0, actor.system.secondaries.defense.passiveTotal + multiDefenseMalus);
 			return { diceCount: diceCount, defenseType: defenseType };
 		}
 
@@ -1173,6 +1177,8 @@ export default class SPACE1889RollHelper
 				resultantDefenseType = (activeOnly ? 'onlyActive' : '') + (actor.system.parry.riposte ? 'ParryRiposte' : 'Parry');
 			}
 		}
+		diceCount = Math.max(0, diceCount + multiDefenseMalus);
+
 		return { diceCount: diceCount, defenseType: resultantDefenseType };
 	}
 
@@ -1205,6 +1211,8 @@ export default class SPACE1889RollHelper
 		let target = game.scenes.viewed.tokens.get(data.targetId);
 		if (!target)
 			return;
+
+		await this.incrementDefenseCount(data.targetId);
 
 		const rollWithHtml = await this.createInlineRollWithHtml(diceCount);
 
@@ -1360,5 +1368,28 @@ export default class SPACE1889RollHelper
 		ChatMessage.create(chatData, {});
 		if (effectNames.length > 0)
 			SPACE1889Helper.addEffects(actor, effectNames);
+	}
+
+/**
+ * 
+ * @param {string} tokenId
+ * @returns {number}
+ */
+	static getDefenseCount(tokenId)
+	{
+		let defenseCount = game.combat?.combatants?.find(c => c.tokenId == tokenId)?.getFlag("space1889", "defenseCount") || 0;
+		return defenseCount;
+	}
+
+	static async incrementDefenseCount(tokenId)
+	{
+		const combatant = game.combat?.combatants?.find(c => c.tokenId == tokenId);
+		if (!combatant)
+			return;
+
+		let defenseCount = combatant.getFlag("space1889", "defenseCount");
+		if (defenseCount == undefined)
+			return;
+		await combatant.setFlag("space1889", "defenseCount", defenseCount + 1);
 	}
 }

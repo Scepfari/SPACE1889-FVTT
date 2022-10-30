@@ -1534,6 +1534,21 @@ export class Space1889Actor extends Actor
 		return false;
 	}
 
+	/**
+	 * 
+	 * @param {number} attackInCombatRound
+	 */
+	getDefenseMalus(attackInCombatRound)
+	{
+		if (attackInCombatRound <= 1 || this.type == "vehicle")
+			return 0;
+
+		const noMalusDefenses = SPACE1889Helper.getTalentLevel(this, "beweglicheAbwehr") + 1;
+		if (attackInCombatRound <= noMalusDefenses)
+			return 0;
+		return (attackInCombatRound - noMalusDefenses) * (-2);
+	}
+
 	async addDamage(key)
 	{
 		const data = [{ name: 'Wunde in Bearbeitung', type: 'damage' }];

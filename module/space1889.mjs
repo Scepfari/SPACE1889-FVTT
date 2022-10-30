@@ -13,6 +13,7 @@ import { Space1889Migration } from "./helpers/migration.mjs";
 import { Space1889Tour } from "./tours/space1889_tour.mjs";
 import SPACE1889Helper from "./helpers/helper.mjs";
 import SPACE1889RollHelper from "./helpers/roll-helper.mjs";
+import { Space1889Combat, Space1889Combatant } from "./helpers/combatTracker.mjs";
 import TurnMarker from "./helpers/turnMarker.mjs"
 
 
@@ -38,6 +39,8 @@ Hooks.once('init', async function() {
 	// Define custom Document classes
 	CONFIG.Actor.documentClass = Space1889Actor;
 	CONFIG.Item.documentClass = Space1889Item;
+	CONFIG.Combat.documentClass = Space1889Combat;
+	CONFIG.Combatant.documentClass = Space1889Combatant;
 
 	// Register sheet application classes
 	Actors.unregisterSheet("core", ActorSheet);
@@ -60,6 +63,30 @@ Hooks.once('init', async function() {
 	// Preload Handlebars templates.
 	return preloadHandlebarsTemplates();
 });
+
+Hooks.once("setup", () =>
+{
+	game.keybindings.register("space1889", "combatTrackerNext", {
+		name: "COMBAT.TurnNext",
+		hint: game.i18n.localize("COMBAT.TurnNext"),
+		editable: [{ key: "KeyN" }],
+		onDown: () =>
+		{
+			if (game.combat?.combatant?.isOwner)
+				game.combat.nextTurn();
+		}
+	})
+	game.keybindings.register("space1889", "combatTrackerPrevious", {
+		name: "COMBAT.TurnPrev",
+		hint: game.i18n.localize("COMBAT.TurnPrev"),
+		editable: [{ key: "KeyV" }],
+		onDown: () =>
+		{
+			if (game.combat?.combatant?.isOwner)
+				game.combat.previousTurn();
+		}
+	})
+})
 
 Hooks.on("chatMessage", (html, content, msg) =>
 {
@@ -162,7 +189,10 @@ Hooks.once("ready", async function() {
 		if (values.type == "vehicle")
 			values.prepareDerivedData();
 	});
-	Space1889Tour.registerTours()
+	Space1889Tour.registerTours();
+
+//	const resource = await game.settings.get("core", Combat.CONFIG_SETTING).resource;
+//	await game.settings.set("core", Combat.CONFIG_SETTING, { resource: resource, skipDefeated: true });
 });
 
 
