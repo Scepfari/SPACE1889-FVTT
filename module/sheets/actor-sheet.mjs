@@ -260,6 +260,13 @@ export class Space1889ActorSheet extends ActorSheet {
 		// Delete Inventory Item
 		html.find('.item-delete').click(this._onItemDelete.bind(this));
 
+		// Artwork
+		html.find('.artwork').mousedown(ev =>
+		{
+			if (ev.button == 2)
+				SPACE1889Helper.showArtwork(this.actor, true)
+		});
+
 		// sub Skill update
 		html.find('.skill-level').change(async ev => {
 			const itemId = this._getItemId(ev);

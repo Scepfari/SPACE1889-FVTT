@@ -527,4 +527,14 @@ export default class SPACE1889Helper
 	{
 		return this.formatTimeDate(this.getCurrentTimeAndDate());
 	}
+
+	static async showArtwork({ img, name, uuid, isOwner }, hide = false) 
+	{
+		new ImagePopout(img,
+			{
+				title: hide ? (isOwner ? name : "-") : name,
+				shareable: true,
+				uuid
+			}).render(true)
+    }
 }
