@@ -499,8 +499,9 @@ export default class SPACE1889RollHelper
 					if (damageAmountInt == NaN)
 						damageAmountInt = 1;
 					damageAmountInt = Math.max(1, damageAmountInt);
+					const eventDate = SPACE1889Helper.getCurrentTimeDateString();
 
-					actor.updateEmbeddedDocuments("Item", [{ _id: item._id, "system.damageType": selectedOption, "name": userInputName, "img": path, "system.damage": damageAmountInt }]);
+					actor.updateEmbeddedDocuments("Item", [{ _id: item._id, "system.damageType": selectedOption, "name": userInputName, "img": path, "system.damage": damageAmountInt, "system.dataOfTheEvent": eventDate }]);
 					SPACE1889RollHelper.doDamageChatMessage(actor, item._id, damageAmountInt, selectedOption, (useInputName ? userInputName : ""));
 				}
 				else if (actor.items.get(item._id) != undefined)
@@ -1202,7 +1203,8 @@ export default class SPACE1889RollHelper
 		const items = await Item.create(damageData, { parent: actor });
 		const item = items.shift();
 		const path = damageType == "lethal" ? "icons/skills/wounds/blood-drip-droplet-red.webp" : "icons/skills/wounds/injury-pain-body-orange.webp";
-		actor.updateEmbeddedDocuments("Item", [{ _id: item._id, "system.damageType": damageType, "name": damageName, "img": path, "system.damage": damageAmount }]);
+		const eventDate = SPACE1889Helper.getCurrentTimeDateString();
+		actor.updateEmbeddedDocuments("Item", [{ _id: item._id, "system.damageType": damageType, "name": damageName, "img": path, "system.damage": damageAmount, "system.dataOfTheEvent": eventDate }]);
 		return item._id;
 	}
 

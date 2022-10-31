@@ -494,4 +494,37 @@ export default class SPACE1889Helper
 	{
 		canvas.tokens?.Space1889TurnMarker?.Destroy(reallyDestroy);
 	}
+
+	static isSimpleCalendarEnabled()
+	{
+		return this.isModuleEnabled("foundryvtt-simple-calendar");
+	}
+
+	static getCurrentTimeAndDate()
+	{
+		if (this.isSimpleCalendarEnabled())
+		{
+			const date = SimpleCalendar.api.timestampToDate(SimpleCalendar.api.timestamp());
+			return { year: date.year, month: date.month + 1, day: date.day + 1, hour: date.hour, minute: date.minute, second: date.second };
+		}
+		const worldDate = new Date();
+
+		return {
+			year: worldDate.getFullYear(), month: Number(worldDate.getMonth()) + 1, day: worldDate.getDate(),
+			hour: worldDate.getHours(), minute: worldDate.getMinutes(), second: worldDate.getSeconds()
+		};
+	}
+
+	static formatTimeDate(date)
+	{
+		let text = date.day.toString() + "." + date.month.toString() + "." + date.year.toString() +
+			" " + date.hour.toString() + ":" + (date.minute < 10 ? "0" : "") + date.minute.toString() +
+			":" + (date.second < 10 ? "0" : "") + date.second.toString();
+		return text;
+	}
+
+	static getCurrentTimeDateString()
+	{
+		return this.formatTimeDate(this.getCurrentTimeAndDate());
+	}
 }
