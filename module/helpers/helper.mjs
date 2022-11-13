@@ -358,11 +358,11 @@ export default class SPACE1889Helper
 		}
 	}
 
-	static getEffectData(effectName)
+	static getEffectData(effect)
 	{
 		const combatId = game.combat ? game.combat._id : 0;
 		let duration = game.combat ?
-			{ combat: game.combat._id, rounds: 1, seconds: 6, startRound: 0, startTime: game.time.worldTime, startTurn: 0 } :
+			{ combat: game.combat._id, rounds: effect.rounds, seconds: 6 * effect.rounds, startRound: 0, startTime: game.time.worldTime, startTurn: 0 } :
 			{ seconds: 6, startTime: game.time.worldTime };
 
 		
@@ -416,22 +416,22 @@ export default class SPACE1889Helper
 				flags: { core: { statusId: "dead", overlay: true } },
 			}
 		];
-		return infos.find(e => e.name == effectName);
+		return infos.find(e => e.name == effect.name);
 	}
 
-	static async addEffects(actor, effectNames)
+	static async addEffects(actor, effects)
 	{
-		for (const effectName of effectNames)
+		for (const effect of effects)
 		{
-			await this.addEffect(actor, effectName);
+			await this.addEffect(actor, effect);
 		}
 	}
 
-	static async addEffect(actor, effectName)
+	static async addEffect(actor, effect)
 	{
 		if (!actor)
 			return;
-		let effectData = this.getEffectData(effectName);
+		let effectData = this.getEffectData(effect);
 		if (!effectData)
 			return;
 

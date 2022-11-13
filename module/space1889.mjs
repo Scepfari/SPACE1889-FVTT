@@ -132,6 +132,8 @@ Hooks.on("canvasReady", function ()
 Hooks.on("updateCombat", function () 
 {
 	SPACE1889Helper.regenerateMarkers();
+	if (game.combat)
+		game.combat.checkEffectLifeTime();
 });
 
 Hooks.on("updateToken", function (token, updates)

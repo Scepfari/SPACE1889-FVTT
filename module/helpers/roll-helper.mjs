@@ -553,6 +553,10 @@ export default class SPACE1889RollHelper
 		dialog.render(true);
 	}
 
+	static getMaxRounds()
+	{
+		return 600;
+	}
 
 	static doDamageChatMessage(actor, itemId, dmg, dmgType, dmgName = "")
 	{
@@ -583,23 +587,23 @@ export default class SPACE1889RollHelper
 			stunned = true;
 
 		let trefferInfo = "";
-		let effectNames = [];
+		let effects = [];
 		if (recoil > 0)
 			trefferInfo += "<b>" + game.i18n.localize("SPACE1889.Recoil") + ":</b> " + recoil.toString() + "m<br>";
 		if (liegend)
 		{
 			trefferInfo += "<b>" + game.i18n.localize("SPACE1889.Knockdown") + ":</b> " + game.i18n.format("SPACE1889.ChatInfoKnockdown", { actorName: actor.name }) + "<br>";
-			effectNames.push("prone");
+			effects.push({ name: "prone", rounds: this.getMaxRounds() });
 		}
 		if (unconsciousStrike > 0)
 		{
 			trefferInfo += "<b>" + game.i18n.localize("SPACE1889.Unconscious") + ":</b> " + game.i18n.format("SPACE1889.ChatInfoDuration", { count: unconsciousStrike.toString() }) + "<br>";
-			effectNames.push("unconscious");
+			effects.push({ name: "unconscious", rounds: unconsciousStrike * 10 });
 		}
 		else if (stunned)
 		{
 			trefferInfo += "<b>" + game.i18n.localize("SPACE1889.Stunned") + ":</b> " + game.i18n.localize("SPACE1889.ChatInfoStunned") + "<br>";
-			effectNames.push("stun");
+			effects.push({ name: "stun", rounds: 1 });
 		}
 
 		let damageTuple = SPACE1889Helper.getDamageTuple(actor, itemId);
@@ -651,7 +655,7 @@ export default class SPACE1889RollHelper
 			{
 				gesamtInfo += "<b>" + game.i18n.localize("SPACE1889.Dead") + ":</b> ";
 				gesamtInfo += game.i18n.localize("SPACE1889.ChatInfoDead") + "<br>";
-				effectNames.push("dead");
+				effects.push({ name: "dead", rounds: this.getMaxRounds() });
 			}
 			if (damageTuple.nonLethal > 0)
 			{
@@ -664,7 +668,7 @@ export default class SPACE1889RollHelper
 		else if (newHealth <= 0)
 		{
 			gesamtInfo += "<b>" + game.i18n.localize("SPACE1889.Vanquished") + "!</b>";
-			effectNames.push("dead");
+			effects.push({ name: "dead", rounds: this.getMaxRounds() });
 		}
 
 		const usePercentage = !isCharakter && this.usePercentForNpcAndCreatureDamageInfo();
@@ -692,8 +696,8 @@ export default class SPACE1889RollHelper
 
 
 		ChatMessage.create(chatData, {});
-		if (effectNames.length > 0)
-			SPACE1889Helper.addEffects(actor, effectNames);
+		if (effects.length > 0)
+			SPACE1889Helper.addEffects(actor, effects);
 	}
 
 	static usePercentForNpcAndCreatureDamageInfo()
@@ -1379,17 +1383,17 @@ export default class SPACE1889RollHelper
 		if (!actor)
 			return;
 
-		let effectNames = [];
+		let effects = [];
 		let trefferInfo = "";
 		if (virtualDamage > (2 * comparativeAttributeValue))
 		{
-			effectNames.push("paralysis");
+			effects.push({ name: "paralysis", rounds: this.getMaxRounds() });
 			trefferInfo = "<b>" + game.i18n.localize("SPACE1889.Paralysed") + ":</b> " + game.i18n.localize("SPACE1889.ChatInfoTotalParalysed") + "<br>";
 		}
 		else if (virtualDamage > comparativeAttributeValue)
 		{
 			const rounds = virtualDamage - comparativeAttributeValue;
-			effectNames.push("paralysis");
+			effects.push({ name: "paralysis", rounds: rounds });
 			trefferInfo = "<b>" + game.i18n.localize("SPACE1889.Paralysed") + ":</b> " + game.i18n.format("SPACE1889.ChatInfoParalysed", { count: rounds }) + "<br>";
 		}
 		else
@@ -1414,8 +1418,8 @@ export default class SPACE1889RollHelper
 
 
 		ChatMessage.create(chatData, {});
-		if (effectNames.length > 0)
-			SPACE1889Helper.addEffects(actor, effectNames);
+		if (effects.length > 0)
+			SPACE1889Helper.addEffects(actor, effects);
 	}
 
 /**
