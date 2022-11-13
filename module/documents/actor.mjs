@@ -1543,7 +1543,8 @@ export class Space1889Actor extends Actor
 		if (attackInCombatRound <= 1 || this.type == "vehicle")
 			return 0;
 
-		const noMalusDefenses = SPACE1889Helper.getTalentLevel(this, "beweglicheAbwehr") + 1;
+		const sizeBonus = Math.floor(this.system.secondaries.size.value/2);
+		const noMalusDefenses = SPACE1889Helper.getTalentLevel(this, "beweglicheAbwehr") + 1 + sizeBonus;
 		if (attackInCombatRound <= noMalusDefenses)
 			return 0;
 		return (attackInCombatRound - noMalusDefenses) * (-2);
@@ -1720,7 +1721,7 @@ export class Space1889Actor extends Actor
 						abbruch:
 						{
 							label: 'Abbrechen',
-							callback: () => { ui.notifications.info("Auch gut, dann wird nicht gewürfelt...") },
+							callback: () => { ui.notifications.info(game.i18n.localize("SPACE1889.CancelRoll")) },
 							icon: `<i class="fas fa-times"></i>`
 						}
 					},

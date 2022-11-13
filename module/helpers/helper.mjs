@@ -536,5 +536,61 @@ export default class SPACE1889Helper
 				shareable: true,
 				uuid
 			}).render(true)
-    }
+	}
+
+	static getControlledTokenDocument()
+	{
+		for (let token of canvas.scene.tokens)
+		{
+			if (token?._object?.controlled)
+				return token;
+		}
+		return undefined;
+	}
+
+	static getDistancePenalty(item, distance, actor = undefined)
+	{
+		if (item.type != "weapon")
+			return 0;
+
+		let isPistol = item.system.specializationId == "pistole";
+		if (!isPistol && item.system.specializationId == "archaisch")
+		{
+			// archaische Pistolen können aktuell nicht klar identifiziert werden
+			if (item?.flags?.core?.sourceId == 'Compendium.space1889.waffen.NXzxp6dsp9sJWD82' ||
+				item?.flags?.core?.sourceId == 'Compendium.space1889.waffen.X8WKdO6DPzJAvxvW')
+				isPistol = true;
+		}
+
+		let isGun = !isPistol && item.system.specializationId != "schrotgewehr";
+		let range = parseFloat(item.system.range);
+
+		if (actor != undefined)
+		{
+			let level = this.getTalentLevel(actor, "scharfschuetze");
+			if (level > 0)
+				range *= 2;
+		}
+
+		if (distance <= 1.5)
+		{
+			return isPistol ? 1 : (isGun ? -1 : 0);
+		}
+		if (distance <= range)
+			return 0;
+		if (distance <= (2 * range))
+			return -2;
+		if (distance <= (4 * range))
+			return -4;
+		return -8;
+	}
+
+	/**
+	 * @param {number} value
+	 * @returns {string}
+	 */
+	static getSignedStringFromNumber(value)
+	{
+		return (value < 0 ? "" : "+") + value.toString();
+	}
 }

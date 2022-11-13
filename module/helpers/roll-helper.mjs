@@ -1,4 +1,5 @@
 import SPACE1889Helper from "../helpers/helper.mjs";
+import DistanceMeasuring from "../helpers/distanceMeasuring.mjs"
 
 export default class SPACE1889RollHelper
 {
@@ -147,19 +148,57 @@ export default class SPACE1889RollHelper
 	static async rollSubSpecial(item, actor, dieCount, showDialog, titelInfo, withExtraInfo = false)
 	{
 		const extraInfo = withExtraInfo ? game.i18n.localize(item.system.infoLangId) : "";
+		let toolTipInfo = "";
 		const titelPartOne = game.i18n.localize("SPACE1889.ModifiedRoll");
 		const inputDesc = game.i18n.localize("SPACE1889.NumberOfModificationDice");
 		const diceDesc = game.i18n.localize("SPACE1889.ConfigDice");
 		const isAttackTalent = item.isAttackTalent();
-		let addAutoDefense = game.settings.get("space1889", "autoDefense") &&
-			(item.type == 'weapon' || isAttackTalent);
+		const targetId = game.user.targets.first() ? game.user.targets.first().id : "";
+		let addAutoDefense = game.settings.get("space1889", "autoDefense") && (item.type == 'weapon' || isAttackTalent);
+		let defaultMod = 0;
+		if (addAutoDefense && targetId != "")
+		{
+			let controlledToken = SPACE1889Helper.getControlledTokenDocument();
+			if (actor._id == controlledToken.actorId)
+			{
+				let distanceInfo = DistanceMeasuring.getDistanceInfo(controlledToken, game.user.targets.first().document);
+				let isRangedCombat = false;
+				if (item.type == "weapon")
+				{
+					if (item.system.skillId != "waffenlos" && item.system.skillId != "nahkampf")
+					{
+						isRangedCombat = true;
+					}
+				}
+				const closeCombatRange = 1.5;
+				if (!isRangedCombat && distanceInfo.distance > closeCombatRange)
+				{
+					if (distanceInfo.xGridDistance > 1.0 || distanceInfo.yGridDistance > 1.0)
+					{
+						ui.notifications.info(game.i18n.localize("SPACE1889.NotInRange"));
+						return;
+					}
+				}
+				if (distanceInfo.distance > closeCombatRange && DistanceMeasuring.getGridWorldSize() <= closeCombatRange &&
+					distanceInfo.xGridDistance <= 1 && distanceInfo.yGridDistance <= 1)
+					distanceInfo.distance = closeCombatRange;
+
+				defaultMod = SPACE1889Helper.getDistancePenalty(item, distanceInfo.distance, actor);
+				dieCount += defaultMod;
+				if (defaultMod != 0)
+					toolTipInfo = game.i18n.format("SPACE1889.ChatDistanceMod", { mod: SPACE1889Helper.getSignedStringFromNumber(defaultMod) });
+
+				titelInfo += " " + game.i18n.format("SPACE1889.ChatDistanceInBrackets", { distance: distanceInfo.distance.toFixed(1), unit: distanceInfo.unit });
+			}
+		}
 		
 		if (showDialog)
 		{
+			const diceCount = dieCount - defaultMod;
 			let dialogue = new Dialog(
 				{
-					title: `${titelPartOne}: ${item.system.label} (${dieCount} ${diceDesc})`,
-					content: `<p>${inputDesc}: <input type="number" id="anzahlDerWuerfel" value = "0"></p>`,
+					title: `${titelPartOne}: ${item.system.label} (${diceCount} ${diceDesc})`,
+					content: `<p>${inputDesc}: <input type="number" id="anzahlDerWuerfel" value = "${defaultMod}"></p>`,
 					buttons:
 					{
 						ok:
@@ -171,7 +210,7 @@ export default class SPACE1889RollHelper
 						abbruch:
 						{
 							label: 'Abbrechen',
-							callback: () => { ui.notifications.info("Auch gut, dann wird nicht gew�rfelt...") },
+							callback: () => { ui.notifications.info(game.i18n.localize("SPACE1889.CancelRoll")) },
 							icon: `<i class="fas fa-times"></i>`
 						}
 					},
@@ -182,7 +221,8 @@ export default class SPACE1889RollHelper
 			{
 				const input = html.find('#anzahlDerWuerfel').val();
 				let anzahl = input ? parseInt(input) : 0;
-				anzahl += dieCount;
+				toolTipInfo = anzahl == 0 ? "" : game.i18n.format("SPACE1889.ChatDistanceMod", { mod: SPACE1889Helper.getSignedStringFromNumber(anzahl) }); 
+				anzahl += diceCount;
 				const chatData = await getChatData(anzahl);
 				ChatMessage.create(chatData, {});
 			}
@@ -195,7 +235,7 @@ export default class SPACE1889RollHelper
 
 		async function getChatData(wurfelAnzahl)
 		{
-			const rollWithHtml = await SPACE1889RollHelper.createInlineRollWithHtml(Math.max(0, wurfelAnzahl), titelInfo);
+			const rollWithHtml = await SPACE1889RollHelper.createInlineRollWithHtml(Math.max(0, wurfelAnzahl), titelInfo, toolTipInfo);
 			let weapon = undefined;
 			let weaponSkill = "";
 			let weaponDamageType = "";
@@ -206,7 +246,6 @@ export default class SPACE1889RollHelper
 				weaponDamageType = weapon.system.damageType
 			}
 
-			const targetId = game.user.targets.first() ? game.user.targets.first().id : "";
 			let messageContent = `<div><h2>${item.system.label}</h2></div>`;
 			let reducedDefense = "";
 			let areaDamage = "0";
@@ -1116,14 +1155,15 @@ export default class SPACE1889RollHelper
 
 		const rollAndDefense = SPACE1889RollHelper.getModifiedDefense(data.targetId, target.actor, data.reducedDefense, data.combatSkillId)
 		data.reducedDefense = rollAndDefense.defenseType;
+		const modifierToolTipInfo = rollAndDefense.multiDefenseMod == 0 ? "" : game.i18n.format("SPACE1889.ChatMultiAttackDefenseModifier", { mod: rollAndDefense.multiDefenseMod });
 
 		if (this.getEventEvaluation(data.event).showDialog)
 		{
-			this.rollDefenseAndAddDamageWithDialog(data, rollAndDefense.diceCount);
+			this.rollDefenseAndAddDamageWithDialog(data, rollAndDefense.diceCount, modifierToolTipInfo);
 			return;
 		}
 
-		this.rollDefenseAndAddDamageSub(data, rollAndDefense.diceCount)
+		this.rollDefenseAndAddDamageSub(data, rollAndDefense.diceCount, modifierToolTipInfo);
 	}
 
 	static getModifiedDefense(tokenId, actor, defenseType, combatSkillId)
@@ -1180,10 +1220,10 @@ export default class SPACE1889RollHelper
 		}
 		diceCount = Math.max(0, diceCount + multiDefenseMalus);
 
-		return { diceCount: diceCount, defenseType: resultantDefenseType };
+		return { diceCount: diceCount, defenseType: resultantDefenseType, multiDefenseMod: multiDefenseMalus};
 	}
 
-	static async createInlineRollWithHtml(diceCount, probeName = "")
+	static async createInlineRollWithHtml(diceCount, probeName = "", tooltipInfo = "")
 	{
 		let r = new Roll(diceCount.toString() + game.settings.get("space1889", "dice"));
 		await r.evaluate({ async: true });
@@ -1191,7 +1231,8 @@ export default class SPACE1889RollHelper
 		let outerHtml = htmlAn.outerHTML;
 		const index = outerHtml.indexOf('class=""');
 		let pre = (probeName != "" ? probeName : game.i18n.localize("SPACE1889.Probe")) + ": <b>";
-		let post = " " + game.i18n.localize("SPACE1889.Of") + " " + diceCount.toString() + "</b>";
+		let post = " " + game.i18n.localize("SPACE1889.Of");
+		post += (tooltipInfo != "") ? " <span title='" + tooltipInfo + "'>" + diceCount.toString() + "</span></b>" : " " + diceCount.toString() + "</b>";
 		const fullHtml = pre + outerHtml.substring(0, index) + `class="inline-roll inline-result" ` + outerHtml.substring(index + 8) + post;
 		return { roll: r, html: fullHtml };
 	}
@@ -1208,7 +1249,7 @@ export default class SPACE1889RollHelper
 		return item._id;
 	}
 
-	static async rollDefenseAndAddDamageSub(data, diceCount)
+	static async rollDefenseAndAddDamageSub(data, diceCount, modifierToolTipInfo)
 	{
 		let target = game.scenes.viewed.tokens.get(data.targetId);
 		if (!target)
@@ -1216,7 +1257,7 @@ export default class SPACE1889RollHelper
 
 		await this.incrementDefenseCount(data.targetId);
 
-		const rollWithHtml = await this.createInlineRollWithHtml(diceCount);
+		const rollWithHtml = await this.createInlineRollWithHtml(diceCount, "", modifierToolTipInfo);
 
 		let title = game.i18n.localize("SPACE1889.SecondaryAttributeDef");
 		if (data.reducedDefense.substring(0, 10) == 'onlyActive')
@@ -1290,7 +1331,7 @@ export default class SPACE1889RollHelper
 		}
 	}
 
-	static async rollDefenseAndAddDamageWithDialog(data, diceCount)
+	static async rollDefenseAndAddDamageWithDialog(data, diceCount, modifierToolTipInfo)
 	{
 		const titelPartOne = game.i18n.localize("SPACE1889.ModifiedRoll");
 		const inputDesc = game.i18n.localize("SPACE1889.NumberOfModificationDice");
@@ -1323,8 +1364,13 @@ export default class SPACE1889RollHelper
 		{
 			const input = html.find('#anzahlDerWuerfel').val();
 			let anzahl = input ? parseInt(input) : 0;
+			const modToolTip = anzahl == 0 ? "" : game.i18n.format("SPACE1889.ChatModifier", { mod: SPACE1889Helper.getSignedStringFromNumber(anzahl) });
+			if (modifierToolTipInfo.length == 0)
+				modifierToolTipInfo = modToolTip;
+			else
+				modifierToolTipInfo += "\n" + modToolTip;
 			anzahl += diceCount;
-			SPACE1889RollHelper.rollDefenseAndAddDamageSub(data, anzahl);
+			SPACE1889RollHelper.rollDefenseAndAddDamageSub(data, anzahl, modifierToolTipInfo);
 		}
 	}
 
