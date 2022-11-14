@@ -592,7 +592,10 @@ export default class SPACE1889RollHelper
 			trefferInfo += "<b>" + game.i18n.localize("SPACE1889.Recoil") + ":</b> " + recoil.toString() + "m<br>";
 		if (liegend)
 		{
-			trefferInfo += "<b>" + game.i18n.localize("SPACE1889.Knockdown") + ":</b> " + game.i18n.format("SPACE1889.ChatInfoKnockdown", { actorName: actor.name }) + "<br>";
+			let actorName = actor.name;
+			if (actor.isToken)
+				actorName = actor.token.name;
+			trefferInfo += "<b>" + game.i18n.localize("SPACE1889.Knockdown") + ":</b> " + game.i18n.format("SPACE1889.ChatInfoKnockdown", { actorName: actorName}) + "<br>";
 			effects.push({ name: "prone", rounds: this.getMaxRounds() });
 		}
 		if (unconsciousStrike > 0)
