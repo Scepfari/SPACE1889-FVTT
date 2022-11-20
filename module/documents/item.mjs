@@ -74,6 +74,8 @@ export class Space1889Item extends Item {
 				this.setLangIdAndLabel(item, "Weapon", true);
 				if (item.img == "icons/svg/item-bag.svg")
 					item.img = "icons/svg/sword.svg";
+				if (item.system.specializationId == "schrotgewehr")
+					item.system.templateConeAngle = SPACE1889Helper.getConeAngle(item);
 			}
 			else if (item.type == "armor" && item.system.id !== "")
 			{

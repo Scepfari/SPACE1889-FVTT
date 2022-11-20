@@ -359,6 +359,8 @@ export default class SPACE1889RollHelper
 			if (item.system.range != "")
 			{
 				desc += "<br>" + game.i18n.localize("SPACE1889.Range") + ": " + item.system.range;
+				if (item.system.templateConeAngle)
+					desc += "<br>" + game.i18n.localize("SPACE1889.ConeAngle") + ": " + item.system.templateConeAngle + "°";
 				desc += "<br>" + game.i18n.localize("SPACE1889.Capacity") + ": " + item.system.capacity + " " + game.i18n.localize(CONFIG.SPACE1889.weaponCapacityTypes[item.system.capacityType] + "Abbr");
 			}
 

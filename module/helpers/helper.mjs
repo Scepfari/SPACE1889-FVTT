@@ -563,7 +563,7 @@ export default class SPACE1889Helper
 		}
 
 		let isGun = !isPistol && item.system.specializationId != "schrotgewehr";
-		let range = parseFloat(item.system.range);
+		let range = parseFloat(this.replaceCommaWithPoint(item.system.range));
 
 		if (actor != undefined)
 		{
@@ -585,6 +585,11 @@ export default class SPACE1889Helper
 		return -8;
 	}
 
+	static replaceCommaWithPoint(text)
+	{
+		return text.replace(/,/g, ".");
+	}
+
 	/**
 	 * @param {number} value
 	 * @returns {string}
@@ -592,5 +597,21 @@ export default class SPACE1889Helper
 	static getSignedStringFromNumber(value)
 	{
 		return (value < 0 ? "" : "+") + value.toString();
+	}
+
+	static getConeAngle(item)
+	{
+		if (!item || item.type != "weapon" || item.system.specializationId != "schrotgewehr")
+			return 0;
+
+		const range = parseFloat(this.replaceCommaWithPoint(item.system.range));
+		if (range <= 0.0)
+			return 0;
+
+		const halfEnlargement = 0.75; // 1.5m per range
+		const a = Math.sqrt(range * range + (halfEnlargement * halfEnlargement));
+		const angleRad = 2 * Math.asin(halfEnlargement / a);
+		const angle = angleRad * 180 / Math.PI;
+		return Math.round((angle + Number.EPSILON) * 100) / 100;
 	}
 }

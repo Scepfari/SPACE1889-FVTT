@@ -125,6 +125,7 @@
 	"SPACE1889.Price": "Price",
 	"SPACE1889.StrengthThreshold": "Needed Strength",
 	"SPACE1889.Range": "Range",
+	"SPACE1889.ConeAngle": "Cone Angle",
 	"SPACE1889.Capacity": "Capacity",
 	"SPACE1889.CapacityType": "Cap. Type",
 	"SPACE1889.RateOfFire": "Rate of Fire",
