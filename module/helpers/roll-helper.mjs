@@ -468,7 +468,7 @@ export default class SPACE1889RollHelper
 
 		let damageLabel = game.i18n.localize("SPACE1889.Damage");
 		let nameLabel = game.i18n.localize("SPACE1889.Name");
-		let damageType = game.i18n.localize("SPACE1889.DamageType");
+		let damageType = game.i18n.localize("SPACE1889.DamageTypeAbbr");
 		let submit = game.i18n.localize("SPACE1889.Submit")
 		let cancel = game.i18n.localize("SPACE1889.Cancel")
 		let selectedOption;

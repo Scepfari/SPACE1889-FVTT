@@ -308,7 +308,7 @@ export class Space1889ActorSheet extends ActorSheet {
 				const newValue = this.incrementValue(ev, item.system.damage, -10, undefined);
 				this.actor.updateEmbeddedDocuments("Item", [{ _id: itemId, "system.damage": newValue }]);
 			}
-			else if (item.type == "item")
+			else if (item.type == "item" || item.type == "ammunition")
 			{
 				const newValue = this.incrementValue(ev, item.system.quantity, 0);
 				this.actor.updateEmbeddedDocuments("Item", [{ _id: itemId, "system.quantity": newValue }]);

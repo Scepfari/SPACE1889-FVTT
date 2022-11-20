@@ -11,6 +11,7 @@
 		"systems/space1889/templates/actor/parts/actor-items.html",
 		"systems/space1889/templates/actor/parts/actor-skills.html",
 		"systems/space1889/templates/actor/parts/actor-weapons.html",
+		"systems/space1889/templates/actor/parts/actor-ammunitions.html",
 		"systems/space1889/templates/actor/parts/actor-weakness.html",
 		"systems/space1889/templates/actor/parts/actor-language.html",
 		"systems/space1889/templates/actor/parts/actor-effects.html",

@@ -357,6 +357,7 @@ export class Space1889Actor extends Actor
 		const speciSkills = [];
 		const talents = [];
 		const weapons = [];
+		const ammunitions = [];
 		const armors = [];
 		const gear = [];
 		const resources = [];
@@ -381,6 +382,8 @@ export class Space1889Actor extends Actor
 				talents.push(item);
 			else if (item.type === 'weapon')
 				weapons.push(item);
+			else if (item.type === 'ammunition')
+				ammunitions.push(item);
 			else if (item.type === 'armor')
 				armors.push(item);
 			else if (item.type === 'item')
@@ -403,6 +406,7 @@ export class Space1889Actor extends Actor
 		SPACE1889Helper.sortByName(resources);
 		SPACE1889Helper.sortByName(weakness);
 		SPACE1889Helper.sortByName(language);
+		SPACE1889Helper.sortByName(ammunitions);
 		SPACE1889Helper.sortBySortFlag(gear);
 		SPACE1889Helper.sortBySortFlag(money);
 		SPACE1889Helper.sortBySortFlag(armors);
@@ -417,12 +421,14 @@ export class Space1889Actor extends Actor
 		actor.system.weakness = weakness;
 		actor.system.language = language;
 		actor.system.money = money;
+		actor.system.ammunitions = ammunitions;
 
 		this.calcAndSetSecondaries(actor)
 		actor.system.health.max = actor.system.abilities.con.total + actor.system.abilities.wil.total + actor.system.secondaries.size.total + this.getBonusFromTalents("max", "health", items);
 
 		this.calcAndSetSkillsAndSpecializations(actor)
 
+		this.prepareAmmunition(ammunitions);
 		this.prepareWeapons(actor, weapons);
 		actor.system.weapons = weapons;
 
@@ -539,6 +545,16 @@ export class Space1889Actor extends Actor
 			}
 		}
 
+	}
+
+	prepareAmmunition(ammunitions)
+	{
+		for (let ammu of ammunitions)
+		{
+			ammu.system.locationDisplay = game.i18n.localize(CONFIG.SPACE1889.storageLocationAbbreviations[ammu.system.location]);
+			ammu.system.typeDisplay = game.i18n.localize(CONFIG.SPACE1889.weaponAmmunitionTypes[ammu.system.type]);
+			ammu.system.capacityTypeDisplay = game.i18n.localize(CONFIG.SPACE1889.ammunitionCapacityTypes[ammu.system.capacityType]);
+		}
 	}
 
 	/**

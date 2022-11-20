@@ -210,7 +210,7 @@
 		}
 	},
 	"Item": {
-		"types": [ "item", "talent", "weapon", "skill", "specialization", "weakness", "resource", "language", "armor", "damage", "currency" ],
+		"types": [ "item", "talent", "weapon", "ammunition", "skill", "specialization", "weakness", "resource", "language", "armor", "damage", "currency" ],
 		"templates": {
 			"description": {
 				"description": ""
@@ -261,7 +261,7 @@
 			"bonus": 0,
 			"bonusTarget": "",
 			"bonusTargetType": "",
-			"bonusStartLevel":  1,
+			"bonusStartLevel": 1,
 			"info": ""
 		},
 		"skill": {
@@ -286,6 +286,7 @@
 			"weight": 0,
 			"range": "",
 			"capacity": 1,
+			"currentCapacity": 1,
 			"capacityType": "default",
 			"rateOfFire": "",
 			"speed": "",
@@ -296,7 +297,22 @@
 				"swivelingRange": "120"
 			},
 			"isAreaDamage": false,
-			"ammunitionType": ""
+			"ammunitionType": "",
+			"ammuItemId": "",
+			"ammuType": "",
+			"caliber": ""
+		},
+		"ammunition": {
+			"templates": [ "description", "weight", "location", "id", "price" ],
+			"quantity": 1,
+			"type": "default",
+			"capacityType": "default",
+			"capacity": 1,
+			"caliber": "",
+			"damageType": "lethal",
+			"damageModifikator": 0,
+			"rangeModFactor": 1,
+			"isConeAttack": false
 		},
 		"weakness": {
 			"templates": [ "description", "id" ],
@@ -310,7 +326,7 @@
 				"max": 5
 			},
 			"isBase": false,
-			"noEp" :  false
+			"noEp": false
 		},
 		"language": {
 			"templates": [ "id" ],

@@ -207,6 +207,11 @@ SPACE1889.damageTypes ={
 	"both": "SPACE1889.LethalOrNonLethal"
 }
 
+SPACE1889.noComboDamageTypes ={
+	"nonLethal": "SPACE1889.NonLethal",
+	"lethal": "SPACE1889.Lethal"
+}
+
 SPACE1889.damageTypeAbbreviations ={
 	"nonLethal": "SPACE1889.NonLethalAbbr",
 	"lethal": "SPACE1889.LethalAbbr",
@@ -716,6 +721,26 @@ SPACE1889.weaponCapacityTypes = {
 	"magazine": "SPACE1889.WeaponCapacityTypeMagazine",
 	"revolver": "SPACE1889.WeaponCapacityTypeRevolver",
 	"powercell": "SPACE1889.WeaponCapacityTypePowercell"
+}
+
+SPACE1889.ammunitionCapacityTypes = {
+	"default": "",
+	"belt": "SPACE1889.WeaponCapacityTypeBelt",
+	"strip": "SPACE1889.WeaponCapacityTypeStrip",
+	"magazine": "SPACE1889.WeaponCapacityTypeMagazine",
+	"powercell": "SPACE1889.WeaponCapacityTypePowercell"
+}
+
+SPACE1889.weaponAmmunitionTypes = {
+	"default": "",
+	"arrows": "SPACE1889.AmmunitionTypeArrows",
+	"bolts": "SPACE1889.AmmunitionTypeBolts",
+	"darts": "SPACE1889.AmmunitionTypeDarts",
+	"stones": "SPACE1889.AmmunitionTypeStones",
+	"bullets": "SPACE1889.AmmunitionTypeBullets",
+	"catridges": "SPACE1889.AmmunitionTypeCartridges",
+	"grenades": "SPACE1889.AmmunitionTypeGrenades",
+	"power": "SPACE1889.AmmunitionTypePower"
 }
 
 SPACE1889.vehicleManoeuvres = {

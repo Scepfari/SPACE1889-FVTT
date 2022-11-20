@@ -77,6 +77,10 @@ export class Space1889Item extends Item {
 				if (item.system.specializationId == "schrotgewehr")
 					item.system.templateConeAngle = SPACE1889Helper.getConeAngle(item);
 			}
+			else if (item.type == "ammunition" && item.system.id !== "")
+			{
+				this.setLangIdAndLabel(item, "Ammunition", true);
+			}
 			else if (item.type == "armor" && item.system.id !== "")
 			{
 				this.setLangIdAndLabel(item, "Armor", true);

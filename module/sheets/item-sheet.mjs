@@ -70,6 +70,15 @@ export class Space1889ItemSheet extends ItemSheet {
 			context.system['damageTypeAbbr'] = CONFIG.SPACE1889.damageTypeAbbreviations;
 			context.system['capacityTypes'] = CONFIG.SPACE1889.weaponCapacityTypes;
 		}
+		else if (item.type == "ammunition")
+		{
+			context.system['damageTypes'] = CONFIG.SPACE1889.noComboDamageTypes;
+			context.system['damageTypeAbbr'] = CONFIG.SPACE1889.damageTypeAbbreviations;
+			context.system['capacityTypes'] = CONFIG.SPACE1889.ammunitionCapacityTypes;
+			context.system['ammunitionTypes'] = CONFIG.SPACE1889.weaponAmmunitionTypes;
+			context.system['storageLocations'] = CONFIG.SPACE1889.storageLocations;
+			context.system['storageLocationsAbbr'] = CONFIG.SPACE1889.storageLocationsAbbreviations;
+		}
 		else if (item.type == "weakness")
 		{
 			context.system['weaknessTypes'] = CONFIG.SPACE1889.weaknessTypes;
