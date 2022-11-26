@@ -350,6 +350,13 @@
 	background: transparent;
 }
 
+.space1889 .ammo-selector {
+	max-width: 25%;
+	width: calc(100% - 31px);
+	padding: 0px;
+	margin: 0px 1px;
+}
+
 .space1889 .items-header {
 	height: 28px;
 	margin: 2px 0;

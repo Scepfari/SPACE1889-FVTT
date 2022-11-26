@@ -286,7 +286,6 @@
 			"weight": 0,
 			"range": "",
 			"capacity": 1,
-			"currentCapacity": 1,
 			"capacityType": "default",
 			"rateOfFire": "",
 			"speed": "",
@@ -298,9 +297,12 @@
 			},
 			"isAreaDamage": false,
 			"ammunitionType": "",
-			"ammuItemId": "",
-			"ammuType": "",
-			"caliber": ""
+			"ammunition": {
+				"currentItemId": "",
+				"type": "",
+				"caliber": "",
+				"remainingRounds": 0
+			}
 		},
 		"ammunition": {
 			"templates": [ "description", "weight", "location", "id", "price" ],

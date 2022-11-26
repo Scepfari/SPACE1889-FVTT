@@ -563,7 +563,7 @@ export default class SPACE1889Helper
 		}
 
 		let isGun = !isPistol && item.system.specializationId != "schrotgewehr";
-		let range = parseFloat(this.replaceCommaWithPoint(item.system.range));
+		let range = item.system.calculatedRange;
 
 		if (actor != undefined)
 		{
@@ -599,12 +599,34 @@ export default class SPACE1889Helper
 		return (value < 0 ? "" : "+") + value.toString();
 	}
 
+	static isRangeWeapon(weapon)
+	{
+		if (!weapon || weapon.type != "weapon")
+			return false;
+
+		if (weapon.system.skillId != "waffenlos" && weapon.system.skillId != "nahkampf")
+		{
+			const range = parseFloat(this.replaceCommaWithPoint(weapon.system.range));
+			return range > 0.0;
+		}
+		return false;
+	}
+
+	static getAmmunitionCapacityType(weapon)
+	{
+		let type = weapon.system.capacityType;
+		if (type == "revolver" || type == "intern")
+			return "default";
+			
+		return type;
+	}
+
 	static getConeAngle(item)
 	{
 		if (!item || item.type != "weapon" || item.system.specializationId != "schrotgewehr")
 			return 0;
 
-		const range = parseFloat(this.replaceCommaWithPoint(item.system.range));
+		const range = item.system.calculatedRange;
 		if (range <= 0.0)
 			return 0;
 
@@ -613,5 +635,184 @@ export default class SPACE1889Helper
 		const angleRad = 2 * Math.asin(halfEnlargement / a);
 		const angle = angleRad * 180 / Math.PI;
 		return Math.round((angle + Number.EPSILON) * 100) / 100;
+	}
+
+	static reloadWeapon(weapon, actor)
+	{
+		if (!weapon || !actor || weapon.type != "weapon")
+			return;
+
+		if (weapon.system.ammunition.currentItemId == "")
+		{
+			ui.notifications.info(game.i18n.localize("SPACE1889.AmmunitionCanNotReload"));
+			return;
+		}
+
+		let currentAmmo = weapon.system.ammunition.ammos.find(x => x._id == weapon.system.ammunition.currentItemId);
+
+		if (currentAmmo?.system?.quantity == 0)
+		{
+			ui.notifications.info(game.i18n.localize("SPACE1889.AmmunitionCanNotReloadOutOfAmmo"));
+			return;
+		}
+
+		if (weapon.system.capacityType == "internal" || weapon.system.capacityType == "revolver")
+		{
+			const currentRounds = weapon.system.ammunition.remainingRounds;
+			const capacity = weapon.system.capacity;
+			let wantedLoad = Math.min(capacity - currentRounds, currentAmmo.system.quantity);
+
+			if (game.combat?.started)
+			{
+				wantedLoad = Math.min(wantedLoad, actor.system.abilities.dex.total);
+			}
+			actor.updateEmbeddedDocuments("Item", [{ _id: weapon._id, "system.ammunition.remainingRounds": currentRounds + wantedLoad }]);
+			actor.updateEmbeddedDocuments("Item", [{ _id: currentAmmo._id, "system.quantity": currentAmmo.system.quantity - wantedLoad }]);
+		}
+		else
+		{
+			actor.updateEmbeddedDocuments("Item", [{ _id: currentAmmo._id, "system.quantity": currentAmmo.system.quantity - 1 }]);
+			actor.updateEmbeddedDocuments("Item", [{ _id: weapon._id, "system.ammunition.remainingRounds": currentAmmo.system.capacity }]);
+		}
+
+		const speaker = ChatMessage.getSpeaker({ actor: actor });
+		const infoId = SPACE1889Helper.getTalentLevel(actor, "schnellladen") > 0 ? "SPACE1889.AmmunitionInstantReload" : "SPACE1889.AmmunitionDefaultReloadAction";
+			
+		const desc = game.i18n.format(infoId, { actorName: actor.name, weaponName: weapon.name });
+		const label = `<h2><strong>${game.i18n.localize("SPACE1889.AmmunitionReload")}</strong></h2>`;
+		ChatMessage.create({
+			speaker: speaker,
+			flavor: label,
+			whisper: [],
+			content: desc ?? ''
+		});
+	}
+
+	static unloadWeapon(weapon, actor)
+	{
+		if (!weapon || !actor || weapon.type != "weapon")
+			return;
+
+		if (weapon.system.ammunition.currentItemId == "")
+		{
+			actor.updateEmbeddedDocuments("Item", [{ _id: weapon._id, "system.ammunition.remainingRounds": 0 }]);
+			return;
+		}
+
+		let currentAmmo = weapon.system.ammunition.ammos.find(x => x._id == weapon.system.ammunition.currentItemId);
+
+		if (weapon.system.capacityType == "internal" || weapon.system.capacityType == "revolver")
+		{
+			const currentRounds = weapon.system.ammunition.remainingRounds;
+
+			let wantedUnload = weapon.system.ammunition.remainingRounds;
+
+			if (game.combat?.started)
+			{
+				wantedUnload = Math.min(wantedUnload, actor.system.abilities.dex.total);
+			}
+			actor.updateEmbeddedDocuments("Item", [{ _id: weapon._id, "system.ammunition.remainingRounds": currentRounds - wantedUnload }]);
+			actor.updateEmbeddedDocuments("Item", [{ _id: currentAmmo._id, "system.quantity": currentAmmo.system.quantity + wantedUnload }]);
+		}
+		else
+		{
+			actor.updateEmbeddedDocuments("Item", [{ _id: weapon._id, "system.ammunition.remainingRounds": 0 }]);
+			if (weapon.system.capacity == weapon.system.ammunition.remainingRounds)
+				actor.updateEmbeddedDocuments("Item", [{ _id: currentAmmo._id, "system.quantity": currentAmmo.system.quantity + 1 }]);
+		}
+
+		const speaker = ChatMessage.getSpeaker({ actor: actor });
+		const infoId = SPACE1889Helper.getTalentLevel(actor, "schnellladen") > 0 ? "SPACE1889.AmmunitionInstantUnload" : "SPACE1889.AmmunitionDefaultUnloadAction";
+			
+		const desc = game.i18n.format(infoId, { actorName: actor.name, weaponName: weapon.name });
+		const label = `<h2><strong>${game.i18n.localize("SPACE1889.AmmunitionUnload")}</strong></h2>`;
+		ChatMessage.create({
+			speaker: speaker,
+			flavor: label,
+			whisper: [],
+			content: desc ?? ''
+		});
+
+	}
+
+	static canDoUseWeapon(weapon)
+	{
+		const isRangeWeapon = SPACE1889Helper.isRangeWeapon(weapon);
+		if (!isRangeWeapon)
+			return true;
+
+		const rate = SPACE1889Helper.getAutoReloadRate(weapon);
+
+		if (rate == 0)
+			return weapon.system.ammunition.remainingRounds > 0;
+
+		// ToDo Ladezustand bei raten kleiner 1 prüfen
+
+		let currentAmmo = weapon.system.ammunition.ammos.find(x => x._id == weapon.system.ammunition.currentItemId);
+		if (!currentAmmo || currentAmmo.system.quantity <= 0)
+			return false;
+		return true;
+	}
+
+	static async useWeapon(weapon, actor)
+	{
+		const isRangeWeapon = SPACE1889Helper.isRangeWeapon(weapon);
+		if (!isRangeWeapon)
+			return true;
+
+		const rate = SPACE1889Helper.getAutoReloadRate(weapon);
+
+		if (rate == 0)
+		{
+			if (weapon.system.ammunition.remainingRounds <= 0)
+				return false;
+
+			actor.updateEmbeddedDocuments("Item", [{ _id: weapon._id, "system.ammunition.remainingRounds": weapon.system.ammunition.remainingRounds - 1 }]);
+			return true;
+		}
+
+		// ToDo Ladezustand bei raten kleiner 1 prüfen
+
+		let currentAmmo = weapon.system.ammunition.ammos.find(x => x._id == weapon.system.ammunition.currentItemId);
+
+		if (!currentAmmo || currentAmmo.system.quantity <= 0)
+		{
+			ui.notifications.info("keine Munition zum Benutzen der Waffe vorhanden"/*game.i18n.localize("SPACE1889.AmmunitionCanNotReload")*/);
+			return false;
+		}
+
+		actor.updateEmbeddedDocuments("Item", [{ _id: currentAmmo._id, "system.quantity": currentAmmo.system.quantity - 1 }]);
+		return true;
+	}
+
+	static getAutoReloadRate(weapon)
+	{
+		if (!weapon || weapon.system?.type == "weapon")
+			return 0;
+
+		if (weapon.system.capacityType != "default" && weapon.system.capacityType != "internal")
+			return 0;
+
+		let parts = weapon.system.rateOfFire.split("/");
+				
+		if (parts.length = 1)
+		{
+			let rate = parseInt(parts[0]);
+			if (rate > 0)
+				return rate;
+			return 0;
+		}
+
+		if (parts.length = 2)
+		{
+			let numerator = parseInt(parts[0]);
+			let denominator = parseInt(parts[1]);
+
+			if (isNaN(numerator) || isNaN(denominator) || numerator == 0 || denominator == 0)
+				return 0;
+
+			return numerator / denominator;
+		}
+		return 0;
 	}
 }

@@ -120,9 +120,18 @@
 		<label class="resource-label">{{localize "SPACE1889.StorageLocation"}}</label>
 	</li>
 	<li class="item flex-group-center flexrow">
-		<div class="resource-content flex-center flex-between">
+		<!--<div class="resource-content flex-center flex-between">
 			<input type="text" name="system.ammunitionType" value="{{system.ammunitionType}}" />
-		</div>
+		</div>-->
+
+		<select name="system.ammunition.type" data-dtype="String">
+			{{#select system.ammunition.type}}
+			{{#each system.ammunitionTypes as |ch char|}}
+			<option value="{{char}}">{{localize ch}}</option>
+			{{/each}}
+			{{/select}}
+		</select>
+
 		<select name="system.location" data-dtype="String">
 			{{#select system.location}}
 			{{#each system.storageLocations as |ch char|}}

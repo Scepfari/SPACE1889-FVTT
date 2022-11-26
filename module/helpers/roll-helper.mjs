@@ -147,6 +147,13 @@ export default class SPACE1889RollHelper
 	*/
 	static async rollSubSpecial(item, actor, dieCount, showDialog, titelInfo, withExtraInfo = false)
 	{
+		const isWeapon = item.type == "weapon";
+		if (isWeapon && !SPACE1889Helper.canDoUseWeapon(item))
+		{
+			ui.notifications.info(game.i18n.localize("SPACE1889.AmmunitionCanNotFireOutOfAmmo"));
+			return;
+		}
+
 		const extraInfo = withExtraInfo ? game.i18n.localize(item.system.infoLangId) : "";
 		let toolTipInfo = "";
 		const titelPartOne = game.i18n.localize("SPACE1889.ModifiedRoll");
@@ -163,7 +170,7 @@ export default class SPACE1889RollHelper
 			{
 				let distanceInfo = DistanceMeasuring.getDistanceInfo(controlledToken, game.user.targets.first().document);
 				let isRangedCombat = false;
-				if (item.type == "weapon")
+				if (isWeapon)
 				{
 					if (item.system.skillId != "waffenlos" && item.system.skillId != "nahkampf")
 					{
@@ -224,12 +231,14 @@ export default class SPACE1889RollHelper
 				toolTipInfo = anzahl == 0 ? "" : game.i18n.format("SPACE1889.ChatDistanceMod", { mod: SPACE1889Helper.getSignedStringFromNumber(anzahl) }); 
 				anzahl += diceCount;
 				const chatData = await getChatData(anzahl);
+				await SPACE1889Helper.useWeapon(item, actor);
 				ChatMessage.create(chatData, {});
 			}
 		}
 		else
 		{
 			const chatData = await getChatData(dieCount);
+			await SPACE1889Helper.useWeapon(item, actor);
 			ChatMessage.create(chatData, {});
 		}
 

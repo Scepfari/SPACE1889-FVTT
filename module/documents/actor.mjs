@@ -567,6 +567,24 @@ export class Space1889Actor extends Actor
 		let sizeMod = (-1) * actor.system.secondaries.size.total;
 		for (let weapon of weapons)
 		{
+			weapon.system.isRangeWeapon = SPACE1889Helper.isRangeWeapon(weapon);
+
+			this.prepareWeaponAmmunition(weapon, actor);
+
+			if (weapon.system.isRangeWeapon)
+			{
+				weapon.system.calculatedRange = parseFloat(SPACE1889Helper.replaceCommaWithPoint(weapon.system.range));
+				if (weapon.system.ammunition.rangeModFactor > 0)
+					weapon.system.calculatedRange *= weapon.system.ammunition.rangeModFactor;
+
+				if (weapon.system.capacity == weapon.system.ammunition.remainingRounds)
+					weapon.system.ammunition.loadStateDisplay = game.i18n.localize("SPACE1889.InfoWeaponIsReady");
+				else if (weapon.system.ammunition.remainingRounds > 0)
+					weapon.system.ammunition.loadStateDisplay = game.i18n.localize("SPACE1889.InfoReloadPart");
+				else
+					weapon.system.ammunition.loadStateDisplay = game.i18n.localize("SPACE1889.InfoReload");
+			}
+
 			if (weapon.system.skillId == "none" && weapon.system.isAreaDamage)
 			{
 				weapon.system.sizeMod = "-";
@@ -579,10 +597,12 @@ export class Space1889Actor extends Actor
 				weapon.system.sizeMod = sizeMod;
 				weapon.system.skillRating = this._GetSkillLevel(actor, weapon.system.skillId, weapon.system.specializationId);
 				const attackBonusFromDamage = (weapon.system.isAreaDamage && actor.type != 'vehicle') ? 0 : weapon.system.damage;
-				weapon.system.attack = Math.max(0, attackBonusFromDamage + weapon.system.skillRating + weapon.system.sizeMod);
+				const ammoBonus = weapon.system.ammunition.damageMod ? weapon.system.ammunition.damageMod : 0;
+				weapon.system.attack = Math.max(0, attackBonusFromDamage + weapon.system.skillRating + weapon.system.sizeMod + ammoBonus);
 				weapon.system.attackAverage = (Math.floor(weapon.system.attack / 2)).toString() + (weapon.system.attack % 2 == 0 ? "" : "+");
 			}
-			weapon.system.damageTypeDisplay = game.i18n.localize(CONFIG.SPACE1889.damageTypeAbbreviations[weapon.system.damageType]);
+			const damageType = weapon.system.ammunition.damageType ? weapon.system.ammunition.damageType : weapon.system.damageType;
+			weapon.system.damageTypeDisplay = game.i18n.localize(CONFIG.SPACE1889.damageTypeAbbreviations[damageType]);
 			if (!SPACE1889Helper.isCreature(actor))
 			{
 				weapon.system.locationDisplay = game.i18n.localize(CONFIG.SPACE1889.storageLocationAbbreviations[weapon.system.location]);
@@ -591,6 +611,41 @@ export class Space1889Actor extends Actor
 		}
 
 		SPACE1889Helper.sortBySortFlag(weapons);
+	}
+
+	prepareWeaponAmmunition(weapon, actor)
+	{
+		delete weapon.system.ammunition.damageMod;
+		delete weapon.system.ammunition.rangeModFactor;
+		delete weapon.system.ammunition.damageType;
+		delete weapon.system.ammunition.isShotgunLike;
+
+		if (!weapon || !actor || !actor.system.ammunitions || actor.system.ammunitions.length == 0 || !weapon.system.isRangeWeapon)
+			return;
+
+		let list = [];
+		for (let ammo of actor.system.ammunitions)
+		{
+			// ToDo: //&& weapon.system.ammunition.caliber == ammo.system.caliber
+			let capacityType = SPACE1889Helper.getAmmunitionCapacityType(weapon);
+			if (weapon.system.ammunition.type == ammo.system.type && capacityType == ammo.system.capacityType)
+				list.push(ammo);
+		}
+
+		weapon.system.ammunition.ammos = list;
+		weapon.system.ammunition.display = "";
+
+		let currentAmmo = weapon.system.ammunition.ammos.find(x => x._id == weapon.system.ammunition.currentItemId);
+		if (currentAmmo)
+		{
+			weapon.system.ammunition.damageMod = currentAmmo.system.damageModifikator;
+			weapon.system.ammunition.rangeModFactor = currentAmmo.system.rangeModFactor;
+			weapon.system.ammunition.damageType = currentAmmo.system.damageType;
+			weapon.system.ammunition.isShotgunLike = currentAmmo.system.isConeAttack;
+			weapon.system.ammunition.display = currentAmmo.name;
+		}
+		else
+			weapon.system.ammunition.currentItemId = "";
 	}
 
 	/**

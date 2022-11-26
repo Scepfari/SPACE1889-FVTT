@@ -353,6 +353,16 @@ export class Space1889ActorSheet extends ActorSheet {
 			}
 		});
 
+		html.find('.reload-click').mousedown(ev =>
+		{
+			const itemId = this._getItemId(ev);
+			const item = this.actor.items.get(itemId);
+			if (ev?.shiftKey && ev?.ctrlKey)
+				SPACE1889Helper.unloadWeapon(item, this.actor);
+			else
+				SPACE1889Helper.reloadWeapon(item, this.actor);
+		});
+
 		html.find('.swivelingRange-click').mousedown(ev =>
 		{
 			const itemId = this._getItemId(ev);
@@ -418,6 +428,12 @@ export class Space1889ActorSheet extends ActorSheet {
 			const newValue = this.incrementValue(ev, this.actor.system.attributes.xp.value, 0, undefined);
 			this.actor.update({ 'system.attributes.xp.value': newValue });
 		});
+
+        html.find('.ammo-selector').change(async(ev) => {
+            ev.preventDefault()
+            const itemId = this._getItemId(ev);
+            await this.actor.updateEmbeddedDocuments("Item", [{ _id: itemId, "system.ammunition.currentItemId": $(ev.currentTarget).val() }]);
+        })
 
 		html.find('.increment-animalcompanionlevel-click').mousedown(ev =>
 		{

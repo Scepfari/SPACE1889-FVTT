@@ -7,9 +7,9 @@
 		<div class="item-name">{{localize "SPACE1889.Name"}}</div>
 		<div title='{{localize "SPACE1889.Damage"}}' class="items-list item-max-with60px">{{localize "SPACE1889.Damage"}}</div>
 		<div title='{{localize "SPACE1889.CombatSkill"}}' class="items-list item-max-with40px">{{localize "SPACE1889.Mod"}}</div>
-		<div title='{{localize "SPACE1889.SecondaryAttributeSiz"}}  {{localize "SPACE1889.Mod"}}' class="items-list item-max-with60px">{{localize "SPACE1889.SecondaryAttributeSiz"}}</div>
+		<div title='{{localize "SPACE1889.Ammunition"}}' class="items-list item-max-with75px">{{localize "SPACE1889.Ammunition"}}</div>
+		<div title='{{localize "SPACE1889.AmmunitionLoadingState"}}' class="items-list item-max-with40px">{{localize "SPACE1889.AmmunitionLoadingStateAbbr"}}</div>
 		<div title='{{localize "SPACE1889.AttackValue"}}' class="items-list item-max-with40px">{{localize "SPACE1889.Rating"}}</div>
-		<div title='{{localize "SPACE1889.Average"}}' class="items-list item-max-with40px">{{localize "SPACE1889.AverageAbbr"}} </div>
 		<div title='{{localize "SPACE1889.StorageLocation"}}' class="items-list item-max-with40px">{{localize "SPACE1889.StorageLocation"}} </div>
 		<div class="item-controls item-max-with60px">
 			<a class="item-control item-create item-max-with60px" title='{{localize "SPACE1889.CreateItem"}}' data-type="weapon"><i class="fas fa-plus"></i> Add</a>
@@ -27,9 +27,25 @@
 			</div>
 			<label class="items-list item-max-with60px">{{item.system.damage}} {{item.system.damageTypeDisplay}}</label>
 			<label class="items-list item-max-with40px">{{item.system.skillRating}}</label>
-			<label class="items-list item-max-with60px">{{item.system.sizeMod}}</label>
+			
+			<!--<label class="items-list item-max-with60px">{{item.system.sizeMod}}</label>-->
+
+			<select title="{{item.system.ammunition.display}}" name="currentAmmo-{{item._id}}" class="ammo-selector" data-item-id="{{item._id}}" data-dtype="String">
+				{{#select item.system.ammunition.currentItemId}}
+				<option class="ammo-option" value="">None</option>
+				{{#each item.system.ammunition.ammos as |ammo a|}}
+			<option class="ammo-option" value="{{ammo._id}}">
+				({{ammo.system.quantity}}) {{ammo.name}}
+			</option>
+				{{/each}}
+				{{/select}}
+			</select>
+
+			<div title="{{item.system.ammunition.loadStateDisplay}}" class="items-list resource-label item-max-with40px">
+				<a class="reload-click">{{item.system.ammunition.remainingRounds}}/{{item.system.capacity}}</a>
+			</div>
+
 			<label class="items-list resource-label item-max-with40px">{{item.system.attack}} {{item.system.damageTypeDisplay}}</label>
-			<label class="items-list item-max-with40px">{{item.system.attackAverage}} {{item.system.damageTypeDisplay}}</label>
 			<div title='{{item.system.locationDisplayLong}}' class="items-list item-max-with40px">
 				<a class="location-click">{{item.system.locationDisplay}}</a>
 			</div>
