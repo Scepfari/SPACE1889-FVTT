@@ -301,7 +301,8 @@
 				"currentItemId": "",
 				"type": "",
 				"caliber": "",
-				"remainingRounds": 0
+				"remainingRounds": 0,
+				"usedLoadingActions": 0
 			}
 		},
 		"ammunition": {

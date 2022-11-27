@@ -637,7 +637,7 @@ export default class SPACE1889Helper
 		return Math.round((angle + Number.EPSILON) * 100) / 100;
 	}
 
-	static reloadWeapon(weapon, actor)
+	static async reloadWeapon(weapon, actor, noChatInfoAsReturnValue = false)
 	{
 		if (!weapon || !actor || weapon.type != "weapon")
 			return;
@@ -656,7 +656,32 @@ export default class SPACE1889Helper
 			return;
 		}
 
-		if (weapon.system.capacityType == "internal" || weapon.system.capacityType == "revolver")
+		if (weapon.system.ammunition.remainingRounds >= weapon.system.capacity)
+		{
+			ui.notifications.info(game.i18n.localize("SPACE1889.AmmunitionIsAlreadyLoaded"));
+			return;
+		}
+
+		const isInstantReload = SPACE1889Helper.getTalentLevel(actor, "schnellladen") > 0
+		const infoId = isInstantReload ? "SPACE1889.AmmunitionInstantReload" : "SPACE1889.AmmunitionDefaultReloadAction";
+		let desc = game.i18n.format(infoId, { weaponName: weapon.name });
+
+		let autoReloadNeededLoadActions = Math.round(1 / ((isInstantReload ? 2 : 1) * weapon.system.ammunition.autoReloadRate)) - 1;
+		if (weapon.system.ammunition.autoReloadRate != 0 && autoReloadNeededLoadActions >= 0)
+		{
+			if (weapon.system.ammunition.usedLoadingActions >= autoReloadNeededLoadActions)
+			{
+				await actor.updateEmbeddedDocuments("Item", [{ _id: weapon._id, "system.ammunition.remainingRounds": weapon.system.ammunition.remainingRounds + 1, "system.ammunition.usedLoadingActions": 0 }]);
+				await actor.updateEmbeddedDocuments("Item", [{ _id: currentAmmo._id, "system.quantity": currentAmmo.system.quantity - 1 }]);
+				desc = game.i18n.format("SPACE1889.AmmunitionReloadActionFireRateReady", { weaponName: weapon.name });
+			}
+			else
+			{
+				await actor.updateEmbeddedDocuments("Item", [{ _id: weapon._id, "system.ammunition.usedLoadingActions": weapon.system.ammunition.usedLoadingActions + 1 }]);
+				desc = game.i18n.format("SPACE1889.AmmunitionReloadActionFireRate", { weaponName: weapon.name, turns: autoReloadNeededLoadActions + 1, loadActions: weapon.system.ammunition.usedLoadingActions });
+			}
+		}
+		else if (weapon.system.capacityType == "internal" || weapon.system.capacityType == "revolver")
 		{
 			const currentRounds = weapon.system.ammunition.remainingRounds;
 			const capacity = weapon.system.capacity;
@@ -666,19 +691,20 @@ export default class SPACE1889Helper
 			{
 				wantedLoad = Math.min(wantedLoad, actor.system.abilities.dex.total);
 			}
-			actor.updateEmbeddedDocuments("Item", [{ _id: weapon._id, "system.ammunition.remainingRounds": currentRounds + wantedLoad }]);
-			actor.updateEmbeddedDocuments("Item", [{ _id: currentAmmo._id, "system.quantity": currentAmmo.system.quantity - wantedLoad }]);
+			await actor.updateEmbeddedDocuments("Item", [{ _id: weapon._id, "system.ammunition.remainingRounds": currentRounds + wantedLoad }]);
+			await actor.updateEmbeddedDocuments("Item", [{ _id: currentAmmo._id, "system.quantity": currentAmmo.system.quantity - wantedLoad }]);
 		}
 		else
 		{
-			actor.updateEmbeddedDocuments("Item", [{ _id: currentAmmo._id, "system.quantity": currentAmmo.system.quantity - 1 }]);
-			actor.updateEmbeddedDocuments("Item", [{ _id: weapon._id, "system.ammunition.remainingRounds": currentAmmo.system.capacity }]);
+			await actor.updateEmbeddedDocuments("Item", [{ _id: currentAmmo._id, "system.quantity": currentAmmo.system.quantity - 1 }]);
+			await actor.updateEmbeddedDocuments("Item", [{ _id: weapon._id, "system.ammunition.remainingRounds": currentAmmo.system.capacity }]);
 		}
 
+		if (noChatInfoAsReturnValue)
+			return desc;
+	
 		const speaker = ChatMessage.getSpeaker({ actor: actor });
-		const infoId = SPACE1889Helper.getTalentLevel(actor, "schnellladen") > 0 ? "SPACE1889.AmmunitionInstantReload" : "SPACE1889.AmmunitionDefaultReloadAction";
 			
-		const desc = game.i18n.format(infoId, { actorName: actor.name, weaponName: weapon.name });
 		const label = `<h2><strong>${game.i18n.localize("SPACE1889.AmmunitionReload")}</strong></h2>`;
 		ChatMessage.create({
 			speaker: speaker,
@@ -686,6 +712,7 @@ export default class SPACE1889Helper
 			whisper: [],
 			content: desc ?? ''
 		});
+		return "";
 	}
 
 	static unloadWeapon(weapon, actor)
@@ -724,7 +751,7 @@ export default class SPACE1889Helper
 		const speaker = ChatMessage.getSpeaker({ actor: actor });
 		const infoId = SPACE1889Helper.getTalentLevel(actor, "schnellladen") > 0 ? "SPACE1889.AmmunitionInstantUnload" : "SPACE1889.AmmunitionDefaultUnloadAction";
 			
-		const desc = game.i18n.format(infoId, { actorName: actor.name, weaponName: weapon.name });
+		const desc = game.i18n.format(infoId, { weaponName: weapon.name });
 		const label = `<h2><strong>${game.i18n.localize("SPACE1889.AmmunitionUnload")}</strong></h2>`;
 		ChatMessage.create({
 			speaker: speaker,
@@ -735,54 +762,61 @@ export default class SPACE1889Helper
 
 	}
 
-	static canDoUseWeapon(weapon)
+	static canDoUseWeapon(weapon, actor)
 	{
-		const isRangeWeapon = SPACE1889Helper.isRangeWeapon(weapon);
-		if (!isRangeWeapon)
+		if (!weapon.system.isRangeWeapon || actor == "vehicle")
 			return true;
 
-		const rate = SPACE1889Helper.getAutoReloadRate(weapon);
+		if (weapon.system.ammunition.remainingRounds > 0)
+			return true;
 
-		if (rate == 0)
-			return weapon.system.ammunition.remainingRounds > 0;
-
-		// ToDo Ladezustand bei raten kleiner 1 prüfen
+		if (weapon.system.ammunition.autoReloadRate == 0)
+			return false;
 
 		let currentAmmo = weapon.system.ammunition.ammos.find(x => x._id == weapon.system.ammunition.currentItemId);
 		if (!currentAmmo || currentAmmo.system.quantity <= 0)
 			return false;
-		return true;
+
+		const isInstantReload = SPACE1889Helper.getTalentLevel(actor, "schnellladen") > 0
+		let autoReloadNeededLoadActions = Math.round(1 / ((isInstantReload ? 2 : 1) * weapon.system.ammunition.autoReloadRate)) - 1;	
+		if (weapon.system.ammunition.usedLoadingActions >= autoReloadNeededLoadActions)
+			return true;
+
+		return false;
 	}
 
 	static async useWeapon(weapon, actor)
 	{
-		const isRangeWeapon = SPACE1889Helper.isRangeWeapon(weapon);
-		if (!isRangeWeapon)
-			return true;
+		if (!weapon.system.isRangeWeapon || actor =="vehicle")
+			return "";
 
-		const rate = SPACE1889Helper.getAutoReloadRate(weapon);
-
-		if (rate == 0)
+		if (weapon.system.ammunition.autoReloadRate == 0)
 		{
 			if (weapon.system.ammunition.remainingRounds <= 0)
-				return false;
+				return game.i18n.localize("SPACE1889.AmmunitionCanNotFireOutOfAmmo");
 
-			actor.updateEmbeddedDocuments("Item", [{ _id: weapon._id, "system.ammunition.remainingRounds": weapon.system.ammunition.remainingRounds - 1 }]);
-			return true;
+			await actor.updateEmbeddedDocuments("Item", [{ _id: weapon._id, "system.ammunition.remainingRounds": weapon.system.ammunition.remainingRounds - 1 }]);
+			return "";
 		}
 
-		// ToDo Ladezustand bei raten kleiner 1 prüfen
-
-		let currentAmmo = weapon.system.ammunition.ammos.find(x => x._id == weapon.system.ammunition.currentItemId);
-
-		if (!currentAmmo || currentAmmo.system.quantity <= 0)
+		if (weapon.system.ammunition.remainingRounds > 0)
 		{
-			ui.notifications.info("keine Munition zum Benutzen der Waffe vorhanden"/*game.i18n.localize("SPACE1889.AmmunitionCanNotReload")*/);
-			return false;
+			await actor.updateEmbeddedDocuments("Item", [{ _id: weapon._id, "system.ammunition.remainingRounds": weapon.system.ammunition.remainingRounds - 1 }]);
+			return "";
 		}
 
-		actor.updateEmbeddedDocuments("Item", [{ _id: currentAmmo._id, "system.quantity": currentAmmo.system.quantity - 1 }]);
-		return true;
+
+		if (SPACE1889Helper.canDoUseWeapon(weapon, actor))
+		{
+			const chatInfo = await SPACE1889Helper.reloadWeapon(weapon, actor, true);
+			if (weapon.system.ammunition.remainingRounds > 0)
+			{
+				await actor.updateEmbeddedDocuments("Item", [{ _id: weapon._id, "system.ammunition.remainingRounds": weapon.system.ammunition.remainingRounds - 1 }]);
+				return chatInfo;
+			}
+		}
+
+		return 	game.i18n.localize("SPACE1889.AmmunitionCanNotReload");
 	}
 
 	static getAutoReloadRate(weapon)
@@ -795,7 +829,7 @@ export default class SPACE1889Helper
 
 		let parts = weapon.system.rateOfFire.split("/");
 				
-		if (parts.length = 1)
+		if (parts.length == 1)
 		{
 			let rate = parseInt(parts[0]);
 			if (rate > 0)
@@ -803,7 +837,7 @@ export default class SPACE1889Helper
 			return 0;
 		}
 
-		if (parts.length = 2)
+		if (parts.length == 2)
 		{
 			let numerator = parseInt(parts[0]);
 			let denominator = parseInt(parts[1]);

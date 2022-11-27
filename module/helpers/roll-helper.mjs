@@ -148,7 +148,7 @@ export default class SPACE1889RollHelper
 	static async rollSubSpecial(item, actor, dieCount, showDialog, titelInfo, withExtraInfo = false)
 	{
 		const isWeapon = item.type == "weapon";
-		if (isWeapon && !SPACE1889Helper.canDoUseWeapon(item))
+		if (isWeapon && !SPACE1889Helper.canDoUseWeapon(item, actor))
 		{
 			ui.notifications.info(game.i18n.localize("SPACE1889.AmmunitionCanNotFireOutOfAmmo"));
 			return;
@@ -230,19 +230,19 @@ export default class SPACE1889RollHelper
 				let anzahl = input ? parseInt(input) : 0;
 				toolTipInfo = anzahl == 0 ? "" : game.i18n.format("SPACE1889.ChatDistanceMod", { mod: SPACE1889Helper.getSignedStringFromNumber(anzahl) }); 
 				anzahl += diceCount;
-				const chatData = await getChatData(anzahl);
-				await SPACE1889Helper.useWeapon(item, actor);
+				const useWeaponChatInfo = await SPACE1889Helper.useWeapon(item, actor);
+				const chatData = await getChatData(anzahl, useWeaponChatInfo);
 				ChatMessage.create(chatData, {});
 			}
 		}
 		else
 		{
-			const chatData = await getChatData(dieCount);
-			await SPACE1889Helper.useWeapon(item, actor);
+			const useWeaponChatInfo = await SPACE1889Helper.useWeapon(item, actor);
+			const chatData = await getChatData(dieCount, useWeaponChatInfo);
 			ChatMessage.create(chatData, {});
 		}
 
-		async function getChatData(wurfelAnzahl)
+		async function getChatData(wurfelAnzahl, useWeaponChatInfo)
 		{
 			const rollWithHtml = await SPACE1889RollHelper.createInlineRollWithHtml(Math.max(0, wurfelAnzahl), titelInfo, toolTipInfo);
 			let weapon = undefined;
@@ -279,6 +279,8 @@ export default class SPACE1889RollHelper
 
 			if (withExtraInfo)
 				messageContent += `${extraInfo} <br>`;
+			if (useWeaponChatInfo != "")
+				messageContent += `${useWeaponChatInfo} <br>`;
 			messageContent += `${rollWithHtml.html} <br>`;
 
 			if (addAutoDefense && targetId && targetId.length > 0)

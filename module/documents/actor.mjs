@@ -583,6 +583,8 @@ export class Space1889Actor extends Actor
 					weapon.system.ammunition.loadStateDisplay = game.i18n.localize("SPACE1889.InfoReloadPart");
 				else
 					weapon.system.ammunition.loadStateDisplay = game.i18n.localize("SPACE1889.InfoReload");
+
+				weapon.system.ammunition.autoReloadRate = SPACE1889Helper.getAutoReloadRate(weapon);
 			}
 
 			if (weapon.system.skillId == "none" && weapon.system.isAreaDamage)
@@ -642,7 +644,7 @@ export class Space1889Actor extends Actor
 			weapon.system.ammunition.rangeModFactor = currentAmmo.system.rangeModFactor;
 			weapon.system.ammunition.damageType = currentAmmo.system.damageType;
 			weapon.system.ammunition.isShotgunLike = currentAmmo.system.isConeAttack;
-			weapon.system.ammunition.display = currentAmmo.name;
+			weapon.system.ammunition.display = "(" + currentAmmo.system.quantity.toString() + "x) " + currentAmmo.name;
 		}
 		else
 			weapon.system.ammunition.currentItemId = "";
