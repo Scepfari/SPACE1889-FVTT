@@ -561,9 +561,21 @@ export default class SPACE1889Helper
 				item?.flags?.core?.sourceId == 'Compendium.space1889.waffen.X8WKdO6DPzJAvxvW')
 				isPistol = true;
 		}
-
-		let isGun = !isPistol && item.system.specializationId != "schrotgewehr";
+		
+		let isShotgun = item.system.specializationId == "schrotgewehr";
+		let isGun = !isPistol && !isShotgun;
 		let range = item.system.calculatedRange;
+		let shotgunMalus = 0;
+
+		if (isShotgun)
+		{
+			let currentAmmo = item.system.ammunition.ammos.find(x => x._id == item.system.ammunition.currentItemId);
+			if (!currentAmmo || currentAmmo?.system?.isConeAttack)
+			{
+				shotgunMalus = Math.floor(distance / range) * (-1);
+			}
+			
+		}
 
 		if (actor != undefined)
 		{
@@ -577,12 +589,12 @@ export default class SPACE1889Helper
 			return isPistol ? 1 : (isGun ? -1 : 0);
 		}
 		if (distance <= range)
-			return 0;
+			return shotgunMalus;
 		if (distance <= (2 * range))
-			return -2;
+			return shotgunMalus - 2;
 		if (distance <= (4 * range))
-			return -4;
-		return -8;
+			return shotgunMalus - 4;
+		return shotgunMalus - 8;
 	}
 
 	static replaceCommaWithPoint(text)
@@ -615,7 +627,7 @@ export default class SPACE1889Helper
 	static getAmmunitionCapacityType(weapon)
 	{
 		let type = weapon.system.capacityType;
-		if (type == "revolver" || type == "intern")
+		if (type == "revolver" || type == "internal")
 			return "default";
 			
 		return type;
