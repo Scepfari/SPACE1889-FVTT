@@ -1,0 +1,32 @@
+{{#if system.armors}}
+<ol class="items-list ">
+	<li class="item flexrow items-header-height40">
+		<div class="item-name item-height50px">{{localize "SPACE1889.ArmorPl"}}</div>
+		<div title='{{localize "SPACE1889.DefenseBonus"}}' class="items-name item-max-with60px">{{localize "SPACE1889.DefenseBonus"}}</div>
+		<div title='{{localize "SPACE1889.DexPenalty"}}' class="items-name item-max-with40px ">{{localize "SPACE1889.DexPenalty"}}</div>
+		<div title='{{localize "SPACE1889.Weight"}}  {{localize "SPACE1889.Mod"}}' class="items-name item-max-with60px ">{{localize "SPACE1889.Weight"}}</div>
+		<div title='{{localize "SPACE1889.StorageLocation"}}' class="items-name item-max-with40px ">{{localize "SPACE1889.StorageLocation"}}</div>
+		<div class="item-controls item-max-with60px">
+			<a class="item-control item-create item-max-with60px" title='{{localize "SPACE1889.CreateItem"}}' data-type="armor"><i class="fas fa-plus"></i> Add item</a>
+		</div>
+	</li>
+	{{#each system.armors as |item id|}}
+	<li class="item row-section flexrow" data-item-id="{{item._id}}">
+		<div class="item-name">
+			<h4 for="" class="rollable" data-roll-type="item" data-label="{{item.name}}">{{item.system.label}}</h4>
+		</div>
+		<label class="items-list item-max-with60px">{{item.system.defenseBonus}}</label>
+		<label class="items-list item-max-with40px">{{item.system.dexPenalty}}</label>
+		<label class="items-list item-max-with60px">{{item.system.weight}}kg</label>
+		<div class="items-list item-max-with40px">
+			<a title='{{item.system.locationLong}}' class="location-click">{{item.system.display}}</a>
+		</div>
+		<div class="item-controls item-max-with60px">
+			<a class="item-control item-edit" title="Edit Item"><i class="fas fa-edit"></i></a>
+			<a class="item-control item-delete" title="Delete Item"><i class="fas fa-trash"></i></a>
+		</div>
+	</li>
+	{{/each}}
+
+</ol>
+{{/if}}
