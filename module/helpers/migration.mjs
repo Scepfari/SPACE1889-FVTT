@@ -9,6 +9,7 @@ export class Space1889Migration
 		{
 			await this.fixEisenschaedel(lastUsedVersion);
 			await this.fixVolleAbwehr(lastUsedVersion);
+			await this.updateAmmunition(lastUsedVersion);
 			await game.settings.set("space1889", "lastUsedSystemVersion", currentVersion);
 		}
 		if (game.user.isGM)
@@ -45,6 +46,53 @@ export class Space1889Migration
 			{
 				await actor.updateEmbeddedDocuments("Item", [{ _id: talent._id, "system.bonus": 1 }]);
 				console.log("fix item values: " + talent.name + "(_id=" + talent._id + ")");
+			}
+		}
+	}
+
+	static async updateAmmunition(lastUsedVersion)
+	{
+		const lastNonFixVersion = "1.2.1";
+		if (isNewerVersion(lastUsedVersion, lastNonFixVersion) || !game.user.isGM)
+			return;
+
+		const packWeapons = await game.packs.get("space1889.waffen").getDocuments();
+
+		// setzen des Ladezustandes aller Fernkampfwaffen
+		for (const scene of game.scenes)
+		{
+			for (let token of scene.tokens)
+			{
+				if (token.actorLink || token.actor == undefined || token.actor.type == "vehicle")
+					continue;
+
+				await this.setRemainingRoundsToMaxCapacity(token.actor, packWeapons);
+			}
+		}
+		for (let actor of game.actors)
+		{
+			if (actor.type == "vehicle")
+				continue;
+
+			await this.setRemainingRoundsToMaxCapacity(actor, packWeapons);
+		}
+		
+	}
+
+	static async setRemainingRoundsToMaxCapacity(actor, packWeapons)
+	{
+		for (let weapon of actor.system.weapons)
+		{
+			if (!weapon.system.isRangeWeapon)
+				continue;
+
+			if (weapon.system.capacity != null)
+				await actor.updateEmbeddedDocuments("Item", [{ _id: weapon._id, "system.ammunition.remainingRounds": weapon.system.capacity }]);
+			else
+			{
+				const packWeapon = packWeapons.find(x => x.system.id == weapon.system.id);
+				if (packWeapon)
+					await actor.updateEmbeddedDocuments("Item", [{ _id: weapon._id, "system.ammunition.remainingRounds": packWeapon.system.capacity, "system.capacity": packWeapon.system.capacity, "system.capacityType": packWeapon.system.capacityType }]);
 			}
 		}
 	}
