@@ -550,7 +550,7 @@ export default class SPACE1889Helper
 
 	static getDistancePenalty(item, distance, actor = undefined)
 	{
-		if (item.type != "weapon")
+		if (item.type != "weapon" || !item.system.isRangeWeapon)
 			return 0;
 
 		let isPistol = item.system.specializationId == "pistole";

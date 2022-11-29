@@ -190,7 +190,7 @@ export default class SPACE1889RollHelper
 					distanceInfo.xGridDistance <= 1 && distanceInfo.yGridDistance <= 1)
 					distanceInfo.distance = closeCombatRange;
 
-				defaultMod = SPACE1889Helper.getDistancePenalty(item, distanceInfo.distance, actor);
+				defaultMod = isRangedCombat ? SPACE1889Helper.getDistancePenalty(item, distanceInfo.distance, actor) : 0;
 				dieCount += defaultMod;
 				if (defaultMod != 0)
 					toolTipInfo = game.i18n.format("SPACE1889.ChatDistanceMod", { mod: SPACE1889Helper.getSignedStringFromNumber(defaultMod) });
