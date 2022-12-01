@@ -645,6 +645,7 @@ export class Space1889Actor extends Actor
 			weapon.system.ammunition.damageType = currentAmmo.system.damageType;
 			weapon.system.ammunition.isShotgunLike = currentAmmo.system.isConeAttack;
 			weapon.system.ammunition.display = "(" + currentAmmo.system.quantity.toString() + "x) " + currentAmmo.name;
+			weapon.system.ammunition.name = currentAmmo.name;
 		}
 		else
 			weapon.system.ammunition.currentItemId = "";

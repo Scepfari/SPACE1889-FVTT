@@ -255,7 +255,13 @@ export default class SPACE1889RollHelper
 				weaponDamageType = weapon.system.damageType
 			}
 
-			let messageContent = `<div><h2>${item.system.label}</h2></div>`;
+			let abbrDamageType = item.system.damageTypeDisplay ? "(" + item.system.damageTypeDisplay + ")" : "";
+
+			let messageContent = `<div><h2>${item.system.label} ${abbrDamageType}</h2></div>`;
+
+			if (item.system.ammunition?.name)
+				messageContent += `<small>${item.system.ammunition.name}</small><br>`;
+
 			let reducedDefense = "";
 			let areaDamage = "0";
 			if (item.system.isAreaDamage && actor.type != 'vehicle')
