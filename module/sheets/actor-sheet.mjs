@@ -357,7 +357,7 @@ export class Space1889ActorSheet extends ActorSheet {
 		{
 			const itemId = this._getItemId(ev);
 			const item = this.actor.items.get(itemId);
-			if (ev?.shiftKey && ev?.ctrlKey)
+			if (ev.button == 2 )
 				SPACE1889Helper.unloadWeapon(item, this.actor);
 			else
 				SPACE1889Helper.reloadWeapon(item, this.actor);
