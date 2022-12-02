@@ -117,6 +117,7 @@
 
 	<li class="item flexrow items-header">
 		<label class="resource-label">{{localize "SPACE1889.Ammunition"}}</label>
+		<label class="resource-label">{{localize "SPACE1889.Caliber"}}</label>
 		<label class="resource-label">{{localize "SPACE1889.StorageLocation"}}</label>
 	</li>
 	<li class="item flex-group-center flexrow">
@@ -131,7 +132,11 @@
 			{{/each}}
 			{{/select}}
 		</select>
-
+		
+		<div class="resource-content flex-center flex-between">
+			<input type="text" name="system.ammunition.caliber" value="{{system.ammunition.caliber}}" />
+		</div>
+		
 		<select name="system.location" data-dtype="String">
 			{{#select system.location}}
 			{{#each system.storageLocations as |ch char|}}
