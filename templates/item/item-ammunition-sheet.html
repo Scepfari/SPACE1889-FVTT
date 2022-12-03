@@ -8,14 +8,14 @@
 	</header>
 
 	<li class="item flexrow items-header">
-		<label class="resource-label">{{localize "SPACE1889.Quantity"}}</label>
+		<label class="resource-label">{{localize "SPACE1889.Caliber"}}</label>
 		<label class="resource-label">{{localize "SPACE1889.AmmunitionType"}}</label>
 		<label class="resource-label">{{localize "SPACE1889.CapacityType"}}</label>
 		<label class="resource-label">{{localize "SPACE1889.Capacity"}}</label>
 	</li>
 	<li class="item flex-group-center flexrow">
 		<div class="resource-content flex-center flex-between">
-			<input type="text" name="system.quantity" value="{{system.quantity}}" data-dtype="Number" />
+			<input type="text" name="system.caliber" value="{{system.caliber}}" />
 		</div>
 		<select name="system.type" system-dtype="String">
 			{{#select system.type}}
@@ -65,11 +65,15 @@
 
 
 	<li class="item flexrow items-header">
+		<label class="resource-label">{{localize "SPACE1889.Quantity"}}</label>
 		<label class="resource-label">{{localize "SPACE1889.Weight"}}[kg]</label>
 		<label class="resource-label">{{localize "SPACE1889.Price"}}</label>
 		<label class="resource-label">{{localize "SPACE1889.StorageLocation"}}</label>
 	</li>
 	<li class="item flex-group-center flexrow">
+		<div class="resource-content flex-center flex-between">
+			<input type="text" name="system.quantity" value="{{system.quantity}}" data-dtype="Number" />
+		</div>
 		<div class="resource-content flex-center flex-between">
 			<input type="text" name="system.weight" value="{{system.weight}}" data-dtype="Number" />
 		</div>

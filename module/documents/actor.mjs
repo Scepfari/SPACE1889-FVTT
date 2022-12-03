@@ -1197,7 +1197,7 @@ export class Space1889Actor extends Actor
 		let itemWeight = 0;
 		for (let item of actor.items)
 		{
-			if (item.type == "item")
+			if (item.type == "item" || item.type == "ammunition")
 				itemWeight = item.system.weight * item.system.quantity;
 			else if (item.type == "weapon" || item.type == "armor")
 				itemWeight = item.system.weight;
