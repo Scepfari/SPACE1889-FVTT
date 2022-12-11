@@ -9,7 +9,6 @@
 		</div>
 	</li>
 	{{#each system.resources as |item id|}}
-	{{log item}}
 		<li class="item flexrow" data-item-id="{{item._id}}">
 			<div class="item-name">
 				<h4 class="rollable" data-roll-type="item" title="{{localize item.system.infoLangId}}">{{item.system.label}} {{#if (eq item.system.isBase true)}} ({{localize "SPACE1889.BaseResource"}}) {{/if}}</h4>
