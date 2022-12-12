@@ -37,6 +37,14 @@
 			</div>
 		</div>
 		{{/if}}
+		{{#if (eq system.skillId 'schusswaffen')}}
+		<div class="resource">
+			<label class="resource-label">{{ localize "SPACE1889.TelescopicSight"}}</label>
+			<div class="resource-content flex-center flex-between">
+				<input type="checkbox" name="system.hasTelescopicSight" {{checked system.hasTelescopicSight}} />
+			</div>
+		</div>
+		{{/if}}
 
 	</li>
 

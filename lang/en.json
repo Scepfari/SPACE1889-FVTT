@@ -134,6 +134,7 @@
 	"SPACE1889.Speed": "Speed",
 	"SPACE1889.AreaDamage": "Area Damage",
 	"SPACE1889.Ammunition": "Ammunition",
+	"SPACE1889.TelescopicSight": "Telescopic Sight",
 	"SPACE1889.NonLethal": "Non Lethal",
 	"SPACE1889.Lethal": "Lethal",
 	"SPACE1889.Controls": "Controls",
@@ -2564,6 +2565,8 @@
 	"SPACE1889.AmmunitionCanNotFireOutOfAmmo": "The weapon cannot be used because it is not loaded or there is no ammunition to load it.",
 	"SPACE1889.AmmunitionIsAlreadyLoaded": "The weapon is already ready for use.",
 	"SPACE1889.Caliber": "Caliber",
+	"SPACE1889.WeaponRangeInfo": "resulting range: {range}m, ammo used: {ammoName}",
+	"SPACE1889.WeaponRangeInfo2": "resulting range: {range}m, required ammo type: {ammo}",
 
 	"SPACE1889.ArmorKettenpanzer": "Chainmail",
 	"SPACE1889.ArmorLederruestung": "Leather armor",

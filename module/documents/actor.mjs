@@ -577,6 +577,15 @@ export class Space1889Actor extends Actor
 				if (weapon.system.ammunition.rangeModFactor > 0)
 					weapon.system.calculatedRange *= weapon.system.ammunition.rangeModFactor;
 
+				weapon.system.coneRange = weapon.system.calculatedRange; // wird weder von Talenten noch von Zielfernrohren beeinflusst
+				if ((weapon.system.specializationId == "schrotgewehr" && weapon.system.ammunition.currentItemId == "") || weapon.system.ammunition.isShotgunLike)
+					weapon.system.templateConeAngle = SPACE1889Helper.getConeAngle(weapon);
+
+				if (weapon.system.hasTelescopicSight && weapon.system.skillId == "schusswaffen")
+					weapon.system.calculatedRange *= 2;
+				if (SPACE1889Helper.getTalentLevel(actor, "scharfschuetze") > 0)
+					weapon.system.calculatedRange *= 2;
+
 				if (weapon.system.capacity == weapon.system.ammunition.remainingRounds)
 					weapon.system.ammunition.loadStateDisplay = game.i18n.localize("SPACE1889.InfoWeaponIsReady");
 				else if (weapon.system.ammunition.remainingRounds > 0)
@@ -585,6 +594,16 @@ export class Space1889Actor extends Actor
 					weapon.system.ammunition.loadStateDisplay = game.i18n.localize("SPACE1889.InfoReload");
 
 				weapon.system.ammunition.autoReloadRate = SPACE1889Helper.getAutoReloadRate(weapon);
+
+				if (weapon.system.ammunition.currentItemId != "")
+					weapon.system.rangeInfo = game.i18n.format("SPACE1889.WeaponRangeInfo", { range: weapon.system.calculatedRange, ammoName: weapon.system.ammunition.name });
+				else
+				{
+					let ammoType = game.i18n.localize(CONFIG.SPACE1889.weaponAmmunitionTypes[weapon.system.ammunition.type]);
+					if (weapon.system.ammunition.caliber != "")
+						ammoType += " (" + weapon.system.ammunition.caliber + ")";
+					weapon.system.rangeInfo = game.i18n.format("SPACE1889.WeaponRangeInfo2", { range: weapon.system.calculatedRange, ammo: ammoType });
+				}
 			}
 
 			if (weapon.system.skillId == "none" && weapon.system.isAreaDamage)
@@ -628,9 +647,8 @@ export class Space1889Actor extends Actor
 		let list = [];
 		for (let ammo of actor.system.ammunitions)
 		{
-			// ToDo: //&& weapon.system.ammunition.caliber == ammo.system.caliber
 			let capacityType = SPACE1889Helper.getAmmunitionCapacityType(weapon);
-			if (weapon.system.ammunition.type == ammo.system.type && capacityType == ammo.system.capacityType)
+			if (weapon.system.ammunition.type == ammo.system.type && capacityType == ammo.system.capacityType && weapon.system.ammunition.caliber == ammo.system.caliber)
 				list.push(ammo);
 		}
 

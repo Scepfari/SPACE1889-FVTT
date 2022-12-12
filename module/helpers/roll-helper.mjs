@@ -399,7 +399,6 @@ export default class SPACE1889RollHelper
 
 			if (item.system.description != "")
 				desc += "<br>" + game.i18n.localize("SPACE1889.Description") + ": " + jQuery(item.system.description).text();
-			console.log(item.system.description);
 		}
 		else if (item.type == "armor")
 		{

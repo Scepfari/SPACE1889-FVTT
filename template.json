@@ -285,6 +285,7 @@
 			"strengthThreshold": 0,
 			"weight": 0,
 			"range": "",
+			"hasTelescopicSight": false,
 			"capacity": 1,
 			"capacityType": "default",
 			"rateOfFire": "",
@@ -299,7 +300,7 @@
 			"ammunitionType": "",
 			"ammunition": {
 				"currentItemId": "",
-				"type": "",
+				"type": "default",
 				"caliber": "",
 				"remainingRounds": 0,
 				"usedLoadingActions": 0

@@ -572,16 +572,8 @@ export default class SPACE1889Helper
 			let currentAmmo = item.system.ammunition.ammos.find(x => x._id == item.system.ammunition.currentItemId);
 			if (!currentAmmo || currentAmmo?.system?.isConeAttack)
 			{
-				shotgunMalus = Math.floor(distance / range) * (-1);
+				shotgunMalus = Math.floor(distance / item.system.coneRange) * (-1);
 			}
-			
-		}
-
-		if (actor != undefined)
-		{
-			let level = this.getTalentLevel(actor, "scharfschuetze");
-			if (level > 0)
-				range *= 2;
 		}
 
 		if (distance <= 1.5)
@@ -638,7 +630,7 @@ export default class SPACE1889Helper
 		if (!item || item.type != "weapon" || item.system.specializationId != "schrotgewehr")
 			return 0;
 
-		const range = item.system.calculatedRange;
+		const range = item.system.coneRange;
 		if (range <= 0.0)
 			return 0;
 

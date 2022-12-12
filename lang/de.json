@@ -134,6 +134,7 @@
 	"SPACE1889.Speed": "Tempo",
 	"SPACE1889.AreaDamage": "Flächenschaden",
 	"SPACE1889.Ammunition": "Munition",
+	"SPACE1889.TelescopicSight": "Zielfernrohr",
 	"SPACE1889.NonLethal": "nicht tödlich",
 	"SPACE1889.Lethal": "tödlich",
 	"SPACE1889.Controls": "Steuerung",
@@ -2564,6 +2565,8 @@
 	"SPACE1889.AmmunitionCanNotFireOutOfAmmo": "Die Waffe kann nicht genutzt werden, da sie nicht geladen ist bzw. keine Munition zum Laden vorhanden ist.",
 	"SPACE1889.AmmunitionIsAlreadyLoaded": "Die Waffe ist schon einsatzbereit, mehr geht nicht.",
 	"SPACE1889.Caliber": "Kaliber",
+	"SPACE1889.WeaponRangeInfo": "resultierende Reichweite: {range}m, verwendete Munition: {ammoName}",
+	"SPACE1889.WeaponRangeInfo2": "resultierende Reichweite: {range}m, benötigter Munitionstyp: {ammo}",
 
 	"SPACE1889.ArmorKettenpanzer": "Kettenpanzer",
 	"SPACE1889.ArmorLederruestung": "Lederrüstung",
