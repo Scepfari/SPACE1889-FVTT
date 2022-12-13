@@ -853,4 +853,159 @@ export default class SPACE1889Helper
 		}
 		return 0;
 	}
+
+	static async createAmmo()
+	{
+		let tokens = canvas.tokens.controlled;
+
+		if (tokens.length == 0)
+		{
+			const info = game.i18n.localize("SPACE1889.NoTokensSelected");
+			ui.notifications.info(info);
+			return;
+		}
+
+		let actorList = [];
+		for (const token of tokens)
+		{
+			actorList.push(token.document._actor);
+		}
+		this.updateWeaponAndCreateAmmo(actorList);
+	}
+
+	static async updateWeaponAndCreateAmmo(actorList)
+	{
+		if (!actorList || actorList.length == 0)
+			return;
+	
+		const pack = game.packs.get("space1889.waffen");
+		let packWeapons = await pack.getDocuments();
+
+		const muPack = game.packs.get("space1889.munition");
+		const packAmmunition = await muPack.getDocuments();
+
+		for (const actor of actorList)
+		{
+			this.createAmmoForActor(actor, packWeapons, packAmmunition);
+		}
+	}
+
+	static async createAmmoForActor(actor, packWeapons, packAmmunition)
+	{
+		if (!actor)
+			return;
+
+		if ((actor.type == "character" || actor.type == "npc") && actor.system.ammunitions?.length == 0)
+		{
+			await this.updateActorWeapons(actor, packWeapons);
+
+			let itemsToAdd = [];
+			let weaponsWithAmmo = [];
+			for (const weapon of actor.system.weapons)
+			{
+				if (weapon.system.isRangeWeapon)
+				{
+					const ammu = await this.GetAmmunition(weapon, packAmmunition);
+
+					if (ammu)
+					{
+						itemsToAdd.push(ammu.toObject());
+						weaponsWithAmmo.push(weapon);
+						console.log("Add ammunition: " + ammu.name);
+					}
+					else
+						console.log("no ammunition for " + weapon.name);
+				}
+			}
+			if (itemsToAdd.length > 0)
+			{
+				const createdAmmo = await actor.createEmbeddedDocuments("Item", itemsToAdd);
+				if (weaponsWithAmmo.length == createdAmmo.length)
+				{
+					for (let i = 0; i < weaponsWithAmmo.length; ++i)
+						await actor.updateEmbeddedDocuments("Item", [{ _id: weaponsWithAmmo[i]._id, "system.ammunition.currentItemId": createdAmmo[i]._id }]);
+				}
+			}
+		}
+	}
+
+	static async GetAmmunition(weapon, packAmmunition)
+	{
+		if (!packAmmunition)
+			return undefined;
+
+		if (weapon.system.specializationId == "schrotgewehr")
+		{
+			const ammo = packAmmunition.find(e => e.system.type == weapon.system.ammunition.type && e.system.damageType == "lethal" && e.system.isConeAttack && e.system.caliber == weapon.system.ammunition.caliber && e.system.capacityType == this.getAmmunitionCapacityType(weapon));
+			if (ammo != undefined)
+				return ammo;
+		}
+
+		if (weapon.system.ammunition.type == "catridges")
+			return packAmmunition.find(e => e.system.type == weapon.system.ammunition.type && e.system.caliber == weapon.system.ammunition.caliber && e.system.capacityType == this.getAmmunitionCapacityType(weapon));
+
+		if (weapon.system.ammunition.type == "bullets")
+		{
+			if (weapon.system.ammunition.caliber != "")
+			{
+				const bullet = packAmmunition.find(e => e.system.type == weapon.system.ammunition.type && e.system.caliber == weapon.system.ammunition.caliber);
+				if (bullet)
+					return bullet;
+			}
+
+			let bulletId = "";
+			switch(weapon.system.specializationId)
+			{
+				case "pistole":
+					bulletId = "HPdjoEqRPSogrqrA";
+					break;
+				case "kanone":
+					bulletId = "b8NJLUYQPPR0Dxa6";
+					break;
+				default:
+					bulletId = "wJcXp18HZEIE15J8";
+					break;
+			}
+			return packAmmunition.find(e => e._id == bulletId);
+		}
+
+		return packAmmunition.find(e => e.system.type == weapon.system.ammunition.type && e.system.capacityType == this.getAmmunitionCapacityType(weapon));
+	}
+
+	static getIdFromUuid(uuid)
+	{
+		let result = "";
+		let parts = uuid.split(".");
+		if (parts.length > 0)
+			result = parts[parts.length - 1];
+		return result;
+	}
+
+	static async updateActorWeapons(actor, packWeapons)
+	{
+		if (!actor)
+			return;
+		if (actor.type == "character" || actor.type == "npc")
+		{
+			for (const weapon of actor.system.weapons)
+			{
+				if (weapon.system.isRangeWeapon && (weapon.system.ammunition.type == "default" || weapon.system.ammunition.type == ""))
+				{
+					const sourceId = weapon.flags.core?.sourceId;
+					if (sourceId)
+					{
+						let source = packWeapons.find(e => e._id == this.getIdFromUuid(sourceId));
+						if (source)
+						{
+							const capacity = Number(weapon.system.capacity) == 0 ? source.system.capacity : weapon.system.capacity;
+							await actor.updateEmbeddedDocuments("Item", [{ _id: weapon._id, "system.ammunition.type": source.system.ammunition.type, "system.ammunition.caliber": source.system.ammunition.caliber, "system.ammunition.remainingRounds": source.system.capacity, "system.capacity": capacity, "system.capacityType": source.system.capacityType }]);
+							console.log("update weapon " + weapon.name + " from actor/token " + actor.name); 
+						}
+						else if (Number(weapon.system.capacity) > 0)
+							await actor.updateEmbeddedDocuments("Item", [{ _id: weapon._id, "system.ammunition.remainingRounds": weapon.system.capacity }]);
+					}
+				}
+			}
+		}
+	}
 }

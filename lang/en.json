@@ -2695,9 +2695,10 @@
 	"SPACE1889.AutoDefenseAttackMiss": "The {skill} attack of {attackerName} was ineffective.",
 	"SPACE1889.AreaDamageWeaponUse": "The attack is made only with the weapon skill against the Active Defense. If successful, the target suffers the weapon damage (modified by target size if necessary).",
 	"SPACE1889.NoTokenPermission": "You do not have the permissions to perform the action, only the following people can: {player}",
+	"SPACE1889.NoTokensSelected": "No tokens selected",
 	"SPACE1889.NotInRange": "You must stand next to the target to attack it without a ranged weapon",
-	"SPACE1889.ChatDistanceMod": "Enfernungsmodifikator: {mod}",
-	"SPACE1889.ChatModifier": "Modifikator: {mod}",
+	"SPACE1889.ChatDistanceMod": "Distance modifier: {mod}",
+	"SPACE1889.ChatModifier": "Modifier: {mod}",
 	"SPACE1889.ChatMultiAttackDefenseModifier": "Multi-attack defense modifier: {mod}",
 
 	"SPACE1889.Recoil": "Recoil",

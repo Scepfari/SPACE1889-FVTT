@@ -2695,6 +2695,7 @@
 	"SPACE1889.AutoDefenseAttackMiss": "Der {skill} Angriff von {attackerName} war wirkungslos.",
 	"SPACE1889.AreaDamageWeaponUse": "Der Angriff erfolgt nur mit der Waffenfertigkeit gegen die Aktive Abwehr. Bei Erfolg erleidet das Ziel den Waffenschaden (ggf. modifiziert durch Zielgröße)",
 	"SPACE1889.NoTokenPermission": "Du besitzt nicht die Rechte um die Aktion auszuführen, das können nur folgende Personen: {player}",
+	"SPACE1889.NoTokensSelected": "Keine Tokens ausgewählt",
 	"SPACE1889.NotInRange": "Du musst neben dem Ziel stehen, um es ohne Fernkampfwaffe anzugreifen",
 	"SPACE1889.ChatDistanceMod": "Enfernungsmodifikator: {mod}",
 	"SPACE1889.ChatModifier": "Modifikator: {mod}",

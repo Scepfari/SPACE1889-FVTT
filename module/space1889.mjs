@@ -90,7 +90,7 @@ Hooks.once("setup", () =>
 
 Hooks.on("chatMessage", (html, content, msg) =>
 {
-	let cmd = content.match(/^\/(help|space1889)/)
+	let cmd = content.match(/^\/(help|space1889|ammo)/)
 	cmd = cmd ? cmd[0] : ""
 	switch (cmd)
 	{
@@ -100,6 +100,9 @@ Hooks.on("chatMessage", (html, content, msg) =>
 			return false;
 		case "/help":
 			SPACE1889Helper.showHelpJournal();
+			return false;
+		case "/ammo":
+			SPACE1889Helper.createAmmo();
 			return false;
 	}
 });

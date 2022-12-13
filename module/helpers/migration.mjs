@@ -1,3 +1,5 @@
+import SPACE1889Helper from "../helpers/helper.mjs";
+
 export class Space1889Migration
 {
 	static async runInitMigrationAction()
@@ -9,7 +11,7 @@ export class Space1889Migration
 		{
 			await this.fixEisenschaedel(lastUsedVersion);
 			await this.fixVolleAbwehr(lastUsedVersion);
-			await this.updateAmmunition(lastUsedVersion);
+			await this.ammunitionIntroduction(lastUsedVersion);
 			await game.settings.set("space1889", "lastUsedSystemVersion", currentVersion);
 		}
 		if (game.user.isGM)
@@ -50,15 +52,13 @@ export class Space1889Migration
 		}
 	}
 
-	static async updateAmmunition(lastUsedVersion)
+	static async ammunitionIntroduction(lastUsedVersion)
 	{
 		const lastNonFixVersion = "1.2.1";
 		if (isNewerVersion(lastUsedVersion, lastNonFixVersion) || !game.user.isGM)
 			return;
 
-		const packWeapons = await game.packs.get("space1889.waffen").getDocuments();
-
-		// setzen des Ladezustandes aller Fernkampfwaffen
+		let actorList = [];
 		for (const scene of game.scenes)
 		{
 			for (let token of scene.tokens)
@@ -66,17 +66,17 @@ export class Space1889Migration
 				if (token.actorLink || token.actor == undefined || token.actor.type == "vehicle")
 					continue;
 
-				await this.setRemainingRoundsToMaxCapacity(token.actor, packWeapons);
+				actorList.push(token.actor);
 			}
 		}
 		for (let actor of game.actors)
 		{
-			if (actor.type == "vehicle")
+			if (actor.type == "vehicle" || actor.type == "creature")
 				continue;
 
-			await this.setRemainingRoundsToMaxCapacity(actor, packWeapons);
+			actorList.push(actor);
 		}
-		
+		await SPACE1889Helper.updateWeaponAndCreateAmmo(actorList);
 	}
 
 	static async setRemainingRoundsToMaxCapacity(actor, packWeapons)
