@@ -161,7 +161,7 @@ export default class SPACE1889RollHelper
 		const diceDesc = game.i18n.localize("SPACE1889.ConfigDice");
 		const isAttackTalent = item.isAttackTalent();
 		const targetId = game.user.targets.first() ? game.user.targets.first().id : "";
-		let addAutoDefense = game.settings.get("space1889", "autoDefense") && (item.type == 'weapon' || isAttackTalent);
+		let addAutoDefense = game.settings.get("space1889", "combatSupport") && (item.type == 'weapon' || isAttackTalent);
 		let defaultMod = 0;
 		if (addAutoDefense && targetId != "")
 		{
@@ -1102,7 +1102,7 @@ export default class SPACE1889RollHelper
 
 	static onAutoDefense(ev)
 	{
-		if (!game.settings.get("space1889", "autoDefense"))
+		if (!game.settings.get("space1889", "combatSupport"))
 		{
 			ui.notifications.info(game.i18n.localize("SPACE1889.NoAutoDefenseInfo"));
 			return;

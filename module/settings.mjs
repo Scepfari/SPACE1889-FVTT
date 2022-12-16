@@ -70,13 +70,13 @@ export const registerSystemSettings = function ()
             type: Boolean
         });
 
-    game.settings.register("space1889", "autoDefense",
+    game.settings.register("space1889", "combatSupport",
         {
-            name: "SPACE1889.ConfigAutoDefense",
-            hint: "SPACE1889.ConfigAutoDefenseInfo",
+            name: "SPACE1889.ConfigCombatSupport",
+            hint: "SPACE1889.ConfigCombatSupportInfo",
             scope: "world",
             config: true,
-            default: "false",
+            default: "true",
             type: Boolean
         }
 	);
