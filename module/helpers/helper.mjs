@@ -1001,9 +1001,9 @@ export default class SPACE1889Helper
 							await actor.updateEmbeddedDocuments("Item", [{ _id: weapon._id, "system.ammunition.type": source.system.ammunition.type, "system.ammunition.caliber": source.system.ammunition.caliber, "system.ammunition.remainingRounds": source.system.capacity, "system.capacity": capacity, "system.capacityType": source.system.capacityType }]);
 							console.log("update weapon " + weapon.name + " from actor/token " + actor.name); 
 						}
-						else if (Number(weapon.system.capacity) > 0)
-							await actor.updateEmbeddedDocuments("Item", [{ _id: weapon._id, "system.ammunition.remainingRounds": weapon.system.capacity }]);
 					}
+					if (Number(weapon.system.capacity) > 0)
+						await actor.updateEmbeddedDocuments("Item", [{ _id: weapon._id, "system.ammunition.remainingRounds": weapon.system.capacity }]);
 				}
 			}
 		}
