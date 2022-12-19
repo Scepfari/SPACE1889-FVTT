@@ -155,11 +155,11 @@ export class Space1889Migration
 	}
 
 
-	static showNewVersionInfo(noUserCheck = false)
+	static showNewVersionInfo(noCheck = false)
 	{
 		const info = game.settings.get("space1889", "newVersionPopup").split("|");
 		const currentVersion = game.system.version;
-		if ((game.user.isGM || noUserCheck) && (isNewerVersion(currentVersion, info[1]) || info[0] > 0))
+		if (noCheck || (game.user.isGM && (isNewerVersion(currentVersion, info[1]) || info[0] > 0)))
 		{
 			let content = game.i18n.localize("SPACE1889.VersionInfo");
 			const understood = game.i18n.localize("SPACE1889.Understood");
