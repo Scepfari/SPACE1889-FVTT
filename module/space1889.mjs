@@ -112,12 +112,25 @@ Hooks.on("chatMessage", (html, content, msg) =>
 
 Hooks.on("renderChatMessage", (app, html, msg) => 
 {
-	// toDo: Buttons bei Bedarf ausblenden
-
 	html.on('click', '.autoDefence', ev =>
 	{
 		SPACE1889RollHelper.onAutoDefense(ev);
 	})
+
+	const hiddenForMe = !game.user.isGM && getProperty(msg.message, `flags.space1889.userHidden`)
+	if (hiddenForMe)
+	{
+		html.find(".autoDefence").remove();
+	}
+
+	const autoDefenceButton = html.find(".autoDefence");
+	if (autoDefenceButton.length)
+	{
+		const tokenId = autoDefenceButton[0].dataset.targetId;
+		if (!SPACE1889Helper.hasTokenOwnership(tokenId))
+			autoDefenceButton.remove();
+	}
+
 });
 
 Hooks.on("canvasReady", function ()
@@ -199,8 +212,21 @@ Hooks.once("ready", async function() {
 	});
 	Space1889Tour.registerTours();
 
-//	const resource = await game.settings.get("core", Combat.CONFIG_SETTING).resource;
-//	await game.settings.set("core", Combat.CONFIG_SETTING, { resource: resource, skipDefeated: true });
+	if (game.user.isGM)
+	{
+		game.socket.on("system.space1889", data =>
+		{
+			switch (data.type)
+			{
+				case "updateMessage":
+					const message = game.messages.get(data.payload.id);
+					message.update(data.payload.updateData);
+					break;
+				default:
+					console.warn(`Unhandled socket data type ${data.type}`)
+			}
+		});
+	}
 });
 
 

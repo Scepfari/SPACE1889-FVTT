@@ -2690,6 +2690,7 @@
 	"SPACE1889.ChatInfoDangerOfDeath": "must stabilize, otherwise 1L damage per round",
 	"SPACE1889.ChatInfoDead": "May be able to be revived with prompt medical attention",
 	"SPACE1889.ChatDistanceInBrackets": "<small>(distance: {distance}{unit})</small>",
+	"SPACE1889.AutoDefense": "Auto Defense",
 	"SPACE1889.NoAutoDefenseInfo": "Combat Support has been turned off in the game settings.",
 	"SPACE1889.NoAutoDefenseCancel": "The Automatic Defense roll was canceled",
 	"SPACE1889.AutoDefenseAttackMiss": "The {skill} attack of {attackerName} was ineffective.",
@@ -2700,6 +2701,7 @@
 	"SPACE1889.ChatDistanceMod": "Distance modifier: {mod}",
 	"SPACE1889.ChatModifier": "Modifier: {mod}",
 	"SPACE1889.ChatMultiAttackDefenseModifier": "Multi-attack defense modifier: {mod}",
+	"SPACE1889.Done": "done",
 
 	"SPACE1889.Recoil": "Recoil",
 	"SPACE1889.Knockdown": "Knockdown",

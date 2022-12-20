@@ -2690,6 +2690,7 @@
 	"SPACE1889.ChatInfoDangerOfDeath": "muss sich stabilisieren, sonst pro Runde 1T Schaden",
 	"SPACE1889.ChatInfoDead": "kann durch schnelle medizinische Hilfe ggf. wiederbelebt werden",
 	"SPACE1889.ChatDistanceInBrackets": "<small>(Entfernung: {distance}{unit})</small>",
+	"SPACE1889.AutoDefense": "Automatische Verteidigung",
 	"SPACE1889.NoAutoDefenseInfo": "Die Kampfunterstützung wurde in den Spieleinstellung abgeschaltet.",
 	"SPACE1889.NoAutoDefenseCancel": "Der Automatische Verteidigungswurf wurde abgebrochen",
 	"SPACE1889.AutoDefenseAttackMiss": "Der {skill} Angriff von {attackerName} war wirkungslos.",
@@ -2700,6 +2701,7 @@
 	"SPACE1889.ChatDistanceMod": "Enfernungsmodifikator: {mod}",
 	"SPACE1889.ChatModifier": "Modifikator: {mod}",
 	"SPACE1889.ChatMultiAttackDefenseModifier": "Mehrfachangriffsverteidigungsmodifikator: {mod}",
+	"SPACE1889.Done": "erledigt",
 
 	"SPACE1889.Recoil": "Rückstoß",
 	"SPACE1889.Knockdown": "Niederschlag",

@@ -290,7 +290,10 @@ export default class SPACE1889RollHelper
 			messageContent += `${rollWithHtml.html} <br>`;
 
 			if (addAutoDefense && targetId && targetId.length > 0)
-				messageContent += `<button class="autoDefence chatButton" data-action="defence" data-actor-id="${actor._id}" data-target-id="${targetId}" data-attack-name="${item.name}" data-attack-successes="${rollWithHtml.roll.total}" data-damage-type="${weaponDamageType}" data-skill-id="${weaponSkill}" data-reduced-defense="${reducedDefense}" data-area-damage="${areaDamage}">Automatische Verteidigung</button>`;
+			{
+				const buttonText = game.i18n.localize("SPACE1889.AutoDefense");
+				messageContent += `<button class="autoDefence chatButton" data-action="defence" data-actor-id="${actor._id}" data-target-id="${targetId}" data-attack-name="${item.name}" data-attack-successes="${rollWithHtml.roll.total}" data-damage-type="${weaponDamageType}" data-skill-id="${weaponSkill}" data-reduced-defense="${reducedDefense}" data-area-damage="${areaDamage}">${buttonText}</button>`;
+			}
 			let chatData =
 			{
 				user: game.user.id,
@@ -1353,6 +1356,29 @@ export default class SPACE1889RollHelper
 				content: game.i18n.format("SPACE1889.AutoDefenseAttackMiss", { attackerName: data.actorName, skill: combatSkill })
 			};
 			ChatMessage.create(chatData, {});
+		}
+
+		const element = $(data.event.currentTarget);
+		if (element)
+		{
+			if (!game.user.isGM)
+				element.fadeOut();
+
+			const id = element.closest(".message").attr("data-message-id");
+			const message = game.messages.get(id);
+			const buttonText = game.i18n.localize("SPACE1889.AutoDefense");
+			let newContent = message.content.replace(buttonText + "</button>", buttonText + " (" + game.i18n.localize("SPACE1889.Done") +  ")</button>");
+
+			game.socket.emit("system.space1889", {
+				type: "updateMessage",
+				payload: {
+					id: id,
+                    updateData: {
+						[`flags.space1889.userHidden`]: true,
+						[`content`]: newContent
+                    }
+				}
+			})
 		}
 	}
 

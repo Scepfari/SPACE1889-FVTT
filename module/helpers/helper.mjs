@@ -1008,4 +1008,23 @@ export default class SPACE1889Helper
 			}
 		}
 	}
+
+	static hasTokenOwnership(tokenId)
+	{
+		if (game.user.isGM)
+			return true;
+
+		if (tokenId == "")
+			return false;
+
+		const token = game.scenes.viewed.tokens.get(tokenId);
+		if (!token)
+			return false;
+
+		const permissions = token._actor.ownership;
+		if ((permissions["default"] && permissions["default"] == 3) || (permissions[game.userId] && permissions[game.userId] == 3))
+			return true;
+
+		return false;
+	}
 }
