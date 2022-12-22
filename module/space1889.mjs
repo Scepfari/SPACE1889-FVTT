@@ -117,7 +117,9 @@ Hooks.on("renderChatMessage", (app, html, msg) =>
 		SPACE1889RollHelper.onAutoDefense(ev);
 	})
 
-	const hiddenForMe = !game.user.isGM && getProperty(msg.message, `flags.space1889.userHidden`)
+	const hideForGM = game.user.isGM && game.settings.get("space1889", "hideAutoDefenseButton");
+
+	const hiddenForMe = (!game.user.isGM || hideForGM) && getProperty(msg.message, `flags.space1889.userHidden`);
 	if (hiddenForMe)
 	{
 		html.find(".autoDefence").remove();

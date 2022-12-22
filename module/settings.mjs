@@ -81,6 +81,17 @@ export const registerSystemSettings = function ()
         }
 	);
 
+	game.settings.register("space1889", "hideAutoDefenseButton",
+		{
+			name: "SPACE1889.ConfigHideAutoDefenseButton",
+			hint: "SPACE1889.ConfigHideAutoDefenseButtonInfo",
+            scope: "world",
+            config: true,
+            default: "false",
+			type: Boolean,
+			requiresReload: true
+		});
+
     game.settings.register("space1889", "usePercentForNpcAndCreatureDamageInfo",
 	    {
             name: "SPACE1889.ConfigUsePercentForNpcAndCreatureDamageInfo",
@@ -151,7 +162,7 @@ export const registerSystemSettings = function ()
 	game.settings.register("space1889", "combatMarkerTransparency", {
 		name: "SPACE1889.ConfigUseCombatMarkerTransparency",
 		hint: "SPACE1889.ConfigUseCombatMarkerTransparencyInfo",
-		scope: "world",
+		scope: "client",
 		config: true,
 		type: Number,
 		range: {
@@ -170,7 +181,7 @@ export const registerSystemSettings = function ()
 	game.settings.register("space1889", "combatMarkerImagePath", {
 		name: "SPACE1889.ConfigUseCombatMarkerImagePath",
 		hint: "SPACE1889.ConfigUseCombatMarkerImagePathInfo",
-		scope: "world",
+		scope: "client",
 		config: true,
 		type: String,
 		default: "systems/space1889/icons/turnmarkers/gear_copper.webp",

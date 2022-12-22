@@ -1365,20 +1365,25 @@ export default class SPACE1889RollHelper
 				element.fadeOut();
 
 			const id = element.closest(".message").attr("data-message-id");
-			const message = game.messages.get(id);
+			let message = game.messages.get(id);
 			const buttonText = game.i18n.localize("SPACE1889.AutoDefense");
-			let newContent = message.content.replace(buttonText + "</button>", buttonText + " (" + game.i18n.localize("SPACE1889.Done") +  ")</button>");
+			let newContent = message.content.replace(buttonText + "</button>", buttonText + " (" + game.i18n.localize("SPACE1889.Done") +  ")</button>");			
 
 			game.socket.emit("system.space1889", {
 				type: "updateMessage",
 				payload: {
 					id: id,
-                    updateData: {
+					updateData: {
 						[`flags.space1889.userHidden`]: true,
 						[`content`]: newContent
-                    }
+					}
 				}
-			})
+			});
+
+			if (game.user.isGM)
+			{
+				message.update({ "content": newContent, "flags.space1889.userHidden" : true });
+			}
 		}
 	}
 

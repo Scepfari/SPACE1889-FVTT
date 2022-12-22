@@ -2656,6 +2656,8 @@
 	"SPACE1889.ConfigOptionalBlockDogeParryRuleInfo": "Ausweichen, Blocken und Parieren als Aktive Abwehr => Abwehr = Passive Abwehr (Konstitution) + Aktive Abwehr (Sportlichkeit, Waffenlos oder Nahkampf)",
 	"SPACE1889.ConfigCombatSupport": "Kampfunterstützung",
 	"SPACE1889.ConfigCombatSupportInfo": "Angriffswürfe werden automatisch mit den korrekten Entfernungsmodifikatoren versehen falls ein Ziel markiert ware. Zusätzlich wird dann im Chat ein Knopf für die Automatische Verteidigung angezeigt. Der Eigner des Ziels kann über den Knopf direkt den Verteidigungswurf ausführen, wobei ggf. resultierender Schaden automatisch zugewiesen wird.",
+	"SPACE1889.ConfigHideAutoDefenseButton": "Ausblenden des Auto Verteidigung Knopfes",
+	"SPACE1889.ConfigHideAutoDefenseButtonInfo": "Nach dem Verwenden des Auto Verteidigung Knopfes, wird diese auch für den SL ausgeblendet",
 	"SPACE1889.ConfigUseCombatTurnMarker": "Aktiviere Kampf Zugmarkierung",
 	"SPACE1889.ConfigUseCombatTurnMarkerInfo": "Aktiviert eine Anzeige, die den Kampfteilnehmer markiert, der gerade am Zug ist",
 	"SPACE1889.ConfigUseCombatMarkerTransparency": "Zug Markierung Durchsichtigkeit",
