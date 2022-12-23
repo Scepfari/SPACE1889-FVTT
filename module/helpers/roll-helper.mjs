@@ -252,7 +252,7 @@ export default class SPACE1889RollHelper
 			{
 				weapon = item;
 				weaponSkill = weapon.system.skillId;
-				weaponDamageType = weapon.system.damageType
+				weaponDamageType = weapon.system.ammunition.damageType ?? weapon.system.damageType;
 			}
 
 			let abbrDamageType = item.system.damageTypeDisplay ? "(" + item.system.damageTypeDisplay + ")" : "";
@@ -276,7 +276,7 @@ export default class SPACE1889RollHelper
 				weapon = SPACE1889RollHelper.getWeaponFromTalent(actor, item);
 				messageContent += `<small>${weapon ? weapon.name : game.i18n.localize("SPACE1889.SkillWaffenlos")}</small><br>`;
 				weaponSkill = weapon ? weapon.system.skillId : "waffenlos";
-				weaponDamageType = weapon ? weapon.system.damageType : "nonLethal";
+				weaponDamageType = weapon ? (weapon.system.ammunition.damageType ?? weapon.system.damageType) : "nonLethal";
 				if (reducedDefense == "onlyActiveParalyse")
 				{
 					weaponDamageType = "paralyse";
