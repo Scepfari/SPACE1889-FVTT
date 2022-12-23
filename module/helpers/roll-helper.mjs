@@ -160,6 +160,8 @@ export default class SPACE1889RollHelper
 		const inputDesc = game.i18n.localize("SPACE1889.NumberOfModificationDice");
 		const diceDesc = game.i18n.localize("SPACE1889.ConfigDice");
 		const isAttackTalent = item.isAttackTalent();
+		const talentWeapon = isAttackTalent ? SPACE1889RollHelper.getWeaponFromTalent(actor, item) : null;
+
 		const targetId = game.user.targets.first() ? game.user.targets.first().id : "";
 		let addAutoDefense = game.settings.get("space1889", "combatSupport") && (item.type == 'weapon' || isAttackTalent);
 		let defaultMod = 0;
@@ -177,6 +179,9 @@ export default class SPACE1889RollHelper
 						isRangedCombat = true;
 					}
 				}
+				else if (talentWeapon)
+					isRangedCombat = talentWeapon.isRangeWeapon;
+
 				const closeCombatRange = 1.5;
 				if (!isRangedCombat && distanceInfo.distance > closeCombatRange)
 				{
