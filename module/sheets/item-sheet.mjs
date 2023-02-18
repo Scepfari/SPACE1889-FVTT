@@ -161,5 +161,12 @@ export class Space1889ItemSheet extends ItemSheet {
 				this.item.update({ 'system.id': newId });
 			}
 		});
+
+		// Artwork
+		html.find('.artwork').mousedown(ev =>
+		{
+			if (ev.button == 2)
+				SPACE1889Helper.showArtwork(this.item, true)
+		});
 	}
 }
