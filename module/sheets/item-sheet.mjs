@@ -125,6 +125,13 @@ export class Space1889ItemSheet extends ItemSheet {
 	activateListeners(html) {
 		super.activateListeners(html);
 
+		// Artwork
+		html.find('.artwork').mousedown(ev =>
+		{
+			if (ev.button == 2)
+				SPACE1889Helper.showArtwork(this.item, true)
+		});
+
 		// Everything below here is only needed if the sheet is editable
 		if (!this.isEditable) return;
 
@@ -162,11 +169,5 @@ export class Space1889ItemSheet extends ItemSheet {
 			}
 		});
 
-		// Artwork
-		html.find('.artwork').mousedown(ev =>
-		{
-			if (ev.button == 2)
-				SPACE1889Helper.showArtwork(this.item, true)
-		});
 	}
 }

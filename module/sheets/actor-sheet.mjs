@@ -20,7 +20,10 @@ export class Space1889ActorSheet extends ActorSheet {
 	}
 
 	/** @override */
-	get template() {
+	get template()
+	{
+		if (!game.user.isGM && this.actor.limited)
+			return "systems/space1889/templates/actor/actor-limited-sheet.html";
 		return `systems/space1889/templates/actor/actor-${this.actor.type}-sheet.html`;
 	}
 
@@ -235,6 +238,13 @@ export class Space1889ActorSheet extends ActorSheet {
 	activateListeners(html) {
 		super.activateListeners(html);
 
+		// Artwork
+		html.find('.artwork').mousedown(ev =>
+		{
+			if (ev.button == 2)
+				SPACE1889Helper.showArtwork(this.actor, true)
+		});
+
 		// Render the item sheet for viewing/editing prior to the editable check.
 		html.find('.item-edit').click(ev =>
 		{
@@ -259,13 +269,6 @@ export class Space1889ActorSheet extends ActorSheet {
 
 		// Delete Inventory Item
 		html.find('.item-delete').click(this._onItemDelete.bind(this));
-
-		// Artwork
-		html.find('.artwork').mousedown(ev =>
-		{
-			if (ev.button == 2)
-				SPACE1889Helper.showArtwork(this.actor, true)
-		});
 
 		// sub Skill update
 		html.find('.skill-level').change(async ev => {
