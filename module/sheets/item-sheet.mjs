@@ -17,14 +17,12 @@ export class Space1889ItemSheet extends ItemSheet {
 	}
 
 	/** @override */
-	get template() {
-		const path = "systems/space1889/templates/item";
-		// Return a single sheet for all item types.
-		// return `${path}/item-sheet.html`;
+	get template()
+	{
+		if (!game.user.isGM && this.item.limited)
+			return "systems/space1889/templates/item/item-limited-sheet.html";
 
-		// Alternatively, you could use the following return statement to do a
-		// unique item sheet by type, like `weapon-sheet.html`.
-		return `${path}/item-${this.item.type}-sheet.html`;
+		return `systems/space1889/templates/item/item-${this.item.type}-sheet.html`;
 	}
 
 	/* -------------------------------------------- */
