@@ -170,6 +170,18 @@ Hooks.on("deleteToken", (token) => {
 	SPACE1889Helper.regenerateMarkers();
 });
 
+Hooks.on('preCreateToken', (token, data, options, userId) =>
+{
+	const actor = token.actor
+	if (!actor)
+		return;
+
+	let modify = {};
+	SPACE1889Helper.uniqueCanvasNameForNotLinkedActors(token, modify);
+	if (modify != {})
+		token.updateSource(modify);
+});
+
 
 /* -------------------------------------------- */
 /*  Handlebars Helpers                          */

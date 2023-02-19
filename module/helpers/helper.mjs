@@ -1027,4 +1027,29 @@ export default class SPACE1889Helper
 
 		return false;
 	}
+
+	static uniqueCanvasNameForNotLinkedActors(token, update)
+	{
+		if (token._actor.prototypeToken.actorLink)
+			return;
+
+		const actor = token.actor;
+		let sameActorTokens = canvas.scene.tokens.filter((x) => x.actor && x.actor.id === actor.id);
+		if (sameActorTokens.length > 0)
+		{
+			let nameList = [];
+			for (const oldToken of sameActorTokens)
+				nameList.push(oldToken.name);
+
+			let i = 1;
+			let newName = "";
+			do 
+			{
+				newName = actor.name + " " + (sameActorTokens.length + i).toString();
+				++i;
+			} while (nameList.includes(newName));
+
+			update["name"] = newName;
+		}
+	}
 }
