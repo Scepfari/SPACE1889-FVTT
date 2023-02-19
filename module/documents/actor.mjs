@@ -1066,6 +1066,7 @@ export class Space1889Actor extends Actor
 	{
 		const id = "nahkampf";
 		let skillRating = 0;
+		let riposteDamageType = game.i18n.localize("SPACE1889.NonLethalAbbr");
 		for (let item of actor.items)
 		{
 			if (item.type != "weapon")
@@ -1073,7 +1074,10 @@ export class Space1889Actor extends Actor
 			if (item.system.location != "koerper")
 				continue;
 			if (item.system.skillId == id && item.system.skillRating > skillRating)
+			{
 				skillRating = item.system.skillRating;
+				riposteDamageType = item.system.damageTypeDisplay;
+			}
 		}
 
 		const noWeapon = skillRating == 0;
@@ -1109,6 +1113,7 @@ export class Space1889Actor extends Actor
 		actor.system.parry.value = skillRating;
 		actor.system.parry.instinctive = instinctive;
 		actor.system.parry.riposte = riposte;
+		actor.system.parry.riposteDamageType = riposteDamageType;
 		actor.system.parry.info = "";
 		const defense = actor.system.secondaries.defense.total;
 		const name = game.i18n.format("SPACE1889.Parry");

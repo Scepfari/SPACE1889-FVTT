@@ -1150,6 +1150,7 @@ export default class SPACE1889RollHelper
 				combatSkillId: combatSkillId,
 				attackValue: count,
 				reducedDefense: reducedDefense,
+				riposteDamageType: "",
 				areaDamage: areaDamage
 			});
 		}
@@ -1177,6 +1178,7 @@ export default class SPACE1889RollHelper
  * @param {number} data.attackValue
  * @param {string} data.combatSkillId
  * @param {string} data.reducedDefense
+ * @param {string} data.riposteDamageType
  * @param {number} data.areaDamage
  *  
  */
@@ -1188,6 +1190,7 @@ export default class SPACE1889RollHelper
 
 		const rollAndDefense = SPACE1889RollHelper.getModifiedDefense(data.targetId, target.actor, data.reducedDefense, data.combatSkillId)
 		data.reducedDefense = rollAndDefense.defenseType;
+		data.riposteDamageType = rollAndDefense.riposteDamageType;
 		const modifierToolTipInfo = rollAndDefense.multiDefenseMod == 0 ? "" : game.i18n.format("SPACE1889.ChatMultiAttackDefenseModifier", { mod: rollAndDefense.multiDefenseMod });
 
 		if (this.getEventEvaluation(data.event).showDialog)
@@ -1222,10 +1225,14 @@ export default class SPACE1889RollHelper
 
 		let blockValue = 0;
 		let parryValue = 0;
+		let riposteDamageType = game.i18n.localize("SPACE1889.NonLethalAbbr");
 		if (actor.system.block)
 			blockValue = activeOnly ? actor.system.block.value - actor.system.secondaries.defense.passiveTotal : actor.system.block.value;
 		if (actor.system.parry)
+		{
 			parryValue = activeOnly ? actor.system.parry.value - actor.system.secondaries.defense.passiveTotal : actor.system.parry.value;
+			riposteDamageType = actor.system.parry.riposteDamageType;
+		}
 
 		if (combatSkillId == "waffenlos" || combatSkillId == "nahkampf")
 		{
@@ -1243,17 +1250,18 @@ export default class SPACE1889RollHelper
 			{
 				diceCount = blockValue;
 				resultantDefenseType = (activeOnly ? 'onlyActive' : '') + (actor.system.block.riposte ? 'BlockRiposte' : 'Block');
-				
+				riposteDamageType = game.i18n.localize("SPACE1889.NonLethalAbbr");
 			}
 			if (parryValue > diceCount && actor.system.parry?.instinctive)
 			{
 				diceCount = parryValue;
 				resultantDefenseType = (activeOnly ? 'onlyActive' : '') + (actor.system.parry.riposte ? 'ParryRiposte' : 'Parry');
+				riposteDamageType = actor.system.parry.riposteDamageType;
 			}
 		}
 		diceCount = Math.max(0, diceCount + multiDefenseMalus);
 
-		return { diceCount: diceCount, defenseType: resultantDefenseType, multiDefenseMod: multiDefenseMalus};
+		return { diceCount: diceCount, defenseType: resultantDefenseType, riposteDamageType: riposteDamageType, multiDefenseMod: multiDefenseMalus};
 	}
 
 	static async createInlineRollWithHtml(diceCount, probeName = "", tooltipInfo = "")
@@ -1322,6 +1330,7 @@ export default class SPACE1889RollHelper
 			await SPACE1889Helper.sleep(SPACE1889Helper.getDsnRollAnimationTime());
 
 		const delta = data.attackValue - rollWithHtml.roll.total;
+		const combatSkill = game.i18n.localize(CONFIG.SPACE1889.combatSkills[data.combatSkillId]);
 
 		if (delta >= 0 && data.reducedDefense != "" && data.areaDamage > 0 && target.type != 'vehicle')
 		{
@@ -1350,10 +1359,38 @@ export default class SPACE1889RollHelper
 				SPACE1889RollHelper.doDamageChatMessage(target.actor, itemId, damageAmount, data.damageType);
 			}
 		}
+		else if (delta < 0 && data.reducedDefense.indexOf('BlockRiposte') >= 0)
+		{
+			const chatData =
+			{
+				user: game.user.id,
+				speaker: ChatMessage.getSpeaker({ actor: target.actor }),
+				content: game.i18n.format("SPACE1889.AutoDefenseAttackBlockRiposte", { attackerName: data.actorName, skill: combatSkill, damage: (delta * (-1)) })
+			};
+			ChatMessage.create(chatData, {});			
+		}
+		else if (delta < 0 && data.reducedDefense.indexOf('ParryRiposte') >= 0 )
+		{
+			const chatData =
+			{
+				user: game.user.id,
+				speaker: ChatMessage.getSpeaker({ actor: target.actor }),
+				content: game.i18n.format("SPACE1889.AutoDefenseAttackParryRiposte", { attackerName: data.actorName, skill: combatSkill, damage: (delta * (-1)), type: data.riposteDamageType })
+			};
+			ChatMessage.create(chatData, {});	
+		}
+		else if (delta < 0 && data.reducedDefense.indexOf('Parry') >= 0 && data.combatSkillId == 'waffenlos')
+		{
+			const chatData =
+			{
+				user: game.user.id,
+				speaker: ChatMessage.getSpeaker({ actor: target.actor }),
+				content: game.i18n.format("SPACE1889.AutoDefenseAttackParryBrawl", { attackerName: data.actorName, skill: combatSkill, damage: (delta * (-1)), type: data.riposteDamageType })
+			};
+			ChatMessage.create(chatData, {});
+		}
 		else
 		{
-			const combatSkill = game.i18n.localize(CONFIG.SPACE1889.combatSkills[data.combatSkillId]) 
-
 			const chatData =
 			{
 				user: game.user.id,
