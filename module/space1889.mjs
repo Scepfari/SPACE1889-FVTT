@@ -236,6 +236,11 @@ Hooks.once("ready", async function() {
 					const message = game.messages.get(data.payload.id);
 					message.update(data.payload.updateData);
 					break;
+				case "createActorDamage":
+					const token = game.scenes.viewed.tokens.get(data.tokenId);
+					if (token)
+						SPACE1889RollHelper.addActorDamageFromSocket(data.tokenId, data.damageData);
+					break;
 				default:
 					console.warn(`Unhandled socket data type ${data.type}`)
 			}

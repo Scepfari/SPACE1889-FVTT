@@ -1066,7 +1066,7 @@ export class Space1889Actor extends Actor
 	{
 		const id = "nahkampf";
 		let skillRating = 0;
-		let riposteDamageType = game.i18n.localize("SPACE1889.NonLethalAbbr");
+		let riposteDamageType = "nonLethal";
 		for (let item of actor.items)
 		{
 			if (item.type != "weapon")
@@ -1076,7 +1076,7 @@ export class Space1889Actor extends Actor
 			if (item.system.skillId == id && item.system.skillRating > skillRating)
 			{
 				skillRating = item.system.skillRating;
-				riposteDamageType = item.system.damageTypeDisplay;
+				riposteDamageType = item.system.ammunition?.damageType ? item.system.ammunition.damageType : item.system.damageType
 			}
 		}
 

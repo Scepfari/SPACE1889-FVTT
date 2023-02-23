@@ -294,15 +294,17 @@ export default class SPACE1889RollHelper
 				messageContent += `${useWeaponChatInfo} <br>`;
 			messageContent += `${rollWithHtml.html} <br>`;
 
+			const speaker = ChatMessage.getSpeaker({ actor: actor });
+
 			if (addAutoDefense && targetId && targetId.length > 0)
 			{
 				const buttonText = game.i18n.localize("SPACE1889.AutoDefense");
-				messageContent += `<button class="autoDefence chatButton" data-action="defence" data-actor-id="${actor._id}" data-target-id="${targetId}" data-attack-name="${item.name}" data-attack-successes="${rollWithHtml.roll.total}" data-damage-type="${weaponDamageType}" data-skill-id="${weaponSkill}" data-reduced-defense="${reducedDefense}" data-area-damage="${areaDamage}">${buttonText}</button>`;
+				messageContent += `<button class="autoDefence chatButton" data-action="defence" data-actor-id="${actor._id}" data-actor-token-id="${speaker.token}" data-target-id="${targetId}" data-attack-name="${item.name}" data-attack-successes="${rollWithHtml.roll.total}" data-damage-type="${weaponDamageType}" data-skill-id="${weaponSkill}" data-reduced-defense="${reducedDefense}" data-area-damage="${areaDamage}">${buttonText}</button>`;
 			}
 			let chatData =
 			{
 				user: game.user.id,
-				speaker: ChatMessage.getSpeaker({ actor: actor }),
+				speaker: speaker,
 				content: messageContent
 			};
 			return chatData;
@@ -1122,6 +1124,7 @@ export default class SPACE1889RollHelper
 
 		const count = button[0].dataset.attackSuccesses;
 		const actorId = button[0].dataset.actorId;
+		const actorTokenId = button[0].dataset.actorTokenId;
 		const targetId = button[0].dataset.targetId;
 		const attackName = button[0].dataset.attackName;
 		const damageType = button[0].dataset.damageType;
@@ -1136,13 +1139,15 @@ export default class SPACE1889RollHelper
 		if (!token)
 			return;
 
-		const attackerToken = game.scenes.viewed.tokens.find(e => e.actor._id == actorId);
+		const attackerToken = game.scenes.viewed.tokens.get(actorTokenId);
 		const actorName = !attackerToken ? 'unbekannt' : attackerToken.name;
 		const permissions = token._actor.ownership;
 		if (game.user.isGM || (permissions["default"] && permissions["default"] == 3) || (permissions[game.userId] && permissions[game.userId] == 3))
 		{
 			this.rollDefenseAndAddDamage({
 				event: ev,
+				actorId: actorId,
+				actorTokenId: actorTokenId,
 				actorName: actorName,
 				targetId: targetId,
 				attackName: attackName,
@@ -1171,6 +1176,7 @@ export default class SPACE1889RollHelper
  * 
  * @param {Object} data
  * @param {Object} data.event
+ * @param {string} data.actorId
  * @param {string} data.actorName
  * @param {string} data.targetId
  * @param {string} data.attackName
@@ -1225,7 +1231,7 @@ export default class SPACE1889RollHelper
 
 		let blockValue = 0;
 		let parryValue = 0;
-		let riposteDamageType = game.i18n.localize("SPACE1889.NonLethalAbbr");
+		let riposteDamageType = "nonLethal";
 		if (actor.system.block)
 			blockValue = activeOnly ? actor.system.block.value - actor.system.secondaries.defense.passiveTotal : actor.system.block.value;
 		if (actor.system.parry)
@@ -1250,7 +1256,7 @@ export default class SPACE1889RollHelper
 			{
 				diceCount = blockValue;
 				resultantDefenseType = (activeOnly ? 'onlyActive' : '') + (actor.system.block.riposte ? 'BlockRiposte' : 'Block');
-				riposteDamageType = game.i18n.localize("SPACE1889.NonLethalAbbr");
+				riposteDamageType = "nonLethal";
 			}
 			if (parryValue > diceCount && actor.system.parry?.instinctive)
 			{
@@ -1321,7 +1327,6 @@ export default class SPACE1889RollHelper
 		{
 			user: game.user.id,
 			speaker: ChatMessage.getSpeaker({ actor: target.actor }),
-			speaker: ChatMessage.getSpeaker({ actor: target.actor }),
 			content: content
 		};
 		await ChatMessage.create(chatData, {});
@@ -1367,7 +1372,8 @@ export default class SPACE1889RollHelper
 				speaker: ChatMessage.getSpeaker({ actor: target.actor }),
 				content: game.i18n.format("SPACE1889.AutoDefenseAttackBlockRiposte", { attackerName: data.actorName, skill: combatSkill, damage: (delta * (-1)) })
 			};
-			ChatMessage.create(chatData, {});			
+			ChatMessage.create(chatData, {});
+			await SPACE1889RollHelper.addActorDamageAndNotify(data.actorTokenId, SPACE1889Helper.getTokenName(target.actor._id), game.i18n.localize("SPACE1889.TalentGegenschlag") + "(" + data.attackName + ")", (delta * (-1)), data.riposteDamageType);
 		}
 		else if (delta < 0 && data.reducedDefense.indexOf('ParryRiposte') >= 0 )
 		{
@@ -1375,9 +1381,10 @@ export default class SPACE1889RollHelper
 			{
 				user: game.user.id,
 				speaker: ChatMessage.getSpeaker({ actor: target.actor }),
-				content: game.i18n.format("SPACE1889.AutoDefenseAttackParryRiposte", { attackerName: data.actorName, skill: combatSkill, damage: (delta * (-1)), type: data.riposteDamageType })
+				content: game.i18n.format("SPACE1889.AutoDefenseAttackParryRiposte", { attackerName: data.actorName, skill: combatSkill, damage: (delta * (-1)), type: SPACE1889Helper.getDamageTypeAbbr(data.riposteDamageType) })
 			};
-			ChatMessage.create(chatData, {});	
+			ChatMessage.create(chatData, {});
+			await SPACE1889RollHelper.addActorDamageAndNotify(data.actorTokenId, SPACE1889Helper.getTokenName(target.actor._id), game.i18n.localize("SPACE1889.TalentRiposte") + "(" + data.attackName + ")", (delta * (-1)), data.riposteDamageType);
 		}
 		else if (delta < 0 && data.reducedDefense.indexOf('Parry') >= 0 && data.combatSkillId == 'waffenlos')
 		{
@@ -1385,9 +1392,10 @@ export default class SPACE1889RollHelper
 			{
 				user: game.user.id,
 				speaker: ChatMessage.getSpeaker({ actor: target.actor }),
-				content: game.i18n.format("SPACE1889.AutoDefenseAttackParryBrawl", { attackerName: data.actorName, skill: combatSkill, damage: (delta * (-1)), type: data.riposteDamageType })
+				content: game.i18n.format("SPACE1889.AutoDefenseAttackParryBrawl", { attackerName: data.actorName, skill: combatSkill, damage: (delta * (-1)), type: SPACE1889Helper.getDamageTypeAbbr(data.riposteDamageType) })
 			};
 			ChatMessage.create(chatData, {});
+			await SPACE1889RollHelper.addActorDamageAndNotify(data.actorTokenId, SPACE1889Helper.getTokenName(target.actor._id), game.i18n.localize("SPACE1889.Parry") + "(" + data.attackName + ")", (delta * (-1)), data.riposteDamageType);
 		}
 		else
 		{
@@ -1428,6 +1436,38 @@ export default class SPACE1889RollHelper
 			}
 		}
 	}
+
+	static async addActorDamageFromSocket(tokenId, damageData)
+	{
+		await SPACE1889RollHelper.addActorDamageAndNotify(tokenId, damageData.causerName, damageData.attackName, damageData.damageAmount, damageData.damageType, false);
+	}
+
+	static async addActorDamageAndNotify(tokenId, causerName, attackName, damageAmount, damageType, useSocket = true )
+	{
+		const actorToken = game.scenes.viewed.tokens.get(tokenId);
+		if (!actorToken || !actorToken.actor)
+			return;
+		
+		if (actorToken.actor.isOwner)
+		{
+			const itemId = await SPACE1889RollHelper.addDamageToActor(actorToken.actor, causerName, attackName, damageAmount, damageType);
+			SPACE1889RollHelper.doDamageChatMessage(actorToken.actor, itemId, damageAmount, damageType);
+		}
+		else if (useSocket)
+		{
+			game.socket.emit("system.space1889", {
+				type: "createActorDamage",
+				tokenId: tokenId,
+				damageData: {
+						causerName: causerName,
+						attackName: attackName,
+						damageAmount: damageAmount,
+						damageType: damageType
+				}
+			});
+		}
+	}
+
 
 	static async rollDefenseAndAddDamageWithDialog(data, diceCount, modifierToolTipInfo)
 	{

@@ -1052,4 +1052,18 @@ export default class SPACE1889Helper
 			update["name"] = newName;
 		}
 	}
+
+	static getTokenName(actorId)
+	{
+		const actorToken = game.scenes.viewed.tokens.find(e => e.actor._id == actorId);
+		if (actorToken)
+			return actorToken.name;
+
+		return "?";
+	}
+
+	static getDamageTypeAbbr(damageType)
+	{
+		return game.i18n.localize(CONFIG.SPACE1889.damageTypeAbbreviations[damageType]);
+	}
 }
