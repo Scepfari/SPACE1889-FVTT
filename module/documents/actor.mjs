@@ -21,7 +21,7 @@ export class Space1889Actor extends Actor
 
 		const actor = this;
 
-		if (actor.type === "character")
+		if (actor.type === "character" && actor.isOwner)
 		{
 			actor.update({ "prototypeToken.actorLink" : true })
 		}
@@ -37,7 +37,7 @@ export class Space1889Actor extends Actor
 					toAddItems.push(item.toObject());
 			}
 
-			if (toAddItems.length > 0)
+			if (toAddItems.length > 0 && actor.isOwner)
 				actor.update({ "items": toAddItems });
 		}
 
@@ -56,7 +56,7 @@ export class Space1889Actor extends Actor
 					toAddItems.push(item.toObject());
 			}
 
-			if (toAddItems.length > 0)
+			if (toAddItems.length > 0 && actor.isOwner)
 				actor.update({ "items": toAddItems });
 		}	
 
