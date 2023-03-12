@@ -518,6 +518,7 @@
 	"SPACE1889.EffectUnconsicousInfo": "Der Charakter ist bewusstlos und damit handlungsunfähig.",
 	"SPACE1889.EffectParalysisInfo": "Der Charakter ist gelähmt und damit handlungsunfähig.",
 	"SPACE1889.EffectProneInfo": "Der Charakter liegt am Boden und muss erst aufstehen, bevor er eine andere Aktion durchführen kann.",
+	"SPACE1889.EffectRoundTurnInfo": "Runde: {round}, Zug: {turn}",
 
 	"SPACE1889.Add": "Hinzufügen",
 	"SPACE1889.CreateItem": "Element erstellen",

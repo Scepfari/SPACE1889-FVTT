@@ -212,6 +212,11 @@ Handlebars.registerHelper('formatTime', function (gameTime)
 	return SPACE1889Helper.formatTimeDate(SPACE1889Helper.getTimeAndDate(gameTime));
 })
 
+Handlebars.registerHelper('formatEffectDuration', function (effectDuration)
+{
+	return SPACE1889Helper.formatEffectDuration(effectDuration);
+})
+
 /* -------------------------------------------- */
 /*  Ready Hook                                  */
 /* -------------------------------------------- */

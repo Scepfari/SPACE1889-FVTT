@@ -545,6 +545,18 @@ export default class SPACE1889Helper
 		return this.formatTimeDate(this.getCurrentTimeAndDate());
 	}
 
+	static formatEffectDuration(effectDuration)
+	{
+		const canDoDate = this.isSimpleCalendarEnabled();
+		const date = canDoDate ? this.formatTimeDate(this.getTimeAndDate(effectDuration.startTime)) : "";
+		let roundInfo = "";
+
+		if (effectDuration.startRound > 0 || effectDuration.startTurn > 0)
+			roundInfo = game.i18n.format("SPACE1889.EffectRoundTurnInfo", { round: effectDuration.startRound, turn: effectDuration.startTurn });
+
+		return date + (date != "" && roundInfo != "" ? "\r\n " : "") + roundInfo;
+	}
+
 	static async showArtwork({ img, name, uuid, isOwner }, hide = false) 
 	{
 		new ImagePopout(img,

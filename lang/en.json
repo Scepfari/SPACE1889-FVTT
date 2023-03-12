@@ -518,7 +518,7 @@
 	"SPACE1889.EffectUnconsicousInfo": "The actor is unconscious and thus unable to act.",
 	"SPACE1889.EffectParalysisInfo": "The actor is paralysed and thus unable to act.",
 	"SPACE1889.EffectProneInfo": "The character is lying on the ground and has to get up before he can perform another action.",
-
+	"SPACE1889.EffectRoundTurnInfo": "Round: {round}, Turn: {turn}",
 
 	"SPACE1889.Add": "Add",
 	"SPACE1889.CreateItem": "Create Item",
