@@ -1229,6 +1229,10 @@ export class Space1889ActorSheet extends ActorSheet {
 		const header = event.currentTarget;
 		// Get the type of item to create.
 		const type = header.dataset.type;
+
+		if (!type)
+			return undefined;
+
 		// Grab any data associated with this control.
 		const data = duplicate(header.dataset);
 		// Initialize a default name.
