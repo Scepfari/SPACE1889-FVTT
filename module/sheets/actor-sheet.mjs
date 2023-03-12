@@ -72,7 +72,7 @@ export class Space1889ActorSheet extends ActorSheet {
 		context.rollData = context.actor.getRollData();
 
 		// Prepare active effects
-		context.effects = prepareActiveEffectCategories(this.actor.effects);
+		context.effects = this.actor.effects;
 
 		//TextEditor
 		context.enrichedBiography = await TextEditor.enrichHTML(this.object.system.biography, { async: true });

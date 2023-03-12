@@ -207,6 +207,11 @@ Handlebars.registerHelper('doubleCheck', function (firstLeft, fistRight, secondL
 	return firstLeft == fistRight && secondLeft == secondRight;
 })
 
+Handlebars.registerHelper('formatTime', function (gameTime)
+{
+	return SPACE1889Helper.formatTimeDate(SPACE1889Helper.getTimeAndDate(gameTime));
+})
+
 /* -------------------------------------------- */
 /*  Ready Hook                                  */
 /* -------------------------------------------- */

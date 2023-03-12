@@ -137,6 +137,47 @@ export default class SPACE1889RollHelper
 		}
 	}
 
+
+	static getActiveEffectStates(actor)
+	{
+		let effectList = [];
+		for (let effect of actor.effects._source)
+		{
+			const statusId = effect.flags?.core?.statusId;
+			if (statusId)
+				effectList.push(statusId);
+		}
+		return effectList;
+	}
+
+	static canNotAttack(actor, sendNotify)
+	{
+		const statusIds = this.getActiveEffectStates(actor);
+
+		if (statusIds.findIndex(element => element == "unconscious") >= 0)
+		{
+			ui.notifications.info(game.i18n.localize("SPACE1889.EffectUnconsicousInfo"));
+			return true;
+		}
+		else if (statusIds.findIndex(element => element == "paralysis") >= 0)
+		{
+			ui.notifications.info(game.i18n.localize("SPACE1889.EffectParalysisInfo"));
+			return true;
+		}
+		else if (statusIds.findIndex(element => element == "stun") >= 0)
+		{
+			ui.notifications.info(game.i18n.localize("SPACE1889.EffectStunInfo"));
+			return true;
+		}
+		else if (statusIds.findIndex(element => element == "prone") >= 0)
+		{
+			ui.notifications.info(game.i18n.localize("SPACE1889.EffectProneInfo"));
+			return true;
+		}
+
+		return false;
+	}
+
 	/**
 	 *
 	 * @param {object} item
@@ -147,6 +188,9 @@ export default class SPACE1889RollHelper
 	*/
 	static async rollSubSpecial(item, actor, dieCount, showDialog, titelInfo, withExtraInfo = false)
 	{
+		if (this.canNotAttack(actor, true))
+			return;
+
 		const isWeapon = item.type == "weapon";
 		if (isWeapon && !SPACE1889Helper.canDoUseWeapon(item, actor))
 		{

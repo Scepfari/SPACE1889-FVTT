@@ -1,38 +1,33 @@
-<ol class="items-list effects-list">
-  {{#each system.effects as |section sid|}}
-    <li class="items-header flexrow" data-effect-type="{{section.type}}">
-      <h3 class="item-name effect-name flexrow">{{localize section.label}}</h3>
-      <div class="effect-source">Source</div>
-      <div class="effect-source">Duration</div>
-      <div class="item-controls effect-controls flexrow">
-        <a class="effect-control" data-action="create" title="{{localize 'SPACE1889.EffectCreate'}}">
-          <i class="fas fa-plus"></i> {{localize "SPACE1889.Add"}}
-        </a>
-      </div>
-    </li>
+<ol class="items-list">
+	<li class="item flexrow items-header">
+		<div class="item-name">{{localize 'SPACE1889.EffectPl'}}</div>
+		<div class="items-list item-max-with100px">{{localize 'SPACE1889.EffectStartTime'}}</div>
+		<div class="items-list item-max-with100px">{{localize 'SPACE1889.EffectDuration'}}</div>
+		<div class="item-controls item-max-with60px">
+			{{#if @root.editable}}
+			<a class="effect-control item-control item-create item-max-with60px" data-action="create" title="{{localize 'SPACE1889.EffectCreate'}}">
+				<i class="fas fa-plus"></i> Add
+			</a>
+			{{/if}}
+		</div>
+	</li>
 
-    <ol class="item-list">
-    {{#each section.effects as |effect|}}
-      <li class="item effect flexrow" data-effect-id="{{effect.id}}">
-        <div class="item-name effect-name flexrow">
-          <img class="item-image" src="{{effect.system.icon}}"/>
-          <h4>{{effect.system.label}}</h4>
-        </div>
-        <div class="effect-source">{{effect.sourceName}}</div>
-        <div class="effect-duration">{{effect.duration.label}}</div>
-        <div class="item-controls effect-controls flexrow">
-          <a class="effect-control" data-action="toggle" title="{{localize 'SPACE1889.EffectToggle'}}">
-            <i class="fas {{#if effect.system.disabled}}fa-check{{else}}fa-times{{/if}}"></i>
-          </a>
-          <a class="effect-control" data-action="edit" title="{{localize 'SPACE1889.EffectEdit'}}">
-            <i class="fas fa-edit"></i>
-          </a>
-          <a class="effect-control" data-action="delete" title="{{localize 'SPACE1889.EffectDelete'}}">
-            <i class="fas fa-trash"></i>
-          </a>
-        </div>
-      </li>
-    {{/each}}
-    </ol>
-  {{/each}}
+	{{#each effects as |effect|}}
+	<li class="item row-section flexrow" data-effect-id="{{effect.id}}">
+		<div class="item-name">
+			<img class="item-image-small" src="{{effect.icon}}" />
+			<h4>{{effect.label}}</h4>
+		</div>
+		<div class="items-list item-max-with100px">{{formatTime effect.duration.startTime}}</div>
+		<div class="items-list item-max-with100px">{{effect.duration.label}}</div>
+		<div class="item-controls item-max-with60px">
+			<a class="effect-control" data-action="edit" title="{{localize 'SPACE1889.EffectEdit'}}">
+				<i class="fas fa-edit"></i>
+			</a>
+			<a class="effect-control" data-action="delete" title="{{localize 'SPACE1889.EffectDelete'}}">
+				<i class="fas fa-trash"></i>
+			</a>
+		</div>
+	</li>
+	{{/each}}
 </ol>

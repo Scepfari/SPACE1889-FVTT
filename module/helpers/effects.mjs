@@ -10,19 +10,26 @@ export function onManageActiveEffect(event, owner) {
 	const effect = li.dataset.effectId ? owner.effects.get(li.dataset.effectId) : null;
 	switch ( a.dataset.action ) {
 		case "create":
+			const gameRound = game.combat ? game.combat.round : 0;
+			const gameTurn = game.combat ? game.combat.turn : 0;
+
 			return owner.createEmbeddedDocuments("ActiveEffect", [{
-				label: "New Effect",
+				label: game.i18n.localize("SPACE1889.EffectNew"),
 				icon: "icons/svg/aura.svg",
 				origin: owner.uuid,
-				"duration.rounds": li.dataset.effectType === "temporary" ? 1 : undefined,
+				"duration.rounds": 1,
+				"duration.seconds": 6,
+				"duration.startRound": gameRound,
+				"duration.startTurn": gameTurn,
+				"duration.startTime": game.time.worldTime,
 				disabled: li.dataset.effectType === "inactive"
 			}]);
 		case "edit":
 			return effect.sheet.render(true);
 		case "delete":
 			return effect.delete();
-		case "toggle":
-			return effect.update({disabled: !effect.system.disabled});
+		//case "toggle":
+		//	return effect.update({disabled: !effect.system.disabled});
 	}
 }
 

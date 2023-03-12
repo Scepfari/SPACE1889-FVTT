@@ -435,6 +435,8 @@ export default class SPACE1889Helper
 		if (!effectData)
 			return;
 
+		effectData.origin = actor.uuid;
+
 		const gameRound = game.combat ? game.combat.round : 0;
 		const gameTurn = game.combat ? game.combat.turn : 0;
 		if (game.combat && effectData.duration)
@@ -508,6 +510,21 @@ export default class SPACE1889Helper
 			return { year: date.year, month: date.month + 1, day: date.day + 1, hour: date.hour, minute: date.minute, second: date.second };
 		}
 		const worldDate = new Date();
+
+		return {
+			year: worldDate.getFullYear(), month: Number(worldDate.getMonth()) + 1, day: worldDate.getDate(),
+			hour: worldDate.getHours(), minute: worldDate.getMinutes(), second: worldDate.getSeconds()
+		};
+	}
+
+	static getTimeAndDate(timestamp)
+	{
+		if (this.isSimpleCalendarEnabled())
+		{
+			const date = SimpleCalendar.api.timestampToDate(timestamp);
+			return { year: date.year, month: date.month + 1, day: date.day + 1, hour: date.hour, minute: date.minute, second: date.second };
+		}
+		const worldDate = new Date(timestamp);
 
 		return {
 			year: worldDate.getFullYear(), month: Number(worldDate.getMonth()) + 1, day: worldDate.getDate(),

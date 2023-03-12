@@ -504,11 +504,21 @@
 	"SPACE1889.SkillGroupDescNaturWissen": "<b>Base Attribute: Intelligence</b><p>Science represents your character’s education and training in the physical or life sciences. It covers biology, chemistry, geology, engineering, and physics. It also covers mathematics and experimental methods for these disciplines. Characters with this skill are trained in a specific science and can experiment in their chosen field.</p><p>Your character must focus on a specific discipline:</p><ul><li>Astronomy: Observation and knowledge of celestial bodies.</li><li>Biology: Knowledge of botany, zoology, and experimental methodology</li><li>Chemistry: Knowledge of chemical compounds and experimental methodology</li><li>Engineering: Knowledge of engineering principles and design methodology</li><li>Geology: Knowledge of minerals and natural resources, and their composition</li><li>Mathematics: Analysis of abstract structures using logic.</li><li>Physics: Knowledge of forces, motion, and experimental methodology, including the investigation of the Ether.</li></ul>",
 	"SPACE1889.SkillGroupDescSpezFahrzeuge": "<b>Base Attribute: Dexterity</b><p>Pilot represents your character’s ability to pilot complex and unusual vehicles. It covers the operation of aircraft, ships, sailboats, and more exotic vehicles such as drilling machines and submarines. Characters with this skill are able to pilot a specific vehicle with skill and expertise.</p><p>Your character must focus on a specific discipline:</p><ul><li>Aeroplanes: The ability to pilot air planes and ornithopters</li><li>Aircraft: The ability to pilot motor-powered air craft</li><li>Air ships: The ability to pilot zeppelins and comparable vessels</li><li>Balloons: The ability to pilot balloons of all shapes and sizes</li><li>Boats: canoes, rafts and rowing boats of all kinds.</li><li>Cloud ships: The ability to pilot wind-powered air craft</li><li>Drilling Machines: The ability to pilot tunneling or drilling machines</li><li>Ether Flyers</li><li>Motor ships: The ability to pilot motor-powered ships of all shapes and sizes</li><li>Sailing Ships: The ability to pilot wind-powered ships of all shapes and sizes</li><li>Submarines: The ability to pilot a submarine or submersible vessel</li><li>Tripods: three-legged tanks</li></ul>",
 
-
+	"SPACE1889.Effect": "Effect",
+	"SPACE1889.EffectPl": "Effects",
+	"SPACE1889.EffectDuration": "Duration",
+	"SPACE1889.EffectStartTime": "Start Time",
+	"SPACE1889.EffectSource": "Source",
 	"SPACE1889.EffectCreate": "Create Effect",
 	"SPACE1889.EffectToggle": "Toggle Effect",
 	"SPACE1889.EffectEdit": "Edit Effect",
 	"SPACE1889.EffectDelete": "Delete Effect",
+	"SPACE1889.EffectNew": "New Effect",
+	"SPACE1889.EffectStunInfo": "The actor is stunned and cannot attack or move.",
+	"SPACE1889.EffectUnconsicousInfo": "The actor is unconscious and thus unable to act.",
+	"SPACE1889.EffectParalysisInfo": "The actor is paralysed and thus unable to act.",
+	"SPACE1889.EffectProneInfo": "The character is lying on the ground and has to get up before he can perform another action.",
+
 
 	"SPACE1889.Add": "Add",
 	"SPACE1889.CreateItem": "Create Item",
