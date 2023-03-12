@@ -34,8 +34,8 @@ Bedienhilfe für Charakter-, NSC- und Kreaturenbogen:
 
 Empfohlene Module: 
 * Token Action HUD: ermöglicht direkten Zugriff auf fast alle Würfe, ohne den Bogen des Akteurs öffnen zu müssen. Auch hier haben die zusätzlich zum Mausklick gedrückten Tasten [Strg], [Shift] und [Alt] die gleiche Funktion wie in den Bögen.
-* Journal Anchor Links: ermöglicht Sprungmarken innerhalb eines Dokumentes
 * Compendium Folders: ermöglicht Verzeichnisstrukturen auch bei den Kompendien
+* Simple Calendar: Kalender, um die Spielzeit nach 1889 zu bringen
 
 
 
@@ -63,5 +63,5 @@ Help for character, NPC and creature sheets:
 
 Recommended modules: 
 * Token Action HUD: allows direct access to almost all rolls without opening the actor's sheet. Again, the [Ctrl], [Shift] and [Alt] keys pressed in addition to the mouse click have the same function as in the sheets.
-* Journal Anchor Links: links entities (journal entries, actors and items) that reference each other. 
 * Compendium Folders: allows you to manage compendiums a bit easier by implementing a folder system.
+* Calendar to bring the game time to 1889
