@@ -90,7 +90,7 @@ Hooks.once("setup", () =>
 
 Hooks.on("chatMessage", (html, content, msg) =>
 {
-	let cmd = content.match(/^\/(help|version|space1889|ammo)/)
+	let cmd = content.match(/^\/(help|version|space1889|ammo|image)/)
 	cmd = cmd ? cmd[0] : ""
 	switch (cmd)
 	{
@@ -107,6 +107,9 @@ Hooks.on("chatMessage", (html, content, msg) =>
 		case "/ammo":
 			SPACE1889Helper.createAmmo();
 			return false;
+		case "/image":
+			SPACE1889Helper.addImageToChat(content.substr(7));
+			return false;
 	}
 });
 
@@ -115,6 +118,11 @@ Hooks.on("renderChatMessage", (app, html, msg) =>
 	html.on('click', '.autoDefence', ev =>
 	{
 		SPACE1889RollHelper.onAutoDefense(ev);
+	})
+
+	html.on('click', '.space1889-image', ev =>
+	{
+		SPACE1889Helper.showPopOutImage(ev);
 	})
 
 	const hideForGM = game.user.isGM && game.settings.get("space1889", "hideAutoDefenseButton");

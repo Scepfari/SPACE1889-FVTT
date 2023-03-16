@@ -1095,4 +1095,21 @@ export default class SPACE1889Helper
 	{
 		return game.i18n.localize(CONFIG.SPACE1889.damageTypeAbbreviations[damageType]);
 	}
+
+	static addImageToChat(imagepath)
+	{
+		let theContent = "<img class=\"space1889-image\" src=" + imagepath + " alt=\"" + game.i18n.localize("SPACE1889.UnableToLoadImage") + "\"/>";
+          ChatMessage.create({
+            speaker: ChatMessage.getSpeaker(),
+            content: `${theContent}`,
+            type: CONST.CHAT_MESSAGE_TYPES.OTHER
+          });
+	}
+
+	static showPopOutImage(ev)
+	{
+		const image = $(ev.currentTarget);
+		const src = image[0].src;
+		new ImagePopout(src, { editable: false, shareable: true }).render(true);
+	}
 }
