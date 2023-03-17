@@ -105,7 +105,41 @@ export default class TurnMarker {
 	{
 		if (this.container.destroyed)
 			return;
-		const token = canvas.tokens.get(game.combat?.combatant?.token?.id);
+
+		if (!game.combat)
+		{
+			this.Destroy(true);
+			return;
+		}
+
+		const combatTokenId = game.combat?.combatant?.token?.id;
+		let token = canvas.tokens.get(combatTokenId);
+		if (!token && game.combat.scene == null)
+		{
+			if (game.combat.combatant.token.actorLink)
+			{
+				for (let canvasToken of canvas.tokens.documentCollection)
+				{
+					if (canvasToken.actorLink && canvasToken.actorId == game.combat.combatant.token.actorId)
+					{
+						token = canvas.tokens.get(canvasToken._id)
+						break;
+					}
+				}
+			}
+			else
+			{
+				for (let canvasToken of canvas.tokens.documentCollection)
+				{
+					if (!canvasToken.actorLink && canvasToken.name == game.combat.combatant.token.name)
+					{
+						token = canvas.tokens.get(canvasToken._id)
+						break;
+					}
+				}
+			}
+		}
+		
 		if (token && this.id !== token.id) 
 			this.Move(token);
 		else if (!token)
