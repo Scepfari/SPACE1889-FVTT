@@ -1096,9 +1096,16 @@ export default class SPACE1889Helper
 		return game.i18n.localize(CONFIG.SPACE1889.damageTypeAbbreviations[damageType]);
 	}
 
+	static getItemChatImageHtml(imagepath, small = false)
+	{
+		let html = "<img class=\"space1889-image\" src=" + imagepath + " alt=\"" + game.i18n.localize("SPACE1889.UnableToLoadImage") + "\"";
+		html += (small ? "height=\"75\" />" : "/>") + "<br>";
+		return html;
+	}
+
 	static addImageToChat(imagepath)
 	{
-		let theContent = "<img class=\"space1889-image\" src=" + imagepath + " alt=\"" + game.i18n.localize("SPACE1889.UnableToLoadImage") + "\"/>";
+		let theContent = this.getItemChatImageHtml(imagepath);
           ChatMessage.create({
             speaker: ChatMessage.getSpeaker(),
             content: `${theContent}`,

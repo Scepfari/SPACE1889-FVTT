@@ -457,7 +457,7 @@ export default class SPACE1889RollHelper
 		else if (item.type == "armor")
 		{
 			const armor = game.i18n.localize("SPACE1889.Armor") ?? item.type;
-			label = `[${armor}] ${item.system.label}`;
+			label = `<h2><strong>${item.system.label}</strong> [${armor}]</h2>`;
 			desc = game.i18n.localize(item.system.descriptionLangId);
 			if (desc == item.system.descriptionLangId && item.system.description != "")
 				desc = item.system.description;
@@ -512,6 +512,9 @@ export default class SPACE1889RollHelper
 			label = `<h2><strong>${item.system.label}</strong> [${type}]</h2>`;
 		}
 
+		if (this.showItemImage(item))
+			desc = SPACE1889Helper.getItemChatImageHtml(item.img, this.isSmallItemImage(item)) + desc;
+
 		ChatMessage.create({
 			speaker: speaker,
 			rollMode: rollMode,
@@ -521,6 +524,42 @@ export default class SPACE1889RollHelper
 		});
 	}
 
+	static showItemImage(item)
+	{
+		if (!item || item.img == "")
+			return false;
+
+		switch (item.type)
+		{
+			case "item":
+			case "ammunition":
+			case "skill":
+			case "specialization":
+			case "talent":
+				return item.img != "icons/svg/item-bag.svg";
+			case "armor":
+				return item.img != "icons/svg/shield.svg";
+			case "weapon":
+				return item.img != "icons/svg/sword.svg";
+			case "damage":
+				return true;
+			case "weakness":
+				return item.img != "icons/svg/paralysis.svg";
+			case "resource":
+				return item.img != "icons/svg/card-joker.svg";
+			case "language":
+				return item.img != "icons/svg/sound.svg";
+			case "currency":
+				return item.img != "icons/svg/coins.svg";
+		}
+
+		return true;
+	}
+
+	static isSmallItemImage(item)
+	{
+		return !(item.type == "item" || item.type == "weapon");
+	}
 
 	static async showDamageDialog(actor, item, isLethal)
 	{
