@@ -434,8 +434,14 @@ export class Space1889ActorSheet extends ActorSheet {
 
         html.find('.ammo-selector').change(async(ev) => {
             ev.preventDefault()
-            const itemId = this._getItemId(ev);
-            await this.actor.updateEmbeddedDocuments("Item", [{ _id: itemId, "system.ammunition.currentItemId": $(ev.currentTarget).val() }]);
+			const itemId = this._getItemId(ev);
+			const ammuId = $(ev.currentTarget).val();
+
+			const weapon = this.actor.system.weapons.find(e => e._id == itemId);
+			if (weapon && weapon.system.ammunition.remainingRounds > 0)
+				SPACE1889Helper.unloadWeapon(weapon, this.actor);
+
+			await this.actor.updateEmbeddedDocuments("Item", [{ _id: itemId, "system.ammunition.currentItemId": ammuId }]);
         })
 
 		html.find('.increment-animalcompanionlevel-click').mousedown(ev =>

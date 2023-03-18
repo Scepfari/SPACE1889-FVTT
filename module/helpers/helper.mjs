@@ -755,7 +755,7 @@ export default class SPACE1889Helper
 
 		if (weapon.system.ammunition.currentItemId == "")
 		{
-			actor.updateEmbeddedDocuments("Item", [{ _id: weapon._id, "system.ammunition.remainingRounds": 0 }]);
+			actor.updateEmbeddedDocuments("Item", [{ _id: weapon._id, "system.ammunition.remainingRounds": 0, "system.ammunition.usedLoadingActions": 0 }]);
 			return;
 		}
 
@@ -767,16 +767,16 @@ export default class SPACE1889Helper
 
 			let wantedUnload = weapon.system.ammunition.remainingRounds;
 
-			if (game.combat?.started)
+			if (game.combat?.started && weapon.system.capacityType == "internal")
 			{
 				wantedUnload = Math.min(wantedUnload, actor.system.abilities.dex.total);
 			}
-			actor.updateEmbeddedDocuments("Item", [{ _id: weapon._id, "system.ammunition.remainingRounds": currentRounds - wantedUnload }]);
+			actor.updateEmbeddedDocuments("Item", [{ _id: weapon._id, "system.ammunition.remainingRounds": currentRounds - wantedUnload , "system.ammunition.usedLoadingActions": 0}]);
 			actor.updateEmbeddedDocuments("Item", [{ _id: currentAmmo._id, "system.quantity": currentAmmo.system.quantity + wantedUnload }]);
 		}
 		else
 		{
-			actor.updateEmbeddedDocuments("Item", [{ _id: weapon._id, "system.ammunition.remainingRounds": 0 }]);
+			actor.updateEmbeddedDocuments("Item", [{ _id: weapon._id, "system.ammunition.remainingRounds": 0 , "system.ammunition.usedLoadingActions": 0 }]);
 			if (weapon.system.capacity == weapon.system.ammunition.remainingRounds)
 				actor.updateEmbeddedDocuments("Item", [{ _id: currentAmmo._id, "system.quantity": currentAmmo.system.quantity + 1 }]);
 		}
