@@ -495,6 +495,28 @@ export default class SPACE1889RollHelper
 			desc += game.i18n.localize("SPACE1889.ExchangeRate") + ": ";
 			desc += "1 " + game.i18n.localize("SPACE1889.CurrencyBritishPoundsAbbr") + " = " + item.system.exchangeRateForOnePound.toString() + " " + item.system.abbr;
 		}
+		else if (item.type == "ammunition")
+		{
+			const type = game.i18n.localize("SPACE1889.Ammunition") ?? item.type;
+			label = `<h2><strong>${item.system.label}</strong> [${type}]</h2>`;
+			desc =  game.i18n.localize("SPACE1889.Damage") + ": " + game.i18n.localize(CONFIG.SPACE1889.noComboDamageTypes[item.system.damageType]) + "<br>";
+			desc += game.i18n.localize("SPACE1889.AmmunitionType") + ": " + game.i18n.localize(CONFIG.SPACE1889.weaponAmmunitionTypes[item.system.type]) + "<br>";
+
+			if (item.system.caliber != "")
+				desc += game.i18n.localize("SPACE1889.Caliber") + ": " + item.system.caliber + "<br>";
+
+			if (item.system.capacityType != "default")
+			{
+				desc += game.i18n.localize("SPACE1889.CapacityTypeLong") + ": " + game.i18n.localize(CONFIG.SPACE1889.ammunitionCapacityTypes[item.system.capacityType]) + "<br>";
+				desc += game.i18n.localize("SPACE1889.Capacity") + ": " + item.system.capacity.toString() + "<br>";
+			}
+
+			if (item.system.damageModifikator != 0)
+				desc += game.i18n.localize("SPACE1889.AmmunitionDamageModifier") + ": " + item.system.damageModifikator.toString() + "<br>";
+
+			if (item.system.damageModifikator != 0)
+				desc += game.i18n.localize("SPACE1889.AmmunitionRangeModifierFactor") + ": " + item.system.rangeModFactor.toString() + "<br>";
+		}
 		else
 		{
 			desc = game.i18n.localize(item.system.descriptionLangId);
