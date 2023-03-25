@@ -521,13 +521,8 @@ export default class SPACE1889RollHelper
 		{
 			desc = game.i18n.localize(item.system.descriptionLangId);
 			if (desc == item.system.descriptionLangId)
-			{
-				if (item.system.description != "")
-					desc = item.system.description;
-				else
-					desc = game.i18n.format("SPACE1889.NoLanguageEntry", { langId: item.system.descriptionLangId });
-			}
-			else if (item.system.description != "")
+				desc = "";
+			if (item.system.description != "")
 				desc += "<br>" + item.system.description;
 
 			const type = game.i18n.localize("SPACE1889.Item") ?? item.type;
