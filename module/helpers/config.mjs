@@ -743,6 +743,20 @@ SPACE1889.weaponAmmunitionTypes = {
 	"power": "SPACE1889.AmmunitionTypePower"
 }
 
+SPACE1889.weaponHand = {
+	"none": "SPACE1889.WeaponUseNotReady",
+	"primaryHand": "SPACE1889.WeaponUsePrimaryHand",
+	"offHand": "SPACE1889.WeaponUseOffHand",
+	"bothHands": "SPACE1889.WeaponUseBothHands"
+}
+
+SPACE1889.weaponHandIcon = {
+	"none": "far fa-ban",
+	"primaryHand": "far fa-hand-rock",
+	"offHand": "fal fa-hand-paper",
+	"bothHands": "far fa-handshake"
+}
+
 SPACE1889.vehicleManoeuvres = {
 	"ApproachDistance": "SPACE1889.VehicleApproachDistance",
 	"UtmostPower":"SPACE1889.VehicleUtmostPower",

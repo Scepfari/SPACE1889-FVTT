@@ -304,7 +304,9 @@
 				"caliber": "",
 				"remainingRounds": 0,
 				"usedLoadingActions": 0
-			}
+			},
+			"isTwoHanded": false,
+			"usedHands": "none"
 		},
 		"ammunition": {
 			"templates": [ "description", "weight", "location", "id", "price" ],

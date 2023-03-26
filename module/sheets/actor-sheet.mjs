@@ -356,6 +356,16 @@ export class Space1889ActorSheet extends ActorSheet {
 			}
 		});
 
+		html.find('.weaponhand-click').mousedown(ev =>
+		{
+			const itemId = this._getItemId(ev);
+			const item = this.actor.items.get(itemId);
+			{
+				const newUse = this.incrementWeaponHand(ev, item.system.usedHands, item.system.isTwoHanded);
+				item.update({ 'system.usedHands': newUse });
+			}
+		});
+
 		html.find('.reload-click').mousedown(ev =>
 		{
 			const itemId = this._getItemId(ev);
@@ -1175,6 +1185,25 @@ export class Space1889ActorSheet extends ActorSheet {
 	incrementValue(ev, currentValue, min, max, showNotification = false)
 	{
 		return SPACE1889Helper.incrementValue(ev, currentValue, min, max, showNotification);
+	}
+
+
+	incrementWeaponHand(ev, currentHand, isTwoHanded)
+	{
+		if (isTwoHanded)
+			return currentHand == "none" ? "bothHands" : "none";
+
+		const n = 'none';
+		const p = 'primaryHand';
+		const o = 'offHand';
+
+		const backward = ev.button == 2;
+		if (currentHand == n)
+			return backward ? o : p;
+		else if (currentHand == p)
+			return backward ? n : o;
+		else
+			return backward ? p : n;
 	}
 
 	/**

@@ -628,6 +628,8 @@ export class Space1889Actor extends Actor
 			{
 				weapon.system.locationDisplay = game.i18n.localize(CONFIG.SPACE1889.storageLocationAbbreviations[weapon.system.location]);
 				weapon.system.locationDisplayLong = game.i18n.localize(CONFIG.SPACE1889.storageLocations[weapon.system.location]);
+				weapon.system.usedHandsInfo = game.i18n.localize(CONFIG.SPACE1889.weaponHand[weapon.system.usedHands]);
+				weapon.system.usedHandsIcon = game.i18n.localize(CONFIG.SPACE1889.weaponHandIcon[weapon.system.usedHands]);
 			}
 		}
 

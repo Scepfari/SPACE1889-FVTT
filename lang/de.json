@@ -230,6 +230,13 @@
 	"SPACE1889.WeaponIsRigidlyMounted": "Ist starr montiert",
 	"SPACE1889.WeaponSwivelingRange": "Schwenkbereich",
 	"SPACE1889.WeaponSwivelingRangeAbbr": "SB",
+	"SPACE1889.WeaponTwoHanded": "zweihändig",
+	"SPACE1889.WeaponReady": "Kampfbereit",
+	"SPACE1889.WeaponReadyAbbr": "B",
+	"SPACE1889.WeaponUsePrimaryHand": "Haupthand",
+	"SPACE1889.WeaponUseOffHand": "Nebenhand",
+	"SPACE1889.WeaponUseBothHands": "beide Hände",
+	"SPACE1889.WeaponUseNotReady": "nicht bereit",
 
 	"SPACE1889.VehicleTypeOrClass": "Typ / Klasse",
 	"SPACE1889.VehicleIsAirship": "Ist Luftschiff",

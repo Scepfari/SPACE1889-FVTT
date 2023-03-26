@@ -230,6 +230,13 @@
 	"SPACE1889.WeaponIsRigidlyMounted": "Is rigidly mounted",
 	"SPACE1889.WeaponSwivelingRange": "Swiveling range",
 	"SPACE1889.WeaponSwivelingRangeAbbr": "SR",
+	"SPACE1889.WeaponTwoHanded": "two handed",
+	"SPACE1889.WeaponReady": "Ready",
+	"SPACE1889.WeaponReadyAbbr": "R",
+	"SPACE1889.WeaponUsePrimaryHand": "primary hand",
+	"SPACE1889.WeaponUseOffHand": "off-hand",
+	"SPACE1889.WeaponUseBothHands": "both hands",
+	"SPACE1889.WeaponUseNotReady": "not ready",
 
 	"SPACE1889.VehicleTypeOrClass": "Type / Class",
 	"SPACE1889.VehicleIsAirship": "Is Airship",

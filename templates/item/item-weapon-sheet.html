@@ -29,6 +29,14 @@
 			</select>
 		</div>
 
+		{{#if (ne system.skillId 'geschuetze')}}
+		<div class="resource">
+			<label class="resource-label">{{ localize "SPACE1889.WeaponTwoHanded"}}</label>
+			<div class="resource-content flex-center flex-between">
+				<input type="checkbox" name="system.isTwoHanded" {{checked system.isTwoHanded}} />
+			</div>
+		</div>
+		{{/if}}
 		{{#if (eq system.skillId 'geschuetze')}}
 		<div class="resource">
 			<label class="resource-label">{{ localize "SPACE1889.SecondaryAttributeSiz" }}</label>
