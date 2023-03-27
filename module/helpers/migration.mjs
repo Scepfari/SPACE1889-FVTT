@@ -12,6 +12,7 @@ export class Space1889Migration
 			await this.fixEisenschaedel(lastUsedVersion);
 			await this.fixVolleAbwehr(lastUsedVersion);
 			await this.ammunitionIntroduction(lastUsedVersion);
+			await this.weaponTwoHandedIntroduction(lastUsedVersion);
 			await game.settings.set("space1889", "lastUsedSystemVersion", currentVersion);
 		}
 		if (game.user.isGM)
@@ -77,6 +78,70 @@ export class Space1889Migration
 			actorList.push(actor);
 		}
 		await SPACE1889Helper.updateWeaponAndCreateAmmo(actorList);
+	}
+
+	static async weaponTwoHandedIntroduction(lastUsedVersion)
+	{
+		const lastNonFixVersion = "1.3.4";
+		if (isNewerVersion(lastUsedVersion, lastNonFixVersion) || !game.user.isGM)
+			return;
+
+		let actorList = [];
+		for (const scene of game.scenes)
+		{
+			for (let token of scene.tokens)
+			{
+				if (token.actorLink || token.actor == undefined || token.actor.type == "vehicle" || token.actor.type == "creature")
+					continue;
+
+				actorList.push(token.actor);
+			}
+		}
+		for (let actor of game.actors)
+		{
+			if (actor.type == "vehicle" || actor.type == "creature")
+				continue;
+
+			actorList.push(actor);
+		}
+		await this.updateWeaponTwoHanded(actorList);
+	}
+
+	static async updateWeaponTwoHanded(actorList)
+	{
+		const spez = ["armbrust", "bogen", "gewehr", "schrotgewehr", "speere"];
+		const pack = game.packs.get("space1889.waffen");
+		let packWeapons = await pack.getDocuments();
+
+		for (const actor of actorList)
+		{
+			for (const weapon of actor.system.weapons)
+			{
+				if (weapon.system.skillId == "geschuetze" || spez.indexOf(weapon.system.specializationId) >= 0)
+					await this.setWeaponToTwoHanded(weapon, actor);
+				else if (weapon.system.skillId == "nahkampf" || weapon.system.specializationId == "archaisch")
+				{
+					const sourceId = weapon.flags.core?.sourceId;
+					if (sourceId)
+					{
+						let source = packWeapons.find(e => e._id == SPACE1889Helper.getIdFromUuid(sourceId));
+						if (source && source.system.isTwoHanded)
+						{
+							await this.setWeaponToTwoHanded(weapon, actor);
+						}
+					}
+				}
+			}
+		}
+	}
+
+	static async setWeaponToTwoHanded(weapon, actor)
+	{
+		if (weapon.system.isTwoHanded)
+			return;
+
+		await actor.updateEmbeddedDocuments("Item", [{ _id: weapon._id, "system.isTwoHanded": true }]);
+		console.log("update weapon " + weapon.name + " from actor/token " + actor.name + " to two handed");
 	}
 
 	static async setRemainingRoundsToMaxCapacity(actor, packWeapons)
