@@ -670,6 +670,149 @@ export default class SPACE1889Helper
 		return Math.round((angle + Number.EPSILON) * 100) / 100;
 	}
 
+	static async setWeaponHand(weapon, actor, backward)
+	{
+		if (!weapon || !actor || weapon.type != "weapon")
+			return;
+
+		const newHand = this.getNextValidHandPosition(weapon, actor, backward);
+
+		if (newHand == weapon.system.usedHands)
+			return;
+
+		
+		await actor.updateEmbeddedDocuments("Item", [{ _id: weapon._id, "system.usedHands": newHand }]);
+
+		const isQuickDraw = SPACE1889Helper.getTalentLevel(actor, "schnellziehen") > 0
+		let desc = "";
+		let title = "";
+		if (newHand == "none")
+		{
+			title = game.i18n.localize("SPACE1889.WeaponUnReadyWeapon");
+			desc = isQuickDraw ?
+				game.i18n.format("SPACE1889.WeaponQuickDrawHolster", { weapon: weapon.name }) :
+				game.i18n.format("SPACE1889.WeaponActionHolster", { weapon: weapon.name });
+		}
+		else
+		{
+			title = game.i18n.localize("SPACE1889.WeaponReadyWeapon");
+			const handname = game.i18n.localize(CONFIG.SPACE1889.weaponHand[newHand]);
+			if (newHand == "bothHands")
+			{
+				desc = isQuickDraw ?
+					game.i18n.format("SPACE1889.WeaponQuickDrawReadyTwoHanded", { weapon: weapon.name }) :
+					game.i18n.format("SPACE1889.WeaponActionReady", { weapon: weapon.name, hands: handname });
+			}
+			else
+			{
+				desc = isQuickDraw ?
+					game.i18n.format("SPACE1889.WeaponQuickDrawReadyOneHand", { weapon: weapon.name, hand: handname }) :
+					game.i18n.format("SPACE1889.WeaponActionReady", { weapon: weapon.name, hands: handname });
+			}
+
+		}
+
+		const speaker = ChatMessage.getSpeaker({ actor: actor });
+		const label = `<h2><strong>${title}</strong></h2>`;
+		ChatMessage.create({
+			speaker: speaker,
+			flavor: label,
+			whisper: [],
+			content: desc
+		});
+	}
+
+	static getWeaponInHands(actor)
+	{
+		let primaryHand = [];
+		let offHand = [];
+		for (const weapon of actor.system.weapons)
+		{
+			if (weapon.system.usedHands == "bothHands")
+			{
+				primaryHand.push(weapon._id);
+				offHand.push(weapon._id)
+			}
+			else if (weapon.system.usedHands == "primaryHand")
+				primaryHand.push(weapon._id);
+			else if (weapon.system.usedHands == "offHand")
+				offHand.push(weapon._id);
+		}
+		return { primary: primaryHand, off: offHand };
+	}
+
+	static getNextValidHandPosition(weapon, actor, backwardDirection)
+	{
+		const currentHand = weapon.system.usedHands;
+		const weaponInHands = this.getWeaponInHands(actor);
+
+		const isPrimaryPossible = weaponInHands.primary.length == 0;
+		const isOffPossible = weaponInHands.off.length == 0;
+
+		let wanted = this.getNextWeaponHand(backwardDirection, weapon.system.usedHands, weapon.system.isTwoHanded);
+		if (this.isWeaponHandPossible(wanted, isPrimaryPossible, isOffPossible))
+			return wanted;
+
+		if (weapon.system.isTwoHanded)
+		{
+			ui.notifications.info(game.i18n.format("SPACE1889.WeaponCanNotReadyTwoHand", {weapon: weapon.name}));
+			return "none";
+		}
+
+		if (wanted == "primaryHand")
+		{
+			const itemName = actor.system.weapons.find(e => e._id == weaponInHands.primary[0])?.name;
+			ui.notifications.info(game.i18n.format("SPACE1889.WeaponCanNotReadyPrimaryHand", { weapon: weapon.name, item: itemName}));
+		}
+		else if (wanted == "offHand")
+		{
+			const itemName = actor.system.weapons.find(e => e._id == weaponInHands.off[0])?.name;
+			ui.notifications.info(game.i18n.format("SPACE1889.WeaponCanNotReadyPrimaryHand", { weapon: weapon.name, item: itemName}));
+		}
+
+		let secondTry = this.getNextWeaponHand(backwardDirection, wanted, weapon.system.isTwoHanded)
+		if (this.isWeaponHandPossible(secondTry, isPrimaryPossible, isOffPossible))
+			return secondTry;
+		else
+		{
+			ui.notifications.info(game.i18n.format("SPACE1889.WeaponCanNotReady", { weapon: weapon.name }));
+		}
+
+		return "none";
+
+	}
+
+	static isWeaponHandPossible(wantedHand, isPrimaryPossible, isOffPossible)
+	{
+		if (wantedHand == "none")
+			return true;
+		if (wantedHand == "primaryHand" && isPrimaryPossible)
+			return true;
+		if (wantedHand == "offHand" && isOffPossible)
+			return true;
+		if (wantedHand == "bothHands" && isPrimaryPossible && isOffPossible)
+			return true;
+
+		return false;
+	}
+
+	static getNextWeaponHand(backwardDirection, currentHand, isTwoHanded)
+	{
+		if (isTwoHanded)
+			return currentHand == "none" ? "bothHands" : "none";
+
+		const n = 'none';
+		const p = 'primaryHand';
+		const o = 'offHand';
+
+		if (currentHand == n)
+			return backwardDirection ? o : p;
+		else if (currentHand == p)
+			return backwardDirection ? n : o;
+		else
+			return backwardDirection ? p : n;
+	}
+
 	static async reloadWeapon(weapon, actor, noChatInfoAsReturnValue = false)
 	{
 		if (!weapon || !actor || weapon.type != "weapon")
