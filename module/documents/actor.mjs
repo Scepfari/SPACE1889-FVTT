@@ -619,7 +619,8 @@ export class Space1889Actor extends Actor
 				weapon.system.skillRating = this._GetSkillLevel(actor, weapon.system.skillId, weapon.system.specializationId);
 				const attackBonusFromDamage = (weapon.system.isAreaDamage && actor.type != 'vehicle') ? 0 : weapon.system.damage;
 				const ammoBonus = weapon.system.ammunition.damageMod ? weapon.system.ammunition.damageMod : 0;
-				weapon.system.attack = Math.max(0, attackBonusFromDamage + weapon.system.skillRating + weapon.system.sizeMod + ammoBonus);
+				let offhandMod = ((actor.type == "character" || actor.type == "npc") && weapon.system.usedHands == "offHand" && SPACE1889Helper.getTalentLevel(this, "beidhaendig") == 0) ? -2 : 0;
+				weapon.system.attack = Math.max(0, attackBonusFromDamage + weapon.system.skillRating + weapon.system.sizeMod + ammoBonus + offhandMod);
 				weapon.system.attackAverage = (Math.floor(weapon.system.attack / 2)).toString() + (weapon.system.attack % 2 == 0 ? "" : "+");
 			}
 			const damageType = weapon.system.ammunition.damageType ? weapon.system.ammunition.damageType : weapon.system.damageType;

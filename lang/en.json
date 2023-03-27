@@ -248,7 +248,7 @@
 	"SPACE1889.WeaponActionReady": "Action to draw the weapon {weapon} spent ({hands})",
 	"SPACE1889.WeaponQuickDrawReadyOneHand": "The weapon {weapon} appears in the {hand} (reflexive action)",
 	"SPACE1889.WeaponQuickDrawReadyTwoHanded": "The weapon {weapon} appears in the hands (reflexive action)",
-
+	"SPACE1889.WeaponCanNotUsedIsNotReady": "To use the weapon {weapon} it must be ready for combat and this is only possible when you hold it in your hands.",
 
 	"SPACE1889.VehicleTypeOrClass": "Type / Class",
 	"SPACE1889.VehicleIsAirship": "Is Airship",

@@ -192,6 +192,13 @@ export default class SPACE1889RollHelper
 			return;
 
 		const isWeapon = item.type == "weapon";
+
+		if (isWeapon && !SPACE1889Helper.isWeaponReady(item, actor))
+		{
+			ui.notifications.info(game.i18n.format("SPACE1889.WeaponCanNotUsedIsNotReady", { weapon: item.name }));
+			return;
+		}
+
 		if (isWeapon && !SPACE1889Helper.canDoUseWeapon(item, actor))
 		{
 			ui.notifications.info(game.i18n.localize("SPACE1889.AmmunitionCanNotFireOutOfAmmo"));

@@ -938,9 +938,17 @@ export default class SPACE1889Helper
 
 	}
 
+	static isWeaponReady(weapon, actor)
+	{
+		if (weapon.system.usedHands == "none" && (actor.type == "character" || actor.type == "npc"))
+			return false;
+
+		return true;
+	}
+
 	static canDoUseWeapon(weapon, actor)
 	{
-		if (!weapon.system.isRangeWeapon || actor == "vehicle")
+		if (!weapon.system.isRangeWeapon || actor.type == "vehicle")
 			return true;
 
 		if (weapon.system.ammunition.remainingRounds > 0)

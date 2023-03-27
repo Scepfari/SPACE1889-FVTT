@@ -248,6 +248,7 @@
 	"SPACE1889.WeaponActionReady": "Aktion zum Ziehen der Waffe {weapon} aufgewendet ({hands})",
 	"SPACE1889.WeaponQuickDrawReadyOneHand": "Die Waffe {weapon} erscheint in der {hand} (Instinktive Aktion)",
 	"SPACE1889.WeaponQuickDrawReadyTwoHanded": "Die Waffe {weapon} erscheint in den Händen (Instinktive Aktion)",
+	"SPACE1889.WeaponCanNotUsedIsNotReady": "Um die Waffe {weapon} einzusetzen muss sie Kampfbereit sein und das geht nur wenn man sie in den Händen hält.",
 
 	"SPACE1889.VehicleTypeOrClass": "Typ / Klasse",
 	"SPACE1889.VehicleIsAirship": "Ist Luftschiff",
