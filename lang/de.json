@@ -3149,6 +3149,18 @@
 
 	"SPACE1889.TourPcNoCharacter": "Lege einen Charakter an um die Tour auszuführen",
 
+	"SPACE1889": {
+		"externalLinks": {
+			"titel": "Externe Links",
+			"content": "<p>Hast du Fragen? Magst du einen Fehler melden? Hier sind nützliche Links:</p>",
+			"forum": "<div title=\"SPACE 1889 Uhrwerk Forum\">Forum</div>",
+			"discordFoundry": "<div title=\"Foundry Discord Server (en)\">Foundry VTT</div>",
+			"discordDieGiesserei": "<div title=\"Deutsche Foundry Discord Server\">Die Gießerei</div>",
+			"bugReport": "<div title=\"Fehler im SPACE 1889 System direkt auf Github melden\">Fehler melden</div>",
+			"publisher": "<div>Herausgeber</div>"
+		}
+	},
+
 	"SPACE1889.Warning": "Warnung",
 	"SPACE1889.UnableToLoadImage": " Bild konnte nicht geladen werden",
 	"SPACE1889.FoundryBug8180": "<h1>Stopp und aufgepasst!&nbsp;</h1><p><br />Du hast diese V9 Welt gerade auf Foundry 10.285 migriert. Dabei sind alle nicht mit dem Akteur verlinkten Tokens, die sich in ihren Items vom Original Akteur unterscheiden (Schaden ist auch ein Item) leider irreperabel besch&auml;digt wurden, indem alle Item Werte auf ihren Standardwert zur&uuml;ckgesetzt wurden. Siehe Bug <a title=\"Foundry Bug 8180\" href=\"https://github.com/foundryvtt/foundryvtt/issues/8180\" target=\"_blank\" rel=\"noopener\">https://github.com/foundryvtt/foundryvtt/issues/8180</a><br /><br /></p><h3>Du hast zwei M&ouml;glichkeiten den Migrationsfehler zu vermeiden:</h3><ol style=\"list-style-type: decimal;\"><li>Zur&uuml;ck zu Foundry 9.280 wechseln, Backup einspielen und auf das n&auml;chste Foundry Release warten, in dem der Bug 8180 gefixed wurde<br /><br /></li><li><ol style=\"list-style-type: lower-latin;\"><li><span style=\"font-family: var(--font-primary); font-size: var(--font-size-14);\">Foundry Version 10.284 installieren und Backup einspielen</span></li><li>alle Space Welten von V9 auf 10.284 migrieren (das Space 1889 System fasst die Tokens dabei automatisch an, um den bug-bedingten Datenverlust bei einem sp&auml;teren Update auf 10.285 zu vermeiden)</li><li>Foundry Version 10.285 installieren und damit die Welten von 10.284 auf 10.285migrieren</li><li>Spa&szlig; an Foundry 10 haben</li></ol></li></ol><p>&nbsp;</p>",

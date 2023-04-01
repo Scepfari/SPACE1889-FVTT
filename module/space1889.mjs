@@ -64,6 +64,20 @@ Hooks.once('init', async function() {
 	return preloadHandlebarsTemplates();
 });
 
+Hooks.on("ready", async function () 
+{
+	const dialog = SPACE1889Helper.getExternalLinksDialogData()
+	let externalLinks = new Dialog(dialog.data, dialog.options);
+
+	var logo = document.getElementById("logo");
+	logo.setAttribute("src", "/systems/space1889/icons/vttLogo.webp");
+	logo.title = game.i18n.localize("SPACE1889.externalLinks.titel");
+	logo.addEventListener("click", function ()
+	{
+		externalLinks.render(true)
+	});
+});
+
 Hooks.once("setup", () =>
 {
 	game.keybindings.register("space1889", "combatTrackerNext", {

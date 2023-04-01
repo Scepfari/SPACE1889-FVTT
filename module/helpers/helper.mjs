@@ -1270,4 +1270,64 @@ export default class SPACE1889Helper
 		const src = image[0].src;
 		new ImagePopout(src, { editable: false, shareable: true }).render(true);
 	}
+
+	static getExternalLinksDialogData()
+	{
+		let dialogData = {
+			title: game.i18n.localize("SPACE1889.externalLinks.titel"),
+			content: game.i18n.localize("SPACE1889.externalLinks.content"),
+			buttons: {
+
+				one: {
+					icon: '<img src="systems/space1889/icons/uhrwerkForumLogo.png" alt="logo Uhrwerk Forum" height="50px">',
+					label: game.i18n.localize("SPACE1889.externalLinks.forum"),
+					height: "75px",
+					width: "75px",
+					callback: () => {
+						var windowObjectReference = window.open("https://community.uhrwerk-verlag.de/index.php?board=14.0", "_blank");
+					}
+				},
+				two: {
+					icon: '<img src="systems/space1889/icons/foundryDiscord.webp" alt="logo foundry discord" height="50px">',
+					label: game.i18n.localize("SPACE1889.externalLinks.discordFoundry"),
+					callback: () => {
+						var windowObjectReference = window.open("https://discord.gg/foundryvtt", "_blank");
+					}
+				},
+
+				three: {
+					icon: '<img src="systems/space1889/icons/dieGiessereiDiscord.webp" alt="logo foundry discord" height="50px">',
+					label: game.i18n.localize("SPACE1889.externalLinks.discordDieGiesserei"),
+					callback: () => {
+						var windowObjectReference = window.open("https://discord.gg/XrKAZ5J", "_blank");
+					}
+				},
+
+				four: {
+					icon: '<i class="fad fa-bug" style="font-size:40px"></i>',
+					label: game.i18n.localize("SPACE1889.externalLinks.bugReport"),
+					callback: () => {
+						var windowObjectReference = window.open("https://github.com/Scepfari/SPACE1889-FVTT/issues/new", "_blank");
+
+					}
+				},
+				five: {
+					icon: '<img src="systems/space1889/icons/uhrwerkLogo.png" alt="logo uhrwerk" height="50px">',
+					label: game.i18n.localize("SPACE1889.externalLinks.publisher"),
+					callback: () => {
+						var windowObjectReference = window.open("https://www.uhrwerk-verlag.de/", "_blank");
+
+					}
+				}
+
+			}
+		};
+		let dialogOptions = {
+			width: 'auto',
+			height: '180',
+			left: 100,
+			top: 20
+		};
+		return { data: dialogData, options: dialogOptions };
+	}
 }
