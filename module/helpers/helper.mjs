@@ -1277,14 +1277,12 @@ export default class SPACE1889Helper
 			title: game.i18n.localize("SPACE1889.externalLinks.titel"),
 			content: game.i18n.localize("SPACE1889.externalLinks.content"),
 			buttons: {
-
 				one: {
-					icon: '<img src="systems/space1889/icons/uhrwerkForumLogo.png" alt="logo Uhrwerk Forum" height="50px">',
-					label: game.i18n.localize("SPACE1889.externalLinks.forum"),
-					height: "75px",
-					width: "75px",
+					icon: '<i class="fad fa-bug" style="font-size:40px"></i>',
+					label: game.i18n.localize("SPACE1889.externalLinks.bugReport"),
 					callback: () => {
-						var windowObjectReference = window.open("https://community.uhrwerk-verlag.de/index.php?board=14.0", "_blank");
+						var windowObjectReference = window.open("https://github.com/Scepfari/SPACE1889-FVTT/issues/new", "_blank");
+
 					}
 				},
 				two: {
@@ -1304,24 +1302,37 @@ export default class SPACE1889Helper
 				},
 
 				four: {
-					icon: '<i class="fad fa-bug" style="font-size:40px"></i>',
-					label: game.i18n.localize("SPACE1889.externalLinks.bugReport"),
-					callback: () => {
-						var windowObjectReference = window.open("https://github.com/Scepfari/SPACE1889-FVTT/issues/new", "_blank");
-
-					}
-				},
-				five: {
 					icon: '<img src="systems/space1889/icons/uhrwerkLogo.png" alt="logo uhrwerk" height="50px">',
 					label: game.i18n.localize("SPACE1889.externalLinks.publisher"),
 					callback: () => {
 						var windowObjectReference = window.open("https://www.uhrwerk-verlag.de/", "_blank");
 
 					}
-				}
+				},
+				five: {
+					icon: '<img src="systems/space1889/icons/uhrwerkForumLogo.png" alt="logo Uhrwerk Forum" height="50px">',
+					label: game.i18n.localize("SPACE1889.externalLinks.forum"),
+					callback: () => {
+						var windowObjectReference = window.open("https://community.uhrwerk-verlag.de/index.php?board=14.0", "_blank");
+					}
+				},
 
 			}
 		};
+
+		const add = game.data.addresses.remote.substr(8, 27) == 'freunde-der-oper.moltenhost';
+		if (add)
+		{
+			const extraButton = {
+				icon: '<img src="systems/space1889/icons/space1889Logo.webp" alt="logo SPACE 1889" height="50px">',
+				label: "<div title=\"Freunde des gepflegten Rollenspiels\">privates Forum</div>",
+				callback: () => {
+					var windowObjectReference = window.open("http://www.space1889.shadowbroker.de/", "_blank");
+				}
+			}
+			dialogData.buttons.zero = extraButton;
+		}
+
 		let dialogOptions = {
 			width: 'auto',
 			height: '180',
