@@ -220,13 +220,15 @@ export class Space1889Migration
 	}
 
 
-	static showNewVersionInfo(noCheck = false)
+	static async showNewVersionInfo(noCheck = false)
 	{
 		const info = game.settings.get("space1889", "newVersionPopup").split("|");
 		const currentVersion = game.system.version;
 		if (noCheck || (game.user.isGM && (isNewerVersion(currentVersion, info[1]) || info[0] > 0)))
 		{
-			let content = game.i18n.localize("SPACE1889.VersionInfo");
+			//let content = game.i18n.localize("SPACE1889.VersionInfo");
+			const isGerman = game.settings.get('core', 'language') == "de";
+			let content = await renderTemplate("systems/space1889/change/" + (isGerman ? "de" : "en") + "_changelog_1.4.html");
 			const understood = game.i18n.localize("SPACE1889.Understood");
 			const stayAway = game.i18n.localize("SPACE1889.StayAway");
 			const newVersion = game.i18n.localize("SPACE1889.NewVersion");

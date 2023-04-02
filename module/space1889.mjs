@@ -73,7 +73,7 @@ Hooks.on("ready", async function ()
 
 	var logo = document.getElementById("logo");
 	logo.setAttribute("src", "/systems/space1889/icons/vttLogo.webp");
-	logo.title = game.i18n.localize("SPACE1889.externalLinks.titel");
+	logo.title = game.i18n.localize("SPACE1889.ExternalLinksTitel");
 	logo.addEventListener("click", function ()
 	{
 		externalLinks.render(true)

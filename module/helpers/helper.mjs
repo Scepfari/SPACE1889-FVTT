@@ -350,12 +350,13 @@ export default class SPACE1889Helper
 	{
 		let pac = game.packs.get("space1889.help");
 		let docs = await pac.getDocuments();
-		const language = game.settings.get('core', 'language')
-		for (let doc of docs)
-		{
-			if (doc.name.substring(0, 2) == language)
-				doc.sheet.render(true);
-		}
+		let id = "MlRz7BgqDGHY7uge";
+		if (this.isGerman())
+			id = "asbU8WYJJcJEX7q3";
+
+		const doc = docs.find(e => e._id == id);
+		if (doc)
+			doc.sheet.render(true);
 	}
 
 	static async showGmScreen()
@@ -1298,9 +1299,14 @@ export default class SPACE1889Helper
 		new ImagePopout(src, { editable: false, shareable: true }).render(true);
 	}
 
+	static isGerman()
+	{
+		return game.settings.get('core', 'language') == "de";
+	}
+
 	static getExternalLinksDialogData()
 	{
-		const isGerman = game.settings.get('core', 'language') == "de";
+		const isGerman= this.isGerman();
 		let dialogData = {
 			title: game.i18n.localize("SPACE1889.ExternalLinksTitel"),
 			content: game.i18n.localize("SPACE1889.ExternalLinksContent"),
@@ -1335,15 +1341,15 @@ export default class SPACE1889Helper
 			}
 		}
 
-		dialogData.buttons.four = {
-			icon: '<img src="systems/space1889/icons/uhrwerkLogo.png" alt="logo uhrwerk" height="50px">',
-			label: game.i18n.localize("SPACE1889.ExternalLinksPublisher"),
-			callback: () =>
-			{
-				var windowObjectReference = window.open("https://www.uhrwerk-verlag.de/", "_blank");
-
-			}
-		}
+//		dialogData.buttons.four = {
+//			icon: '<img src="systems/space1889/icons/uhrwerkLogo.png" alt="logo uhrwerk" height="50px">',
+//			label: game.i18n.localize("SPACE1889.ExternalLinksPublisher"),
+//			callback: () =>
+//			{
+//				var windowObjectReference = window.open("https://www.uhrwerk-verlag.de/", "_blank");
+//
+//			}
+//		}
 
 		if (isGerman)
 		{
