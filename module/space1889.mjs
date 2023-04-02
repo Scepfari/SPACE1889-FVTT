@@ -14,7 +14,9 @@ import { Space1889Tour } from "./tours/space1889_tour.mjs";
 import SPACE1889Helper from "./helpers/helper.mjs";
 import SPACE1889RollHelper from "./helpers/roll-helper.mjs";
 import { Space1889Combat, Space1889Combatant } from "./helpers/combatTracker.mjs";
-import TurnMarker from "./helpers/turnMarker.mjs"
+import TurnMarker from "./helpers/turnMarker.mjs";
+import { registerGetSceneControlButtonsHook } from "./hud/controls.mjs";
+
 
 
 /* -------------------------------------------- */
@@ -100,6 +102,8 @@ Hooks.once("setup", () =>
 				game.combat.previousTurn();
 		}
 	})
+
+	registerGetSceneControlButtonsHook();
 })
 
 Hooks.on("chatMessage", (html, content, msg) =>

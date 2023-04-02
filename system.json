@@ -373,6 +373,14 @@
 			"system": "space1889",
 			"path": "./packs/space-1889-hilfe.db",
 			"type": "JournalEntry"
+		},
+		{
+			"name": "gminfos",
+			"label": "SPACE1889 GM Infos",
+			"system": "space1889",
+			"path": "./packs/space-1889-gm-infos.db",
+			"type": "JournalEntry",
+			"private": true
 		}
 	],
 	"languages": [

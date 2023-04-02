@@ -358,6 +358,24 @@ export default class SPACE1889Helper
 		}
 	}
 
+	static async showGmScreen()
+	{
+		let pac = game.packs.get("space1889.gminfos");
+		let docs = await pac.getDocuments();
+		const language = game.settings.get('core', 'language')
+		let doc = undefined;
+		if (language == "de")
+		{
+			doc = docs.find(e => e.name = "SL-Schirm");
+		}
+		else
+		{
+			doc = docs.find(e => e.name = "GM-Screen");
+		}
+		if (doc)
+			doc.sheet.render(true, { width: 805, height: 850 });
+	}
+
 	static getEffectData(effect)
 	{
 		const combatId = game.combat ? game.combat._id : 0;
@@ -1254,14 +1272,23 @@ export default class SPACE1889Helper
 		return html;
 	}
 
-	static addImageToChat(imagepath)
+	static addImageToChat(imagepath, whisper = false)
 	{
 		let theContent = this.getItemChatImageHtml(imagepath);
           ChatMessage.create({
             speaker: ChatMessage.getSpeaker(),
             content: `${theContent}`,
+			whisper: whisper ? [game.user.id] : [],
             type: CONST.CHAT_MESSAGE_TYPES.OTHER
           });
+	}
+
+	static async filePickerImageToChat(whisper)
+	{
+		await new FilePicker({type: "image", current: "",callback: picked}).render(true);
+		async function picked(imagepath) {
+			SPACE1889Helper.addImageToChat(imagepath, whisper);
+		}
 	}
 
 	static showPopOutImage(ev)
@@ -1274,12 +1301,12 @@ export default class SPACE1889Helper
 	static getExternalLinksDialogData()
 	{
 		let dialogData = {
-			title: game.i18n.localize("SPACE1889.externalLinks.titel"),
-			content: game.i18n.localize("SPACE1889.externalLinks.content"),
+			title: game.i18n.localize("SPACE1889.ExternalLinksTitel"),
+			content: game.i18n.localize("SPACE1889.ExternalLinksContent"),
 			buttons: {
 				one: {
 					icon: '<i class="fad fa-bug" style="font-size:40px"></i>',
-					label: game.i18n.localize("SPACE1889.externalLinks.bugReport"),
+					label: game.i18n.localize("SPACE1889.ExternalLinksBugReport"),
 					callback: () => {
 						var windowObjectReference = window.open("https://github.com/Scepfari/SPACE1889-FVTT/issues/new", "_blank");
 
@@ -1287,7 +1314,7 @@ export default class SPACE1889Helper
 				},
 				two: {
 					icon: '<img src="systems/space1889/icons/foundryDiscord.webp" alt="logo foundry discord" height="50px">',
-					label: game.i18n.localize("SPACE1889.externalLinks.discordFoundry"),
+					label: game.i18n.localize("SPACE1889.ExternalLinksDiscordFoundry"),
 					callback: () => {
 						var windowObjectReference = window.open("https://discord.gg/foundryvtt", "_blank");
 					}
@@ -1295,7 +1322,7 @@ export default class SPACE1889Helper
 
 				three: {
 					icon: '<img src="systems/space1889/icons/dieGiessereiDiscord.webp" alt="logo foundry discord" height="50px">',
-					label: game.i18n.localize("SPACE1889.externalLinks.discordDieGiesserei"),
+					label: game.i18n.localize("SPACE1889.ExternalLinksDiscordDieGiesserei"),
 					callback: () => {
 						var windowObjectReference = window.open("https://discord.gg/XrKAZ5J", "_blank");
 					}
@@ -1303,7 +1330,7 @@ export default class SPACE1889Helper
 
 				four: {
 					icon: '<img src="systems/space1889/icons/uhrwerkLogo.png" alt="logo uhrwerk" height="50px">',
-					label: game.i18n.localize("SPACE1889.externalLinks.publisher"),
+					label: game.i18n.localize("SPACE1889.ExternalLinksPublisher"),
 					callback: () => {
 						var windowObjectReference = window.open("https://www.uhrwerk-verlag.de/", "_blank");
 
@@ -1311,7 +1338,7 @@ export default class SPACE1889Helper
 				},
 				five: {
 					icon: '<img src="systems/space1889/icons/uhrwerkForumLogo.png" alt="logo Uhrwerk Forum" height="50px">',
-					label: game.i18n.localize("SPACE1889.externalLinks.forum"),
+					label: game.i18n.localize("SPACE1889.ExternalLinksForum"),
 					callback: () => {
 						var windowObjectReference = window.open("https://community.uhrwerk-verlag.de/index.php?board=14.0", "_blank");
 					}
