@@ -373,7 +373,7 @@ export default class SPACE1889Helper
 			doc = docs.find(e => e._id == "lYFa5uVsIh8OyoLW");
 		}
 		if (doc)
-			doc.sheet.render(true, { width: 805, height: 850 });
+			doc.sheet.render(true, { width: 805, height: 850, top: 10, left: 120 });
 	}
 
 	static getEffectData(effect)
