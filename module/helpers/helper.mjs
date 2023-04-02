@@ -366,11 +366,11 @@ export default class SPACE1889Helper
 		let doc = undefined;
 		if (language == "de")
 		{
-			doc = docs.find(e => e.name = "SL-Schirm");
+			doc = docs.find(e => e._id == "ZIqbgqYvZb1MA366");
 		}
 		else
 		{
-			doc = docs.find(e => e.name = "GM-Screen");
+			doc = docs.find(e => e._id == "lYFa5uVsIh8OyoLW");
 		}
 		if (doc)
 			doc.sheet.render(true, { width: 805, height: 850 });
@@ -1300,6 +1300,7 @@ export default class SPACE1889Helper
 
 	static getExternalLinksDialogData()
 	{
+		const isGerman = game.settings.get('core', 'language') == "de";
 		let dialogData = {
 			title: game.i18n.localize("SPACE1889.ExternalLinksTitel"),
 			content: game.i18n.localize("SPACE1889.ExternalLinksContent"),
@@ -1318,46 +1319,54 @@ export default class SPACE1889Helper
 					callback: () => {
 						var windowObjectReference = window.open("https://discord.gg/foundryvtt", "_blank");
 					}
-				},
-
-				three: {
-					icon: '<img src="systems/space1889/icons/dieGiessereiDiscord.webp" alt="logo foundry discord" height="50px">',
-					label: game.i18n.localize("SPACE1889.ExternalLinksDiscordDieGiesserei"),
-					callback: () => {
-						var windowObjectReference = window.open("https://discord.gg/XrKAZ5J", "_blank");
-					}
-				},
-
-				four: {
-					icon: '<img src="systems/space1889/icons/uhrwerkLogo.png" alt="logo uhrwerk" height="50px">',
-					label: game.i18n.localize("SPACE1889.ExternalLinksPublisher"),
-					callback: () => {
-						var windowObjectReference = window.open("https://www.uhrwerk-verlag.de/", "_blank");
-
-					}
-				},
-				five: {
-					icon: '<img src="systems/space1889/icons/uhrwerkForumLogo.png" alt="logo Uhrwerk Forum" height="50px">',
-					label: game.i18n.localize("SPACE1889.ExternalLinksForum"),
-					callback: () => {
-						var windowObjectReference = window.open("https://community.uhrwerk-verlag.de/index.php?board=14.0", "_blank");
-					}
-				},
-
+				}
 			}
 		};
+
+		if (isGerman)
+		{
+			dialogData.buttons.three = {
+				icon: '<img src="systems/space1889/icons/dieGiessereiDiscord.webp" alt="logo foundry discord" height="50px">',
+				label: game.i18n.localize("SPACE1889.ExternalLinksDiscordDieGiesserei"),
+				callback: () =>
+				{
+					var windowObjectReference = window.open("https://discord.gg/XrKAZ5J", "_blank");
+				}
+			}
+		}
+
+		dialogData.buttons.four = {
+			icon: '<img src="systems/space1889/icons/uhrwerkLogo.png" alt="logo uhrwerk" height="50px">',
+			label: game.i18n.localize("SPACE1889.ExternalLinksPublisher"),
+			callback: () =>
+			{
+				var windowObjectReference = window.open("https://www.uhrwerk-verlag.de/", "_blank");
+
+			}
+		}
+
+		if (isGerman)
+		{
+			dialogData.buttons.five = {
+				icon: '<img src="systems/space1889/icons/uhrwerkForumLogo.png" alt="logo Uhrwerk Forum" height="50px">',
+				label: game.i18n.localize("SPACE1889.ExternalLinksForum"),
+				callback: () =>
+				{
+					var windowObjectReference = window.open("https://community.uhrwerk-verlag.de/index.php?board=14.0", "_blank");
+				}
+			}
+		}
 
 		const add = game.data.addresses.remote.substr(8, 27) == 'freunde-der-oper.moltenhost';
 		if (add)
 		{
-			const extraButton = {
+			dialogData.buttons.zero =  {
 				icon: '<img src="systems/space1889/icons/space1889Logo.webp" alt="logo SPACE 1889" height="50px">',
 				label: "<div title=\"Freunde des gepflegten Rollenspiels\">privates Forum</div>",
 				callback: () => {
 					var windowObjectReference = window.open("http://www.space1889.shadowbroker.de/", "_blank");
 				}
 			}
-			dialogData.buttons.zero = extraButton;
 		}
 
 		let dialogOptions = {
