@@ -208,6 +208,10 @@ Hooks.on('preCreateToken', (token, data, options, userId) =>
 		token.updateSource(modify);
 });
 
+  Hooks.on("renderPause", () => {
+    $("#pause img").attr("class", "pause-image");
+    $("#pause figcaption").attr("class", "pause-space1889");
+  });
 
 /* -------------------------------------------- */
 /*  Handlebars Helpers                          */

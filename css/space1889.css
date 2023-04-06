@@ -709,3 +709,22 @@ font-size: 12px;
     top: 2px;
     bottom: 0;
 }
+
+#pause img {
+	content: url('../icons/spacepause.webp');
+	height: 150px;
+	width: 250px;
+	top: -85px;
+	left: calc(50% - 125px);
+	opacity: 0.9;
+}
+
+#pause .pause-space1889 {
+	margin: 0 auto;
+	text-align: center;
+	transform: scale3d(0.8, 1, 1);
+	font-family: 'Times New Roman', Times, serif;
+	font-weight: 900;
+	color: #f4eded;
+}
+
