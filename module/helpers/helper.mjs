@@ -1220,21 +1220,53 @@ export default class SPACE1889Helper
 		if (!token)
 			return false;
 
-		const permissions = token._actor.ownership;
+		return hasOwnership(token._actor);
+	}
+
+	static hasOwnership(actor)
+	{
+		const permissions = actor?.ownership;
 		if ((permissions["default"] && permissions["default"] == 3) || (permissions[game.userId] && permissions[game.userId] == 3))
 			return true;
 
 		return false;
 	}
 
-	static uniqueCanvasNameForNotLinkedActors(token, update)
+	static hasOneOrMorePlayerOwnership(ownership)
 	{
-		if (token._actor.prototypeToken.actorLink)
+		if (ownership["default"] && ownership["default"] == 3)
+			return true;
+
+		for (let user of game.users)
+		{
+			if (user.isGM)
+				continue;
+			if (ownership[user.id] && ownership[user.id] == 3)
+				return true;
+		}
+		return false;
+	}
+
+	static async uniqueCanvasNameForNotLinkedActors(token, update)
+	{
+		if (!this.hasOwnership(token._actor))
 			return;
 
+		const isGmToken = !this.hasOneOrMorePlayerOwnership(token._actor.ownership);
+
+		let askUser = false
+		if (token._actor.prototypeToken.actorLink)
+		{
+			if (!isGmToken && token._actor.type == "character")
+				return;
+			else
+				askUser = true;
+		}
+
 		const actor = token.actor;
-		let sameActorTokens = canvas.scene.tokens.filter((x) => x.actor && x.actor.id === actor.id);
-		if (sameActorTokens.length > 0)
+		const sameActorTokens = canvas.scene.tokens.filter((x) => x.actor && x.actor.id === actor.id);
+
+		function changeName(removeActorLink = false)
 		{
 			let nameList = [];
 			for (const oldToken of sameActorTokens)
@@ -1249,6 +1281,51 @@ export default class SPACE1889Helper
 			} while (nameList.includes(newName));
 
 			update["name"] = newName;
+			if (removeActorLink)
+				update["actorLink"] = false;
+		}
+
+		if (sameActorTokens.length > 0)
+		{
+			if (askUser)
+			{
+				update["flags.space1889.PreCreation"] = 101;
+				new Dialog({
+					title: `${game.i18n.localize("SPACE1889.AddLinkedTokenTitle")}: ${token.name} `,
+					content: `<p>${game.i18n.localize("SPACE1889.AddLinkedTokenContent")}: </p>`,
+					buttons:
+					{
+						ok:
+						{
+							icon: '',
+							label: game.i18n.localize("SPACE1889.AddLinkedTokenDoIt"),
+						},
+						nein:
+						{
+							label: game.i18n.localize("SPACE1889.AddLinkedTokenUnlink"),
+							callback: () => changeIt(),
+							icon: ''
+						}
+					},
+					default: "nein"
+				}).render(true);
+
+				function changeIt()
+				{
+					actor.update({ "prototypeToken.actorLink": false });
+					update = {};
+					changeName(true);
+					let createdToken = canvas.scene.tokens.find(e => e.flags.space1889?.PreCreation == 101);
+					if (createdToken)
+					{
+						//delete createdToken.flags.space1889;
+						createdToken.unsetFlag("space1889", "PreCreation");
+						createdToken.update(update);
+					}
+				}
+			}
+			else
+				changeName();
 		}
 	}
 
