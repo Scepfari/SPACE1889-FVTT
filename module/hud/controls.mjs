@@ -69,6 +69,28 @@ function getSceneControlButtons(controls)
 				//toggle: true,
 			},
 			{
+				name: "drawweapon",
+				title: game.i18n.localize("CONTROLS.Space1889MenuNpcsDrawWeapon"),
+				icon: "far fa-hand-rock",
+				onClick: () =>
+				{
+					SPACE1889Helper.npcsDrawWeaponsWithDialog();
+				},
+				visible: game.user.isGM,
+				button: true,
+			},
+			{
+				name: "showtokennameandbar",
+				title: game.i18n.localize("CONTROLS.Space1889MenuShowNameAndBar"),
+				icon: "fa fa-eye",
+				onClick: () =>
+				{
+					SPACE1889Helper.showTokenNameAndBarWithDialog();
+				},
+				visible: game.user.isGM,
+				button: true,
+			},
+			{
 				name: "help",
 				title: game.i18n.localize("CONTROLS.Space1889MenuHelp"),
 				icon: "fa fa-info",

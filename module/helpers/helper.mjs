@@ -689,7 +689,7 @@ export default class SPACE1889Helper
 		return Math.round((angle + Number.EPSILON) * 100) / 100;
 	}
 
-	static async setWeaponHand(weapon, actor, backward)
+	static async setWeaponHand(weapon, actor, backward, silent = false)
 	{
 		if (!weapon || !actor || weapon.type != "weapon")
 			return;
@@ -701,6 +701,10 @@ export default class SPACE1889Helper
 
 		
 		await actor.updateEmbeddedDocuments("Item", [{ _id: weapon._id, "system.usedHands": newHand }]);
+
+		let whisperList = [];
+		if (silent && game.user.isGM)
+			whisperList = [game.user.id];
 
 		const isQuickDraw = SPACE1889Helper.getTalentLevel(actor, "schnellziehen") > 0
 		let desc = "";
@@ -736,7 +740,7 @@ export default class SPACE1889Helper
 		ChatMessage.create({
 			speaker: speaker,
 			flavor: label,
-			whisper: [],
+			whisper: whisperList,
 			content: desc
 		});
 	}
@@ -1327,6 +1331,205 @@ export default class SPACE1889Helper
 			else
 				changeName();
 		}
+	}
+
+	static async npcsDrawWeaponsWithDialog()
+	{
+		let dialogue = new Dialog(
+		{
+			title: `${game.i18n.localize("SPACE1889.WeaponReadyWeapon")}`,
+			content: `
+				<form>
+					<fieldset>
+						<legend>${game.i18n.localize("SPACE1889.PreferredWeaponType")}</legend>
+            
+						<input type="radio" id="ranged" name="type" value="R" checked>
+						<label for="ranged">${game.i18n.localize("SPACE1889.RangedAttack")}</label><br>
+            
+						<input type="radio" id="melee" name="type" value="M">
+						<label for="melee">${game.i18n.localize("SPACE1889.SkillNahkampf")}</label><br>
+            
+						<input type="radio" id="noMatter" name="type" value="N">
+						<label for="noMatter">${game.i18n.localize("SPACE1889.NoMatter")}</label>
+					</fieldset><br>
+				</form>`,
+			buttons:
+			{
+				ok:
+				{
+					icon: '',
+					label: 'Los!',
+					callback: (html) => 
+					{
+						const rangedWeapon = html.find('#ranged')[0].checked;
+						const meleeWeapon = html.find('#melee')[0].checked;
+						if (rangedWeapon)
+							this.npcsDrawWeapons("ranged");
+						else if (meleeWeapon)
+							this.npcsDrawWeapons("melee");
+						else
+							this.npcsDrawWeapons();
+					}
+				},
+				abbruch:
+				{
+					label: 'Abbrechen',
+					callback: () => { ui.notifications.info(game.i18n.localize("SPACE1889.FunctionCanceled")) },
+					icon: `<i class="fas fa-times"></i>`
+				}
+			},
+			default: "ok"
+		});
+    
+		dialogue.render(true);		
+	}
+
+	static async npcsDrawWeapons(preferredWeapon)
+	{
+		// ausschließlich vom SL kontrollierte Tokens werden verändert
+
+		// ToDo: Begrenzung auf Nahkampfwaffen oder Schußwaffen
+		//weapon.system.isRangeWeapon
+
+		if (!game.user.isGM)
+		{
+			ui.notifications.info(game.i18n.localize("SPACE1889.SlOnly"));
+			return true;
+		}
+		for (let token of canvas.scene.tokens)
+		{
+			if (token._actor.type != "character" && token._actor.type != "npc")
+				continue;
+
+			if (this.hasOneOrMorePlayerOwnership(token._actor.ownership))
+				continue;
+
+			const weaponInHands = this.getWeaponInHands(token._actor);
+			if (weaponInHands.primary.length != 0 || weaponInHands.off.length != 0)
+			{
+				let weapon = weaponInHands.primary.length > 0 ?
+					token._actor.system.weapons.find(e => e.id == weaponInHands.primary[0]) :
+					token._actor.system.weapons.find(e => e.id == weaponInHands.off[0]);
+				ui.notifications.info(game.i18n.format("SPACE1889.WeaponIsAlreadyReady", { name: token.name, weapon: weapon?.name }));
+				continue;
+			}
+
+			const weapon = this.getBestWeapon(token._actor, preferredWeapon);
+			if (weapon)
+			{
+				await this.setWeaponHand(weapon, token._actor, false, true);
+			}
+		}
+	}
+
+	static showTokenNameAndBarWithDialog()
+	{
+		let options = { force: false, displayBars: 30, displayName: 30 };
+		const barHtml = this.getTokenDisplayOptions("bar-select", game.i18n.localize("SPACE1889.TokenLifebarDisplayType"));
+		const nameHtml = this.getTokenDisplayOptions("name-select", game.i18n.localize("SPACE1889.TokenNameDisplayType"));
+
+		const dialogue = new Dialog({
+			title: `${game.i18n.localize("SPACE1889.WeaponReadyWeapon")}`,
+			content: `
+				<form>
+				${barHtml}
+				<hr>
+				${nameHtml}
+				<hr>
+				<fieldset>
+					<legend>${game.i18n.localize("SPACE1889.TokenForceChange")}</legend>
+					<input type="radio" id="force" name="yesno" value="yes">
+					<label for="force">${game.i18n.localize("Yes")}</label><br>
+					<input type="radio" id="noforce" name="yesno" value="no" checked>
+					<label for="noforce">${game.i18n.localize("No")}</label><br>
+				</fieldset><br>
+				</form>`,
+			buttons:
+			{
+				ok:
+				{
+					icon: '',
+					label: 'Los!',
+					callback: (html) => 
+					{
+						options.force = html.find('#force')[0].checked;
+						options.displayBars = Number(html.find('#bar-select')[0].value);
+						options.displayName = Number(html.find('#name-select')[0].value);
+						this.showTokenNameAndBar(options);
+					}
+				},
+				abbruch:
+				{
+					label: 'Abbrechen',
+					callback: () => { ui.notifications.info(game.i18n.localize("SPACE1889.FunctionCanceled")) },
+					icon: `<i class="fas fa-times"></i>`
+				}
+			},
+			default: "ok"
+		});
+		dialogue.render(true);	
+	}
+
+	static getTokenDisplayOptions(id, labelName)
+	{
+		let opt = `<label class="align-center" for="${id}">${labelName}</label><br>`;
+		opt += `<select class="align-center" id="${id}">`;
+		opt += '<option value="0">' + game.i18n.localize("TOKEN.DISPLAY_NONE") + '</option>';
+		opt += '<option value="10">' + game.i18n.localize("TOKEN.DISPLAY_CONTROL") + '</option>';
+		opt += '<option value="20">' + game.i18n.localize("TOKEN.DISPLAY_OWNER_HOVER") + '</option>';
+		opt += '<option value="30" selected>' + game.i18n.localize("TOKEN.DISPLAY_HOVER") + '</option>';
+		opt += '<option value="40">' + game.i18n.localize("TOKEN.DISPLAY_OWNER") + '</option>';
+		opt += '<option value="50">' + game.i18n.localize("TOKEN.DISPLAY_ALWAYS") + '</option></select>';
+		return opt;
+	}
+
+
+	static async showTokenNameAndBar(options)
+	{
+		let counter = 0;
+		for (let token of canvas.scene.tokens)
+		{
+			if (options.force || (token.displayBars == 0 && token.displayBars == 0))
+			{
+				await token.update({ displayBars: options.displayBars, displayName: options.displayName });
+				ui.notifications.info(game.i18n.format("SPACE1889.TokenChanged", { name: token.name }));
+				++counter;
+			}
+		}
+		if (counter == 0)
+			ui.notifications.info(game.i18n.localize("SPACE1889.TokensNotChanged"));
+	}
+
+	static getBestWeapon(actor, preferredWeapon)
+	{
+		if (!actor)
+			return undefined;
+
+		const prefersRanged = preferredWeapon == "ranged";
+		const prefersMelee = preferredWeapon == "melee";
+
+		let best = undefined;
+		for (const weapon of actor.system.weapons)
+		{
+			if (prefersMelee && weapon.system.skillId != "nahkampf")
+				continue;
+
+			if (prefersRanged && !weapon.system.isRangeWeapon)
+				continue;
+
+			if (!best || best.system.attack < weapon.system.attack)
+				best = weapon;
+		}
+
+		if (!best && (prefersRanged || prefersMelee))
+		{
+			for (const weapon of actor.system.weapons)
+			{
+				if (!best || best.system.attack < weapon.system.attack)
+					best = weapon;
+			}
+		}
+		return best;
 	}
 
 	static getTokenName(actorId)

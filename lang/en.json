@@ -20,6 +20,8 @@
 	"CONTROLS.Space1889MenuGMScreen": "GM Screen",
 	"CONTROLS.Space1889MenuHelp": "Operating help",
 	"CONTROLS.Space1889MenuShowImage": "Show image in chat",
+	"CONTROLS.Space1889MenuShowNameAndBar": "Enable token name and life bar display for all players",
+	"CONTROLS.Space1889MenuNpcsDrawWeapon": "All NPCs make their weapons ready, without chat display for the players",
 
 	"SPACE1889.Pc": "PC",
 	"SPACE1889.Npc": "NPC",
@@ -254,6 +256,8 @@
 	"SPACE1889.WeaponQuickDrawReadyOneHand": "The weapon {weapon} appears in the {hand} (reflexive action)",
 	"SPACE1889.WeaponQuickDrawReadyTwoHanded": "The weapon {weapon} appears in the hands (reflexive action)",
 	"SPACE1889.WeaponCanNotUsedIsNotReady": "To use the weapon {weapon} it must be ready for combat and this is only possible when you hold it in your hands.",
+	"SPACE1889.WeaponDrawReady": "{name} readies the weapon {weapon}",
+	"SPACE1889.WeaponIsAlreadyReady": "{name} is already ready with weapon {weapon}",
 
 	"SPACE1889.VehicleTypeOrClass": "Type / Class",
 	"SPACE1889.VehicleIsAirship": "Is Airship",
@@ -3159,6 +3163,17 @@
 	"SPACE1889.AddLinkedTokenContent": "The token you want to add is linked to the actor. Changes to this token will also change the other tokens that also reference this actor. Do you really want that?",
 	"SPACE1889.AddLinkedTokenDoIt": "Yes, go ahead",
 	"SPACE1889.AddLinkedTokenUnlink": "No, remove link",
+	"SPACE1889.SlOnly": "The function is only for the game master",
+	"SPACE1889.PreferredWeaponType": "Preferred weapon type",
+	"SPACE1889.RangedAttack": "Ranged combat",
+	"SPACE1889.NoMatter": "No matter",
+	"SPACE1889.FunctionCanceled": "Function was canceled",
+	"SPACE1889.TokenChanged": "Token {name} was adjusted",
+	"SPACE1889.TokensNotChanged": "None of the tokens were changed",
+	"SPACE1889.TokenLifebarDisplayType": "Life bar display mode:",
+	"SPACE1889.TokenNameDisplayType": "Token name display mode:",
+	"SPACE1889.TokenForceChange": "Should the new mode be forced for all tokens on the scene? Otherwise only the tokens with both values set to <i>\"Never Displayed\"</i> will be changed.",
+
 
 	"SPACE1889.Warning": "Warning",
 	"SPACE1889.UnableToLoadImage": " Unable to Load Image",

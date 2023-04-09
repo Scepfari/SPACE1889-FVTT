@@ -20,6 +20,8 @@
 	"CONTROLS.Space1889MenuGMScreen": "SL Schirm",
 	"CONTROLS.Space1889MenuHelp": "Bedienungshilfe",
 	"CONTROLS.Space1889MenuShowImage": "Bild in Chat anzeigen",
+	"CONTROLS.Space1889MenuShowNameAndBar": "Aktiviere Token Name und Lebensleiste Anzeige für alle Spieler",
+	"CONTROLS.Space1889MenuNpcsDrawWeapon": "Alle NSCs machen ihre Waffen bereit, ohne Chatanzeige für die Spieler",
 
 	"SPACE1889.Pc": "SC",
 	"SPACE1889.Npc": "NSC",
@@ -254,6 +256,8 @@
 	"SPACE1889.WeaponQuickDrawReadyOneHand": "Die Waffe {weapon} erscheint in der {hand} (Instinktive Aktion)",
 	"SPACE1889.WeaponQuickDrawReadyTwoHanded": "Die Waffe {weapon} erscheint in den Händen (Instinktive Aktion)",
 	"SPACE1889.WeaponCanNotUsedIsNotReady": "Um die Waffe {weapon} einzusetzen muss sie Kampfbereit sein und das geht nur wenn man sie in den Händen hält.",
+	"SPACE1889.WeaponDrawReady": "{name} macht die Waffe {weapon} bereit",
+	"SPACE1889.WeaponIsAlreadyReady": "{name} ist schon bereit mit Waffe {weapon}",
 
 	"SPACE1889.VehicleTypeOrClass": "Typ / Klasse",
 	"SPACE1889.VehicleIsAirship": "Ist Luftschiff",
@@ -3166,6 +3170,17 @@
 	"SPACE1889.AddLinkedTokenContent": "Der Token den du hinzufügen willst, ist auf den Aktor verlinkt. Änderungen an diesem Token, verändern auch die anderen Token, die ebenfalls auf diesen Akteur referenzieren. Willst du das wirklich?",
 	"SPACE1889.AddLinkedTokenDoIt": "Ja, mach schon",
 	"SPACE1889.AddLinkedTokenUnlink": "Nein, Link entfernen",
+	"SPACE1889.SlOnly": "Die Funktion ist nur fur den Spielleiter",
+	"SPACE1889.PreferredWeaponType": "Bevorzugter Waffentyp",
+	"SPACE1889.RangedAttack": "Fernkampf",
+	"SPACE1889.NoMatter": "Egal",
+	"SPACE1889.FunctionCanceled": "Funktion wurde abgebrochen",
+	"SPACE1889.TokenChanged": "Token {name} wurde angepasst",
+	"SPACE1889.TokensNotChanged": "Keiner der Tokens wurder verändert",
+	"SPACE1889.TokenLifebarDisplayType": "Lebensbalken Anzeigemodus:",
+	"SPACE1889.TokenNameDisplayType": "Tokennamen Anzeigemodus:",
+	"SPACE1889.TokenForceChange": "Soll der neue Modus für alle Tokens auf der Szene erzwungen werden? Anderenfalls werden nur die Tokens, bei denen beide Werte auf <i>\"Niemals\"</i> stehen verändert.",
+
 
 	"SPACE1889.Warning": "Warnung",
 	"SPACE1889.UnableToLoadImage": " Bild konnte nicht geladen werden",
