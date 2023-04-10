@@ -670,7 +670,7 @@ export class Space1889ActorSheet extends ActorSheet {
 			ok: 
 			{
 			  icon: '',
-			  label: 'Los!',
+			  label: game.i18n.localize("SPACE1889.Go"),
 			  callback: (html) => 
 			  {
 				const selectedOption = html.find('#manoeverauswahl').val();
@@ -720,7 +720,7 @@ export class Space1889ActorSheet extends ActorSheet {
 			ok: 
 			{
 			  icon: '',
-			  label: 'Los!',
+			  label: game.i18n.localize("SPACE1889.Go"),
 			  callback: (html) => 
 			  {
 				const selectedOption = html.find('#manoeverauswahl').val();

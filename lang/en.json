@@ -3167,11 +3167,13 @@
 	"SPACE1889.PreferredWeaponType": "Preferred weapon type",
 	"SPACE1889.RangedAttack": "Ranged combat",
 	"SPACE1889.NoMatter": "No matter",
+	"SPACE1889.Go": "Go!",
 	"SPACE1889.FunctionCanceled": "Function was canceled",
 	"SPACE1889.TokenChanged": "Token {name} was adjusted",
 	"SPACE1889.TokensNotChanged": "None of the tokens were changed",
 	"SPACE1889.TokenLifebarDisplayType": "Life bar display mode:",
 	"SPACE1889.TokenNameDisplayType": "Token name display mode:",
+	"SPACE1889.TokenChangeDisplay": "Change token display",
 	"SPACE1889.TokenForceChange": "Should the new mode be forced for all tokens on the scene? Otherwise only the tokens with both values set to <i>\"Never Displayed\"</i> will be changed.",
 
 

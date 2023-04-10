@@ -3174,11 +3174,13 @@
 	"SPACE1889.PreferredWeaponType": "Bevorzugter Waffentyp",
 	"SPACE1889.RangedAttack": "Fernkampf",
 	"SPACE1889.NoMatter": "Egal",
+	"SPACE1889.Go": "Los!",
 	"SPACE1889.FunctionCanceled": "Funktion wurde abgebrochen",
 	"SPACE1889.TokenChanged": "Token {name} wurde angepasst",
 	"SPACE1889.TokensNotChanged": "Keiner der Tokens wurder verändert",
 	"SPACE1889.TokenLifebarDisplayType": "Lebensbalken Anzeigemodus:",
 	"SPACE1889.TokenNameDisplayType": "Tokennamen Anzeigemodus:",
+	"SPACE1889.TokenChangeDisplay": "Tokenanzeige ändern",
 	"SPACE1889.TokenForceChange": "Soll der neue Modus für alle Tokens auf der Szene erzwungen werden? Anderenfalls werden nur die Tokens, bei denen beide Werte auf <i>\"Niemals\"</i> stehen verändert.",
 
 

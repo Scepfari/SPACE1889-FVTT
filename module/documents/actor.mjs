@@ -1815,7 +1815,7 @@ export class Space1889Actor extends Actor
 						ok:
 						{
 							icon: '',
-							label: 'Los!',
+							label: game.i18n.localize("SPACE1889.Go"),
 							callback: (html) => myCallback(html)
 						},
 						abbruch:

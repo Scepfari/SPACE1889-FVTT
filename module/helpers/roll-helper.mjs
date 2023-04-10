@@ -267,7 +267,7 @@ export default class SPACE1889RollHelper
 						ok:
 						{
 							icon: '',
-							label: 'Los!',
+							label: game.i18n.localize("SPACE1889.Go"),
 							callback: (html) => myCallback(html)
 						},
 						abbruch:
@@ -1164,7 +1164,7 @@ export default class SPACE1889RollHelper
 					ok:
 					{
 						icon: '',
-						label: 'Los!',
+						label: game.i18n.localize("SPACE1889.Go"),
 						callback: (html) => 
 						{
 							const input = html.find('#anzahlDerWuerfel').val();
@@ -1592,7 +1592,7 @@ export default class SPACE1889RollHelper
 					ok:
 					{
 						icon: '',
-						label: 'Los!',
+						label: game.i18n.localize("SPACE1889.Go"),
 						callback: (html) => myCallback(html)
 					},
 					abbruch:

@@ -1358,7 +1358,7 @@ export default class SPACE1889Helper
 				ok:
 				{
 					icon: '',
-					label: 'Los!',
+					label: game.i18n.localize("SPACE1889.Go"),
 					callback: (html) => 
 					{
 						const rangedWeapon = html.find('#ranged')[0].checked;
@@ -1429,7 +1429,7 @@ export default class SPACE1889Helper
 		const nameHtml = this.getTokenDisplayOptions("name-select", game.i18n.localize("SPACE1889.TokenNameDisplayType"));
 
 		const dialogue = new Dialog({
-			title: `${game.i18n.localize("SPACE1889.WeaponReadyWeapon")}`,
+			title: `${game.i18n.localize("SPACE1889.TokenChangeDisplay")}`,
 			content: `
 				<form>
 				${barHtml}
@@ -1449,7 +1449,7 @@ export default class SPACE1889Helper
 				ok:
 				{
 					icon: '',
-					label: 'Los!',
+					label: game.i18n.localize("SPACE1889.Go"),
 					callback: (html) => 
 					{
 						options.force = html.find('#force')[0].checked;
