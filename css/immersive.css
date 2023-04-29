@@ -17,6 +17,10 @@
 	font-family: 'Times New Roman', Times, serif;
 }
 
+.space1889-immersive .scene-name {
+	font-family: 'Times New Roman', Times, serif;
+}
+
 .space1889-immersive .dialog-button {
 	font-family: 'Times New Roman', Times, serif;
 }
@@ -29,14 +33,31 @@
 	font-family: 'Times New Roman', Times, serif;
 }
 
+.space1889-immersive h3, .space1889-immersive h2, .space1889-immersive h1 {
+	font-family: 'Times New Roman', Times, serif;
+}
+
 .space1889-immersive body.system-space1889, .space1889-immersive .sidebar-tab button, .space1889-immersive .sidebar-tab .window-content, .space1889-immersive .sidebar-tab a, .space1889-immersive .sidebar-tab .encounters, .space1889-immersive .sidebar-tab .directory-list .folder, .space1889-immersive .sidebar-tab .chat-message, .space1889-immersive .sidebar-tab .message {
+	font-family: 'Times New Roman', Times, serif;
+}
+
+.space1889-immersive .sidebar-tab .directory-header {
+	font-family: 'Times New Roman', Times, serif;
+}
+
+.space1889-immersive .version, .space1889-immersive .build, .space1889-immersive .system, .space1889-immersive .modules {
+	font-family: 'Times New Roman', Times, serif;
+}
+
+.space1889-immersive .button {
 	font-family: 'Times New Roman', Times, serif;
 }
 
 .space1889-immersive #players {
 	background: none;
 	border: none;
-	box-shadow: none
+	box-shadow: none;
+	font-family: 'Times New Roman', Times, serif;
 }
 
 .space1889-immersive #players:after {
