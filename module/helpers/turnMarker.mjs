@@ -1,4 +1,5 @@
-export default class TurnMarker {
+export default class TurnMarker
+{
 	constructor() {
 		if (canvas.tokens[this.containerName] && !canvas.tokens[this.containerName].container.destroyed)
 			canvas.tokens[this.containerName].Destroy(true);
@@ -11,7 +12,8 @@ export default class TurnMarker {
 		this.img = this.markerImg;
 		this.speed = 0.5; //game.settings.get("space1889", "combatMarkerSpeed") / 10;
 		this.alpha = game.settings.get("space1889", "combatMarkerTransparency");
-		this.sprite = new PIXI.Sprite.from(this.img);
+		let texture = PIXI.Texture.from(this.img);
+		this.sprite = new PIXI.Sprite(texture);
 		this.sprite.alpha = this.alpha;
 		this.sprite.width=400
 		this.sprite.height=400
