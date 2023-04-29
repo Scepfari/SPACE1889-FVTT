@@ -218,10 +218,21 @@ Hooks.on('preCreateToken', (token, data, options, userId) =>
 		token.updateSource(modify);
 });
 
-  Hooks.on("renderPause", () => {
-    $("#pause img").attr("class", "pause-image");
-    $("#pause figcaption").attr("class", "pause-space1889");
-  });
+Hooks.on('preUpdateToken', (token, update, options, userId) => {
+	if ((update.x != undefined || update.y != undefined) /*&& !game.user.isGM*/)
+	{
+		let allow = SPACE1889Helper.canTokenMove(token, true);
+        if (!allow) {
+            delete update.x;
+            delete update.y;
+        }
+    }
+});
+
+Hooks.on("renderPause", () => {
+	$("#pause img").attr("class", "pause-image");
+	$("#pause figcaption").attr("class", "pause-space1889");
+});
 
 /* -------------------------------------------- */
 /*  Handlebars Helpers                          */

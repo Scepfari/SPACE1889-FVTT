@@ -1,4 +1,5 @@
 import TurnMarker from "../helpers/turnMarker.mjs";
+import SPACE1889RollHelper from "./roll-helper.mjs";
 
 export default class SPACE1889Helper
 {
@@ -1331,6 +1332,34 @@ export default class SPACE1889Helper
 			else
 				changeName();
 		}
+	}
+
+	static canTokenMove(token, notify = false)
+	{
+		const actor = token?.actor;
+		if (!actor)
+			return true;
+
+		const statusIds = SPACE1889RollHelper.getActiveEffectStates(actor);
+
+		if (statusIds.findIndex(element => element == "dead") >= 0)
+		{
+			return true;
+		}
+		else if (statusIds.findIndex(element => (element == "unconscious" || element == "paralysis" || element == "stun")) >= 0)
+		{
+			if (notify)
+				ui.notifications.info(game.i18n.localize("SPACE1889.EffectCanNotMoveInfo"));
+			return false;
+		}
+		else if (statusIds.findIndex(element => element == "prone") >= 0)
+		{
+			if (notify)
+				ui.notifications.info(game.i18n.localize("SPACE1889.EffectStandUpToMoveInfo"));
+			return false;
+		}
+
+		return true;
 	}
 
 	static async npcsDrawWeaponsWithDialog()
