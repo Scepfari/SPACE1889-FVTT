@@ -3157,7 +3157,6 @@
 
 	"SPACE1889.ExternalLinksTitel": "External Links",
 	"SPACE1889.ExternalLinksContent": "<p>Do you have any questions? Want to report a bug? Here are useful links:</p>",
-	"SPACE1889.ExternalLinksForum": "<div title=\"SPACE 1889 Clockwork Forum\">Forum</div>",
 	"SPACE1889.ExternalLinksDiscordFoundry": "<div title=\"Foundry Discord Server (en)\">Foundry VTT</div>",
 	"SPACE1889.ExternalLinksDiscordDieGiesserei": "<div title=\"German Foundry Discord Server\">Die Gießerei</div>",
 	"SPACE1889.ExternalLinksBugReport": "<div title=\"Report bugs in SPACE 1889 system directly on Github\">Report a bug</div>",

@@ -1631,18 +1631,6 @@ export default class SPACE1889Helper
 //			}
 //		}
 
-		if (isGerman)
-		{
-			dialogData.buttons.five = {
-				icon: '<img src="systems/space1889/icons/uhrwerkForumLogo.png" alt="logo Uhrwerk Forum" height="50px">',
-				label: game.i18n.localize("SPACE1889.ExternalLinksForum"),
-				callback: () =>
-				{
-					var windowObjectReference = window.open("https://community.uhrwerk-verlag.de/index.php?board=14.0", "_blank");
-				}
-			}
-		}
-
 		const add = game.data.addresses.remote.substr(8, 27) == 'freunde-der-oper.moltenhost';
 		if (add)
 		{
