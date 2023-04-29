@@ -618,12 +618,12 @@ export class Space1889Actor extends Actor
 				weapon.system.sizeMod = sizeMod;
 				weapon.system.skillRating = this._GetSkillLevel(actor, weapon.system.skillId, weapon.system.specializationId);
 				const attackBonusFromDamage = (weapon.system.isAreaDamage && actor.type != 'vehicle') ? 0 : weapon.system.damage;
-				const ammoBonus = weapon.system.ammunition.damageMod ? weapon.system.ammunition.damageMod : 0;
+				const ammoBonus = weapon.system.ammunition?.damageMod ? weapon.system.ammunition.damageMod : 0;
 				let offhandMod = ((actor.type == "character" || actor.type == "npc") && weapon.system.usedHands == "offHand" && SPACE1889Helper.getTalentLevel(this, "beidhaendig") == 0) ? -2 : 0;
 				weapon.system.attack = Math.max(0, attackBonusFromDamage + weapon.system.skillRating + weapon.system.sizeMod + ammoBonus + offhandMod);
 				weapon.system.attackAverage = (Math.floor(weapon.system.attack / 2)).toString() + (weapon.system.attack % 2 == 0 ? "" : "+");
 			}
-			const damageType = weapon.system.ammunition.damageType ? weapon.system.ammunition.damageType : weapon.system.damageType;
+			const damageType = weapon.system.ammunition?.damageType ? weapon.system.ammunition.damageType : weapon.system.damageType;
 			weapon.system.damageTypeDisplay = game.i18n.localize(CONFIG.SPACE1889.damageTypeAbbreviations[damageType]);
 			if (!SPACE1889Helper.isCreature(actor))
 			{
@@ -639,12 +639,15 @@ export class Space1889Actor extends Actor
 
 	prepareWeaponAmmunition(weapon, actor)
 	{
+		if (!weapon || !weapon.system.ammunition)
+			return;
+
 		delete weapon.system.ammunition.damageMod;
 		delete weapon.system.ammunition.rangeModFactor;
 		delete weapon.system.ammunition.damageType;
 		delete weapon.system.ammunition.isShotgunLike;
 
-		if (!weapon || !actor || !actor.system.ammunitions || actor.system.ammunitions.length == 0 || !weapon.system.isRangeWeapon)
+		if (!actor || !actor.system.ammunitions || actor.system.ammunitions.length == 0 || !weapon.system.isRangeWeapon)
 			return;
 
 		let list = [];
