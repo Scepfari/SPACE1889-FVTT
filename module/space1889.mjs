@@ -11,11 +11,13 @@ import { registerSystemSettings } from "./settings.mjs";
 import { Space1889Translation } from "./helpers/translation.mjs";
 import { Space1889Migration } from "./helpers/migration.mjs";
 import { Space1889Tour } from "./tours/space1889_tour.mjs";
+import SPACE1889Hotbar from "./ui/hotbar.mjs"
 import SPACE1889Helper from "./helpers/helper.mjs";
 import SPACE1889RollHelper from "./helpers/roll-helper.mjs";
 import { Space1889Combat, Space1889Combatant } from "./helpers/combatTracker.mjs";
 import TurnMarker from "./helpers/turnMarker.mjs";
-import { registerGetSceneControlButtonsHook } from "./hud/controls.mjs";
+import { registerGetSceneControlButtonsHook } from "./ui/controls.mjs";
+import * as CleanHeader from "./ui/cleanHeader.mjs";
 
 
 
@@ -43,6 +45,7 @@ Hooks.once('init', async function() {
 	CONFIG.Item.documentClass = Space1889Item;
 	CONFIG.Combat.documentClass = Space1889Combat;
 	CONFIG.Combatant.documentClass = Space1889Combatant;
+	CONFIG.ui.hotbar = SPACE1889Hotbar;
 
 	// Register sheet application classes
 	Actors.unregisterSheet("core", ActorSheet);
@@ -63,7 +66,14 @@ Hooks.once('init', async function() {
 	};
 
 	// Preload Handlebars templates.
-	return preloadHandlebarsTemplates();
+	let retVal = preloadHandlebarsTemplates();
+
+	$('body').addClass(game.settings.get("space1889", "globalStyle"));
+
+	CleanHeader.default();
+	CleanHeader.handlePopout();
+
+	return retVal;
 });
 
 Hooks.on("ready", async function () 

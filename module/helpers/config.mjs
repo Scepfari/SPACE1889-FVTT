@@ -845,6 +845,11 @@ SPACE1889.crewExperience = {
 	"custom": "SPACE1889.VehicleCrewExperienceCustom"
 }
 
+SPACE1889.styles = {
+    "space1889-immersive": "SPACE1889.ConfigGlobalStyleImmersive",
+    "space1889-naked": "SPACE1889.ConfigGlobalStyleNaked"
+}
+
 SPACE1889.umlautMap = {
 	'\u00dc': 'UE',
 	'\u00c4': 'AE',

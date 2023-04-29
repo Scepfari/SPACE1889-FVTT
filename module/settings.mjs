@@ -3,7 +3,31 @@ import TurnMarker from "./helpers/turnMarker.mjs";
 
 export const registerSystemSettings = function ()
 {
-    game.settings.register("space1889", "dice",
+	const styles = duplicate(CONFIG.SPACE1889.styles)
+    for(let key of Object.keys(styles)){
+        styles[key] = game.i18n.localize(styles[key])
+    }
+    game.settings.register("space1889", "globalStyle",
+        {
+            name: "SPACE1889.ConfigGlobalStyle",
+            hint: "SPACE1889.ConfigGlobalStyleInfo",
+            scope: "client",
+            config: true,
+            default: "space1889-immersive",
+            type: String,
+            choices:
+            {
+                "space1889-immersive": game.i18n.localize("SPACE1889.ConfigGlobalStyleImmersive"),
+                "space1889-naked": game.i18n.localize("SPACE1889.ConfigGlobalStyleNaked"),
+			},
+			onChange: async (val) =>
+			{
+				$('body').removeClass(Object.keys(styles).join(" ")).addClass(val)
+			}
+        }
+    );
+
+	game.settings.register("space1889", "dice",
         {
             name: "SPACE1889.ConfigDice",
             hint: "SPACE1889.ConfigDiceInfo",

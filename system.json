@@ -19,7 +19,7 @@
 		}
 	],
 	"esmodules": [ "./module/space1889.mjs" ],
-	"styles": [ "css/space1889.css" ],
+	"styles": [ "css/space1889.css", "css/immersive.css" ],
 	"scripts": [],
 	"packs": [
 		{

@@ -728,3 +728,31 @@ font-size: 12px;
 	color: #f4eded;
 }
 
+
+.space1889list {
+	list-style-type: none;
+}
+
+.space1889list li {
+	position: relative;
+}
+
+.space1889list li::before {
+	content: '';
+	display: inline-block;
+	height: 15px;
+	width: 15px;
+	position: absolute;
+	left: -20px;
+	background-image: url('../icons/mars50px.webp');
+	background-size: contain;
+	background-repeat: no-repeat;
+}
+
+
+#hotbar .bar-controls a:hover {
+	transform: scale(1.4);
+}
+
+
+
