@@ -219,7 +219,7 @@ Hooks.on('preCreateToken', (token, data, options, userId) =>
 });
 
 Hooks.on('preUpdateToken', (token, update, options, userId) => {
-	if ((update.x != undefined || update.y != undefined) /*&& !game.user.isGM*/)
+	if ((update.x != undefined || update.y != undefined) && !game.user.isGM)
 	{
 		let allow = SPACE1889Helper.canTokenMove(token, true);
         if (!allow) {
