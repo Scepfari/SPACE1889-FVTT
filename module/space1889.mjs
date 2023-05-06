@@ -94,24 +94,42 @@ Hooks.once("setup", () =>
 {
 	game.keybindings.register("space1889", "combatTrackerNext", {
 		name: "COMBAT.TurnNext",
-		hint: game.i18n.localize("COMBAT.TurnNext"),
+		hint: game.i18n.localize("SPACE1889.KeyInfoCombatNextTurn"),
 		editable: [{ key: "KeyN" }],
 		onDown: () =>
 		{
 			if (game.combat?.combatant?.isOwner)
 				game.combat.nextTurn();
 		}
-	})
+	});
 	game.keybindings.register("space1889", "combatTrackerPrevious", {
 		name: "COMBAT.TurnPrev",
-		hint: game.i18n.localize("COMBAT.TurnPrev"),
+		hint: game.i18n.localize("SPACE1889.KeyInfoCombatPrevTurn"),
 		editable: [{ key: "KeyV" }],
 		onDown: () =>
 		{
 			if (game.combat?.combatant?.isOwner)
 				game.combat.previousTurn();
 		}
-	})
+	});
+	game.keybindings.register("space1889", "combatToggleMovementLimiter", {
+		name: "SPACE1889.KeyMovementLimiter",
+		hint: game.i18n.localize("SPACE1889.KeyInfoMovementLimiter"),
+		editable: [{ key: "KeyB", modifiers: [KeyboardManager.MODIFIER_KEYS.CONTROL] }],
+		restricted: true,
+		onDown: () =>
+		{
+			if (game.user.isGM)
+			{
+				const oldState = game.settings.get("space1889", "useTokenMovementLimiterForGM");
+				game.settings.set("space1889", "useTokenMovementLimiterForGM", !oldState);
+				if (oldState)
+					ui.notifications.info(game.i18n.localize("SPACE1889.KeyMovementLimiterDeactive"));
+				else
+					ui.notifications.info(game.i18n.localize("SPACE1889.KeyMovementLimiterActive"));
+			}
+		}
+	});
 
 	registerGetSceneControlButtonsHook();
 })
@@ -219,7 +237,8 @@ Hooks.on('preCreateToken', (token, data, options, userId) =>
 });
 
 Hooks.on('preUpdateToken', (token, update, options, userId) => {
-	if ((update.x != undefined || update.y != undefined) && !game.user.isGM)
+	if ((update.x != undefined || update.y != undefined) &&
+		(!game.user.isGM || game.settings.get("space1889", "useTokenMovementLimiterForGM") ))
 	{
 		let allow = SPACE1889Helper.canTokenMove(token, true);
         if (!allow) {

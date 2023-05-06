@@ -216,4 +216,15 @@ export const registerSystemSettings = function ()
 				SPACE1889Helper.refreshTurnMarker();
 		}
 	});
+
+    game.settings.register("space1889", "useTokenMovementLimiterForGM",
+	    {
+            name: "SPACE1889.ConfigUseGmTokenMovementLimiter",
+            hint: "SPACE1889.ConfigUseGmTokenMovementLimiterInfo",
+		    scope: "world",
+		    config: true,
+		    default: false,
+		    type: Boolean
+        });
+
 }
