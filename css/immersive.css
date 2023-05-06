@@ -49,7 +49,7 @@
 	font-family: 'Times New Roman', Times, serif;
 }
 
-.space1889-immersive .button {
+.space1889-immersive button {
 	font-family: 'Times New Roman', Times, serif;
 }
 
@@ -167,6 +167,7 @@
 	border-radius: 5px;
 	z-index: -1;
 	background-position: left 0px, right 0px;
+	padding-right: 16px;
 }
 
 .space1889-immersive .journal-entry-pages {
