@@ -740,10 +740,11 @@ font-size: 12px;
 .space1889list li::before {
 	content: '';
 	display: inline-block;
-	height: 15px;
-	width: 15px;
+	height: 13px;
+	width: 13px;
 	position: absolute;
 	left: -20px;
+	top: 1px;
 	background-image: url('../icons/mars50px.webp');
 	background-size: contain;
 	background-repeat: no-repeat;
