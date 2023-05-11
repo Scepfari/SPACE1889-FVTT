@@ -12,20 +12,72 @@ export default class SPACE1889RollHelper
 		return { showDialog: showDialog, showInfoOnly: showInfoOnly, whisperInfo: !doNotWhisperInfo, specialDialog: specialDialog };
 	}
 
-	static rollItem(item, actor, event)
+	static rollItemFromEvent(item, actor, event)
 	{
 		if (item == undefined)
 			return;
 
 		const evaluation = this.getEventEvaluation(event);
-		const dieCount = this.getDieCount(item, actor);
 		if (evaluation.showInfoOnly)
 			return this.rollItemInfo(item, actor, evaluation.whisperInfo);
 
-		if (item.type == 'talent')
-			return this.rollSpecialTalent(item, actor, dieCount, evaluation.showDialog)
-		return this.rollSpecial(item, actor, dieCount, evaluation.showDialog);
+		const dieCount = this.getDieCount(item, actor);
+		this.rollItem(item, actor, dieCount, evaluation.showDialog);
 	}
+
+	static rollItem(item, actor, dieCount, showDialog)
+	{
+		if (item.type == "weapon" || item.isAttackTalent())
+		{
+			const targetInfo = SPACE1889Helper.getCombatSupportTargetInfo()
+			if (targetInfo.combatSupport && (targetInfo.noTarget || targetInfo.isDead))
+			{
+				this.reallyAttackDialog(item, actor, dieCount, showDialog, targetInfo);
+				return;
+			}
+		}
+
+		if (item.type == 'talent')
+			this.rollSpecialTalent(item, actor, dieCount, showDialog)
+		else
+			this.rollSpecial(item, actor, dieCount, showDialog);
+	}
+
+	static reallyAttackDialog(item, actor, dieCount, showDialog, info)
+	{
+		const text = info.noTarget ? game.i18n.localize("SPACE1889.NoTarget") : game.i18n.localize("SPACE1889.DeadTarget");
+		const titelInfo = game.i18n.localize("SPACE1889.DoAttack");
+		let dialogue = new Dialog(
+			{
+				title: `${titelInfo}`,
+				content: `<p>${text}</p>`,
+				buttons:
+				{
+					ok:
+					{
+						icon: '',
+						label: game.i18n.localize("SPACE1889.Go"),
+						callback: (html) => myCallback(html)
+					},
+					abbruch:
+					{
+						label: 'Abbrechen',
+						callback: () => { ui.notifications.info(game.i18n.localize("SPACE1889.CancelRoll")) },
+						icon: `<i class="fas fa-times"></i>`
+					}
+				},
+				default: "ok"
+			}).render(true);
+
+		async function myCallback(html)
+		{
+			if (item.type == 'talent')
+				SPACE1889RollHelper.rollSpecialTalent(item, actor, dieCount, showDialog)
+			else
+				SPACE1889RollHelper.rollSpecial(item, actor, dieCount, showDialog);
+		}
+	}
+
 
 	static getDieCount(item, actor)
 	{
@@ -58,8 +110,10 @@ export default class SPACE1889RollHelper
 				const skillItem = actor.items.find(e => e.system.id == "heimlichkeit");
 				if (skillItem != undefined)
 				{
-					const weapon = SPACE1889RollHelper.getWeaponFromTalent(actor, item);
-					const weaponDamage = weapon ? weapon.system.damage : 0;
+					const theWeaponInfo = SPACE1889RollHelper.getWeaponWithDamageFromTalent(actor, item, true);
+					if (!theWeaponInfo.weapon)
+						return 0;
+					const weaponDamage = theWeaponInfo.damage;
 					return Math.max(0, skillItem.system.rating + weaponDamage + ((item.system.level.value - 1) * 2));
 				}
 			}
@@ -72,15 +126,41 @@ export default class SPACE1889RollHelper
 		}
 	}
 
-	static getWeaponFromTalent(actor, talentItem)
+	static getWeaponFromTalent(actor, talentItem, notify = false)
 	{
+		const values = this.getWeaponWithDamageFromTalent(actor, talentItem, notify);
+		return values.weapon;
+	}
+
+	static getWeaponWithDamageFromTalent(actor, talentItem, notify = false)
+	{
+		let theWeapon = undefined;
+		let maxDamage = -1000;
 		if (talentItem.system.id == "assassine")
 		{
-			// nimmt man einfach die erste passende Waffe oder die mit dem größten schaden, oder die kleinste oder ....?
-			// die Erste:
-			return actor.system.weapons.find(w => (w.system.skillId == "nahkampf" || w.system.skillId == "waffenlos") && w.system.location == "koerper");
+			// nimmt die in den Händen gehaltene Nahkampfwaffe, die den meisten Schaden verursacht, beachtet Nebenhandabzug
+
+			for (const weapon of actor.system.weapons)
+			{
+				if (weapon.system.usedHands == "none" || weapon.system.skillId != "nahkampf")
+					continue;
+
+				let malus = 0;
+				if (weapon.system.usedHands == "offHand")
+					malus = SPACE1889Helper.getTalentLevel(actor, "beidhaendig") == 0 ? -2 : 0
+				let damage = weapon.system.damage + malus;
+				if (damage > maxDamage)
+				{
+					maxDamage = damage;
+					theWeapon = weapon;
+				}
+			}
+			if (!theWeapon && notify)
+				ui.notifications.info(game.i18n.localize("SPACE1889.NoMeleeWeaponAssasine"));
 		}
-		return undefined;
+		if (!theWeapon)
+			return { weapon: theWeapon };
+		return { weapon: theWeapon, damage: maxDamage };
 	}
 
 	/**
@@ -141,6 +221,9 @@ export default class SPACE1889RollHelper
 	static getActiveEffectStates(actor)
 	{
 		let effectList = [];
+		if (!actor)
+			return effectList;
+
 		for (let effect of actor.effects._source)
 		{
 			const statusId = effect.flags?.core?.statusId;

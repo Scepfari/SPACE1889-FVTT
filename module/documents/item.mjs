@@ -310,7 +310,7 @@ export class Space1889Item extends Item {
 	*/
 	async rollSpecial(dieCount, showDialog) 
 	{
-		SPACE1889RollHelper.rollSpecial(this, this.actor, dieCount, showDialog);
+		SPACE1889RollHelper.rollItem(this, this.actor, dieCount, showDialog);
 	}
 
 	/**
@@ -320,7 +320,7 @@ export class Space1889Item extends Item {
 	*/
 	async rollSpecialTalent(dieCount, showDialog) 
 	{
-		SPACE1889RollHelper.rollSpecialTalent(this, this.actor, dieCount, showDialog);
+		SPACE1889RollHelper.rollItem(this, this.actor, dieCount, showDialog);
 	}
 }
 

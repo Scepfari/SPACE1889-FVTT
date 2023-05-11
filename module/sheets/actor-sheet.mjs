@@ -1323,43 +1323,11 @@ export class Space1889ActorSheet extends ActorSheet {
 			{
 				const itemId = element.closest('.item').dataset.itemId;
 				const item = this.actor.items.get(itemId);
-				if (item && item.type == "talent" && item.system.isRollable)
+				if (item && item.type == "talent" && item.system.isRollable && canRoll)
 				{
-					const showDialog = (event.shiftKey || event.ctrlKey);
-					if (item.system.id == "geschaerfterSinn" && canRoll)
-					{
-						const dieCount = Math.max(this.actor.system.secondaries.perception.total + Number(item.system.bonus), 0);
-						return item.rollSpecialTalent(dieCount, showDialog)
-					}
-					else if (item.system.id == "paralysierenderSchlag" && canRoll)
-					{
-						const skillItem = this.actor.items.find(e => e.system.id == "waffenlos");
-						if (skillItem != undefined)
-						{
-							const dieCount = Math.max(0, skillItem.system.rating + ((item.system.level.value - 1) * 2));
-							return item.rollSpecialTalent(dieCount, showDialog);
-						}
-					}
-					else if (item.system.id == "assassine" && canRoll)
-					{
-						const skillItem = this.actor.items.find(e => e.system.id == "heimlichkeit");
-						if (skillItem != undefined)
-						{
-							const dieCount = Math.max(0, skillItem.system.rating + ((item.system.level.value - 1) * 2));
-							return item.rollSpecialTalent(dieCount, showDialog);
-						}
-					}
-					else if (item.system.id == "eigenartigerKampfstil" && canRoll)
-					{
-						const skillItem = this.actor.items.find(e => e.system.id == item.system.bonusTarget);
-						if (skillItem != undefined)
-						{
-							const dieCount = SPACE1889RollHelper.getTalentDieCount(item, this.actor);
-							return item.rollSpecialTalent(dieCount, showDialog);
-						}
-					}
-					return item.roll();
+					return SPACE1889RollHelper.rollItemFromEvent(item, this.actor, event);
 				}
+				return item.roll();
 			}
 			else if (dataset.rollType == 'actor' && dataset.rollDiecount && dataset.rollKey)
 			{

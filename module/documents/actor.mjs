@@ -1689,7 +1689,7 @@ export class Space1889Actor extends Actor
 		const item = this.system.skills.find(e => e.system.id == key);
 		if (item != undefined)
 		{
-			SPACE1889RollHelper.rollItem(item, this, event);
+			SPACE1889RollHelper.rollItemFromEvent(item, this, event);
 		}
 	}
 
@@ -1698,7 +1698,7 @@ export class Space1889Actor extends Actor
 		const item = this.system.speciSkills.find(e => e.system.id == key);
 		if (item != undefined)
 		{
-			SPACE1889RollHelper.rollItem(item, this, event);
+			SPACE1889RollHelper.rollItemFromEvent(item, this, event);
 		}
 	}
 
@@ -1710,7 +1710,7 @@ export class Space1889Actor extends Actor
 			if (this.type == "vehicle")
 				SPACE1889RollHelper.rollManoeuver("Attack", this, event, item._id);
 			else
-				SPACE1889RollHelper.rollItem(item, this, event);
+				SPACE1889RollHelper.rollItemFromEvent(item, this, event);
 		}
 	}
 
@@ -1718,9 +1718,7 @@ export class Space1889Actor extends Actor
 	{
 		const item = this.system.talents.find(e => e.system.id == key);
 		if (item != undefined)
-		{
-			SPACE1889RollHelper.rollItem(item, this, event);
-		}
+			SPACE1889RollHelper.rollItemFromEvent(item, this, event);
 	}
 
 	rollDefense(key, event)

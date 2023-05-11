@@ -1680,4 +1680,19 @@ export default class SPACE1889Helper
 		};
 		return { data: dialogData, options: dialogOptions };
 	}
+
+
+	static getCombatSupportTargetInfo()
+	{
+		if (!game.settings.get("space1889", "combatSupport"))
+			return { combatSupport: false, noTarget: false, isDead: false};
+
+		const noTarget = game.user.targets.size == 0;
+		let isDead = false;
+		const statusIds = SPACE1889RollHelper.getActiveEffectStates(game.user.targets.first()?.actor);
+		if (statusIds.findIndex(element => element == "dead") >= 0)
+			isDead = true;
+
+		return { combatSupport: true, noTarget: noTarget, isDead: isDead };
+	}
 }
