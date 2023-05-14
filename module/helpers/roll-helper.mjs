@@ -62,7 +62,6 @@ export default class SPACE1889RollHelper
 					abbruch:
 					{
 						label: 'Abbrechen',
-						callback: () => { ui.notifications.info(game.i18n.localize("SPACE1889.CancelRoll")) },
 						icon: `<i class="fas fa-times"></i>`
 					}
 				},
@@ -302,7 +301,7 @@ export default class SPACE1889RollHelper
 		if (addAutoDefense && targetId != "")
 		{
 			let controlledToken = SPACE1889Helper.getControlledTokenDocument();
-			if (actor._id == controlledToken.actorId)
+			if (actor._id == controlledToken?.actorId)
 			{
 				let distanceInfo = DistanceMeasuring.getDistanceInfo(controlledToken, game.user.targets.first().document);
 				let isRangedCombat = false;
