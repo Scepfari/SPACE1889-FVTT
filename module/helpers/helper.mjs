@@ -38,9 +38,17 @@ export default class SPACE1889Helper
 		let threshold = 0;
 		const level = this.getTalentLevel(actor, "schmerzresistenz");
 		if (level > 0)
-			threshold -= (2 * level);
+			threshold -= (2 * level) + 1;
 
 		return threshold;
+	}
+
+	static getHealthDeductionThreshold(actor)
+	{
+		const level = this.getTalentLevel(actor, "schmerzresistenz");
+		if (level > 0)
+			return (-2 * level);
+		return 0;
 	}
 
 	static getDamageTuple(actor, ignoreThisItemId = "")

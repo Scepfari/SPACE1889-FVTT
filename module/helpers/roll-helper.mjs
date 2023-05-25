@@ -847,24 +847,31 @@ export default class SPACE1889RollHelper
 
 		const autoStabilize = SPACE1889Helper.isAutoStabilize(actor);
 		const incapacitateThreshold = SPACE1889Helper.getIncapacitateThreshold(actor);
-		let unconscious = damageTuple.nonLethal > 0 && nonLethalValue < incapacitateThreshold && lethalValue > deathThreshold;
+		const nonLethalUnconsciousThreshold = incapacitateThreshold == 0 ? -1 : incapacitateThreshold;
+		let unconscious = damageTuple.nonLethal > 0 && nonLethalValue <= incapacitateThreshold && lethalValue > deathThreshold;
 		let gesamtInfo = "";
 
 		if (isCharakter)
 		{
-			if (lethalValue == incapacitateThreshold)
+			if (newHealth <= incapacitateThreshold)
 			{
-				gesamtInfo += "<b>" + game.i18n.localize("SPACE1889.Incapacitate") + ":</b> " + game.i18n.format("SPACE1889.ChatInfoIncapacitate", { damageTypeAbbr: game.i18n.localize("SPACE1889.LethalAbbr") }) + "<br>";
+				if (lethalValue <= 0)
+					gesamtInfo += "<b>" + game.i18n.localize("SPACE1889.Incapacitate") + ":</b> " + game.i18n.format("SPACE1889.ChatInfoIncapacitate", { damageTypeAbbr: game.i18n.localize("SPACE1889.LethalAbbr") }) + "<br>";
+				else
+					gesamtInfo += "<b>" + game.i18n.localize("SPACE1889.Exhausted") + ":</b> " + game.i18n.format("SPACE1889.ChatInfoIncapacitate", { damageTypeAbbr: game.i18n.localize("SPACE1889.NonLethalAbbr") }) + "<br>";
 			}
+
 			if (lethalValue < 0 && lethalValue > deathThreshold)
 			{
 				gesamtInfo += "<b>" + game.i18n.localize("SPACE1889.DangerOfDeath") + ":</b> ";
 				if (autoStabilize)
 					gesamtInfo += game.i18n.localize("SPACE1889.ChatInfoDangerOfDeathAutoSuccess") + "<br>";
 				else
+				{
 					gesamtInfo += game.i18n.localize("SPACE1889.ChatInfoDangerOfDeath") + "<br>";
-				if (lethalValue < incapacitateThreshold)
-					unconscious = true;
+					if (lethalValue < incapacitateThreshold)
+						unconscious = true;
+				}
 			}
 			if (unconscious)
 			{
@@ -876,13 +883,6 @@ export default class SPACE1889RollHelper
 				gesamtInfo += "<b>" + game.i18n.localize("SPACE1889.Dead") + ":</b> ";
 				gesamtInfo += game.i18n.localize("SPACE1889.ChatInfoDead") + "<br>";
 				effects.push({ name: "dead", rounds: this.getMaxRounds() });
-			}
-			if (damageTuple.nonLethal > 0)
-			{
-				if (nonLethalValue == incapacitateThreshold)
-				{
-					gesamtInfo += "<b>" + game.i18n.localize("SPACE1889.Exhausted") + ":</b> " + game.i18n.format("SPACE1889.ChatInfoIncapacitate", { damageTypeAbbr: game.i18n.localize("SPACE1889.NonLethalAbbr") }) + "<br>";
-				}
 			}
 		}
 		else if (newHealth <= 0)

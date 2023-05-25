@@ -425,6 +425,14 @@ export class Space1889Actor extends Actor
 
 		this.calcAndSetSecondaries(actor)
 		actor.system.health.max = actor.system.abilities.con.total + actor.system.abilities.wil.total + actor.system.secondaries.size.total + this.getBonusFromTalents("max", "health", items);
+		actor.system.healthDeduction = 0;
+		if (!SPACE1889Helper.isCreature(actor))
+		{
+			this.CalcAndSetHealth(actor);
+			const deductionTh = SPACE1889Helper.getHealthDeductionThreshold(actor);
+			if (deductionTh > actor.system.health.value)
+				actor.system.healthDeduction = deductionTh - actor.system.health.value;
+		}
 
 		this.calcAndSetSkillsAndSpecializations(actor)
 
@@ -521,11 +529,15 @@ export class Space1889Actor extends Actor
 			let underlyingAttribute = this._GetAttributeBase(actor, skl);
 			skl.system.basis = actor.system.abilities[underlyingAttribute].total;
 			skl.system.baseAbilityAbbr = game.i18n.localize(CONFIG.SPACE1889.abilityAbbreviations[underlyingAttribute]);
-			let sizeMod = 0;
+			let deduction = actor.system.healthDeduction;
 			if (skl.system.id == 'heimlichkeit' && actor.system.secondaries.size.total != 0)
-				sizeMod = actor.system.secondaries.size.total;
+				deduction += actor.system.secondaries.size.total;
 
-			skl.system.rating = Math.max(0, skl.system.basis + skl.system.level + skl.system.talentBonus - sizeMod);
+			if (deduction > 0)
+				skl.system.talentBonus -= deduction;
+
+			const rating = skl.system.basis + skl.system.level + skl.system.talentBonus;
+			skl.system.rating = Math.max(0, rating);
 			if (skl.system.isSkillGroup && skl.system.skillGroupName.length > 0)
 				skl.system.skillGroup = game.i18n.localize(CONFIG.SPACE1889.skillGroups[skl.system.skillGroupName]);
 
@@ -539,8 +551,8 @@ export class Space1889Actor extends Actor
 			{
 				if (spe.system.underlyingSkillId == skl.system.id)
 				{
-					spe.system.basis = skl.system.rating;
-					spe.system.rating = spe.system.basis + spe.system.level + spe.system.talentBonus;
+					spe.system.basis = rating;
+					spe.system.rating = Math.max(0, spe.system.basis + spe.system.level + spe.system.talentBonus);
 				}
 			}
 		}
