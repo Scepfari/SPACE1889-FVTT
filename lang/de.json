@@ -258,6 +258,7 @@
 	"SPACE1889.WeaponCanNotUsedIsNotReady": "Um die Waffe {weapon} einzusetzen muss sie Kampfbereit sein und das geht nur wenn man sie in den Händen hält.",
 	"SPACE1889.WeaponDrawReady": "{name} macht die Waffe {weapon} bereit",
 	"SPACE1889.WeaponIsAlreadyReady": "{name} ist schon bereit mit Waffe {weapon}",
+	"SPACE1889.TokensSelectedOnly": "nur ausgewählte Figuren",
 
 	"SPACE1889.VehicleTypeOrClass": "Typ / Klasse",
 	"SPACE1889.VehicleIsAirship": "Ist Luftschiff",
@@ -2750,7 +2751,7 @@
 	"SPACE1889.AutoDefenseAttackParryBrawl": "Der {skill} Angriff wurde pariert, wobei sich {attackerName} an der Waffe verletzt ({damage}{type} Schaden).",
 	"SPACE1889.AreaDamageWeaponUse": "Der Angriff erfolgt nur mit der Waffenfertigkeit gegen die Aktive Abwehr. Bei Erfolg erleidet das Ziel den Waffenschaden (ggf. modifiziert durch Zielgröße)",
 	"SPACE1889.NoTokenPermission": "Du besitzt nicht die Rechte um die Aktion auszuführen, das können nur folgende Personen: {player}",
-	"SPACE1889.NoTokensSelected": "Keine Tokens ausgewählt",
+	"SPACE1889.NoTokensSelected": "Keine Figur ausgewählt",
 	"SPACE1889.NotInRange": "Du musst neben dem Ziel stehen, um es ohne Fernkampfwaffe anzugreifen",
 	"SPACE1889.ChatDistanceMod": "Enfernungsmodifikator: {mod}",
 	"SPACE1889.ChatModifier": "Modifikator: {mod}",
@@ -2762,6 +2763,8 @@
 	"SPACE1889.KeyInfoMovementLimiter": "Schaltet die Beschränkung der Bewegung von Figuren ein oder aus. Wenn aktiviert können Figuren mit den Zuständen Liegend, Betäubt, Gelähmt oder Bewusstlos nicht bewegt werden, außer sie haben auch den Zustand Tot. Die Abschaltung ist nur für den SL aktiv.",
 	"SPACE1889.KeyMovementLimiterActive": "Figuren Bewegungseinschränkung ist aktiv",
 	"SPACE1889.KeyMovementLimiterDeactive": "Figuren Bewegungseinschränkung ist für den Spielleiter deaktiviert",
+	"SPACE1889.KeyNpcsDrawWeapon": "NSCs machen ihre Waffen bereit",
+	"SPACE1889.KeyInfoNpcsDrawWeapon": "Bereitmachen der Waffen für alle ausgewählten, bzw. aller NSCs einer Szene, mit Nachfrage ob Nahkampf oder Fernkampfwaffen bevorzugt werden sollen. Gewählt wird die Waffe mit dem höchsten Schaden. Die entsprechenden Meldungen im Chat werden an den SL geflüstert. Schnellzugriff für die gleichnamige SPACE Menü Option.",
 	"SPACE1889.ConfigUseGmTokenMovementLimiter": "SL Figuren-Bewegungseinschränkung",
 	"SPACE1889.ConfigUseGmTokenMovementLimiterInfo": "aktiviert die Figuren Bewegungseinschränkung auch für den SL. Kann über die Tastenkombination [Strg + B] umgeschaltet werden.",
 

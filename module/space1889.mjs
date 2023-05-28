@@ -130,6 +130,19 @@ Hooks.once("setup", () =>
 			}
 		}
 	});
+	game.keybindings.register("space1889", "npcsDrawWeapon", {
+		name: "SPACE1889.KeyNpcsDrawWeapon",
+		hint: game.i18n.localize("SPACE1889.KeyInfoNpcsDrawWeapon"),
+		editable: [{ key: "KeyK" }],
+		restricted: true,
+		onDown: () =>
+		{
+			if (game.user.isGM)
+			{
+				SPACE1889Helper.npcsDrawWeaponsWithDialog();
+			}
+		}
+	});
 
 	registerGetSceneControlButtonsHook();
 })

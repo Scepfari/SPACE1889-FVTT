@@ -1372,11 +1372,20 @@ export default class SPACE1889Helper
 
 	static async npcsDrawWeaponsWithDialog()
 	{
+		let checkbox = '<ul class="space1889 sheet actor"><li class="flexrow"><div class="item-name">' + game.i18n.localize("SPACE1889.TokensSelectedOnly") + ':</div>';
+		checkbox += '<div class="item flexrow flex-group-left"><input type="checkbox" id="selected"';
+		if (canvas.tokens.controlled.length > 0)
+			checkbox += " checked>";
+		else
+			checkbox += ">";
+		checkbox += '</div></li></ul>'
+
 		let dialogue = new Dialog(
 		{
 			title: `${game.i18n.localize("SPACE1889.WeaponReadyWeapon")}`,
 			content: `
 				<form>
+					${checkbox}
 					<fieldset>
 						<legend>${game.i18n.localize("SPACE1889.PreferredWeaponType")}</legend>
             
@@ -1400,12 +1409,13 @@ export default class SPACE1889Helper
 					{
 						const rangedWeapon = html.find('#ranged')[0].checked;
 						const meleeWeapon = html.find('#melee')[0].checked;
+						const selectedOnly = html.find('#selected')[0].checked;
 						if (rangedWeapon)
-							this.npcsDrawWeapons("ranged");
+							this.npcsDrawWeapons("ranged", selectedOnly);
 						else if (meleeWeapon)
-							this.npcsDrawWeapons("melee");
+							this.npcsDrawWeapons("melee", selectedOnly);
 						else
-							this.npcsDrawWeapons();
+							this.npcsDrawWeapons("", selectedOnly);
 					}
 				},
 				abbruch:
@@ -1421,7 +1431,7 @@ export default class SPACE1889Helper
 		dialogue.render(true);		
 	}
 
-	static async npcsDrawWeapons(preferredWeapon)
+	static async npcsDrawWeapons(preferredWeapon, selectedOnly)
 	{
 		// ausschlieﬂlich vom SL kontrollierte Tokens werden ver‰ndert
 
@@ -1433,7 +1443,25 @@ export default class SPACE1889Helper
 			ui.notifications.info(game.i18n.localize("SPACE1889.SlOnly"));
 			return true;
 		}
-		for (let token of canvas.scene.tokens)
+
+
+		let tokenDocs = canvas.scene.tokens;
+		if (selectedOnly)
+		{
+			let tokDoc = [];
+			for (let token of canvas.tokens.controlled)
+			{
+				tokDoc.push(token.document);
+			}
+			if (tokDoc.length == 0)
+			{
+				ui.notifications.info(game.i18n.localize("SPACE1889.NoTokensSelected"));
+				return true;
+			}
+			tokenDocs = tokDoc;
+		}
+
+		for (let token of tokenDocs)
 		{
 			if (token._actor.type != "character" && token._actor.type != "npc")
 				continue;
