@@ -2877,6 +2877,12 @@
 	"SPACE1889.CompendiumFolderNameLandfahrzeuge": "Landfahrzeuge",
 	"SPACE1889.CompendiumFolderNameLuftfahrzeuge": "Luftfahrzeuge",
 	"SPACE1889.CompendiumFolderNameWasserfahrzeuge": "Wasserfahrzeuge",
+	"SPACE1889.CompendiumFolderNameActors": "Akteure",
+	"SPACE1889.CompendiumFolderNameNPC": "NSCs",
+	"SPACE1889.CompendiumFolderNameCreatures": "Kreaturen",
+	"SPACE1889.CompendiumFolderNameVehicle": "Fahrzeuge",
+	"SPACE1889.CompendiumFolderNameEquipment": "Ausrüstung",
+	"SPACE1889.CompendiumFolderNameCharacterFeatures": "Charakter Merkmale",
 
 	"SPACE1889.CompendiumExampleCharacter0eQJWUWWvZBzVGbW": "Kaltland-Barbar",
 	"SPACE1889.CompendiumExampleCharacter99304SMpxWK6t1UD": "Echsenmenschen-Schamanin",

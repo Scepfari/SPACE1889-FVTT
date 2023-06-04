@@ -113,7 +113,7 @@ export class Space1889Item extends Item {
 			}
 			else if (item.type == "container")
 			{
-				this.setLangIdAndLabel(item, "Container", true);
+				this.setLangIdAndLabel(item, "Item", true);
 			}
 			
 		}

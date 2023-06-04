@@ -385,7 +385,7 @@
 	],
 	"packFolders": [
 		{
-			"name": "CharakterMerkmale",
+			"name": "Charakter Merkmale",
 			"sorting": "m",
 			"packs": [
 				"fertigkeiten",
@@ -397,7 +397,7 @@
 			]
 		},
 		{
-			"name": "Ausrüstung",
+			"name": "Ausruestung",
 			"sorting": "m",
 			"packs": [
 				"gegenstaende",
@@ -410,55 +410,82 @@
 			]
 		},
 		{
-			"name": "Kreaturen",
+			"name": "Akteure",
 			"sorting": "m",
+			"color": "#ff0000",
 			"packs": [
-				"kreaturenmerkur",
-				"kreaturenvenus",
-				"kreaturenerde",
-				"kreaturenluna",
-				"kreaturenmars"
-			]
-		},
-		{
-			"name": "Fahrzeuge",
-			"sorting": "m",
-			"packs": [
-				"landfahrzeuge",
-				"wasserfahrzeuge",
-				"luftfahrzeuge",
-				"atherfahrzeuge"
-			]
-		},
-		{
-			"name": "Venusier",
-			"sorting": "m",
-			"packs": [
-				"nsc7archaischevenusier",
-				"nsc7entwickeltevenusier"
-			]
-		},
-		{
-			"name": "NPCs",
-			"sorting": "m",
-			"packs": [
-				"nsc1beamte",
-				"nsc1buehnenkuenstler",
-				"nsc1dienstpersonal",
-				"nsc1haendlerundkaufleute",
-				"nsc1handwerker",
-				"nsc2eingeborene",
-				"nsc3herrenunddamenvonstand",
-				"nsc4hochlandmarsianer",
-				"nsc4huegelmarsianer",
-				"nsc5militaer",
-				"nsc6amuesierdamen",
-				"nsc6gauner",
-				"nsc6gluecksspieler",
-				"nsc6schlaeger"
+				"beispielcharaktere"
 			],
-			"packFolders": [
-				"Venusier"
+			"folders": [
+				{
+					"name": "NPCs",
+					"sorting": "m",
+					"packs": [
+						"nsc2eingeborene",
+						"nsc3herrenunddamenvonstand",
+						"nsc5militaer"
+					],
+					"folders": [
+						{
+							"name": "Buerger und Dienstleister",
+							"sorting": "m",
+							"packs": [
+								"nsc1beamte",
+								"nsc1buehnenkuenstler",
+								"nsc1dienstpersonal",
+								"nsc1handwerker",
+								"nsc1haendlerundkaufleute"
+							]
+						},
+						{
+							"name": "Nachtleben und Unterwelt",
+							"sorting": "m",
+							"packs": [
+								"nsc6amuesierdamen",
+								"nsc6gauner",
+								"nsc6gluecksspieler",
+								"nsc6schlaeger"
+							]
+						},
+						{
+							"name": "Marsianer",
+							"sorting": "m",
+							"packs": [
+								"nsc4hochlandmarsianer",
+								"nsc4huegelmarsianer"
+							]
+						},
+						{
+							"name": "Venusier",
+							"sorting": "m",
+							"packs": [
+								"nsc7archaischevenusier",
+								"nsc7entwickeltevenusier"
+							]
+						}
+					]
+				},
+				{
+					"name": "Kreaturen",
+					"sorting": "m",
+					"packs": [
+						"kreaturenmerkur",
+						"kreaturenvenus",
+						"kreaturenerde",
+						"kreaturenluna",
+						"kreaturenmars"
+					]
+				},
+				{
+					"name": "Fahrzeuge",
+					"sorting": "m",
+					"packs": [
+						"landfahrzeuge",
+						"wasserfahrzeuge",
+						"luftfahrzeuge",
+						"atherfahrzeuge"
+					]
+				}
 			]
 		}
 	],

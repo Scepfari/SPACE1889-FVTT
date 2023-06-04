@@ -2877,6 +2877,12 @@
 	"SPACE1889.CompendiumFolderNameLandfahrzeuge": "Land Vehicles",
 	"SPACE1889.CompendiumFolderNameLuftfahrzeuge": "Air Vehicles",
 	"SPACE1889.CompendiumFolderNameWasserfahrzeuge": "Water vehicles",
+	"SPACE1889.CompendiumFolderNameActors": "Actors",
+	"SPACE1889.CompendiumFolderNameNPC": "NPCs",
+	"SPACE1889.CompendiumFolderNameCreatures": "Creatures",
+	"SPACE1889.CompendiumFolderNameVehicle": "Vehicle",
+	"SPACE1889.CompendiumFolderNameEquipment": "Equipment",
+	"SPACE1889.CompendiumFolderNameCharacterFeatures": "Character features",
 
 	"SPACE1889.CompendiumExampleCharacter0eQJWUWWvZBzVGbW": "Coldland barbarian",
 	"SPACE1889.CompendiumExampleCharacter99304SMpxWK6t1UD": "Lizardmen shaman",

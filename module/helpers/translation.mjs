@@ -170,8 +170,14 @@ export class Space1889Translation
 			if ((isNewVersion && currentLanguage != 'de') ||
 				(!isNewVersion && lastUsedLanguage != currentLanguage))
 			{
+				await this.updateFolderNames(currentLanguage);
 				await this.translateCompendiums();
 				game.settings.set("space1889", "lastCompendiumTranslationLanguage", currentLanguage + '|' + currentVersion);
+			}
+			else if (isNewerVersion(game.version, '10.291') && game.settings.get("space1889", "lastUsedFoundryVersion") === "9.28")
+			{
+				// frisch auf V11
+				await this.updateFolderNames(currentLanguage);
 			}
 		}
 
@@ -189,5 +195,81 @@ export class Space1889Translation
 				mergeObject(pack.metadata, { label: newLabel });
 		}
 		ui.sidebar.tabs.compendium.render();
+	}
+
+	static async updateFolderNames(currentLanguage)
+	{
+		if (!isNewerVersion(game.version, '10.291'))
+			return;
+
+		const folders = game.packs.folders;
+
+		const merkmale = ["space1889.fertigkeiten", "space1889.ressourcen", "space1889.schwachen", "space1889.spezialisierungen", "space1889.sprachen", "space1889.talente"];
+		const merkmaleInfo = this.isSameFolder(merkmale);
+		if (merkmaleInfo.isSame)
+			this.setFolderName(folders, merkmaleInfo.folderKey, "SPACE1889.CompendiumFolderNameCharacterFeatures");
+		
+		const equipmentList = ["space1889.gegenstaende", "space1889.rustungen", "space1889.waffen", "space1889.munition", "space1889.fahrzeugwaffen", "space1889.gelderde", "space1889.geldmars"];
+		const equipmentInfo = this.isSameFolder(equipmentList);
+		if (equipmentInfo.isSame)
+			this.setFolderName(folders, equipmentInfo.folderKey, "SPACE1889.CompendiumFolderNameEquipment");
+
+		const exampleActors = ["space1889.beispielcharaktere"];
+		const exampleActorsInfo = this.isSameFolder(exampleActors);
+		const vehicleList = ["space1889.atherfahrzeuge", "space1889.landfahrzeuge", "space1889.luftfahrzeuge", "space1889.wasserfahrzeuge"];
+		const vehicleInfo = this.isSameFolder(vehicleList);
+		const creatures = ["space1889.kreaturenmerkur", "space1889.kreaturenvenus", "space1889.kreaturenerde", "space1889.kreaturenluna", "space1889.kreaturenmars"];
+		const creaturesInfo = this.isSameFolder(creatures);
+		const nsc = ["space1889.nsc2eingeborene", "space1889.nsc3herrenunddamenvonstand", "space1889.nsc5militaer"];
+		const nscInfo = this.isSameFolder(nsc);
+		const venusier = ["space1889.nsc7archaischevenusier", "space1889.nsc7entwickeltevenusier"];
+		const venusierInfo = this.isSameFolder(venusier);
+		const marsianer = ["space1889.nsc4hochlandmarsianer", "space1889.nsc4huegelmarsianer"];
+		const marsianerInfo = this.isSameFolder(marsianer);
+		const bud = ["space1889.nsc1beamte", "space1889.nsc1buehnenkuenstler", "space1889.nsc1dienstpersonal", "space1889.nsc1handwerker", "space1889.nsc1haendlerundkaufleute"];
+		const budInfo = this.isSameFolder(bud);
+		const nacht = ["space1889.nsc6amuesierdamen","space1889.nsc6gauner","space1889.nsc6gluecksspieler","space1889.nsc6schlaeger"];
+		const nachtInfo = this.isSameFolder(nacht);
+
+		if (!exampleActorsInfo.isSame || !vehicleInfo.isSame || !creaturesInfo.isSame || !nscInfo.isSame ||
+			!venusierInfo.isSame || !marsianerInfo.isSame || !budInfo.isSame || !nachtInfo.isSame)
+			return;
+
+		if (budInfo.folderKey != marsianerInfo.folderKey && budInfo.folderKey != venusierInfo.folderKey && budInfo.folderKey != nachtInfo.folderKey &&
+			budInfo.folderKey != nscInfo.folderKey && vehicleInfo.folderKey != creaturesInfo.folderKey)
+		{
+			this.setFolderName(folders, exampleActorsInfo.folderKey, "SPACE1889.CompendiumFolderNameActors");
+			this.setFolderName(folders, vehicleInfo.folderKey, "SPACE1889.CompendiumFolderNameVehicle");
+			this.setFolderName(folders, creaturesInfo.folderKey, "SPACE1889.CompendiumFolderNameCreatures");
+			this.setFolderName(folders, nscInfo.folderKey, "SPACE1889.CompendiumFolderNameNPC");
+			this.setFolderName(folders, budInfo.folderKey, "SPACE1889.CompendiumFolderNameBuergerUndDienstleister");
+			this.setFolderName(folders, marsianerInfo.folderKey, "SPACE1889.CompendiumFolderNameMarsianer");
+			this.setFolderName(folders, venusierInfo.folderKey, "SPACE1889.CompendiumFolderNameVenusier");
+			this.setFolderName(folders, nachtInfo.folderKey, "SPACE1889.CompendiumFolderNameNachtlebenUndUnterwelt");
+		}
+	}
+
+	static setFolderName(folders, key, langKey)
+	{
+		const folder = folders.get(key);
+		folder?.update({ "name": game.i18n.localize(langKey) });
+	}
+
+	static isSameFolder(vehicleList)
+	{
+		const allConfig = game.settings.get('core', 'compendiumConfiguration');
+		let folderKeys = [];
+		for (let backKey of vehicleList)
+		{
+			const config = allConfig[backKey];
+			if (config)
+				folderKeys.push(config.folder)
+			else
+				folderKeys.push("");
+		}
+		if (folderKeys.length == 0)
+			return { isSame: false, folderKey: "" };
+
+		return {isSame: folderKeys.every((val, i, arr) => val === arr[0]), folderKey: folderKeys[0] };
 	}
 }
