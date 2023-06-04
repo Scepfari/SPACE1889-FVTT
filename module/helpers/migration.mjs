@@ -13,6 +13,7 @@ export class Space1889Migration
 			await this.fixVolleAbwehr(lastUsedVersion);
 			await this.ammunitionIntroduction(lastUsedVersion);
 			await this.weaponTwoHandedIntroduction(lastUsedVersion);
+			await this.containerIntroduction(lastUsedVersion);
 			await game.settings.set("space1889", "lastUsedSystemVersion", currentVersion);
 		}
 		if (game.user.isGM)
@@ -59,12 +60,18 @@ export class Space1889Migration
 		if (isNewerVersion(lastUsedVersion, lastNonFixVersion) || !game.user.isGM)
 			return;
 
+		let actorList = this.getAllActorsWithoutVehicleAndCreature();
+		await SPACE1889Helper.updateWeaponAndCreateAmmo(actorList);
+	}
+
+	static getAllActorsWithoutVehicleAndCreature()
+	{
 		let actorList = [];
 		for (const scene of game.scenes)
 		{
 			for (let token of scene.tokens)
 			{
-				if (token.actorLink || token.actor == undefined || token.actor.type == "vehicle")
+				if (token.actorLink || token.actor == undefined || token.actor.type == "vehicle" || token.actor.type == "creature")
 					continue;
 
 				actorList.push(token.actor);
@@ -77,7 +84,7 @@ export class Space1889Migration
 
 			actorList.push(actor);
 		}
-		await SPACE1889Helper.updateWeaponAndCreateAmmo(actorList);
+		return actorList;
 	}
 
 	static async weaponTwoHandedIntroduction(lastUsedVersion)
@@ -162,6 +169,16 @@ export class Space1889Migration
 		}
 	}
 
+	static async containerIntroduction(lastUsedVersion)
+	{
+		const lastNonFixVersion = "1.4.3";
+		if (isNewerVersion(lastUsedVersion, lastNonFixVersion) || !game.user.isGM)
+			return;
+
+		let actorList = this.getAllActorsWithoutVehicleAndCreature();
+		await SPACE1889Helper.createContainersFromLocation(actorList);
+	}
+
 	static async checkFoundryMigrationBug()
 	{
 		if (game.version === "10.284")
@@ -228,7 +245,7 @@ export class Space1889Migration
 		{
 			//let content = game.i18n.localize("SPACE1889.VersionInfo");
 			const isGerman = game.settings.get('core', 'language') == "de";
-			let content = await renderTemplate("systems/space1889/change/" + (isGerman ? "de" : "en") + "_changelog_1.4.html");
+			let content = await renderTemplate("systems/space1889/change/" + (isGerman ? "de" : "en") + "_changelog_2.0.html");
 			const understood = game.i18n.localize("SPACE1889.Understood");
 			const stayAway = game.i18n.localize("SPACE1889.StayAway");
 			const newVersion = game.i18n.localize("SPACE1889.NewVersion");

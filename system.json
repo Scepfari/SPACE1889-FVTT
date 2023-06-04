@@ -3,13 +3,13 @@
 	"id": "space1889",
 	"title": "Space 1889",
 	"description": "The SPACE 1889 Ubiquity system for FoundryVTT!",
-	"version": "1.4.3",
+	"version": "2.0.0",
 	"minimumCoreVersion": "10",
 	"compatibleCoreVersion": "10",
 	"compatibility": {
 		"minimum": 10,
 		"verified": "10.291",
-		"maximum": 10
+		"maximum": 11
 	},
 
 	"authors": [
@@ -383,6 +383,85 @@
 			"private": true
 		}
 	],
+	"packFolders": [
+		{
+			"name": "CharakterMerkmale",
+			"sorting": "m",
+			"packs": [
+				"fertigkeiten",
+				"ressourcen",
+				"schwachen",
+				"spezialisierungen",
+				"sprachen",
+				"talente"
+			]
+		},
+		{
+			"name": "Ausrüstung",
+			"sorting": "m",
+			"packs": [
+				"gegenstaende",
+				"rustungen",
+				"waffen",
+				"munition",
+				"fahrzeugwaffen",
+				"gelderde",
+				"geldmars"
+			]
+		},
+		{
+			"name": "Kreaturen",
+			"sorting": "m",
+			"packs": [
+				"kreaturenmerkur",
+				"kreaturenvenus",
+				"kreaturenerde",
+				"kreaturenluna",
+				"kreaturenmars"
+			]
+		},
+		{
+			"name": "Fahrzeuge",
+			"sorting": "m",
+			"packs": [
+				"landfahrzeuge",
+				"wasserfahrzeuge",
+				"luftfahrzeuge",
+				"atherfahrzeuge"
+			]
+		},
+		{
+			"name": "Venusier",
+			"sorting": "m",
+			"packs": [
+				"nsc7archaischevenusier",
+				"nsc7entwickeltevenusier"
+			]
+		},
+		{
+			"name": "NPCs",
+			"sorting": "m",
+			"packs": [
+				"nsc1beamte",
+				"nsc1buehnenkuenstler",
+				"nsc1dienstpersonal",
+				"nsc1haendlerundkaufleute",
+				"nsc1handwerker",
+				"nsc2eingeborene",
+				"nsc3herrenunddamenvonstand",
+				"nsc4hochlandmarsianer",
+				"nsc4huegelmarsianer",
+				"nsc5militaer",
+				"nsc6amuesierdamen",
+				"nsc6gauner",
+				"nsc6gluecksspieler",
+				"nsc6schlaeger"
+			],
+			"packFolders": [
+				"Venusier"
+			]
+		}
+	],
 	"languages": [
 		{
 			"lang": "de",
@@ -401,16 +480,16 @@
 			"url": "https://github.com/Scepfari/SPACE1889-FVTT/blob/main/icons/Space1889Background.jpg"
 		}
 	],
+	"background": "systems/space1889/icons/Space1889Background.jpg",
 	"socket": true,
 	"gridDistance": 1.5,
 	"gridUnits": "m",
 	"primaryTokenAttribute": "health",
 	"url": "https://github.com/Scepfari/SPACE1889-FVTT",
 	"manifest": "https://github.com/Scepfari/SPACE1889-FVTT/releases/latest/download/system.json",
-	"download": "https://github.com/Scepfari/SPACE1889-FVTT/releases/download/1.4.3/space1889-foundry-1.4.3.zip",
+	"download": "https://github.com/Scepfari/SPACE1889-FVTT/releases/download/2.0.0/space1889-foundry-2.0.0.zip",
 	"bugs": "https://github.com/Scepfari/SPACE1889-FVTT/issues",
-	"flags": 
-	{
+	"flags": {
 		"allowBugReporter": true
 	},
 	"license": "LICENSE.txt"
