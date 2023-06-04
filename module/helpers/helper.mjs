@@ -1101,7 +1101,7 @@ export default class SPACE1889Helper
 		let actorList = [];
 		for (const token of tokens)
 		{
-			actorList.push(token.document._actor);
+			actorList.push(token.document.actor);
 		}
 		this.updateWeaponAndCreateAmmo(actorList);
 	}
@@ -1256,7 +1256,7 @@ export default class SPACE1889Helper
 		let actorList = [];
 		for (const token of tokens)
 		{
-			actorList.push(token.document._actor);
+			actorList.push(token.document.actor);
 		}
 		this.createContainersFromLocation(actorList);
 	}
@@ -1330,7 +1330,7 @@ export default class SPACE1889Helper
 		if (!token)
 			return false;
 
-		return hasOwnership(token._actor);
+		return hasOwnership(token.actor);
 	}
 
 	static hasOwnership(actor)
@@ -1359,15 +1359,15 @@ export default class SPACE1889Helper
 
 	static async uniqueCanvasNameForNotLinkedActors(token, update)
 	{
-		if (!this.hasOwnership(token._actor))
+		if (!this.hasOwnership(token.actor))
 			return;
 
-		const isGmToken = !this.hasOneOrMorePlayerOwnership(token._actor.ownership);
+		const isGmToken = !this.hasOneOrMorePlayerOwnership(token.actor.ownership);
 
 		let askUser = false
-		if (token._actor.prototypeToken.actorLink)
+		if (token.actor.prototypeToken.actorLink)
 		{
-			if (!isGmToken && token._actor.type == "character")
+			if (!isGmToken && token.actor.type == "character")
 				return;
 			else
 				askUser = true;
@@ -1560,26 +1560,26 @@ export default class SPACE1889Helper
 
 		for (let token of tokenDocs)
 		{
-			if (token._actor.type != "character" && token._actor.type != "npc")
+			if (token.actor.type != "character" && token.actor.type != "npc")
 				continue;
 
-			if (this.hasOneOrMorePlayerOwnership(token._actor.ownership))
+			if (this.hasOneOrMorePlayerOwnership(token.actor.ownership))
 				continue;
 
-			const weaponInHands = this.getWeaponInHands(token._actor);
+			const weaponInHands = this.getWeaponInHands(token.actor);
 			if (weaponInHands.primary.length != 0 || weaponInHands.off.length != 0)
 			{
 				let weapon = weaponInHands.primary.length > 0 ?
-					token._actor.system.weapons.find(e => e.id == weaponInHands.primary[0]) :
-					token._actor.system.weapons.find(e => e.id == weaponInHands.off[0]);
+					token.actor.system.weapons.find(e => e.id == weaponInHands.primary[0]) :
+					token.actor.system.weapons.find(e => e.id == weaponInHands.off[0]);
 				ui.notifications.info(game.i18n.format("SPACE1889.WeaponIsAlreadyReady", { name: token.name, weapon: weapon?.name }));
 				continue;
 			}
 
-			const weapon = this.getBestWeapon(token._actor, preferredWeapon);
+			const weapon = this.getBestWeapon(token.actor, preferredWeapon);
 			if (weapon)
 			{
-				await this.setWeaponHand(weapon, token._actor, false, true);
+				await this.setWeaponHand(weapon, token.actor, false, true);
 			}
 		}
 	}

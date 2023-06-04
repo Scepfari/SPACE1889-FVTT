@@ -1330,7 +1330,7 @@ export default class SPACE1889RollHelper
 
 		const attackerToken = game.scenes.viewed.tokens.get(actorTokenId);
 		const actorName = !attackerToken ? 'unbekannt' : attackerToken.name;
-		const permissions = token._actor.ownership;
+		const permissions = token.actor.ownership;
 		if (game.user.isGM || (permissions["default"] && permissions["default"] == 3) || (permissions[game.userId] && permissions[game.userId] == 3))
 		{
 			this.rollDefenseAndAddDamage({
