@@ -703,6 +703,17 @@ export default class SPACE1889Helper
 		if (!weapon || !actor || weapon.type != "weapon")
 			return;
 
+		if (weapon.system.containerId != null)
+		{
+			const container = actor.system.containers.find(e => e._id == weapon.system.containerId);
+			if (container && !(container.system.portable && container.system.carried) &&
+				weapon.system.skillId != "geschuetze")
+			{
+				ui.notifications.info(game.i18n.format("SPACE1889.WeaponCanNotReadyLocation", {weapon: weapon.name, location: container.name}));
+				return;
+			}
+		}
+
 		const newHand = this.getNextValidHandPosition(weapon, actor, backward);
 
 		if (newHand == weapon.system.usedHands)
@@ -862,6 +873,16 @@ export default class SPACE1889Helper
 		{
 			ui.notifications.info(game.i18n.localize("SPACE1889.AmmunitionCanNotReloadOutOfAmmo"));
 			return;
+		}
+
+		if (currentAmmo?.system?.containerId != null)
+		{
+			const container = actor.system.containers.find(e => e._id == currentAmmo.system.containerId);
+			if (container && !(container.system.portable && container.system.carried))
+			{
+				ui.notifications.info(game.i18n.format("SPACE1889.AmmunitionCanNotReloadWrongLocation", { location: container.name } ));
+				return;
+			}
 		}
 
 		if (weapon.system.ammunition.remainingRounds >= weapon.system.capacity)
@@ -1217,6 +1238,82 @@ export default class SPACE1889Helper
 					if (Number(weapon.system.capacity) > 0)
 						await actor.updateEmbeddedDocuments("Item", [{ _id: weapon._id, "system.ammunition.remainingRounds": weapon.system.capacity }]);
 				}
+			}
+		}
+	}
+
+	static createContainerFromLocation()
+	{
+		let tokens = canvas.tokens.controlled;
+
+		if (tokens.length == 0)
+		{
+			const info = game.i18n.localize("SPACE1889.NoTokensSelected");
+			ui.notifications.info(info);
+			return;
+		}
+
+		let actorList = [];
+		for (const token of tokens)
+		{
+			actorList.push(token.document._actor);
+		}
+		this.createContainersFromLocation(actorList);
+	}
+
+	static async createContainersFromLocation(actorList)
+	{
+		const lager = await fromUuid('Compendium.space1889.gegenstaende.ZT8C06YwGrWYj86l');
+		const lagerObject = lager.toObject();
+		const bagpack = await fromUuid('Compendium.space1889.gegenstaende.VeFmZKB2sIWCWFNT');
+		const bagpackObject = bagpack.toObject();
+
+
+		for (let actor of actorList)
+		{
+			if (actor.type == 'vehicle')
+				continue;
+
+			if (actor.system.containers.length > 0)
+			{
+				console.log(actor.name + ": already owns containers => skipped");
+				continue;
+			}
+
+			let bagpackItems = [];
+			let lagerItems = [];
+			const searchLists = [actor.system.gear, actor.system.weapons, actor.system.ammunitions, actor.system.armors];
+
+			for (let list of searchLists)
+			{
+				for (let item of list)
+				{
+					if (item.system.location == 'rucksack')
+						bagpackItems.push(item);
+					else if (item.system.location == 'lager')
+						lagerItems.push(item);
+				}
+			}
+
+			let updateData = [];
+			if (bagpackItems.length > 0)
+			{
+				await actor.createEmbeddedDocuments("Item", [bagpackObject]);
+				const bagpackId = actor.system.containers.find(e => e.system.id == bagpack.system.id)._id;
+				for (let item of bagpackItems)
+					updateData.push({ _id: item._id, "system.containerId": bagpackId });
+			}
+			if (lagerItems.length > 0)
+			{
+				await actor.createEmbeddedDocuments("Item", [lagerObject]);
+				const lagerId = actor.system.containers.find(e => e.system.id == lager.system.id)._id;
+				for (let item of lagerItems)
+					updateData.push({ _id: item._id, "system.containerId": lagerId });
+			}
+			if (updateData.length > 0)
+			{
+				await actor.updateEmbeddedDocuments("Item", updateData);
+				console.log(game.i18n.format("SPACE1889.MigrationActorContainer", { name: actor.name, id: actor._id }));
 			}
 		}
 	}

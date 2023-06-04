@@ -149,7 +149,7 @@ Hooks.once("setup", () =>
 
 Hooks.on("chatMessage", (html, content, msg) =>
 {
-	let cmd = content.match(/^\/(help|version|space1889|ammo|image)/)
+	let cmd = content.match(/^\/(help|version|space1889|ammo|addContainer|image)/)
 	cmd = cmd ? cmd[0] : ""
 	switch (cmd)
 	{
@@ -165,6 +165,9 @@ Hooks.on("chatMessage", (html, content, msg) =>
 			return false;
 		case "/ammo":
 			SPACE1889Helper.createAmmo();
+			return false;
+		case "/addContainer":
+			SPACE1889Helper.createContainerFromLocation();
 			return false;
 		case "/image":
 			SPACE1889Helper.addImageToChat(content.substr(7));
@@ -299,6 +302,12 @@ Handlebars.registerHelper('formatEffectDuration', function (effectDuration)
 {
 	return SPACE1889Helper.formatEffectDuration(effectDuration);
 })
+
+Handlebars.registerHelper('formatNumber', function (number, decimal)
+{
+	return number.toFixed(Number(decimal));
+})
+
 
 /* -------------------------------------------- */
 /*  Ready Hook                                  */

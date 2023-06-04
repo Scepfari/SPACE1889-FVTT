@@ -210,7 +210,7 @@
 		}
 	},
 	"Item": {
-		"types": [ "item", "talent", "weapon", "ammunition", "skill", "specialization", "weakness", "resource", "language", "armor", "damage", "currency" ],
+		"types": [ "item", "container", "talent", "weapon", "ammunition", "skill", "specialization", "weakness", "resource", "language", "armor", "damage", "currency" ],
 		"templates": {
 			"description": {
 				"description": ""
@@ -235,11 +235,22 @@
 			"source": {
 				"publication": "GRW",
 				"page": ""
+			},
+			"containerId": {
+				"containerId": null
 			}
 		},
 		"item": {
-			"templates": [ "description", "weight", "location", "price", "id" ],
+			"templates": [ "description", "weight", "location", "price", "id", "containerId"],
 			"quantity": 1
+		},
+		"container": {
+			"templates": [ "description", "weight", "location", "price", "id", "containerId" ],
+			"payloadWeight": 0,
+			"totalWeight": 0,
+			"portable": false,
+			"carried": false,
+			"compressed": false
 		},
 		"talent": {
 			"templates": [ "description", "id", "source" ],
@@ -277,7 +288,7 @@
 			"noSelection": false
 		},
 		"weapon": {
-			"templates": [ "description", "weight", "id", "location", "price" ],
+			"templates": [ "description", "weight", "id", "location", "price", "containerId"],
 			"skillId": "none",
 			"specializationId": "none",
 			"damage": 0,
@@ -309,7 +320,7 @@
 			"usedHands": "none"
 		},
 		"ammunition": {
-			"templates": [ "description", "weight", "location", "id", "price" ],
+			"templates": [ "description", "weight", "location", "id", "price", "containerId" ],
 			"quantity": 1,
 			"type": "default",
 			"capacityType": "default",
@@ -342,7 +353,7 @@
 			"originId": ""
 		},
 		"armor": {
-			"templates": [ "description", "id", "location", "weight", "price" ],
+			"templates": [ "description", "id", "location", "weight", "price", "containerId" ],
 			"defenseBonus": 1,
 			"dexPenalty": 0,
 			"strengthThreshold": 0

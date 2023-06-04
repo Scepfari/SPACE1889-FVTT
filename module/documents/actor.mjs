@@ -350,7 +350,10 @@ export class Space1889Actor extends Actor
 
 		const armorData = this.getArmorBonusMalus(items);
 		if (armorData.malus > 0)
-			actor.system.abilities["dex"].total -= armorData.malus;
+		{
+			actor.system.abilities["dex"].talentBonus -= armorData.malus;
+			actor.system.abilities["dex"].total = Math.max(0, actor.system.abilities["dex"].total - armorData.malus);
+		}
 		actor.system.armorTotal = armorData;
 
 		const skills = [];
@@ -365,6 +368,8 @@ export class Space1889Actor extends Actor
 		const language = [];
 		const injuries = [];
 		const money = [];
+		const containers = [];
+		
 		for (let item of items)
 		{
 			if (item.type === 'skill')
@@ -388,6 +393,8 @@ export class Space1889Actor extends Actor
 				armors.push(item);
 			else if (item.type === 'item')
 				gear.push(item);
+			else if (item.type === 'container')
+				containers.push(item);
 			else if (item.type === 'damage')
 				injuries.push(item);
 			else if (item.type === 'resource')
@@ -408,6 +415,7 @@ export class Space1889Actor extends Actor
 		SPACE1889Helper.sortByName(language);
 		SPACE1889Helper.sortByName(ammunitions);
 		SPACE1889Helper.sortBySortFlag(gear);
+		SPACE1889Helper.sortBySortFlag(containers);
 		SPACE1889Helper.sortBySortFlag(money);
 		SPACE1889Helper.sortBySortFlag(armors);
 
@@ -422,13 +430,23 @@ export class Space1889Actor extends Actor
 		actor.system.language = language;
 		actor.system.money = money;
 		actor.system.ammunitions = ammunitions;
+		actor.system.containers = containers;
+		actor.system.weapons = weapons;
 
-		this.calcAndSetSecondaries(actor)
-		actor.system.health.max = actor.system.abilities.con.total + actor.system.abilities.wil.total + actor.system.secondaries.size.total + this.getBonusFromTalents("max", "health", items);
+		this.CalcAndSetHealth(actor);
+		this.CalcContainerLoad(actor);
+		this.CalcAndSetLoad(actor);
+		if (actor.system.load.dexAndMoveMalus > 0)
+		{
+			actor.system.abilities["dex"].talentBonus -= actor.system.load.dexAndMoveMalus;
+			actor.system.abilities["dex"].total = Math.max(0, actor.system.abilities["dex"].total - actor.system.load.dexAndMoveMalus);
+		}
+
+		this.calcAndSetSecondaries(actor);
 		actor.system.healthDeduction = 0;
+
 		if (!SPACE1889Helper.isCreature(actor))
 		{
-			this.CalcAndSetHealth(actor);
 			const deductionTh = SPACE1889Helper.getHealthDeductionThreshold(actor);
 			if (deductionTh > actor.system.health.value)
 				actor.system.healthDeduction = deductionTh - actor.system.health.value;
@@ -436,7 +454,7 @@ export class Space1889Actor extends Actor
 
 		this.calcAndSetSkillsAndSpecializations(actor)
 
-		this.prepareAmmunition(ammunitions);
+		this.prepareAmmunition(ammunitions, actor);
 		this.prepareWeapons(actor, weapons);
 		actor.system.weapons = weapons;
 
@@ -452,7 +470,6 @@ export class Space1889Actor extends Actor
 		if (SPACE1889Helper.isCreature(actor))
 		{
 			this.setCreatureMovementDisplay(actor);
-			this.CalcAndSetHealth(actor);
 			this.CalcAndSetEP(actor);
 		}
 		else
@@ -463,10 +480,9 @@ export class Space1889Actor extends Actor
 			{
 				for (let element of list)
 				{
-					let langIdAbbr = CONFIG.SPACE1889.storageLocationAbbreviations[element.system.location] ?? "";
-					let longId = CONFIG.SPACE1889.storageLocations[element.system.location] ?? "";
-					element.system.display = (langIdAbbr != "" ? game.i18n.localize(langIdAbbr) : "?");
-					element.system.locationLong = (longId != "" ? game.i18n.localize(longId) : "?");
+					const locationNames = this.getLocation(actor, element.system.containerId);
+					element.system.display = locationNames.shortName;
+					element.system.locationLong = locationNames.name;
 				}
 			}
 
@@ -482,8 +498,10 @@ export class Space1889Actor extends Actor
 	{
 		const system = actor.system;
 		system.secondaries.move.value = system.abilities.str.total + system.abilities.dex.total;
-		system.secondaries.move.talentBonus = this.getBonusFromTalents("move", "secondary", actor.items);
-		system.secondaries.move.total = system.secondaries.move.value + system.secondaries.move.talentBonus;
+		system.secondaries.move.talentBonus = this.getBonusFromTalents("move", "secondary", actor.items) - actor.system.load.dexAndMoveMalus;
+		if (actor.system.health.value < 0)
+			system.secondaries.move.talentBonus += actor.system.health.value;
+		system.secondaries.move.total = Math.max(0, system.secondaries.move.value + system.secondaries.move.talentBonus);
 		system.secondaries.perception.value = system.abilities.int.total + system.abilities.wil.total;
 		system.secondaries.perception.talentBonus = this.getBonusFromTalents("perception", "secondary", actor.items);
 		system.secondaries.perception.total = system.secondaries.perception.value + system.secondaries.perception.talentBonus;
@@ -496,11 +514,11 @@ export class Space1889Actor extends Actor
 		system.secondaries.size.talentBonus = this.getBonusFromTalents("size", "secondary", actor.items);
 		system.secondaries.size.total = system.secondaries.size.value + system.secondaries.size.talentBonus;
 		system.secondaries.defense.value = this.getPassiveDefense(actor) + this.getActiveDefense(actor) - system.secondaries.size.total;
-		system.secondaries.defense.talentBonus = this.getBonusFromTalents("defense", "secondary", actor.items);
 		system.secondaries.defense.armorBonus = system.armorTotal.bonus;
+		system.secondaries.defense.talentBonus = this.getBonusFromTalents("defense", "secondary", actor.items) + system.secondaries.defense.armorBonus;
 		system.secondaries.defense.passiveTotal = this.getPassiveDefense(actor) - system.secondaries.size.total + system.secondaries.defense.armorBonus;
 		system.secondaries.defense.activeTotal = this.getActiveDefense(actor) - system.secondaries.size.total;
-		system.secondaries.defense.total = system.secondaries.defense.value + system.secondaries.defense.talentBonus + system.secondaries.defense.armorBonus;
+		system.secondaries.defense.total = system.secondaries.defense.value + system.secondaries.defense.talentBonus;
 		system.secondaries.defense.totalDefense = system.secondaries.defense.total + this.getTotalDefenseBonus();
 	}
 
@@ -559,11 +577,29 @@ export class Space1889Actor extends Actor
 
 	}
 
-	prepareAmmunition(ammunitions)
+	getLocation(actor, containerId)
+	{
+		if (containerId && actor)
+		{
+			for (const container of actor.system.containers)
+			{
+				if (container._id == containerId)
+				{
+					const short = container.name.substr(0, 3);
+					return { name: container.name, shortName: short };
+				}
+			}
+		}
+		return { name: game.i18n.localize("SPACE1889.StorageLocationKoerper"), shortName: game.i18n.localize("SPACE1889.StorageLocationKoerperAbbr") };
+	}
+
+	prepareAmmunition(ammunitions, actor)
 	{
 		for (let ammu of ammunitions)
 		{
-			ammu.system.locationDisplay = game.i18n.localize(CONFIG.SPACE1889.storageLocationAbbreviations[ammu.system.location]);
+			const locationNames = this.getLocation(actor, ammu.system.containerId);
+			ammu.system.locationDisplay = locationNames.shortName;
+			ammu.system.locationDisplayLong = locationNames.name;
 			ammu.system.typeDisplay = game.i18n.localize(CONFIG.SPACE1889.weaponAmmunitionTypes[ammu.system.type]);
 			ammu.system.capacityTypeDisplay = game.i18n.localize(CONFIG.SPACE1889.ammunitionCapacityTypes[ammu.system.capacityType]);
 		}
@@ -639,8 +675,9 @@ export class Space1889Actor extends Actor
 			weapon.system.damageTypeDisplay = game.i18n.localize(CONFIG.SPACE1889.damageTypeAbbreviations[damageType]);
 			if (!SPACE1889Helper.isCreature(actor))
 			{
-				weapon.system.locationDisplay = game.i18n.localize(CONFIG.SPACE1889.storageLocationAbbreviations[weapon.system.location]);
-				weapon.system.locationDisplayLong = game.i18n.localize(CONFIG.SPACE1889.storageLocations[weapon.system.location]);
+				const locationNames = this.getLocation(actor, weapon.system.containerId);
+				weapon.system.locationDisplay = locationNames.shortName;
+				weapon.system.locationDisplayLong = locationNames.name;
 				weapon.system.usedHandsInfo = game.i18n.localize(CONFIG.SPACE1889.weaponHand[weapon.system.usedHands]);
 				weapon.system.usedHandsIcon = game.i18n.localize(CONFIG.SPACE1889.weaponHandIcon[weapon.system.usedHands]);
 			}
@@ -887,7 +924,7 @@ export class Space1889Actor extends Actor
 			if (item.type != "armor")
 				continue;
 
-			if (item.system.location == "koerper")
+			if (item.system.containerId == null)
 			{
 				defenseBonus += item.system.defenseBonus;
 				dexMalus += item.system.dexPenalty;
@@ -983,9 +1020,7 @@ export class Space1889Actor extends Actor
 		this.CalcAndSetBlockData(actor);
 		this.CalcAndSetParryData(actor);
 		this.CalcAndSetEvasionData(actor);
-		this.CalcAndSetLoad(actor);
 		this.CalcAndSetEP(actor);
-		this.CalcAndSetHealth(actor);
 		this.calcAndSetCharacterNpcSiMoveUnits(actor);
 	}
 
@@ -1085,16 +1120,14 @@ export class Space1889Actor extends Actor
 		const id = "nahkampf";
 		let skillRating = 0;
 		let riposteDamageType = "nonLethal";
-		for (let item of actor.items)
+		for (let weapon of actor.system.weapons)
 		{
-			if (item.type != "weapon")
+			if (weapon.system.usedHands == "none")
 				continue;
-			if (item.system.location != "koerper")
-				continue;
-			if (item.system.skillId == id && item.system.skillRating > skillRating)
+			if (weapon.system.skillId == id && weapon.system.skillRating > skillRating)
 			{
-				skillRating = item.system.skillRating;
-				riposteDamageType = item.system.ammunition?.damageType ? item.system.ammunition.damageType : item.system.damageType
+				skillRating = weapon.system.skillRating;
+				riposteDamageType = weapon.system.ammunition?.damageType ? weapon.system.ammunition.damageType : weapon.system.damageType
 			}
 		}
 
@@ -1209,6 +1242,40 @@ export class Space1889Actor extends Actor
 		}
 	}
 
+	CalcContainerLoad(actor)
+	{
+		if (!SPACE1889Helper.hasOwnership(actor))
+			return;
+
+		for (let container of actor.system.containers)
+		{
+			let load = 0;
+			const quantityLists = [actor.system.gear, actor.system.ammunitions];
+			for (let list of quantityLists)
+			{
+				for (let item of list)
+				{
+					if (item.system.containerId == container._id)
+						load += item.system.weight * item.system.quantity;
+				}
+			}
+			const nonQuantityLists = [actor.system.armors, actor.system.weapons];
+			for (let liste of nonQuantityLists)
+			{
+				for (let item of liste)
+				{
+					if (item.system.containerId == container._id)
+						load += item.system.weight;
+				}
+			}
+			const total = load + container.system.weight;
+			if (container.system.payloadWeight != load || container.system.totalWeight != total)
+			{
+				actor.updateEmbeddedDocuments("Item", [{ _id: container._id, "system.payloadWeight": load, "system.totalWeight": total }]);
+			}
+		}
+	}
+
 	CalcAndSetLoad(actor)
 	{
 		let str = actor.system.abilities["str"].total;
@@ -1233,7 +1300,7 @@ export class Space1889Actor extends Actor
 		str = Math.min(str, 10);
 
 		let loadBody = 0;
-		let loadBackpack = 0;
+		let loadCarriedBackpack = 0;
 		let loadStorage = 0;
 		let itemWeight = 0;
 		for (let item of actor.items)
@@ -1245,24 +1312,34 @@ export class Space1889Actor extends Actor
 			else
 				continue;
 
-			if (item.system.location == "koerper")
+			if (item.system.containerId == null)
 				loadBody += itemWeight;
-			else if (item.system.location == "rucksack")
-				loadBackpack += itemWeight;
+		}
+
+		for (let container of actor.system.containers)
+		{
+			if (!container.system.portable)
+				loadStorage += container.system.totalWeight;
 			else
-				loadStorage += itemWeight;
+			{
+				if (container.system.carried)
+					loadCarriedBackpack += container.system.totalWeight;
+				else
+					loadStorage += container.system.totalWeight;				
+			}
 		}
 
 		let bodyLoadLevel = this.GetLoadingLevel(loadBody, levels[str - 1], levels[str], levels[str + 1]);
-		let bodyAndBackpackLoadLevel = this.GetLoadingLevel(loadBody + loadBackpack, levels[str - 1], levels[str], levels[str + 1]);
+		let bodyAndBackpackLoadLevel = this.GetLoadingLevel(loadBody + loadCarriedBackpack, levels[str - 1], levels[str], levels[str + 1]);
 
 		let loadInfo = {
 			bodyLoad: loadBody.toFixed(2),
 			bodyLoadLevel: bodyLoadLevel,
 			bodyLoadConsequence: bodyLoadLevel + "Consequence",
-			backpackLoad: loadBackpack.toFixed(2),
-			bodyAndBackpackLoad: (loadBody + loadBackpack).toFixed(2),
+			backpackLoad: loadCarriedBackpack.toFixed(2),
+			bodyAndBackpackLoad: (loadBody + loadCarriedBackpack).toFixed(2),
 			bodyAndBackpackLoadLevel: bodyAndBackpackLoadLevel,
+			dexAndMoveMalus: this.GetMalusFromLoadLevel(bodyAndBackpackLoadLevel),
 			bodyAndBackpackLoadConsequence: bodyAndBackpackLoadLevel + "Consequence",
 			storageLoad: loadStorage.toFixed(2),
 			lightLoad: levels[str - 1],
@@ -1293,6 +1370,19 @@ export class Space1889Actor extends Actor
 		if (load <= (2 * havyLoad))
 			return "SPACE1889.MaxLoad";
 		return "SPACE1889.ImpossibleLoad";
+	}
+
+	GetMalusFromLoadLevel(loadLevel)
+	{
+		if (loadLevel == "SPACE1889.MediumLoad")
+			return 1;
+		if (loadLevel == "SPACE1889.HavyLoad")
+			return 2;
+		if (loadLevel == "SPACE1889.MaxLoad")
+			return 4;
+		if (loadLevel == "SPACE1889.ImpossibleLoad")
+			return 100;
+		return 0;
 	}
 
 	/**
@@ -1471,6 +1561,12 @@ export class Space1889Actor extends Actor
 				}
 			}
 		}
+
+		if (actor.type != "vehicle")
+		{
+			const sizeTotal = actor.system.secondaries.size.value + this.getBonusFromTalents("size", "secondary", actor.items);
+			actor.system.health.max = actor.system.abilities.con.total + actor.system.abilities.wil.total + sizeTotal + this.getBonusFromTalents("max", "health", actor.items);
+		}
 		const newHealth = actor.system.health.max - damage;
 
 		actor.system.health.value = newHealth;
@@ -1479,13 +1575,6 @@ export class Space1889Actor extends Actor
 			actor.system.health.controlDamage = controlDamage;
 			actor.system.health.propulsionDamage = propulsionDamage;
 			actor.system.health.gunDamage = gunDamage;
-		}
-
-		if (newHealth < 0)
-		{
-			actor.system.secondaries.move.total = Math.max(0, actor.system.secondaries.move.total + newHealth);
-			if (actor.type != 'vehicle')
-				this.CalcAndSetLoad(actor);
 		}
 	}
 

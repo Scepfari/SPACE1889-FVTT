@@ -80,13 +80,11 @@
 		<div class="resource-content flex-center flex-between">
 			<input type="text" name="system.price" value="{{system.price}}" />
 		</div>
-		<select name="system.location" data-dtype="String">
-			{{#select system.location}}
-			{{#each system.storageLocations as |ch char|}}
-			<option value="{{char}}">{{localize ch}}</option>
-			{{/each}}
-			{{/select}}
-		</select>
+		<div class="resource-content flex-center flex-between">
+			{{#if system.locationDisplayLong}}
+			<label>{{system.locationDisplayLong}}</label>
+			{{/if}}
+		</div>
 	</li>
 
 

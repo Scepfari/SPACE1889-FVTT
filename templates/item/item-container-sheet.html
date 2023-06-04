@@ -8,25 +8,6 @@
 	</header>
 
 	<li class="item flexrow items-header">
-		<label class="resource-label">{{localize "SPACE1889.DefenseBonus"}}</label>
-		<label class="resource-label">{{localize "SPACE1889.DexPenalty"}}</label>
-		<label class="resource-label">{{localize "SPACE1889.StrengthThreshold"}}</label>
-	</li>
-	<li class="item flex-group-center flexrow">
-		<div class="resource-content flex-center flex-between">
-			<input type="text" name="system.defenseBonus" value="{{system.defenseBonus}}" data-dtype="Number"/>
-		</div>
-		<div class="resource-content flex-center flex-between">
-			<input type="text" name="system.dexPenalty" value="{{system.dexPenalty}}" data-dtype="Number"/>
-		</div>
-		<div class="resource-content flex-center flex-between">
-			<input type="text" name="system.strengthThreshold" value="{{system.strengthThreshold}}" data-dtype="Number"/>
-		</div>
-	</li>
-
-	<hr>
-
-	<li class="item flexrow items-header">
 		<label class="resource-label">{{localize "SPACE1889.Weight"}}[kg]</label>
 		<label class="resource-label">{{localize "SPACE1889.Price"}}</label>
 	</li>
@@ -38,14 +19,30 @@
 			<input type="text" name="system.price" value="{{system.price}}"/>
 		</div>
 	</li>
-	{{#if system.locationLong}}
-	<hr>
-	<div class="resource">
-		<label class="resource-label">{{ localize "SPACE1889.StorageLocation" }}</label>
-		<label>{{system.locationLong}}</label>
-	</div>
-	<hr>
-	{{/if}}
+
+	<li class="item flexrow items-header">
+		<label class="resource-label">{{localize "SPACE1889.ContainerPortable"}}</label>
+		<label class="resource-label">{{#if system.portable}}{{localize "SPACE1889.ItemCarried"}}{{/if}}</label>
+	</li>
+	<li class="item flex-group-center flexrow">
+		<div class="resource">
+			<div class="resource-content flex-center flex-between">
+				<input type="checkbox" name="system.portable" {{checked system.portable}} />
+			</div>
+		</div>
+		{{#if system.portable }}
+		<div class="resource">
+			<div class="resource-content flex-center flex-between">
+				<input type="checkbox" name="system.carried" {{checked system.carried}} />
+			</div>
+		</div>
+		{{else}}
+		<div class="resource">
+			<label class="resource-label"></label>
+		</div>
+		{{/if}}
+	</li>
+
 
 	{{!-- Sheet Tab Navigation --}}
 	<nav class="sheet-tabs tabs" data-group="primary">
@@ -67,5 +64,4 @@
 		</div>
 
 	</section>
-
 </form>

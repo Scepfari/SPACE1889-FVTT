@@ -269,6 +269,7 @@ export class Space1889ActorSheet extends ActorSheet {
 
 		// Delete Inventory Item
 		html.find('.item-delete').click(this._onItemDelete.bind(this));
+		html.find('.container-delete').click(this._onContainerDelete.bind(this));
 
 		// sub Skill update
 		html.find('.skill-level').change(async ev => {
@@ -351,8 +352,8 @@ export class Space1889ActorSheet extends ActorSheet {
 			}
 			else
 			{
-				const newLocation = this.incrementLocation(ev, item.system.location);
-				item.update({ 'system.location': newLocation });
+				const newId = this.incrementLocation(ev, item.system.containerId, this.actor);
+				item.update({ 'system.containerId': newId });
 			}
 		});
 
@@ -617,6 +618,24 @@ export class Space1889ActorSheet extends ActorSheet {
 			updateObject[key] = toggledValue;
 			this.actor.update(updateObject);
 		});
+		html.find('.carried-toggle').mousedown(ev =>
+		{
+			const itemId = this._getDataId(ev);
+			const toggledValue = !this.actor.items.get(itemId).system.carried;
+			this.actor.updateEmbeddedDocuments("Item", [{ _id: itemId, "system.carried": toggledValue }]);
+		});
+		html.find('.compressed-toggle').mousedown(ev =>
+		{
+			const itemId = this._getDataId(ev);
+			const toggledValue = !this.actor.items.get(itemId).system.compressed;
+			this.actor.updateEmbeddedDocuments("Item", [{ _id: itemId, "system.compressed": toggledValue }]);
+		});
+		html.find('.open-compendium').mousedown(ev =>
+		{
+			let packName = $(ev.currentTarget).attr("data-pack");
+			game.packs.get(packName).render(true);
+		});
+
 
 		// Active Effect management
 		html.find(".effect-control").click(ev => onManageActiveEffect(ev, this.actor));
@@ -789,6 +808,27 @@ export class Space1889ActorSheet extends ActorSheet {
 		
 		const item = await Item.implementation.fromDropData(data);
 		const itemData = item.toObject();
+		const isContainer = itemData.type == "container";
+
+		const isMoved = this.actor.items.get(itemData._id) != undefined;
+		let targetContainerId = null;
+
+		const dropTarget = event.target.closest("[data-item-id]");
+		if (dropTarget && !isContainer)
+		{
+			const target = this.actor.items.get(dropTarget.dataset.itemId);
+			if (target)
+				targetContainerId = (target.type == "container" ? target._id : target.system.containerId);
+		}
+
+		if (itemData.system.containerId != targetContainerId)
+		{
+			if (isMoved)
+				await this.actor.updateEmbeddedDocuments("Item", [{ _id: itemData._id, "system.containerId": targetContainerId }]);
+			else
+				itemData.system.containerId = targetContainerId;
+		}
+		
 
 		// Handle item sorting within the same Actor
 		if (this.actor.items.get(item._id) != undefined)
@@ -1188,21 +1228,37 @@ export class Space1889ActorSheet extends ActorSheet {
 	/**
 	 * 
 	 * @param {object} ev event
-	 * @param {string} currentValue a storage location: 'koerper', 'rucksack' or 'lager'
+	 * @param {string} currentId the containerId
 	 */
-	incrementLocation(ev, currentValue)
+	incrementLocation(ev, currentId, actor)
 	{
-		const k = 'koerper';
-		const r = 'rucksack';
-		const l = 'lager';
+		if (actor.system.containers.length == 0)
+			return null;
 
 		const backward = ev.button == 2;
-		if (currentValue == k)
-			return backward ? l : r;
-		else if (currentValue == r)
-			return backward ? k : l;
-		else
-			return backward ? r : k;
+		if (currentId == null)
+		{
+			return backward ? actor.system.containers[actor.system.containers.length - 1].id : actor.system.containers[0].id;
+		}
+
+		let pre = null;
+		let post = null;
+		const length = actor.system.containers.length;
+		for (let i = 0; i < length; ++i)
+		{
+			const container = actor.system.containers[i];
+			if (container._id == currentId)
+			{
+				if (i + 1 < length)
+					post = actor.system.containers[i + 1]._id;
+				break;
+			}
+			else
+			{
+				pre = container._id;
+			}
+		}
+		return backward ? pre : post;
 	}
 
 	/**
@@ -1287,6 +1343,30 @@ export class Space1889ActorSheet extends ActorSheet {
 		const item = this.actor.items.get(idToDelete);
 		item.delete();
 //		li.slideUp(200, () => this.render(false));
+		this.render();
+	}
+
+	async _onContainerDelete(event) {
+		event.preventDefault();
+		const idToDelete = event.currentTarget.closest("[data-item-id]")?.dataset.itemId;
+		if (!idToDelete)
+			return;
+
+
+		let updateData = [];
+		let lists = [this.actor.system.gear, this.actor.system.weapons, this.actor.system.ammunitions, this.actor.system.armors];
+		for (let list of lists)
+		{
+			for (let item of this.actor.system.gear)
+			{
+				if (item.system.containerId == idToDelete)
+					updateData.push({ _id: item._id, "system.containerId": null });
+			}
+		}
+		if (updateData.length > 0)
+			await this.actor.updateEmbeddedDocuments("Item", updateData);
+		const item = this.actor.items.get(idToDelete);
+		item.delete();
 		this.render();
 	}
 

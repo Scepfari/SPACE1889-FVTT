@@ -50,6 +50,11 @@
 				</div>
 
 			</div>
+			{{#if (ne system.load.dexAndMoveMalus 0)}}
+			<div class="resource flex-group-center">
+				<i class="fas fa-weight-hanging fa-beat" data-tooltip="{{localize "SPACE1889.Overloaded"}}! <br/> {{localize system.load.bodyAndBackpackLoadConsequence}}"></i>
+			</div>
+			{{/if}}
 		</div>
 	</header>
 

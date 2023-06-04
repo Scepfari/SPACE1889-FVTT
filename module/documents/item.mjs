@@ -111,6 +111,10 @@ export class Space1889Item extends Item {
 
 				item.system.exchangeValue = SPACE1889Helper.getExchangeValue(item);
 			}
+			else if (item.type == "container")
+			{
+				this.setLangIdAndLabel(item, "Container", true);
+			}
 			
 		}
 		catch (error) 

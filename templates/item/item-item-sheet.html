@@ -26,15 +26,13 @@
 	</li>
 	<li class="item flex-group-center flexrow">
 		<div class="resource-content flex-center flex-between">
-			<input type="text" name="system.quantity" value="{{system.quantity}}" data-dtype="Number"/>
+			<input type="text" name="system.quantity" value="{{system.quantity}}" data-dtype="Number" />
 		</div>
-		<select name="system.location" data-dtype="String">
-			{{#select system.location}}
-				{{#each system.storageLocations as |ch char|}}
-				<option value="{{char}}">{{localize ch}}</option>
-				{{/each}}
-			{{/select}}
-		</select>
+		<div class="resource-content flex-center flex-between">
+			{{#if system.locationLong}}
+			<label>{{system.locationLong}}</label>
+			{{/if}}
+		</div>
 	</li>
 
 

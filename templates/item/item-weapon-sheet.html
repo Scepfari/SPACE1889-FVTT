@@ -152,14 +152,21 @@
 		<div class="resource-content flex-center flex-between">
 			<input type="text" name="system.ammunition.caliber" value="{{system.ammunition.caliber}}" />
 		</div>
-		
-		<select name="system.location" data-dtype="String">
-			{{#select system.location}}
-			{{#each system.storageLocations as |ch char|}}
-			<option value="{{char}}">{{localize ch}}</option>
-			{{/each}}
-			{{/select}}
-		</select>
+		{{#if (eq item.system.skillId "geschuetze")}}
+			<select name="system.location" data-dtype="String">
+				{{#select system.location}}
+				{{#each system.storageLocations as |ch char|}}
+				<option value="{{char}}">{{localize ch}}</option>
+				{{/each}}
+				{{/select}}
+			</select>
+		{{else}}
+			<div class="resource-content flex-center flex-between">
+			{{#if system.locationDisplayLong}}
+				<label>{{system.locationDisplayLong}}</label>
+			{{/if}}
+		</div>
+		{{/if}}
 	</li>
 
 	{{#if (eq system.location 'mounted')}}
