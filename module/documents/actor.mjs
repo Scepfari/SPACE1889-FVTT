@@ -517,7 +517,7 @@ export class Space1889Actor extends Actor
 		system.secondaries.defense.armorBonus = system.armorTotal.bonus;
 		system.secondaries.defense.talentBonus = this.getBonusFromTalents("defense", "secondary", actor.items) + system.secondaries.defense.armorBonus;
 		system.secondaries.defense.passiveTotal = this.getPassiveDefense(actor) - system.secondaries.size.total + system.secondaries.defense.armorBonus;
-		system.secondaries.defense.activeTotal = this.getActiveDefense(actor) - system.secondaries.size.total;
+		system.secondaries.defense.activeTotal = Math.max(0, this.getActiveDefense(actor) - system.secondaries.size.total);
 		system.secondaries.defense.total = system.secondaries.defense.value + system.secondaries.defense.talentBonus;
 		system.secondaries.defense.totalDefense = system.secondaries.defense.total + this.getTotalDefenseBonus();
 	}
@@ -869,15 +869,20 @@ export class Space1889Actor extends Actor
 	{
 		let active = actor.system.abilities.dex.total;
 
-		for (let item of actor.items)
+		if (this.HasNoActiveDefense(actor))
+			active = 0;
+		else
 		{
-			if (item.type != 'talent')
-				continue;
+			for (let item of actor.items)
+			{
+				if (item.type != 'talent')
+					continue;
 
-			if (item.system.id == 'berechneteAbwehr')
-				active = actor.system.abilities.int.total;
-			else if (item.system.id == 'strahlendeAbwehr')
-				active = actor.system.abilities.cha.total;
+				if (item.system.id == 'berechneteAbwehr')
+					active = actor.system.abilities.int.total;
+				else if (item.system.id == 'strahlendeAbwehr')
+					active = actor.system.abilities.cha.total;
+			}
 		}
 
 		return active;
@@ -1060,8 +1065,23 @@ export class Space1889Actor extends Actor
 	}
 
 
+	HasNoActiveDefense(actor)
+	{
+		const statusIds = SPACE1889RollHelper.getActiveEffectStates(actor);
+		return statusIds.findIndex(element => element == "paralysis") >= 0;
+	}
+
 	CalcAndSetBlockData(actor)
 	{
+		if (this.HasNoActiveDefense(actor))
+		{
+			actor.system.block.value = 0;
+			actor.system.block.instinctive = false;
+			actor.system.block.riposte = false;
+			actor.system.block.info = game.i18n.format("SPACE1889.NoBlockParryEvasion", { talentName : game.i18n.format("SPACE1889.Block") });
+			return;
+		}
+
 		const id = "waffenlos";
 		let underlyingAbility = "str";
 		let rating = this.GetSkillRating(actor, id, underlyingAbility);
@@ -1117,6 +1137,15 @@ export class Space1889Actor extends Actor
 
 	CalcAndSetParryData(actor)
 	{
+		if (this.HasNoActiveDefense(actor))
+		{
+			actor.system.parry.value = 0;
+			actor.system.parry.instinctive = false;
+			actor.system.parry.riposte = false;
+			actor.system.parry.info = game.i18n.format("SPACE1889.NoBlockParryEvasion", { talentName : game.i18n.format("SPACE1889.Parry") });
+			return;
+		}
+
 		const id = "nahkampf";
 		let skillRating = 0;
 		let riposteDamageType = "nonLethal";
@@ -1191,6 +1220,14 @@ export class Space1889Actor extends Actor
 
 	CalcAndSetEvasionData(actor)
 	{
+		if (this.HasNoActiveDefense(actor))
+		{
+			actor.system.evasion.value = 0;
+			actor.system.evasion.instinctive = false;
+			actor.system.evasion.info = game.i18n.format("SPACE1889.NoBlockParryEvasion", { talentName : game.i18n.format("SPACE1889.Evasion") });
+			return;
+		}
+
 		const id1 = "sportlichkeit";
 		const id2 = "akrobatik";
 		let underlyingAbility1 = "str";
