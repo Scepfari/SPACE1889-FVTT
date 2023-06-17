@@ -34,6 +34,10 @@
 		</li>
 	</div>
 </div>
-<div class="tab" data-group="primary" data-tab="biography">
-	{{editor enrichedDescription target="system.description" button=true editable=editable}}
+<div style="max-height:18px">
+	<b>{{localize "SPACE1889.Biography"}}</b>
 </div>
+<div data-group="primary" data-tab="biography">
+	{{editor enrichedDescription target="system.description" button=true editable=editable engine="prosemirror"}}
+</div>
+{{> "systems/space1889/templates/actor/parts/sub-notes.html"}}

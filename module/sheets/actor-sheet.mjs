@@ -1,6 +1,7 @@
 import {onManageActiveEffect, prepareActiveEffectCategories} from "../helpers/effects.mjs";
 import SPACE1889Helper from "../helpers/helper.mjs";
 import SPACE1889RollHelper from "../helpers/roll-helper.mjs";
+import ForeignNotesEditor from "../helpers/foreignNotesEditor.mjs"
 
 /**
  * Extend the basic ActorSheet with some very simple modifications
@@ -77,7 +78,8 @@ export class Space1889ActorSheet extends ActorSheet {
 		//TextEditor
 		context.enrichedBiography = await TextEditor.enrichHTML(this.object.system.biography, { async: true });
 		context.enrichedDescription = await TextEditor.enrichHTML(this.object.system.description, {async: true});
-
+		context.enrichedNotes = await TextEditor.enrichHTML(this.object.system.notes.value, { async: true });
+		context.enrichedGmNotes = await TextEditor.enrichHTML(this.object.system.notes.gmInfo, { async: true });
 		return context;
 	}
 
@@ -260,9 +262,13 @@ export class Space1889ActorSheet extends ActorSheet {
 		// Rollable abilities.
 		html.find('.rollable').click(this._onRoll.bind(this));
 
+		this._bindKeepFieldsEnabled(html);
+
+
 		// -------------------------------------------------------------
 		// Everything below here is only needed if the sheet is editable
-		if (!this.isEditable) return;
+		if (!this.isEditable)
+			return;
 
 		// Add Inventory Item
 		html.find('.item-create').click(this._onItemCreate.bind(this));
@@ -650,6 +656,25 @@ export class Space1889ActorSheet extends ActorSheet {
 			});
 		}
 	}
+
+    _bindKeepFieldsEnabled(html) {
+        if(!this.isEditable){
+            const keepFields = html.find('.keepFieldsEnabled')
+            for(let k of keepFields){
+                const attr = k.dataset.attr
+                const name = k.dataset.name
+                $(k).find('.editor').append(`<a data-attr="${attr}" data-name="${name}" class="editor-edit"><i class="fas fa-edit"></i></a>`)
+                $(k).find('.editor-edit').click(ev => this._openKeepFieldEditpage(ev))
+            }
+        }
+    }
+
+    _openKeepFieldEditpage(ev){
+        const attr = ev.currentTarget.dataset.attr
+        const name = ev.currentTarget.dataset.name
+        const editor = new ForeignNotesEditor(this.actor.id, attr, name)
+        editor.render(true)
+    }
 
 	_doVehiclePositionClick(event, positionKey)
 	{

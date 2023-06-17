@@ -3,8 +3,15 @@
 	<div class="header-fields">
 		<h2 class="charname"><input name="name" type="text" value="{{actor.name}}" placeholder="Name" /></h2>
 	</div>
-	<div style="width: 100%; height: 100%; margin-bottom:10px">
-		<img class="imit-profile-img artwork" src="{{actor.img}}" data-edit="img" title="{{actor.name}}" style="object-fit: contain; width:95%; object-position:top"/>
+	<div style="width: 100%; margin-bottom:10px">
+		<img class="imit-profile-img artwork" src="{{actor.img}}" data-edit="img" title="{{actor.name}}" style="object-fit: contain; width:95%; object-position:top" />
+	</div>
+
+	<div title="{{localize "SPACE1889.PlayerNotesLimited"}}" style="max-height:20px">
+		<b>{{localize "SPACE1889.PlayerNotes"}}</b>
+	</div>
+	<div class="keepFieldsEnabled" data-attr="system.notes.value" data-name="Notes" >
+		{{editor enrichedNotes target="system.notes.value" button=true owner=owner editable=editable engine="prosemirror"}}
 	</div>
 
 </form>

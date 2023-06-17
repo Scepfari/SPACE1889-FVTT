@@ -250,6 +250,16 @@
 	margin-top: 5px;
 }
 
+
+.groupbox {
+	border: 1px solid var(--border-color);
+	border-radius: 3px;
+	margin: 10px 2px;
+	min-height: 50px;
+}
+
+
+
 /* Styles limited to space1889 sheets */
 .space1889 {
 	/* ----------------------------------------- */
@@ -321,6 +331,16 @@
 .space1889 .sheet-body .tab .editor {
 	height: 100%;
 	min-height: 30px;
+}
+
+.space1889 .editor-container {
+	min-height: 300px;
+	resize: vertical;
+}
+
+.space1889 .editor {
+	min-height: 30px;
+	resize: vertical;
 }
 
 .space1889 .tox .tox-editor-container {
@@ -749,7 +769,6 @@ font-size: 12px;
 	background-size: contain;
 	background-repeat: no-repeat;
 }
-
 
 #hotbar .bar-controls a:hover {
 	transform: scale(1.4);

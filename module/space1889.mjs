@@ -308,6 +308,10 @@ Handlebars.registerHelper('formatNumber', function (number, decimal)
 	return number.toFixed(Number(decimal));
 })
 
+Handlebars.registerHelper('isGm', function (str)
+{
+	return game.user.isGM;
+})
 
 /* -------------------------------------------- */
 /*  Ready Hook                                  */
@@ -343,6 +347,11 @@ Hooks.once("ready", async function() {
 					if (token)
 						SPACE1889RollHelper.addActorDamageFromSocket(data.tokenId, data.damageData);
 					break;
+				case "updateNotes":
+					const actor = game.actors.get(data.payload.actorId);
+					if (actor)
+						actor.update({ "system.notes.value": data.payload.updateData });
+					break;						
 				default:
 					console.warn(`Unhandled socket data type ${data.type}`)
 			}

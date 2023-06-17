@@ -18,6 +18,7 @@
 		"systems/space1889/templates/actor/parts/actor-language.html",
 		"systems/space1889/templates/actor/parts/actor-effects.html",
 		"systems/space1889/templates/actor/parts/actor-biography.html",
+		"systems/space1889/templates/actor/parts/sub-notes.html",
 		"systems/space1889/templates/actor/parts/actor-damage.html",
 		"systems/space1889/templates/actor/parts/actor-currency.html",
 		"systems/space1889/templates/actor/parts/actor-load.html",

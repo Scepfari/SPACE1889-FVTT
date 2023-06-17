@@ -21,6 +21,12 @@
 				"height": "",
 				"weight ": ""
 			},
+			"notes": {
+				"notes": {
+					"value": "",
+					"gmInfo": ""
+				}
+			},
 			"primaries": {
 				"abilities": {
 					"con": {
@@ -87,7 +93,7 @@
 			}
 		},
 		"character": {
-			"templates": [ "health", "style", "primaries", "secondaries", "biography", "block", "parry", "evasion" ],
+			"templates": [ "health", "style", "primaries", "secondaries", "biography", "notes", "block", "parry", "evasion" ],
 			"attributes": {
 				"xp": {
 					"value": 0,
@@ -106,7 +112,7 @@
 			}
 		},
 		"creature": {
-			"templates": [ "health", "primaries", "secondaries" ],
+			"templates": [ "health", "primaries", "secondaries", "notes" ],
 			"archetype": "animal",
 			"animalCompanionLevel": 0,
 			"movementType": "manylegged",
@@ -114,7 +120,7 @@
 			"origin": "merkur"
 		},
 		"npc": {
-			"templates": [ "health", "style", "primaries", "secondaries", "biography", "block", "parry", "evasion" ],
+			"templates": [ "health", "style", "primaries", "secondaries", "biography", "notes", "block", "parry", "evasion" ],
 			"attributes": {
 				"archetype": {
 					"value": "arbeiter"
@@ -128,7 +134,7 @@
 			}
 		},
 		"vehicle": {
-			"templates": [ "health", "secondaries" ],
+			"templates": [ "health", "secondaries", "notes" ],
 			"typeOrClass": "",
 			"isAirship": false,
 			"isStrengthBasedTempo": false,
