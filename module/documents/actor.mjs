@@ -312,7 +312,7 @@ export class Space1889Actor extends Actor
 			actor.system.secondaries.defense.total = actor.system.secondaries.defense.passiveTotal + actor.system.positions.pilot.total + actor.system.maneuverability.value;
 			actor.system.secondaries.defense.total = Math.max(actor.system.secondaries.defense.total, actor.system.secondaries.defense.passiveTotal);
 		}
-		actor.system.secondaries.defense.totalDefense = actor.system.secondaries.defense.total + this.getTotalDefenseBonus();
+		actor.system.secondaries.defense.totalDefense = actor.system.secondaries.defense.total + this.getTotalDefenseBonus(actor);
 	}
 
 	getWeaponLoad(actor)
@@ -442,7 +442,6 @@ export class Space1889Actor extends Actor
 			actor.system.abilities["dex"].total = Math.max(0, actor.system.abilities["dex"].total - actor.system.load.dexAndMoveMalus);
 		}
 
-		this.calcAndSetSecondaries(actor);
 		actor.system.healthDeduction = 0;
 
 		if (!SPACE1889Helper.isCreature(actor))
@@ -451,6 +450,7 @@ export class Space1889Actor extends Actor
 			if (deductionTh > actor.system.health.value)
 				actor.system.healthDeduction = deductionTh - actor.system.health.value;
 		}
+		this.calcAndSetSecondaries(actor);
 
 		this.calcAndSetSkillsAndSpecializations(actor)
 
@@ -503,10 +503,10 @@ export class Space1889Actor extends Actor
 			system.secondaries.move.talentBonus += actor.system.health.value;
 		system.secondaries.move.total = Math.max(0, system.secondaries.move.value + system.secondaries.move.talentBonus);
 		system.secondaries.perception.value = system.abilities.int.total + system.abilities.wil.total;
-		system.secondaries.perception.talentBonus = this.getBonusFromTalents("perception", "secondary", actor.items);
+		system.secondaries.perception.talentBonus = this.getBonusFromTalents("perception", "secondary", actor.items) - system.healthDeduction;
 		system.secondaries.perception.total = system.secondaries.perception.value + system.secondaries.perception.talentBonus;
 		system.secondaries.initiative.value = system.abilities.dex.total + system.abilities.int.total;
-		system.secondaries.initiative.talentBonus = this.getBonusFromTalents("initiative", "secondary", actor.items);
+		system.secondaries.initiative.talentBonus = this.getBonusFromTalents("initiative", "secondary", actor.items) - system.healthDeduction;
 		system.secondaries.initiative.total = system.secondaries.initiative.value + system.secondaries.initiative.talentBonus;
 		system.secondaries.stun.value = Math.max(system.abilities.con.total, SPACE1889Helper.getTalentLevel(actor, "dickkopf") > 0 ? system.abilities.wil.total : 0);
 		system.secondaries.stun.talentBonus = this.getBonusFromTalents("stun", "secondary", actor.items);
@@ -515,11 +515,12 @@ export class Space1889Actor extends Actor
 		system.secondaries.size.total = system.secondaries.size.value + system.secondaries.size.talentBonus;
 		system.secondaries.defense.value = this.getPassiveDefense(actor) + this.getActiveDefense(actor) - system.secondaries.size.total;
 		system.secondaries.defense.armorBonus = system.armorTotal.bonus;
-		system.secondaries.defense.talentBonus = this.getBonusFromTalents("defense", "secondary", actor.items) + system.secondaries.defense.armorBonus;
-		system.secondaries.defense.passiveTotal = this.getPassiveDefense(actor) - system.secondaries.size.total + system.secondaries.defense.armorBonus;
-		system.secondaries.defense.activeTotal = Math.max(0, this.getActiveDefense(actor) - system.secondaries.size.total);
-		system.secondaries.defense.total = system.secondaries.defense.value + system.secondaries.defense.talentBonus;
-		system.secondaries.defense.totalDefense = system.secondaries.defense.total + this.getTotalDefenseBonus();
+		system.secondaries.defense.talentBonus = this.getBonusFromTalents("defense", "secondary", actor.items) + system.secondaries.defense.armorBonus - system.healthDeduction;
+		system.secondaries.defense.passiveTotal = Math.max(0, this.getPassiveDefense(actor) - system.secondaries.size.total + system.secondaries.defense.armorBonus - system.healthDeduction);
+		system.secondaries.defense.activeTotal = Math.max(0, this.getActiveDefense(actor) - system.secondaries.size.total - system.healthDeduction);
+		const total = system.secondaries.defense.value + system.secondaries.defense.talentBonus;
+		system.secondaries.defense.total = Math.max(0, total);
+		system.secondaries.defense.totalDefense = total + this.getTotalDefenseBonus(actor);
 	}
 
 	calcAndSetCharacterNpcSiMoveUnits(actor)
@@ -915,9 +916,9 @@ export class Space1889Actor extends Actor
 		}
 	}
 
-	getTotalDefenseBonus()
+	getTotalDefenseBonus(actor)
 	{
-		return 4;
+		return this.HasNoActiveDefense(actor) ? 0 : 4;
 	}
 
 	getArmorBonusMalus(items)
@@ -1110,6 +1111,7 @@ export class Space1889Actor extends Actor
 		if (game.settings.get("space1889", "optionalBlockDogeParryRule"))
 			rating += this.getPassiveDefense(actor);
 
+		rating = Math.max(0, rating);
 		actor.system.block.value = rating;
 		actor.system.block.instinctive = instinctive;
 		actor.system.block.riposte = riposte;
@@ -1127,7 +1129,7 @@ export class Space1889Actor extends Actor
 		}
 		else
 		{
-			const tdb = this.getTotalDefenseBonus();
+			const tdb = this.getTotalDefenseBonus(actor);
 			if (defense + tdb < rating)
 				actor.system.block.info = game.i18n.format("SPACE1889.UseBlockParryEvasion", { fullDefence: (defense + tdb).toString(), talentName: name });
 			else
@@ -1190,6 +1192,7 @@ export class Space1889Actor extends Actor
 				skillRating += this.getPassiveDefense(actor);
 		}
 
+		skillRating = Math.max(0, skillRating);
 		actor.system.parry.value = skillRating;
 		actor.system.parry.instinctive = instinctive;
 		actor.system.parry.riposte = riposte;
@@ -1208,7 +1211,7 @@ export class Space1889Actor extends Actor
 		}
 		else
 		{
-			const tdb = this.getTotalDefenseBonus();
+			const tdb = this.getTotalDefenseBonus(actor);
 			if (noWeapon)
 				actor.system.parry.info = game.i18n.localize("SPACE1889.NoParryWithoutWeapon");
 			else if (defense + tdb < skillRating)
@@ -1254,6 +1257,7 @@ export class Space1889Actor extends Actor
 		if (game.settings.get("space1889", "optionalBlockDogeParryRule"))
 			rating += this.getPassiveDefense(actor);
 
+		rating = Math.max(0, rating);
 		actor.system.evasion.value = rating;
 		actor.system.evasion.instinctive = instinctive;
 
@@ -1271,7 +1275,7 @@ export class Space1889Actor extends Actor
 		}
 		else
 		{
-			const tdb = this.getTotalDefenseBonus();
+			const tdb = this.getTotalDefenseBonus(actor);
 			if (defense + tdb < rating)
 				actor.system.evasion.info = game.i18n.format("SPACE1889.UseBlockParryEvasion", { fullDefence: (defense + tdb).toString(), talentName: name });
 			else
@@ -1890,7 +1894,7 @@ export class Space1889Actor extends Actor
 				label = game.i18n.localize("SPACE1889.PassiveDefense");
 				break;
 			case 'totalDefense':
-				dieCount = this.system.secondaries.defense.total + this.getTotalDefenseBonus();
+				dieCount = this.system.secondaries.defense.total + this.getTotalDefenseBonus(this);
 				label = game.i18n.localize("SPACE1889.TalentVolleAbwehr");
 				break;			
 		}
@@ -1941,7 +1945,14 @@ export class Space1889Actor extends Actor
 		const isAbility = this.isAbility(key);
 		if (isAbility && !specialDialog)
 			dieCount *= 2;
-		
+
+		if ((key == "str" || key == "dex") && theActor.system.healthDeduction > 0)
+		{
+			dieCount -= theActor.system.healthDeduction;
+			const deductionInfo = '<p>' + game.i18n.format("SPACE1889.HealthDeductionRollInfo", { value: theActor.system.healthDeduction }) + '</p>';
+			info = deductionInfo + info;
+		}
+
 
 		if (showDialog)
 		{

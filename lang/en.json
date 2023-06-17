@@ -2719,6 +2719,7 @@
 	"SPACE1889.DeadTarget": "The selected target is already dead, do you still want to attack it?",
 	"SPACE1889.DoAttack": "Really attack?",
 	"SPACE1889.NoMeleeWeaponAssasine": "An Assassin attack can only be performed with a melee weapon. But you don't have one in your hand.",
+	"SPACE1889.HealthDeductionRollInfo": "{value} deduction due to negative health",
 
 	"SPACE1889.ChooseSkill": "Skill selection for the talent",
 	"SPACE1889.ChooseSense": "Sense selection for the talent",

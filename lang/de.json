@@ -2719,6 +2719,7 @@
 	"SPACE1889.DeadTarget": "Das ausgewählte Ziel ist schon tot, willst du es trotzdem angreifen?",
 	"SPACE1889.DoAttack": "Wirklich angreifen?",
 	"SPACE1889.NoMeleeWeaponAssasine": "Ein Assasinen-Angriff lässt sich nur mit einer Nahkampfwaffe durchführen. Du hälst aber keine solche in der Hand.",
+	"SPACE1889.HealthDeductionRollInfo": "{value} Abzug durch negative Gesundheit",
 
 	"SPACE1889.ChooseSkill": "Fertigkeitsauswahl für das Talent",
 	"SPACE1889.ChooseSense": "Sinnauswahl für das Talent",
