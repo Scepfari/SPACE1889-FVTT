@@ -1,5 +1,21 @@
 # Changelog 
 
+## Zeit der drei namenlosen Weltreiche
+
+### v2.0.0
+- Foundry VTT V10 und V11 Unterstützung
+- Einführung des neuen Item Typ "Behälter/Aufbewahrungsort". Dies ersetzt die alte Körper/Rucksack/Lager Zuordnung, das Umlagern von Gegenständen geht weiterhin über ein Klick auf den angezeigten Ort, oder per Drag & Drop. Die Reihenfolge der Behälter im Charakterbogen kann ebenfalls über Drag & Drop auf andere Behälter geändert werden.
+- Alle Akteure werden beim Wechsel auf diese Version automatisch konvertiert. Importiert man Akteure aus älteren Versionen oder von selbst erstellten Kompendien, landet erstmal alles was zuvor im Lager oder Rucksack war am Körper. Zieht man diese Akteure in eine Szene und markiert sie, kann man die Konvertierung manuell über den folgenden Nachrichten Befehl anstoßen: /addContainer
+- Die aktuelle Last des Akteurs wird nun einschließlich der getragenen Behälter berechnet und die Mali aus der Überladung fließen direkt in die Attribute, und damit auch in allen Proben, ein. 
+- Das Ziehen bzw. Nachladen von Waffen ist nun nur noch möglich, wenn die Gegenstände auch von Akteur getragen werden. Ausnahme davon sind natürlich die Geschütze, die viel zu groß und schwer sind getragen zu werden.
+- Space Menü Bereitmachen der Waffen:  
+  - Funktion ist jetzt auch nur auf ausgewählte Figuren anwendbar
+  - Funktion ist zusätzlich über eine Tastenkombination [K] erreichbar 
+- Das System rechnet nun die Abzüge bei Proben mit negativer Gesundheit automatisch ein
+- Die Bögen von Charakteren, NPCs und Kreaturen enthalten nun Links ( ) über die sich direkt das zugehörige Kompendium öffnen lässt.
+- Fix Bewusstlos bei Talent zäher Hund
+
+
 ## Zeitalter der 1000 Weltkriege
 
 ### v1.4.3
