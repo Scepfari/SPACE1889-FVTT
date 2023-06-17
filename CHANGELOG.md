@@ -2,6 +2,14 @@
 
 ## Zeit der drei namenlosen Weltreiche
 
+### v2.0.1
+- Die Bögen von Charakteren, NSCs, Kreaturen und Fahrzeugen besitzen jetzt zwei neue Textfelder: 
+  - SL Info: Ist nur für den Spielleiter sichtbar, selbst wenn die Spieler Besitzer des Akteurs sind.
+  - Spieler Info: Ist für Spieler auch dann sichtbar und editierbar, wenn er nur beschränkte Rechte am Akteur hat. Das Editieren mit beschränkten Rechten funktioniert allerdings nur wenn die Spielleitung im Spiel angemeldet ist.
+- Fix: Der Effekt gelähmt wirkt sich jetzt auch auf die Werte im Charakterbogen aus, indem die aktive Abwehr auf 0 fällt und das in alle davon abgeleiteten Größen mit einfließt. Gelähmt heißt auch, das keine volle Abwehr mehr möglich ist.
+- Fix: Negativer Gesundheit wirkt sich nun regelkonform auch auf die Sekundären und Teile der Primären (Stärke und Geschicklichkeit) automatisch aus. Das schließt auch die speziellen Verteidigungsmanöver wie Parade und Co ein.
+
+
 ### v2.0.0
 - Foundry VTT V10 und V11 Unterstützung
 - Einführung des neuen Item Typ "Behälter/Aufbewahrungsort". Dies ersetzt die alte Körper/Rucksack/Lager Zuordnung, das Umlagern von Gegenständen geht weiterhin über ein Klick auf den angezeigten Ort, oder per Drag & Drop. Die Reihenfolge der Behälter im Charakterbogen kann ebenfalls über Drag & Drop auf andere Behälter geändert werden.
@@ -12,7 +20,7 @@
   - Funktion ist jetzt auch nur auf ausgewählte Figuren anwendbar
   - Funktion ist zusätzlich über eine Tastenkombination [K] erreichbar 
 - Das System rechnet nun die Abzüge bei Proben mit negativer Gesundheit automatisch ein
-- Die Bögen von Charakteren, NPCs und Kreaturen enthalten nun Links ( ) über die sich direkt das zugehörige Kompendium öffnen lässt.
+- Die Bögen von Charakteren, NSCs und Kreaturen enthalten nun Links ( ) über die sich direkt das zugehörige Kompendium öffnen lässt.
 - Fix Bewusstlos bei Talent zäher Hund
 
 
