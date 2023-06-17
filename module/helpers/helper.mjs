@@ -1330,7 +1330,7 @@ export default class SPACE1889Helper
 		if (!token)
 			return false;
 
-		return hasOwnership(token.actor);
+		return this.hasOwnership(token.actor);
 	}
 
 	static hasOwnership(actor)
