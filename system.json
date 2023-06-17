@@ -27,7 +27,6 @@
 			"label": "Fertigkeiten",
 			"system": "space1889",
 			"path": "./packs/fertigkeiten.db",
-			"entity": "Item",
 			"type": "Item"
 		},
 		{
@@ -35,7 +34,6 @@
 			"label": "Ressourcen",
 			"system": "space1889",
 			"path": "./packs/ressourcen.db",
-			"entity": "Item",
 			"type": "Item"
 		},
 		{
@@ -43,7 +41,6 @@
 			"label": "Ruestungen",
 			"system": "space1889",
 			"path": "./packs/rustungen.db",
-			"entity": "Item",
 			"type": "Item"
 		},
 		{
@@ -51,7 +48,6 @@
 			"label": "Schwaechen",
 			"system": "space1889",
 			"path": "./packs/schwachen.db",
-			"entity": "Item",
 			"type": "Item"
 		},
 		{
@@ -59,7 +55,6 @@
 			"label": "Spezialisierungen",
 			"system": "space1889",
 			"path": "./packs/spezialisierungen.db",
-			"entity": "Item",
 			"type": "Item"
 		},
 		{
@@ -67,7 +62,6 @@
 			"label": "Sprachen",
 			"system": "space1889",
 			"path": "./packs/sprachen.db",
-			"entity": "Item",
 			"type": "Item"
 		},
 		{
@@ -75,7 +69,6 @@
 			"label": "Talente",
 			"system": "space1889",
 			"path": "./packs/talente.db",
-			"entity": "Item",
 			"type": "Item"
 		},
 		{
@@ -83,7 +76,6 @@
 			"label": "Waffen",
 			"system": "space1889",
 			"path": "./packs/waffen.db",
-			"entity": "Item",
 			"type": "Item"
 		},
 		{
@@ -91,7 +83,6 @@
 			"label": "Munition",
 			"system": "space1889",
 			"path": "./packs/munition.db",
-			"entity": "Item",
 			"type": "Item"
 		},
 		{
@@ -99,7 +90,6 @@
 			"label": "Gegenstaende",
 			"system": "space1889",
 			"path": "./packs/gegenstaende.db",
-			"entity": "Item",
 			"type": "Item"
 		},
 		{
@@ -107,7 +97,6 @@
 			"label": "Beispielcharaktere",
 			"system": "space1889",
 			"path": "./packs/beispielcharaktere.db",
-			"entity": "Actor",
 			"type": "Actor"
 		},
 		{
@@ -115,7 +104,6 @@
 			"label": "Kreaturen-Erde",
 			"system": "space1889",
 			"path": "./packs/kreaturen-erde.db",
-			"entity": "Actor",
 			"type": "Actor",
 			"private": true
 		},
@@ -124,7 +112,6 @@
 			"label": "Kreaturen-Luna",
 			"system": "space1889",
 			"path": "./packs/kreaturen-luna.db",
-			"entity": "Actor",
 			"type": "Actor",
 			"private": true
 		},
@@ -133,7 +120,6 @@
 			"label": "Kreaturen-Mars",
 			"system": "space1889",
 			"path": "./packs/kreaturen-mars.db",
-			"entity": "Actor",
 			"type": "Actor",
 			"private": true
 		},
@@ -142,7 +128,6 @@
 			"label": "Kreaturen-Venus",
 			"system": "space1889",
 			"path": "./packs/kreaturen-venus.db",
-			"entity": "Actor",
 			"type": "Actor",
 			"private": true
 		},
@@ -151,7 +136,6 @@
 			"label": "Kreaturen-Merkur",
 			"system": "space1889",
 			"path": "./packs/kreaturen-merkur.db",
-			"entity": "Actor",
 			"type": "Actor",
 			"private": true
 		},
@@ -160,7 +144,6 @@
 			"label": "Geld-Erde",
 			"system": "space1889",
 			"path": "./packs/geld-erde.db",
-			"entity": "Item",
 			"type": "Item"
 		},
 		{
@@ -168,7 +151,6 @@
 			"label": "Geld-Mars",
 			"system": "space1889",
 			"path": "./packs/geld-mars.db",
-			"entity": "Item",
 			"type": "Item"
 		},
 		{
@@ -176,7 +158,6 @@
 			"label": "Makros",
 			"system": "space1889",
 			"path": "./packs/makros.db",
-			"entity": "Macro",
 			"type": "Macro"
 		},
 		{
@@ -184,7 +165,6 @@
 			"label": "Beamte",
 			"system": "space1889",
 			"path": "./packs/nsc1beamte.db",
-			"entity": "Actor",
 			"type": "Actor",
 			"private": true
 		},
@@ -193,7 +173,6 @@
 			"label": "Buehnenkuenstler",
 			"system": "space1889",
 			"path": "./packs/nsc1buehnenkuenstler.db",
-			"entity": "Actor",
 			"type": "Actor",
 			"private": true
 		},
@@ -202,7 +181,6 @@
 			"label": "Dienstpersonal",
 			"system": "space1889",
 			"path": "./packs/nsc1dienstpersonal.db",
-			"entity": "Actor",
 			"type": "Actor",
 			"private": true
 		},
@@ -211,7 +189,6 @@
 			"label": "Haendler Und Kaufleute",
 			"system": "space1889",
 			"path": "./packs/nsc1haendlerundkaufleute.db",
-			"entity": "Actor",
 			"type": "Actor",
 			"private": true
 		},
@@ -220,7 +197,6 @@
 			"label": "Handwerker",
 			"system": "space1889",
 			"path": "./packs/nsc1handwerker.db",
-			"entity": "Actor",
 			"type": "Actor",
 			"private": true
 		},
@@ -229,7 +205,6 @@
 			"label": "Eingeborene",
 			"system": "space1889",
 			"path": "./packs/nsc2eingeborene.db",
-			"entity": "Actor",
 			"type": "Actor",
 			"private": true
 		},
@@ -238,7 +213,6 @@
 			"label": "Herren und Damen von Stand",
 			"system": "space1889",
 			"path": "./packs/nsc3herrenunddamenvonstand.db",
-			"entity": "Actor",
 			"type": "Actor",
 			"private": true
 		},
@@ -247,7 +221,6 @@
 			"label": "Hochlandmarsianer",
 			"system": "space1889",
 			"path": "./packs/nsc4hochlandmarsianer.db",
-			"entity": "Actor",
 			"type": "Actor",
 			"private": true
 		},
@@ -256,7 +229,6 @@
 			"label": "Huegelmarsianer",
 			"system": "space1889",
 			"path": "./packs/nsc4huegelmarsianer.db",
-			"entity": "Actor",
 			"type": "Actor",
 			"private": true
 		},
@@ -265,7 +237,6 @@
 			"label": "Militaer",
 			"system": "space1889",
 			"path": "./packs/nsc5militaer.db",
-			"entity": "Actor",
 			"type": "Actor",
 			"private": true
 		},
@@ -274,7 +245,6 @@
 			"label": "Amuesierdamen und gestrauchelte Frauen",
 			"system": "space1889",
 			"path": "./packs/nsc6amuesierdamen.db",
-			"entity": "Actor",
 			"type": "Actor",
 			"private": true
 		},
@@ -283,7 +253,6 @@
 			"label": "Gauner",
 			"system": "space1889",
 			"path": "./packs/nsc6gauner.db",
-			"entity": "Actor",
 			"type": "Actor",
 			"private": true
 		},
@@ -292,7 +261,6 @@
 			"label": "Gluecksspieler",
 			"system": "space1889",
 			"path": "./packs/nsc6gluecksspieler.db",
-			"entity": "Actor",
 			"type": "Actor",
 			"private": true
 		},
@@ -301,7 +269,6 @@
 			"label": "Schlaeger",
 			"system": "space1889",
 			"path": "./packs/nsc6schlaeger.db",
-			"entity": "Actor",
 			"type": "Actor",
 			"private": true
 		},
@@ -310,7 +277,6 @@
 			"label": "Archaische Venusier",
 			"system": "space1889",
 			"path": "./packs/nsc7archaischevenusier.db",
-			"entity": "Actor",
 			"type": "Actor",
 			"private": true
 		},
@@ -319,7 +285,6 @@
 			"label": "Entwickelte Venusier",
 			"system": "space1889",
 			"path": "./packs/nsc7entwickeltevenusier.db",
-			"entity": "Actor",
 			"type": "Actor",
 			"private": true
 		},
@@ -328,7 +293,6 @@
 			"label": "Waffen fuer Fahrzeuge",
 			"system": "space1889",
 			"path": "./packs/fahrzeugwaffen.db",
-			"entity": "Item",
 			"type": "Item"
 		},
 		{
@@ -336,7 +300,6 @@
 			"label": "Aetherfahrzeuge",
 			"system": "space1889",
 			"path": "./packs/atherfahrzeuge.db",
-			"entity": "Actor",
 			"type": "Actor",
 			"private": true
 		},
@@ -345,7 +308,6 @@
 			"label": "Landfahrzeuge",
 			"system": "space1889",
 			"path": "./packs/landfahrzeuge.db",
-			"entity": "Actor",
 			"type": "Actor",
 			"private": true
 		},
@@ -354,7 +316,6 @@
 			"label": "Luftfahrzeuge",
 			"system": "space1889",
 			"path": "./packs/luftfahrzeuge.db",
-			"entity": "Actor",
 			"type": "Actor",
 			"private": true
 		},
@@ -363,7 +324,6 @@
 			"label": "Wasserfahrzeuge",
 			"system": "space1889",
 			"path": "./packs/wasserfahrzeuge.db",
-			"entity": "Actor",
 			"type": "Actor",
 			"private": true
 		},
