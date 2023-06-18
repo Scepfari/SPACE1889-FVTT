@@ -6,6 +6,7 @@ export class Space1889Migration
 	{
 		const currentVersion = game.system.version;
 		const lastUsedVersion = game.settings.get("space1889", "lastUsedSystemVersion");
+		const lastUsedFoundryVersion = game.settings.get("space1889", "lastUsedFoundryVersion");
 
 		if (isNewerVersion(currentVersion, lastUsedVersion) && game.user.isGM)
 		{
@@ -17,7 +18,12 @@ export class Space1889Migration
 			await game.settings.set("space1889", "lastUsedSystemVersion", currentVersion);
 		}
 		if (game.user.isGM)
+		{
 			await this.checkFoundryMigrationBug();
+			await this.migrateEffectsForFoundryV11(lastUsedVersion, lastUsedFoundryVersion);
+
+			await game.settings.set("space1889", "lastUsedFoundryVersion", game.version);
+		}		
 	}
 
 	static async fixVolleAbwehr(lastUsedVersion)
@@ -82,6 +88,26 @@ export class Space1889Migration
 			if (actor.type == "vehicle" || actor.type == "creature")
 				continue;
 
+			actorList.push(actor);
+		}
+		return actorList;
+	}
+
+	static getAllActors()
+	{
+		let actorList = [];
+		for (const scene of game.scenes)
+		{
+			for (let token of scene.tokens)
+			{
+				if (token.actorLink || token.actor == undefined)
+					continue;
+
+				actorList.push(token.actor);
+			}
+		}
+		for (let actor of game.actors)
+		{
 			actorList.push(actor);
 		}
 		return actorList;
@@ -179,6 +205,31 @@ export class Space1889Migration
 		await SPACE1889Helper.createContainersFromLocation(actorList);
 	}
 
+	static async migrateEffectsForFoundryV11(lastUsedVersion, lastUsedFoundryVersion)
+	{
+		if (SPACE1889Helper.isFoundryV10Running())
+			return;
+
+		const lastNonFixVersion = "2.0.0";
+		if (!game.user.isGM || (isNewerVersion(lastUsedVersion, lastNonFixVersion) && isNewerVersion(lastUsedFoundryVersion, "10.291")))
+			return;
+
+		let actorList = this.getAllActors();
+
+		for (let actor of actorList)
+		{
+			let updateData = [];
+			for (let effect of actor.effects._source)
+			{
+				const statusId = effect.flags?.core?.statusId;
+				if (statusId)
+					updateData.push({ _id: effect._id, "statuses": [statusId] });
+			}
+			if (updateData.length > 0)
+				await actor.updateEmbeddedDocuments("ActiveEffect", updateData);
+		}
+	}
+
 	static async checkFoundryMigrationBug()
 	{
 		if (game.version === "10.284")
@@ -200,8 +251,6 @@ export class Space1889Migration
 		{
 			this.showWarning();
 		}
-
-		await game.settings.set("space1889", "lastUsedFoundryVersion", game.version);
 	}
 
 	static showWarning()

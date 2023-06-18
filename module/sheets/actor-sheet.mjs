@@ -1,4 +1,4 @@
-import {onManageActiveEffect, prepareActiveEffectCategories} from "../helpers/effects.mjs";
+import {onManageActiveEffect} from "../helpers/effects.mjs";
 import SPACE1889Helper from "../helpers/helper.mjs";
 import SPACE1889RollHelper from "../helpers/roll-helper.mjs";
 import ForeignNotesEditor from "../helpers/foreignNotesEditor.mjs"

@@ -8,7 +8,7 @@
   - Spieler Info: Ist für Spieler auch dann sichtbar und editierbar, wenn er nur beschränkte Rechte am Akteur hat. Das Editieren mit beschränkten Rechten funktioniert allerdings nur wenn die Spielleitung im Spiel angemeldet ist.
 - Fix: Der Effekt gelähmt wirkt sich jetzt auch auf die Werte im Charakterbogen aus, indem die aktive Abwehr auf 0 fällt und das in alle davon abgeleiteten Größen mit einfließt. Gelähmt heißt auch, das keine volle Abwehr mehr möglich ist.
 - Fix: Negativer Gesundheit wirkt sich nun regelkonform auch auf die Sekundären und Teile der Primären (Stärke und Geschicklichkeit) automatisch aus. Das schließt auch die speziellen Verteidigungsmanöver wie Parade und Co ein.
-
+- Fix: Effekte in Foundry V11
 
 ### v2.0.0
 - Foundry VTT V10 und V11 Unterstützung

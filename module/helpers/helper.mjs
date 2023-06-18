@@ -388,12 +388,15 @@ export default class SPACE1889Helper
 
 	static getEffectData(effect)
 	{
-		const combatId = game.combat ? game.combat._id : 0;
 		let duration = game.combat ?
 			{ combat: game.combat._id, rounds: effect.rounds, seconds: 6 * effect.rounds, startRound: 0, startTime: game.time.worldTime, startTurn: 0 } :
 			{ seconds: 6, startTime: game.time.worldTime };
 
-		
+		return this.isFoundryV10Running() ? this.getFlagEffectData(effect, duration) : this.getStatusesEffectData(effect, duration);
+	}
+
+	static getFlagEffectData(effect, duration)
+	{
 		const infos = [
 			{
 				name: "stun",
@@ -445,6 +448,54 @@ export default class SPACE1889Helper
 			}
 		];
 		return infos.find(e => e.name == effect.name);
+	}
+
+	static getStatusesEffectData(effect, duration)
+	{
+		const infos = [
+			{
+				name: game.i18n.localize("EFFECT.StatusStunned"),
+				icon: "icons/svg/daze.svg",
+				statuses: ['stun'],
+				duration: duration,
+			},
+			{
+				name: game.i18n.localize("EFFECT.StatusProne"),
+				statuses: ['prone'],
+				icon: "icons/svg/falling.svg",
+				duration: duration
+			},
+			{
+				name: game.i18n.localize("EFFECT.StatusUnconscious"),
+				statuses: ['unconscious'],
+				icon: "icons/svg/unconscious.svg",
+				duration: duration,
+			},
+			{
+				name: game.i18n.localize("EFFECT.StatusParalysis"),
+				statuses: ['paralysis'],
+				icon: "icons/svg/paralysis.svg",
+				duration: duration,
+			},
+			{
+				name: game.i18n.localize("EFFECT.StatusFear"),
+				statuses: ['fear'],
+				icon: "icons/svg/terror.svg",
+				duration: duration,
+			},
+			{
+				name: game.i18n.localize("EFFECT.StatusBurning"),
+				statuses: ['burning'],
+				icon: "icons/svg/fire.svg",
+				duration: duration,
+			},
+			{
+				name: game.i18n.localize("EFFECT.StatusDead"),
+				statuses: ['dead'],
+				icon: "icons/svg/skull.svg",
+			}
+		];
+		return infos.find(e => e.statuses[0] == effect.name);
 	}
 
 	static async addEffects(actor, effects)
@@ -1827,5 +1878,10 @@ export default class SPACE1889Helper
 			isDead = true;
 
 		return { combatSupport: true, noTarget: noTarget, isDead: isDead };
+	}
+
+	static isFoundryV10Running()
+	{
+		return Number(game.version.substring(0, game.version.indexOf("."))) < 11;
 	}
 }

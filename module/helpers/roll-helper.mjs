@@ -219,6 +219,11 @@ export default class SPACE1889RollHelper
 
 	static getActiveEffectStates(actor)
 	{
+		return SPACE1889Helper.isFoundryV10Running() ? this.getActiveEffectStatesByFlag(actor) : this.getActiveEffectStatesByStatuses(actor);
+	}
+
+	static getActiveEffectStatesByFlag(actor)
+	{
 		let effectList = [];
 		if (!actor)
 			return effectList;
@@ -228,6 +233,22 @@ export default class SPACE1889RollHelper
 			const statusId = effect.flags?.core?.statusId;
 			if (statusId)
 				effectList.push(statusId);
+		}
+		return effectList;
+	}
+
+	static getActiveEffectStatesByStatuses(actor)
+	{
+		let effectList = [];
+		if (!actor)
+			return effectList;
+
+		for (let effect of actor.effects._source)
+		{
+			for (let id of effect.statuses)
+			{
+				effectList.push(id);
+			}
 		}
 		return effectList;
 	}

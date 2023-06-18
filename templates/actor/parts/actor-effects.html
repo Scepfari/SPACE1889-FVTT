@@ -16,7 +16,11 @@
 	<li class="item row-section flexrow" data-effect-id="{{effect.id}}">
 		<div class="item-name">
 			<img class="item-image-small" src="{{effect.icon}}" />
-			<h4>{{effect.label}}</h4>
+			{{#if (isFvttV10 " ")}}
+				<h4>{{effect.label}}</h4>
+			{{else}}
+				<h4>{{effect.name}}</h4>
+			{{/if}}
 		</div>
 		<div class="items-list item-max-with100px">{{formatEffectDuration effect.duration}}</div>
 		<div class="items-list item-max-with100px">{{effect.duration.label}}</div>

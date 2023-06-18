@@ -8,7 +8,7 @@
 	"compatibleCoreVersion": "10",
 	"compatibility": {
 		"minimum": 10,
-		"verified": "10.291",
+		"verified": "11.302",
 		"maximum": 11
 	},
 
