@@ -444,12 +444,10 @@ export class Space1889Actor extends Actor
 
 		actor.system.healthDeduction = 0;
 
-		if (!SPACE1889Helper.isCreature(actor))
-		{
-			const deductionTh = SPACE1889Helper.getHealthDeductionThreshold(actor);
-			if (deductionTh > actor.system.health.value)
-				actor.system.healthDeduction = deductionTh - actor.system.health.value;
-		}
+		const deductionTh = SPACE1889Helper.getHealthDeductionThreshold(actor);
+		if (deductionTh > actor.system.health.value)
+			actor.system.healthDeduction = deductionTh - actor.system.health.value;
+
 		this.calcAndSetSecondaries(actor);
 
 		this.calcAndSetSkillsAndSpecializations(actor)
@@ -504,10 +502,10 @@ export class Space1889Actor extends Actor
 		system.secondaries.move.total = Math.max(0, system.secondaries.move.value + system.secondaries.move.talentBonus);
 		system.secondaries.perception.value = system.abilities.int.total + system.abilities.wil.total;
 		system.secondaries.perception.talentBonus = this.getBonusFromTalents("perception", "secondary", actor.items) - system.healthDeduction;
-		system.secondaries.perception.total = system.secondaries.perception.value + system.secondaries.perception.talentBonus;
+		system.secondaries.perception.total = Math.max(0, system.secondaries.perception.value + system.secondaries.perception.talentBonus);
 		system.secondaries.initiative.value = system.abilities.dex.total + system.abilities.int.total;
 		system.secondaries.initiative.talentBonus = this.getBonusFromTalents("initiative", "secondary", actor.items) - system.healthDeduction;
-		system.secondaries.initiative.total = system.secondaries.initiative.value + system.secondaries.initiative.talentBonus;
+		system.secondaries.initiative.total = Math.max(0, system.secondaries.initiative.value + system.secondaries.initiative.talentBonus);
 		system.secondaries.stun.value = Math.max(system.abilities.con.total, SPACE1889Helper.getTalentLevel(actor, "dickkopf") > 0 ? system.abilities.wil.total : 0);
 		system.secondaries.stun.talentBonus = this.getBonusFromTalents("stun", "secondary", actor.items);
 		system.secondaries.stun.total = system.secondaries.stun.value + system.secondaries.stun.talentBonus;
