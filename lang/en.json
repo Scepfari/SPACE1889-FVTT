@@ -2752,6 +2752,8 @@
 	"SPACE1889.ConfigGlobalStyleInfo": "Defines the skin of the system",
 	"SPACE1889.ConfigGlobalStyleImmersive": "Immersive",
 	"SPACE1889.ConfigGlobalStyleNaked": "Naked Foundry",
+	"SPACE1889.ConfigSubfolder-indent": "Subfolder indentation",
+	"SPACE1889.ConfigSubfolder-indentInfo": "Set the value for the indentation of each subfolder in pixels.",
 	"SPACE1889.HeroLevelPechvogel": "Unlucky Fellow",
 	"SPACE1889.HeroLevelDurchschnittsbuerger": "Everyman",
 	"SPACE1889.HeroLevelVielversprechend": "Promising",

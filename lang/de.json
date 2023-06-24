@@ -2752,6 +2752,9 @@
 	"SPACE1889.ConfigGlobalStyleInfo": "Definiert das Aussehen - den \"Skin\" - des Systems",
 	"SPACE1889.ConfigGlobalStyleImmersive": "Immersiv",
 	"SPACE1889.ConfigGlobalStyleNaked": "Nacktes Foundry",
+	"SPACE1889.ConfigSubfolder-indent": "Unterordner Einrückung",
+	"SPACE1889.ConfigSubfolder-indentInfo": "Definiert den Wert für die Einrückung jedes Unterordners in Pixeln fest",
+
 	"SPACE1889.HeroLevelPechvogel": "Pechvogel",
 	"SPACE1889.HeroLevelDurchschnittsbuerger": "Durchschnittsbürger",
 	"SPACE1889.HeroLevelVielversprechend": "Vielversprechend",

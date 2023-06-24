@@ -124,11 +124,11 @@
 }
 
 .space1889-immersive #hotbar:before {
-	background-image: url("../icons/backgrounds/hotbar2.webp");
+	background-image: var(--space1889-hotbar2path, url("../icons/backgrounds/hotbar2.webp"));
 	background-size: 100% 100%;
 	background-repeat: no-repeat;
 	height: 74px;
-	width: 595px;
+	width: var(--space1889-hotbar2width, 595px);
 	content: "";
 	position: absolute;
 	left: -8px;

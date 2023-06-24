@@ -774,5 +774,8 @@ font-size: 12px;
 	transform: scale(1.4);
 }
 
+.subdirectory {
+	border-left: var(--space1889-indent, 8px) solid rgba(255, 255, 255, 0.2);
+}
 
 

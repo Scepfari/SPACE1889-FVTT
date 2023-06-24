@@ -88,6 +88,16 @@ Hooks.on("ready", async function ()
 	{
 		externalLinks.render(true)
 	});
+
+	let indent = game.settings.get("space1889", "subfolder-indent");
+	document.documentElement.style.setProperty('--space1889-indent', `${indent}px`);
+
+	if (!SPACE1889Helper.isFoundryV10Running())
+	{
+		
+		document.documentElement.style.setProperty('--space1889-hotbar2path', 'url(../icons/backgrounds/hotbar2v11.webp)');
+		document.documentElement.style.setProperty('--space1889-hotbar2width', '631px');
+	}
 });
 
 Hooks.once("setup", () =>

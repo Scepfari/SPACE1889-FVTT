@@ -225,6 +225,24 @@ export const registerSystemSettings = function ()
 		    config: true,
 		    default: false,
 		    type: Boolean
-        });
+		});
+
+	game.settings.register("space1889", "subfolder-indent", {
+		name: "SPACE1889.ConfigSubfolder-indent",
+		hint: "SPACE1889.ConfigSubfolder-indentInfo",
+		scope: "client",
+		config: true,
+		type: Number,
+		range: {
+			min: 2,
+			max: 16,
+			step: 1,
+		},
+		default: 8,
+		onChange: function (newValue)
+		{
+			document.documentElement.style.setProperty('--space1889-indent', `${newValue}px`);
+		}
+	});
 
 }
