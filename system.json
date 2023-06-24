@@ -18,8 +18,13 @@
 			"discord": "Scepfari#1283"
 		}
 	],
-	"esmodules": [ "./module/space1889.mjs" ],
-	"styles": [ "css/space1889.css", "css/immersive.css" ],
+	"esmodules": [
+		"./module/space1889.mjs" 
+	],
+	"styles": [
+		"css/space1889.css",
+		"css/immersive.css" 
+	],
 	"scripts": [],
 	"packs": [
 		{
@@ -27,77 +32,132 @@
 			"label": "Fertigkeiten",
 			"system": "space1889",
 			"path": "./packs/fertigkeiten.db",
-			"type": "Item"
+			"type": "Item",
+			"ownership": {
+				"PLAYER": "OBSERVER",
+				"ASSISTANT": "OWNER"
+			},
+			"flags": {}
 		},
 		{
 			"name": "ressourcen",
 			"label": "Ressourcen",
 			"system": "space1889",
 			"path": "./packs/ressourcen.db",
-			"type": "Item"
+			"type": "Item",
+			"ownership": {
+				"PLAYER": "OBSERVER",
+				"ASSISTANT": "OWNER"
+			},
+			"flags": {}
 		},
 		{
 			"name": "rustungen",
 			"label": "Ruestungen",
 			"system": "space1889",
 			"path": "./packs/rustungen.db",
-			"type": "Item"
+			"type": "Item",
+			"ownership": {
+				"PLAYER": "OBSERVER",
+				"ASSISTANT": "OWNER"
+			},
+			"flags": {}
 		},
 		{
 			"name": "schwachen",
 			"label": "Schwaechen",
 			"system": "space1889",
 			"path": "./packs/schwachen.db",
-			"type": "Item"
+			"type": "Item",
+			"ownership": {
+				"PLAYER": "OBSERVER",
+				"ASSISTANT": "OWNER"
+			},
+			"flags": {}
 		},
 		{
 			"name": "spezialisierungen",
 			"label": "Spezialisierungen",
 			"system": "space1889",
 			"path": "./packs/spezialisierungen.db",
-			"type": "Item"
+			"type": "Item",
+			"ownership": {
+				"PLAYER": "OBSERVER",
+				"ASSISTANT": "OWNER"
+			},
+			"flags": {}
 		},
 		{
 			"name": "sprachen",
 			"label": "Sprachen",
 			"system": "space1889",
 			"path": "./packs/sprachen.db",
-			"type": "Item"
+			"type": "Item",
+			"ownership": {
+				"PLAYER": "OBSERVER",
+				"ASSISTANT": "OWNER"
+			},
+			"flags": {}
 		},
 		{
 			"name": "talente",
 			"label": "Talente",
 			"system": "space1889",
 			"path": "./packs/talente.db",
-			"type": "Item"
+			"type": "Item",
+			"ownership": {
+				"PLAYER": "OBSERVER",
+				"ASSISTANT": "OWNER"
+			},
+			"flags": {}
 		},
 		{
 			"name": "waffen",
 			"label": "Waffen",
 			"system": "space1889",
 			"path": "./packs/waffen.db",
-			"type": "Item"
+			"type": "Item",
+			"ownership": {
+				"PLAYER": "OBSERVER",
+				"ASSISTANT": "OWNER"
+			},
+			"flags": {}
 		},
 		{
 			"name": "munition",
 			"label": "Munition",
 			"system": "space1889",
 			"path": "./packs/munition.db",
-			"type": "Item"
+			"type": "Item",
+			"ownership": {
+				"PLAYER": "OBSERVER",
+				"ASSISTANT": "OWNER"
+			},
+			"flags": {}
 		},
 		{
 			"name": "gegenstaende",
 			"label": "Gegenstaende",
 			"system": "space1889",
 			"path": "./packs/gegenstaende.db",
-			"type": "Item"
+			"type": "Item",
+			"ownership": {
+				"PLAYER": "OBSERVER",
+				"ASSISTANT": "OWNER"
+			},
+			"flags": {}
 		},
 		{
 			"name": "beispielcharaktere",
 			"label": "Beispielcharaktere",
 			"system": "space1889",
 			"path": "./packs/beispielcharaktere.db",
-			"type": "Actor"
+			"type": "Actor",
+			"ownership": {
+				"PLAYER": "OBSERVER",
+				"ASSISTANT": "OWNER"
+			},
+			"flags": {}
 		},
 		{
 			"name": "kreaturenerde",
@@ -105,7 +165,11 @@
 			"system": "space1889",
 			"path": "./packs/kreaturen-erde.db",
 			"type": "Actor",
-			"private": true
+			"ownership": {
+				"PLAYER": "NONE",
+				"ASSISTANT": "OWNER"
+			},
+			"flags": {}
 		},
 		{
 			"name": "kreaturenluna",
@@ -113,7 +177,11 @@
 			"system": "space1889",
 			"path": "./packs/kreaturen-luna.db",
 			"type": "Actor",
-			"private": true
+			"ownership": {
+				"PLAYER": "NONE",
+				"ASSISTANT": "OWNER"
+			},
+			"flags": {}
 		},
 		{
 			"name": "kreaturenmars",
@@ -121,7 +189,11 @@
 			"system": "space1889",
 			"path": "./packs/kreaturen-mars.db",
 			"type": "Actor",
-			"private": true
+			"ownership": {
+				"PLAYER": "NONE",
+				"ASSISTANT": "OWNER"
+			},
+			"flags": {}
 		},
 		{
 			"name": "kreaturenvenus",
@@ -129,7 +201,11 @@
 			"system": "space1889",
 			"path": "./packs/kreaturen-venus.db",
 			"type": "Actor",
-			"private": true
+			"ownership": {
+				"PLAYER": "NONE",
+				"ASSISTANT": "OWNER"
+			},
+			"flags": {}
 		},
 		{
 			"name": "kreaturenmerkur",
@@ -137,28 +213,47 @@
 			"system": "space1889",
 			"path": "./packs/kreaturen-merkur.db",
 			"type": "Actor",
-			"private": true
+			"ownership": {
+				"PLAYER": "NONE",
+				"ASSISTANT": "OWNER"
+			},
+			"flags": {}
 		},
 		{
 			"name": "gelderde",
 			"label": "Geld-Erde",
 			"system": "space1889",
 			"path": "./packs/geld-erde.db",
-			"type": "Item"
+			"type": "Item",
+			"ownership": {
+				"PLAYER": "OBSERVER",
+				"ASSISTANT": "OWNER"
+			},
+			"flags": {}
 		},
 		{
 			"name": "geldmars",
 			"label": "Geld-Mars",
 			"system": "space1889",
 			"path": "./packs/geld-mars.db",
-			"type": "Item"
+			"type": "Item",
+			"ownership": {
+				"PLAYER": "OBSERVER",
+				"ASSISTANT": "OWNER"
+			},
+			"flags": {}
 		},
 		{
 			"name": "makros",
 			"label": "Makros",
 			"system": "space1889",
 			"path": "./packs/makros.db",
-			"type": "Macro"
+			"type": "Macro",
+			"ownership": {
+				"PLAYER": "OBSERVER",
+				"ASSISTANT": "OWNER"
+			},
+			"flags": {}
 		},
 		{
 			"name": "nsc1beamte",
@@ -166,7 +261,11 @@
 			"system": "space1889",
 			"path": "./packs/nsc1beamte.db",
 			"type": "Actor",
-			"private": true
+			"ownership": {
+				"PLAYER": "NONE",
+				"ASSISTANT": "OWNER"
+			},
+			"flags": {}
 		},
 		{
 			"name": "nsc1buehnenkuenstler",
@@ -174,7 +273,11 @@
 			"system": "space1889",
 			"path": "./packs/nsc1buehnenkuenstler.db",
 			"type": "Actor",
-			"private": true
+			"ownership": {
+				"PLAYER": "NONE",
+				"ASSISTANT": "OWNER"
+			},
+			"flags": {}
 		},
 		{
 			"name": "nsc1dienstpersonal",
@@ -182,7 +285,11 @@
 			"system": "space1889",
 			"path": "./packs/nsc1dienstpersonal.db",
 			"type": "Actor",
-			"private": true
+			"ownership": {
+				"PLAYER": "NONE",
+				"ASSISTANT": "OWNER"
+			},
+			"flags": {}
 		},
 		{
 			"name": "nsc1haendlerundkaufleute",
@@ -190,7 +297,11 @@
 			"system": "space1889",
 			"path": "./packs/nsc1haendlerundkaufleute.db",
 			"type": "Actor",
-			"private": true
+			"ownership": {
+				"PLAYER": "NONE",
+				"ASSISTANT": "OWNER"
+			},
+			"flags": {}
 		},
 		{
 			"name": "nsc1handwerker",
@@ -198,7 +309,11 @@
 			"system": "space1889",
 			"path": "./packs/nsc1handwerker.db",
 			"type": "Actor",
-			"private": true
+			"ownership": {
+				"PLAYER": "NONE",
+				"ASSISTANT": "OWNER"
+			},
+			"flags": {}
 		},
 		{
 			"name": "nsc2eingeborene",
@@ -206,7 +321,11 @@
 			"system": "space1889",
 			"path": "./packs/nsc2eingeborene.db",
 			"type": "Actor",
-			"private": true
+			"ownership": {
+				"PLAYER": "NONE",
+				"ASSISTANT": "OWNER"
+			},
+			"flags": {}
 		},
 		{
 			"name": "nsc3herrenunddamenvonstand",
@@ -214,7 +333,11 @@
 			"system": "space1889",
 			"path": "./packs/nsc3herrenunddamenvonstand.db",
 			"type": "Actor",
-			"private": true
+			"ownership": {
+				"PLAYER": "NONE",
+				"ASSISTANT": "OWNER"
+			},
+			"flags": {}
 		},
 		{
 			"name": "nsc4hochlandmarsianer",
@@ -222,7 +345,11 @@
 			"system": "space1889",
 			"path": "./packs/nsc4hochlandmarsianer.db",
 			"type": "Actor",
-			"private": true
+			"ownership": {
+				"PLAYER": "NONE",
+				"ASSISTANT": "OWNER"
+			},
+			"flags": {}
 		},
 		{
 			"name": "nsc4huegelmarsianer",
@@ -230,7 +357,11 @@
 			"system": "space1889",
 			"path": "./packs/nsc4huegelmarsianer.db",
 			"type": "Actor",
-			"private": true
+			"ownership": {
+				"PLAYER": "NONE",
+				"ASSISTANT": "OWNER"
+			},
+			"flags": {}
 		},
 		{
 			"name": "nsc5militaer",
@@ -238,7 +369,11 @@
 			"system": "space1889",
 			"path": "./packs/nsc5militaer.db",
 			"type": "Actor",
-			"private": true
+			"ownership": {
+				"PLAYER": "NONE",
+				"ASSISTANT": "OWNER"
+			},
+			"flags": {}
 		},
 		{
 			"name": "nsc6amuesierdamen",
@@ -246,7 +381,11 @@
 			"system": "space1889",
 			"path": "./packs/nsc6amuesierdamen.db",
 			"type": "Actor",
-			"private": true
+			"ownership": {
+				"PLAYER": "NONE",
+				"ASSISTANT": "OWNER"
+			},
+			"flags": {}
 		},
 		{
 			"name": "nsc6gauner",
@@ -254,7 +393,11 @@
 			"system": "space1889",
 			"path": "./packs/nsc6gauner.db",
 			"type": "Actor",
-			"private": true
+			"ownership": {
+				"PLAYER": "NONE",
+				"ASSISTANT": "OWNER"
+			},
+			"flags": {}
 		},
 		{
 			"name": "nsc6gluecksspieler",
@@ -262,7 +405,11 @@
 			"system": "space1889",
 			"path": "./packs/nsc6gluecksspieler.db",
 			"type": "Actor",
-			"private": true
+			"ownership": {
+				"PLAYER": "NONE",
+				"ASSISTANT": "OWNER"
+			},
+			"flags": {}
 		},
 		{
 			"name": "nsc6schlaeger",
@@ -270,7 +417,11 @@
 			"system": "space1889",
 			"path": "./packs/nsc6schlaeger.db",
 			"type": "Actor",
-			"private": true
+			"ownership": {
+				"PLAYER": "NONE",
+				"ASSISTANT": "OWNER"
+			},
+			"flags": {}
 		},
 		{
 			"name": "nsc7archaischevenusier",
@@ -278,7 +429,11 @@
 			"system": "space1889",
 			"path": "./packs/nsc7archaischevenusier.db",
 			"type": "Actor",
-			"private": true
+			"ownership": {
+				"PLAYER": "NONE",
+				"ASSISTANT": "OWNER"
+			},
+			"flags": {}
 		},
 		{
 			"name": "nsc7entwickeltevenusier",
@@ -286,14 +441,23 @@
 			"system": "space1889",
 			"path": "./packs/nsc7entwickeltevenusier.db",
 			"type": "Actor",
-			"private": true
+			"ownership": {
+				"PLAYER": "NONE",
+				"ASSISTANT": "OWNER"
+			},
+			"flags": {}
 		},
 		{
 			"name": "fahrzeugwaffen",
 			"label": "Waffen fuer Fahrzeuge",
 			"system": "space1889",
 			"path": "./packs/fahrzeugwaffen.db",
-			"type": "Item"
+			"type": "Item",
+			"ownership": {
+				"PLAYER": "OBSERVER",
+				"ASSISTANT": "OWNER"
+			},
+			"flags": {}
 		},
 		{
 			"name": "atherfahrzeuge",
@@ -301,7 +465,11 @@
 			"system": "space1889",
 			"path": "./packs/atherfahrzeuge.db",
 			"type": "Actor",
-			"private": true
+			"ownership": {
+				"PLAYER": "NONE",
+				"ASSISTANT": "OWNER"
+			},
+			"flags": {}
 		},
 		{
 			"name": "landfahrzeuge",
@@ -309,7 +477,11 @@
 			"system": "space1889",
 			"path": "./packs/landfahrzeuge.db",
 			"type": "Actor",
-			"private": true
+			"ownership": {
+				"PLAYER": "NONE",
+				"ASSISTANT": "OWNER"
+			},
+			"flags": {}
 		},
 		{
 			"name": "luftfahrzeuge",
@@ -317,7 +489,11 @@
 			"system": "space1889",
 			"path": "./packs/luftfahrzeuge.db",
 			"type": "Actor",
-			"private": true
+			"ownership": {
+				"PLAYER": "NONE",
+				"ASSISTANT": "OWNER"
+			},
+			"flags": {}
 		},
 		{
 			"name": "wasserfahrzeuge",
@@ -325,14 +501,23 @@
 			"system": "space1889",
 			"path": "./packs/wasserfahrzeuge.db",
 			"type": "Actor",
-			"private": true
+			"ownership": {
+				"PLAYER": "NONE",
+				"ASSISTANT": "OWNER"
+			},
+			"flags": {}
 		},
 		{
 			"name": "help",
 			"label": "SPACE1889 Hilfe",
 			"system": "space1889",
 			"path": "./packs/space-1889-hilfe.db",
-			"type": "JournalEntry"
+			"type": "JournalEntry",
+			"ownership": {
+				"PLAYER": "OBSERVER",
+				"ASSISTANT": "OWNER"
+			},
+			"flags": {}
 		},
 		{
 			"name": "gminfos",
@@ -340,7 +525,11 @@
 			"system": "space1889",
 			"path": "./packs/space-1889-gm-infos.db",
 			"type": "JournalEntry",
-			"private": true
+			"ownership": {
+				"PLAYER": "NONE",
+				"ASSISTANT": "OWNER"
+			},
+			"flags": {}
 		}
 	],
 	"packFolders": [
