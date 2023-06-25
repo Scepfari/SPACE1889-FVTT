@@ -314,7 +314,7 @@ export class Space1889Migration
 						callback: () => game.settings.set("space1889", "newVersionPopup", `0|${currentVersion}`),
 					},
 				},
-			}).render(true, { height: 750 });
+			}).render(true, { resizable: true, height: 750 });
 		}
 	}
 }
