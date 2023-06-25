@@ -2,6 +2,14 @@
 
 ## Zeit der drei namenlosen Weltreiche
 
+### v2.0.2
+- Neue Option in den Einstellungen, um die Einrücktiefe der Ordner und Unterordner zu definieren
+- Liste der empfohlenen Module, verfügbar über das Foundry Symbol links oben
+- Fix: Negative Gesundheit bei Kreaturen wird nun korrekt wie bei SCs und NSCs angewendet
+- Fix: Negative Gesundheit führt nicht mehr zu negativen Wahrnehmungs bzw. Initiative Werten
+- Fix: V11 Warnung bezüglich pack.private durch Umstieg auf pack.ownership entfernt
+- Fix: V11 Immersionsrahmen der Schnellleiste
+
 ### v2.0.1
 - Die Bögen von Charakteren, NSCs, Kreaturen und Fahrzeugen besitzen jetzt zwei neue Textfelder: 
   - SL Info: Ist nur für den Spielleiter sichtbar, selbst wenn die Spieler Besitzer des Akteurs sind.
