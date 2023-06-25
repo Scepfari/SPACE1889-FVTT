@@ -2754,6 +2754,7 @@
 	"SPACE1889.ConfigGlobalStyleNaked": "Naked Foundry",
 	"SPACE1889.ConfigSubfolder-indent": "Subfolder indentation",
 	"SPACE1889.ConfigSubfolder-indentInfo": "Set the value for the indentation of each subfolder in pixels.",
+
 	"SPACE1889.HeroLevelPechvogel": "Unlucky Fellow",
 	"SPACE1889.HeroLevelDurchschnittsbuerger": "Everyman",
 	"SPACE1889.HeroLevelVielversprechend": "Promising",
@@ -3214,6 +3215,13 @@
 	"SPACE1889.TourScSheetStep6": "<p>In the weapons tab are listed to the weapons also the injuries, whereby with the latter also the healing factor (which is determined as known over a medicine roll) can be changed, whereby the healing duration is affected.</p><p>The weapons function as usual, thus info over click on the name and the roll over click on the dice icon. In addition, the four defense options are also listed, which trigger the roll via a click and send the definition to the message chat via [Alt] click.</p>",
 	"SPACE1889.TourScSheetStep7": "<p>The last tab (Bio) contains the general information about the character and also the list about the cash assets including their equivalent in British currency. It is recommended to use the currencies from the Earth Money and Mars Money compendiums, as the currencies contained there already contain the appropriate exchange rates.</p>",
 
+	"SPACE1889.TourSettingGotoSettingTitle": "Go to the game settings tab",
+	"SPACE1889.TourSettingGotoSettingContent": "Click the Customize Setting button",
+	"SPACE1889.TourSettingGotoConfigureTitle": "then to the settings",
+	"SPACE1889.TourSettingGotoConfigureContent": "exactly there! to the settings",
+	"SPACE1889.TourSettingGotoSystemTitle": "to the system settings",
+	"SPACE1889.TourSettingGotoSystemContent": "Space I am coming",
+
 	"SPACE1889.TourPcNoCharacter": "Create a player character to perform the tour",
 
 	"SPACE1889.ExternalLinksTitel": "External Links",
@@ -3222,6 +3230,7 @@
 	"SPACE1889.ExternalLinksDiscordDieGiesserei": "<div title=\"German Foundry Discord Server\">Die Gießerei</div>",
 	"SPACE1889.ExternalLinksBugReport": "<div title=\"Report bugs in SPACE 1889 system directly on Github\">Report a bug</div>",
 	"SPACE1889.ExternalLinksPublisher": "<div>Publisher</div>",
+	"SPACE1889.ExternalLinksModules": "Modules",
 
 	"SPACE1889.AddLinkedTokenTitle": "Add token",
 	"SPACE1889.AddLinkedTokenContent": "The token you want to add is linked to the actor. Changes to this token will also change the other tokens that also reference this actor. Do you really want that?",

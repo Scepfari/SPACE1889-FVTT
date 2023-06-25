@@ -3230,6 +3230,7 @@
 	"SPACE1889.ExternalLinksDiscordDieGiesserei": "<div title=\"Deutsche Foundry Discord Server\">Die Gießerei</div>",
 	"SPACE1889.ExternalLinksBugReport": "<div title=\"Fehler im SPACE 1889 System direkt auf Github melden\">Fehler melden</div>",
 	"SPACE1889.ExternalLinksPublisher": "<div>Herausgeber</div>",
+	"SPACE1889.ExternalLinksModules": "Module",
 
 	"SPACE1889.AddLinkedTokenTitle": "Token hinzufügen",
 	"SPACE1889.AddLinkedTokenContent": "Der Token den du hinzufügen willst, ist auf den Aktor verlinkt. Änderungen an diesem Token, verändern auch die anderen Token, die ebenfalls auf diesen Akteur referenzieren. Willst du das wirklich?",
@@ -3240,6 +3241,7 @@
 	"SPACE1889.RangedAttack": "Fernkampf",
 	"SPACE1889.NoMatter": "Egal",
 	"SPACE1889.Go": "Los!",
+	"SPACE1889.FunctionCanceled": "Funktion wurde abgebrochen",
 	"SPACE1889.FunctionCanceled": "Funktion wurde abgebrochen",
 	"SPACE1889.TokenChanged": "Token {name} wurde angepasst",
 	"SPACE1889.TokensNotChanged": "Keiner der Tokens wurder verändert",

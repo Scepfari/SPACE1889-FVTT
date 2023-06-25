@@ -1813,6 +1813,13 @@ export default class SPACE1889Helper
 					}
 				},
 				two: {
+					icon: '<i class="fad fa-cogs" style="font-size:40px"></i>',
+					label: '<div>' + game.i18n.localize("SPACE1889.ExternalLinksModules") + '</div>',
+					callback: () => {
+						this.showRecommendedModules();
+					}
+				},
+				three: {
 					icon: '<img src="systems/space1889/icons/foundryDiscord.webp" alt="logo foundry discord" height="50px">',
 					label: game.i18n.localize("SPACE1889.ExternalLinksDiscordFoundry"),
 					callback: () => {
@@ -1824,7 +1831,7 @@ export default class SPACE1889Helper
 
 		if (isGerman)
 		{
-			dialogData.buttons.three = {
+			dialogData.buttons.four = {
 				icon: '<img src="systems/space1889/icons/dieGiessereiDiscord.webp" alt="logo foundry discord" height="50px">',
 				label: game.i18n.localize("SPACE1889.ExternalLinksDiscordDieGiesserei"),
 				callback: () =>
@@ -1834,7 +1841,7 @@ export default class SPACE1889Helper
 			}
 		}
 
-//		dialogData.buttons.four = {
+//		dialogData.buttons.five = {
 //			icon: '<img src="systems/space1889/icons/uhrwerkLogo.png" alt="logo uhrwerk" height="50px">',
 //			label: game.i18n.localize("SPACE1889.ExternalLinksPublisher"),
 //			callback: () =>
@@ -1865,6 +1872,22 @@ export default class SPACE1889Helper
 		return { data: dialogData, options: dialogOptions };
 	}
 
+	static async showRecommendedModules()
+	{
+		const isGerman = game.settings.get('core', 'language') == "de";
+		let content = await renderTemplate("systems/space1889/change/" + (isGerman ? "de" : "en") + "_modules.html");
+
+		new Dialog({
+			title: `${game.i18n.localize("SPACE1889.ExternalLinksModules")}`,
+			content,
+			buttons: {
+				ok: {
+					icon: '<i class="fas fa-check"></i>',
+					label: `${game.i18n.localize("Close")}`
+				}
+			}
+		}).render(true, { resizable: true, width: 1000, height: 750 });
+	}
 
 	static getCombatSupportTargetInfo()
 	{
