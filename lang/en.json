@@ -3231,6 +3231,7 @@
 	"SPACE1889.ExternalLinksBugReport": "<div title=\"Report bugs in SPACE 1889 system directly on Github\">Report a bug</div>",
 	"SPACE1889.ExternalLinksPublisher": "<div>Publisher</div>",
 	"SPACE1889.ExternalLinksModules": "Modules",
+	"SPACE1889.ExternalLinksZeughaus": "Armory",
 
 	"SPACE1889.AddLinkedTokenTitle": "Add token",
 	"SPACE1889.AddLinkedTokenContent": "The token you want to add is linked to the actor. Changes to this token will also change the other tokens that also reference this actor. Do you really want that?",

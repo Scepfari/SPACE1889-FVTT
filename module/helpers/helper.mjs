@@ -1841,7 +1841,17 @@ export default class SPACE1889Helper
 			}
 		}
 
-//		dialogData.buttons.five = {
+		dialogData.buttons.five = {
+			icon: '<img src="systems/space1889/icons/zeughaus1889.png" alt="logo zeughaus" height="50px">',
+			label: game.i18n.localize("SPACE1889.ExternalLinksZeughaus"),
+			callback: () =>
+			{
+				var windowObjectReference = window.open("https://gitlab.com/ProjectAvalanche/space1889", "_blank");
+
+			}
+		}
+
+//		dialogData.buttons.six = {
 //			icon: '<img src="systems/space1889/icons/uhrwerkLogo.png" alt="logo uhrwerk" height="50px">',
 //			label: game.i18n.localize("SPACE1889.ExternalLinksPublisher"),
 //			callback: () =>
