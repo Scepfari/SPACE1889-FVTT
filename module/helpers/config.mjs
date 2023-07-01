@@ -757,6 +757,29 @@ SPACE1889.weaponHandIcon = {
 	"bothHands": "far fa-handshake"
 }
 
+SPACE1889.effects = {
+	"none": "",
+	"stun": "EFFECT.StatusStunned",
+	"prone": "EFFECT.StatusProne",
+	"unconscious": "EFFECT.StatusUnconscious",
+	"paralysis": "EFFECT.StatusParalysis",
+	"fear": "EFFECT.StatusFear",
+	"burning": "EFFECT.StatusBurning",
+	"frozen": "EFFECT.StatusFrozen",
+	"dead": "EFFECT.StatusDead"
+}
+
+SPACE1889.effectIcons = {
+	"stun": "icons/svg/daze.svg",
+	"prone": "icons/svg/falling.svg",
+	"unconscious": "icons/svg/unconscious.svg",
+	"paralysis": "icons/svg/paralysis.svg",
+	"fear": "icons/svg/terror.svg",
+	"burning": "icons/svg/fire.svg",
+	"frozen": "icons/svg/frozen.svg",
+	"dead": "icons/svg/skull.svg"
+}
+
 SPACE1889.vehicleManoeuvres = {
 	"ApproachDistance": "SPACE1889.VehicleApproachDistance",
 	"UtmostPower":"SPACE1889.VehicleUtmostPower",

@@ -397,104 +397,63 @@ export default class SPACE1889Helper
 
 	static getFlagEffectData(effect, duration)
 	{
-		const infos = [
+		let infos = [];
+
+		for (let [key, iconPath] of Object.entries(CONFIG.SPACE1889.effectIcons))
+		{
+			let element = null;
+			if (key == "dead")
 			{
-				name: "stun",
-				label: game.i18n.localize("EFFECT.StatusStunned"),
-				icon: "icons/svg/daze.svg",
-				flags: { core: { statusId: "stun" } },
-				duration: duration,
-			},
-			{
-				name: "prone",
-				label: game.i18n.localize("EFFECT.StatusProne"),
-				icon: "icons/svg/falling.svg",
-				flags: { core: { statusId: "prone" } },
-				duration: duration
-			},
-			{
-				name: "unconscious",
-				label: game.i18n.localize("EFFECT.StatusUnconscious"),
-				icon: "icons/svg/unconscious.svg",
-				flags: { core: { statusId: "unconscious" } },
-				duration: duration,
-			},
-			{
-				name: "paralysis",
-				label: game.i18n.localize("EFFECT.StatusParalysis"),
-				icon: "icons/svg/paralysis.svg",
-				flags: { core: { statusId: "paralysis" } },
-				duration: duration,
-			},
-			{
-				name: "fear",
-				label: game.i18n.localize("EFFECT.StatusFear"),
-				icon: "icons/svg/terror.svg",
-				flags: { core: { statusId: "fear" } },
-				duration: duration,
-			},
-			{
-				name: "burning",
-				label: game.i18n.localize("EFFECT.StatusBurning"),
-				icon: "icons/svg/fire.svg",
-				flags: { core: { statusId: "burning" } },
-				duration: duration,
-			},
-			{
-				name: "dead",
-				label: game.i18n.localize("EFFECT.StatusDead"),
-				icon: "icons/svg/skull.svg",
-				flags: { core: { statusId: "dead", overlay: true } },
+				element = {
+					name: key,
+					label: game.i18n.localize(CONFIG.SPACE1889.effects[key]),
+					icon: iconPath,
+					flags: { core: { statusId: key, overlay: true } },
+				}
 			}
-		];
+			else
+			{
+				element = {
+					name: key,
+					label: game.i18n.localize(CONFIG.SPACE1889.effects[key]),
+					icon: iconPath,
+					flags: { core: { statusId: key } },
+					duration: duration,
+				}
+			}
+			infos.push(element);
+		}
 		return infos.find(e => e.name == effect.name);
 	}
 
 	static getStatusesEffectData(effect, duration)
 	{
-		const infos = [
+		let infos = [];
+
+		for (let [key, iconPath] of Object.entries(CONFIG.SPACE1889.effectIcons))
+		{
+			let element = null;
+			if (key == "dead")
 			{
-				name: game.i18n.localize("EFFECT.StatusStunned"),
-				icon: "icons/svg/daze.svg",
-				statuses: ['stun'],
-				duration: duration,
-			},
-			{
-				name: game.i18n.localize("EFFECT.StatusProne"),
-				statuses: ['prone'],
-				icon: "icons/svg/falling.svg",
-				duration: duration
-			},
-			{
-				name: game.i18n.localize("EFFECT.StatusUnconscious"),
-				statuses: ['unconscious'],
-				icon: "icons/svg/unconscious.svg",
-				duration: duration,
-			},
-			{
-				name: game.i18n.localize("EFFECT.StatusParalysis"),
-				statuses: ['paralysis'],
-				icon: "icons/svg/paralysis.svg",
-				duration: duration,
-			},
-			{
-				name: game.i18n.localize("EFFECT.StatusFear"),
-				statuses: ['fear'],
-				icon: "icons/svg/terror.svg",
-				duration: duration,
-			},
-			{
-				name: game.i18n.localize("EFFECT.StatusBurning"),
-				statuses: ['burning'],
-				icon: "icons/svg/fire.svg",
-				duration: duration,
-			},
-			{
-				name: game.i18n.localize("EFFECT.StatusDead"),
-				statuses: ['dead'],
-				icon: "icons/svg/skull.svg",
+				element = {
+					name: game.i18n.localize(CONFIG.SPACE1889.effects[key]),
+					statuses: [key],
+					icon: iconPath,
+					flags: { core: { overlay: true } },
+				};
 			}
-		];
+			else
+			{
+				element = {
+					name: game.i18n.localize(CONFIG.SPACE1889.effects[key]),
+					statuses: [key],
+					icon: iconPath,
+					duration: duration,
+				};
+			}
+			infos.push(element);
+		}
+
 		return infos.find(e => e.statuses[0] == effect.name);
 	}
 
