@@ -1549,9 +1549,9 @@ export default class SPACE1889RollHelper
 
 		if (delta >= 0 && data.reducedDefense != "" && data.areaDamage > 0 && target.type != 'vehicle')
 		{
-			let sizeMod = Math.floor(Math.abs(target.actor.system.secondaries.size.total) / 2);
-			const extraDice = Math.abs(target.actor.system.secondaries.size.total % 2);
 			const factor = target.actor.system.secondaries.size.total > 0 ? -1 : 1;
+			let sizeMod = factor * Math.floor(Math.abs(target.actor.system.secondaries.size.total) / 2);
+			const extraDice = Math.abs(target.actor.system.secondaries.size.total % 2);
 
 			if (extraDice > 0)
 			{
@@ -1559,9 +1559,23 @@ export default class SPACE1889RollHelper
 				await r.evaluate({ async: true });
 				sizeMod += factor * r.total;
 			}
-			const damageAmount = data.areaDamage + sizeMod;
-			const itemId = await this.addDamageToActor(target.actor, data.actorName, data.attackName, damageAmount, data.damageType);
-			SPACE1889RollHelper.doDamageChatMessage(target.actor, itemId, damageAmount, data.damageType);
+			const damageAmount = Math.max(0, data.areaDamage + sizeMod);
+
+			if (damageAmount > 0)
+			{
+				const itemId = await this.addDamageToActor(target.actor, data.actorName, data.attackName, damageAmount, data.damageType);
+				SPACE1889RollHelper.doDamageChatMessage(target.actor, itemId, damageAmount, data.damageType);
+			}
+			else
+			{
+				const chatData =
+				{
+					user: game.user.id,
+					speaker: ChatMessage.getSpeaker({ actor: target.actor }),
+					content: game.i18n.format("SPACE1889.AutoDefenseAttackNoDamage", { attackerName: data.actorName, skill: combatSkill })
+				};
+				ChatMessage.create(chatData, {});
+			}
 		}
 		else if (data.attackValue > rollWithHtml.roll.total)
 		{

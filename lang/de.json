@@ -2785,6 +2785,7 @@
 	"SPACE1889.NoAutoDefenseInfo": "Die Kampfunterstützung wurde in den Spieleinstellung abgeschaltet.",
 	"SPACE1889.NoAutoDefenseCancel": "Der Automatische Verteidigungswurf wurde abgebrochen",
 	"SPACE1889.AutoDefenseAttackMiss": "Der {skill} Angriff von {attackerName} war wirkungslos.",
+	"SPACE1889.AutoDefenseAttackNoDamage": "Der {skill} Angriff von {attackerName} war erfolgreich, doch oh Schreck, gegen so große Kreaturen ist die Waffe wirkungslos.",
 	"SPACE1889.AutoDefenseAttackBlockRiposte": "Der {skill} Angriff wurde geblockt und sogleich mit einem Gegenschlag gekontert, wodurch {attackerName} {damage}N Schaden erhält.",
 	"SPACE1889.AutoDefenseAttackParryRiposte": "Der {skill} Angriff wurde pariert und sogleich mit einem Gegenangriff gekontert, wodurch {attackerName} {damage}{type} Schaden erhält.",
 	"SPACE1889.AutoDefenseAttackParryBrawl": "Der {skill} Angriff wurde pariert, wobei sich {attackerName} an der Waffe verletzt ({damage}{type} Schaden).",

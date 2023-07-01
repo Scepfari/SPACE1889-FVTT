@@ -2785,6 +2785,7 @@
 	"SPACE1889.NoAutoDefenseInfo": "Combat Support has been turned off in the game settings.",
 	"SPACE1889.NoAutoDefenseCancel": "The Automatic Defense roll was canceled",
 	"SPACE1889.AutoDefenseAttackMiss": "The {skill} attack of {attackerName} was ineffective.",
+	"SPACE1889.AutoDefenseAttackNoDamage": "The {skill} attack of {attackerName} was successful, but oh no, the weapon is ineffective against such large creatures.",
 	"SPACE1889.AutoDefenseAttackBlockRiposte": "The {skill} attack was blocked and immediately countered with a counterattack, causing {attackerName} {damage}N damage.",
 	"SPACE1889.AutoDefenseAttackParryRiposte": "The {skill} attack was parried and immediately countered with a counterattack, causing {attackerName} {damage}{type} damage.",
 	"SPACE1889.AutoDefenseAttackParryBrawl": "The {skill} attack was parried, while {attackerName} injured himself on the weapon ({damage}{type} damage).",
