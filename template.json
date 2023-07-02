@@ -294,7 +294,7 @@
 			"noSelection": false
 		},
 		"weapon": {
-			"templates": [ "description", "weight", "id", "location", "price", "containerId"],
+			"templates": [ "description", "weight", "id", "location", "price", "containerId" ],
 			"skillId": "none",
 			"specializationId": "none",
 			"damage": 0,
@@ -323,7 +323,10 @@
 				"usedLoadingActions": 0
 			},
 			"isTwoHanded": false,
-			"usedHands": "none"
+			"usedHands": "none",
+			"effect": "none",
+			"effectDurationCombatTurns": 1,
+			"effectOnly": false
 		},
 		"ammunition": {
 			"templates": [ "description", "weight", "location", "id", "price", "containerId" ],

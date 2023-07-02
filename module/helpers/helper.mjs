@@ -1876,4 +1876,26 @@ export default class SPACE1889Helper
 	{
 		return Number(game.version.substring(0, game.version.indexOf("."))) < 11;
 	}
+
+	static getCombatTurnsInSeconds(combatTurns)
+	{
+		return Number(combatTurns) * 6;
+	}
+
+	static formatTime(timeInSeconds)
+	{
+		const seconds = timeInSeconds % 60;
+		const time = (timeInSeconds - seconds) / 60;
+		const minutes = time % 60;
+		const hours = (time - minutes) / 60;
+
+		let output = "";
+		if (hours > 0)
+			output = hours.toString() + "h ";
+		if (minutes > 0)
+			output += minutes.toString() + "min ";
+		if (seconds > 0)
+			output += seconds.toString() + "s";
+		return output;
+	}
 }

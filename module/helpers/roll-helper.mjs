@@ -407,11 +407,17 @@ export default class SPACE1889RollHelper
 			let weapon = undefined;
 			let weaponSkill = "";
 			let weaponDamageType = "";
+			let effect = "none";
+			let effectDurationCT = 0;
+			let effectOnly = false;
 			if (item.type == "weapon")
 			{
 				weapon = item;
 				weaponSkill = weapon.system.skillId;
 				weaponDamageType = weapon.system.ammunition.damageType ?? weapon.system.damageType;
+				effect = weapon.system.effect;
+				effectDurationCT = weapon.system.effectDurationCombatTurns;
+				effectOnly = weapon.system.effectOnly;
 			}
 
 			let abbrDamageType = item.system.damageTypeDisplay ? "(" + item.system.damageTypeDisplay + ")" : "";
@@ -436,6 +442,12 @@ export default class SPACE1889RollHelper
 				messageContent += `<small>${weapon ? weapon.name : game.i18n.localize("SPACE1889.SkillWaffenlos")}</small><br>`;
 				weaponSkill = weapon ? weapon.system.skillId : "waffenlos";
 				weaponDamageType = weapon ? (weapon.system.ammunition.damageType ?? weapon.system.damageType) : "nonLethal";
+				if (weapon && weapon.system.effect != "none")
+				{
+					effect = weapon.system.effect;
+					effectDurationCT = weapon.system.effectDurationCombatTurns;
+					effectOnly = weapon.system.effectOnly;
+				}
 				if (reducedDefense == "onlyActiveParalyse")
 				{
 					weaponDamageType = "paralyse";
@@ -453,7 +465,7 @@ export default class SPACE1889RollHelper
 			if (addAutoDefense && targetId && targetId.length > 0)
 			{
 				const buttonText = game.i18n.localize("SPACE1889.AutoDefense");
-				messageContent += `<button class="autoDefence chatButton" data-action="defence" data-actor-id="${actor._id}" data-actor-token-id="${speaker.token}" data-target-id="${targetId}" data-attack-name="${item.name}" data-attack-successes="${rollWithHtml.roll.total}" data-damage-type="${weaponDamageType}" data-skill-id="${weaponSkill}" data-reduced-defense="${reducedDefense}" data-area-damage="${areaDamage}">${buttonText}</button>`;
+				messageContent += `<button class="autoDefence chatButton" data-action="defence" data-actor-id="${actor._id}" data-actor-token-id="${speaker.token}" data-target-id="${targetId}" data-attack-name="${item.name}" data-attack-successes="${rollWithHtml.roll.total}" data-damage-type="${weaponDamageType}" data-skill-id="${weaponSkill}" data-reduced-defense="${reducedDefense}" data-area-damage="${areaDamage}" data-effect="${effect}" data-effect-duration-combat-turns="${effectDurationCT}" data-effect-only="${effectOnly}">${buttonText}</button>`;
 			}
 			let chatData =
 			{
@@ -796,7 +808,7 @@ export default class SPACE1889RollHelper
 		return 600;
 	}
 
-	static doDamageChatMessage(actor, itemId, dmg, dmgType, dmgName = "")
+	static async doDamageChatMessage(actor, itemId, dmg, dmgType, dmgName = "", effect="none", effectCombatTurns="", effectOnly=false)
 	{
 		const item = actor.items.get(itemId);
 		if (item == undefined)
@@ -811,17 +823,18 @@ export default class SPACE1889RollHelper
 		let liegend = false;
 		let stunned = false;
 		let unconsciousStrike = 0;
+		let isVirtualDamage = effectOnly && effect != "none";
 
 
-		if (dmg > str)
+		if (dmg > str && !isVirtualDamage)
 		{
 			liegend = dmg > (2 * str);
 			recoil = (dmg - str) * 1.5;
 		}
 
-		if (dmg > (2 * stun))
+		if (dmg > (2 * stun) && !isVirtualDamage)
 			unconsciousStrike = dmg - (2 * stun);
-		if (dmg > stun)
+		if (dmg > stun && !isVirtualDamage)
 			stunned = true;
 
 		let trefferInfo = "";
@@ -848,11 +861,13 @@ export default class SPACE1889RollHelper
 		}
 
 		let damageTuple = SPACE1889Helper.getDamageTuple(actor, itemId);
-		if (dmgType == "lethal")
-			damageTuple.lethal += dmg;
-		else
-			damageTuple.nonLethal += dmg;
-
+		if (!isVirtualDamage)
+		{
+			if (dmgType == "lethal")
+				damageTuple.lethal += dmg;
+			else
+				damageTuple.nonLethal += dmg;
+		}
 		const maxHealth = actor.system.health.max;
 		const newHealth = maxHealth - damageTuple.lethal - damageTuple.nonLethal;
 		let lethalValue = maxHealth - damageTuple.lethal;
@@ -912,20 +927,33 @@ export default class SPACE1889RollHelper
 			effects.push({ name: "dead", rounds: this.getMaxRounds() });
 		}
 
+		if (effect != "none")
+		{
+			effects.push({ name: effect, rounds: effectCombatTurns });
+			const time = SPACE1889Helper.formatTime(SPACE1889Helper.getCombatTurnsInSeconds(effectCombatTurns));
+			trefferInfo += "<b>" + game.i18n.localize(CONFIG.SPACE1889.effects[effect]) + ":</b> " + game.i18n.format("SPACE1889.ChatInfoDurationWeaponEffect", { count: time }) + "<br>";
+		}
+
 		const usePercentage = !isCharakter && this.usePercentForNpcAndCreatureDamageInfo();
 
-		let info = "<small>" + (dmgName != "" ? "durch <i>" + dmgName + "</i> und " : "");
-		info += game.i18n.format("SPACE1889.ChatInfoHealth", { health: (!usePercentage ? newHealth.toString() : Math.round(100 * newHealth / maxHealth).toString() + "%") });
-		if (damageTuple.nonLethal > 0)
-			info += " " + game.i18n.format("SPACE1889.ChatInfoHealthLethalDamageOnly", { lethalHealth: (!usePercentage ? lethalValue.toString() : Math.round(100 * lethalValue / maxHealth).toString() + "%") });
-		info += "</small><br>";
+		let info = "";
+		if (!isVirtualDamage)
+		{
+			info = "<small>" + (dmgName != "" ? "durch <i>" + dmgName + "</i> und " : "");
+			info += game.i18n.format("SPACE1889.ChatInfoHealth", { health: (!usePercentage ? newHealth.toString() : Math.round(100 * newHealth / maxHealth).toString() + "%") });
+			if (damageTuple.nonLethal > 0)
+				info += " " + game.i18n.format("SPACE1889.ChatInfoHealthLethalDamageOnly", { lethalHealth: (!usePercentage ? lethalValue.toString() : Math.round(100 * lethalValue / maxHealth).toString() + "%") });
+			info += "</small><br>";
+		}
 
 		if (trefferInfo != "")
 			info += "<b>" + game.i18n.localize("SPACE1889.StrikeEffect") + ":</b> <br>" + trefferInfo;
 		if (gesamtInfo != "")
 			info += (trefferInfo != "" ? "<br>" : "") + "<b>" + game.i18n.localize("SPACE1889.OverallEffect") + ":</b> <br>" + gesamtInfo;
 
-		const titel = game.i18n.format("SPACE1889.ChatInfoDamage", { damage: (!usePercentage ? dmg.toString() : Math.round(100 * dmg / maxHealth).toString() + "%"), damageType: dmgTypeLabel });
+		const titel = isVirtualDamage ?
+			game.i18n.format("SPACE1889.ChatInfoVirtualDamage", { damage: dmg.toString() }) :
+			game.i18n.format("SPACE1889.ChatInfoDamage", { damage: (!usePercentage ? dmg.toString() : Math.round(100 * dmg / maxHealth).toString() + "%"), damageType: dmgTypeLabel });
 		let messageContent = `<div><h2>${titel}</h2></div>`;
 		messageContent += `${info}`;
 		let chatData =
@@ -938,7 +966,7 @@ export default class SPACE1889RollHelper
 
 		ChatMessage.create(chatData, {});
 		if (effects.length > 0)
-			SPACE1889Helper.addEffects(actor, effects);
+			await SPACE1889Helper.addEffects(actor, effects);
 	}
 
 	static usePercentForNpcAndCreatureDamageInfo()
@@ -1341,6 +1369,9 @@ export default class SPACE1889RollHelper
 		const combatSkillId = button[0].dataset.skillId;
 		const reducedDefense = button[0].dataset.reducedDefense;
 		const areaDamage = Number(button[0].dataset.areaDamage);
+		const effect = button[0].dataset.effect;
+		const effectDurationCombatTurns = Number(button[0].dataset.effectDurationCombatTurns);
+		const effectOnly = (button[0].dataset.effectOnly === "true");
 
 		if (targetId == "")
 			return;
@@ -1366,7 +1397,10 @@ export default class SPACE1889RollHelper
 				attackValue: count,
 				reducedDefense: reducedDefense,
 				riposteDamageType: "",
-				areaDamage: areaDamage
+				areaDamage: areaDamage,
+				effect: effect,
+				effectDurationCombatTurns: effectDurationCombatTurns,
+				effectOnly: effectOnly
 			});
 		}
 		else
@@ -1396,7 +1430,9 @@ export default class SPACE1889RollHelper
  * @param {string} data.reducedDefense
  * @param {string} data.riposteDamageType
  * @param {number} data.areaDamage
- *  
+ * @param {string} data.effect
+ * @param {number} data.effectDurationCombatTurns
+ * @param {number} data.effectOnly
  */
 	static async rollDefenseAndAddDamage(data)
 	{
@@ -1546,8 +1582,9 @@ export default class SPACE1889RollHelper
 
 		const delta = data.attackValue - rollWithHtml.roll.total;
 		const combatSkill = game.i18n.localize(CONFIG.SPACE1889.combatSkills[data.combatSkillId]);
+		let doWeaponEffect = data.effect != "none";
 
-		if (delta >= 0 && data.reducedDefense != "" && data.areaDamage > 0 && target.type != 'vehicle')
+		if (delta > 0 && data.reducedDefense != "" && data.areaDamage > 0 && target.type != 'vehicle')
 		{
 			const factor = target.actor.system.secondaries.size.total > 0 ? -1 : 1;
 			let sizeMod = factor * Math.floor(Math.abs(target.actor.system.secondaries.size.total) / 2);
@@ -1563,8 +1600,11 @@ export default class SPACE1889RollHelper
 
 			if (damageAmount > 0)
 			{
-				const itemId = await this.addDamageToActor(target.actor, data.actorName, data.attackName, damageAmount, data.damageType);
-				SPACE1889RollHelper.doDamageChatMessage(target.actor, itemId, damageAmount, data.damageType);
+				const itemId = await this.addDamageToActor(target.actor, data.actorName, data.attackName, ((doWeaponEffect && data.effectOnly) ? 0 : damageAmount), data.damageType);
+				if (doWeaponEffect)
+					await SPACE1889RollHelper.doDamageChatMessage(target.actor, itemId, damageAmount, data.damageType, "", data.effect, data.effectDurationCombatTurns, data.effectOnly);
+				else
+					await SPACE1889RollHelper.doDamageChatMessage(target.actor, itemId, damageAmount, data.damageType);
 			}
 			else
 			{
@@ -1581,11 +1621,14 @@ export default class SPACE1889RollHelper
 		{
 			let damageAmount = data.attackValue - rollWithHtml.roll.total;
 			if (data.damageType == 'paralyse')
-				SPACE1889RollHelper.doParalysisChatMessage(target.actor, data.actorName, damageAmount, target.actor.system.abilities.str.total);
+				await SPACE1889RollHelper.doParalysisChatMessage(target.actor, data.actorName, damageAmount, target.actor.system.abilities.str.total);
 			else
 			{
-				const itemId = await this.addDamageToActor(target.actor, data.actorName, data.attackName, damageAmount, data.damageType);
-				SPACE1889RollHelper.doDamageChatMessage(target.actor, itemId, damageAmount, data.damageType);
+				const itemId = await this.addDamageToActor(target.actor, data.actorName, data.attackName, ((doWeaponEffect && data.effectOnly) ? 0 : damageAmount), data.damageType);
+				if (doWeaponEffect)
+					await SPACE1889RollHelper.doDamageChatMessage(target.actor, itemId, damageAmount, data.damageType, "", data.effect, data.effectDurationCombatTurns, data.effectOnly);
+				else
+					await SPACE1889RollHelper.doDamageChatMessage(target.actor, itemId, damageAmount, data.damageType);
 			}
 		}
 		else if (delta < 0 && data.reducedDefense.indexOf('BlockRiposte') >= 0)
@@ -1675,7 +1718,10 @@ export default class SPACE1889RollHelper
 		if (actorToken.actor.isOwner)
 		{
 			const itemId = await SPACE1889RollHelper.addDamageToActor(actorToken.actor, causerName, attackName, damageAmount, damageType);
-			SPACE1889RollHelper.doDamageChatMessage(actorToken.actor, itemId, damageAmount, damageType);
+			if (effect != "none")
+				await SPACE1889RollHelper.doDamageChatMessage(target.actor, itemId, damageAmount, data.damageType, "", data.effect, data.effectDurationCombatTurns, data.effectOnly);
+			else
+				await SPACE1889RollHelper.doDamageChatMessage(actorToken.actor, itemId, damageAmount, damageType);
 		}
 		else if (useSocket)
 		{
@@ -1736,7 +1782,7 @@ export default class SPACE1889RollHelper
 		}
 	}
 
-	static doParalysisChatMessage(actor, attackerName, virtualDamage, comparativeAttributeValue)
+	static async doParalysisChatMessage(actor, attackerName, virtualDamage, comparativeAttributeValue)
 	{
 		if (!actor)
 			return;
@@ -1777,7 +1823,7 @@ export default class SPACE1889RollHelper
 
 		ChatMessage.create(chatData, {});
 		if (effects.length > 0)
-			SPACE1889Helper.addEffects(actor, effects);
+			await SPACE1889Helper.addEffects(actor, effects);
 	}
 
 /**

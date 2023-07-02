@@ -115,7 +115,11 @@ export class Space1889Item extends Item {
 			{
 				this.setLangIdAndLabel(item, "Item", true);
 			}
-			
+
+			if (item.type == "weapon" )
+			{
+				item.system.effectDuration = SPACE1889Helper.formatTime(SPACE1889Helper.getCombatTurnsInSeconds(item.system.effectDurationCombatTurns));
+			}
 		}
 		catch (error) 
 		{
