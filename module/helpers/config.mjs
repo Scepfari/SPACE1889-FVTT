@@ -720,7 +720,8 @@ SPACE1889.weaponCapacityTypes = {
 	"internal": "SPACE1889.WeaponCapacityTypeInternal",
 	"magazine": "SPACE1889.WeaponCapacityTypeMagazine",
 	"revolver": "SPACE1889.WeaponCapacityTypeRevolver",
-	"powercell": "SPACE1889.WeaponCapacityTypePowercell"
+	"powercell": "SPACE1889.WeaponCapacityTypePowercell",
+	"chemicalcontainer": "SPACE1889.WeaponCapacityTypeChemicalTank"
 }
 
 SPACE1889.ammunitionCapacityTypes = {
@@ -728,7 +729,8 @@ SPACE1889.ammunitionCapacityTypes = {
 	"belt": "SPACE1889.WeaponCapacityTypeBelt",
 	"strip": "SPACE1889.WeaponCapacityTypeStrip",
 	"magazine": "SPACE1889.WeaponCapacityTypeMagazine",
-	"powercell": "SPACE1889.WeaponCapacityTypePowercell"
+	"powercell": "SPACE1889.WeaponCapacityTypePowercell",
+	"chemicalcontainer": "SPACE1889.WeaponCapacityTypeChemicalTank"
 }
 
 SPACE1889.weaponAmmunitionTypes = {
@@ -740,7 +742,8 @@ SPACE1889.weaponAmmunitionTypes = {
 	"bullets": "SPACE1889.AmmunitionTypeBullets",
 	"catridges": "SPACE1889.AmmunitionTypeCartridges",
 	"grenades": "SPACE1889.AmmunitionTypeGrenades",
-	"power": "SPACE1889.AmmunitionTypePower"
+	"power": "SPACE1889.AmmunitionTypePower",
+	"chemicals": "SPACE1889.AmmunitionTypeChemicals"
 }
 
 SPACE1889.weaponHand = {

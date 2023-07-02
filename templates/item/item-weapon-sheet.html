@@ -96,6 +96,7 @@
 				{{/select}}
 			</select>
 		</div>
+		{{#if (ne system.effect 'none')}}
 		<div class="resource">
 			<input type="text" name="system.effectDurationCombatTurns" value="{{system.effectDurationCombatTurns}}" data-dtype="Number" />
 		</div>
@@ -103,6 +104,11 @@
 		<div class="resource-content flex-center flex-between">
 			<input type="checkbox" name="system.effectOnly" {{checked system.effectOnly}} />
 		</div>
+		{{else}}
+		<div></div>
+		<div></div>
+		<div></div>
+		{{/if}}
 	</li>
 
 	<hr>
