@@ -2,6 +2,15 @@
 
 ## Zeit der drei namenlosen Weltreiche
 
+### v2.0.3
+- Neue Option in den Einstellungen, um NSCs wie SCs zu behandeln. Wenn aktiv, sind NSCs nicht schon bei Gesundheit von 0 besiegt, sondern sterben wie die Charaktere erst bei einer Gesundheit von -5
+- Waffen können nun spezielle Effekte verursachen die zusätzlich oder ausschließlich bei einem Treffer angewendet werden. Ein Beispiel dafür ist der nun im Kompendium enthaltene Flammenwerfer.
+- Neuer Munitionstyp Chemikalien und zugehöriger Kapazitätstyp Tank
+- Neuer externer Link zum Zeughaus, verfügbar über das Foudry Symbol links oben
+- Fix: Angriffe mit Flächenschadenswaffen sind jetzt erst erfolgreich wenn sie die Abwehrprobe übertreffen, nicht schon bei Gleichstand.
+- Fix: Auto Verteidigung Flächenschaden: Die Abzüge/Zuschläge werden nun richtig berechnet, womit große Kreaturen weniger und kleine Kreaturen mehr Flächenschaden erhalten. Zuvor war es fälschlicherweise umgekehrt.
+- Fix: V11 der durch Schaden automatisch erzeugte "Tot Marker" überdeckt nun auch, wie bei V10, die gesamte Figur
+
 ### v2.0.2
 - Neue Option in den Einstellungen, um die Einrücktiefe der Ordner und Unterordner zu definieren
 - Liste der empfohlenen Module, verfügbar über das Foundry Symbol links oben
