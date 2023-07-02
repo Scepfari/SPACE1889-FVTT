@@ -126,6 +126,16 @@ export const registerSystemSettings = function ()
 		    type: Boolean
         });
 
+    game.settings.register("space1889", "useCharacterRulesForNpc",
+	    {
+            name: "SPACE1889.ConfiguseCharacterRulesForNpc",
+            hint: "SPACE1889.ConfiguseCharacterRulesForNpcInfo",
+		    scope: "world",
+		    config: true,
+		    default: false,
+		    type: Boolean
+        });
+
     game.settings.register("space1889", "lastCompendiumTranslationLanguage",
         {
             name: "last translation",

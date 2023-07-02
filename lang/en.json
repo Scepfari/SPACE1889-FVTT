@@ -2742,6 +2742,8 @@
 	"SPACE1889.ConfigImprovedEpCalculationInfo": "changed increase costs for primary attributes (level * 10XP instead of level * 5XP) as well as for specializations (1=1XP, 2=2XP, 3=3XP, 4=4XP, 5=5XP instead of 3XP per level)",
 	"SPACE1889.ConfigUsePercentForNpcAndCreatureDamageInfo": "NPC health percentage",
 	"SPACE1889.ConfigUsePercentForNpcAndCreatureDamageInfoInfo": "In the case of creatures and NPCs, the damage information in the chat output is in percentages instead of points",
+	"SPACE1889.ConfiguseCharacterRulesForNpc": "NPC use SC rules",
+	"SPACE1889.ConfiguseCharacterRulesForNpcInfo": "When active, NPCs die only at a health of -5 and may still be able to act in the range of 0 to -4 health.  When deactivated, NPCs receive the defeated / dead state at a health of 0.",
 	"SPACE1889.ConfigOptionalBlockDogeParryRule": "Optional rule for Block, Doge and Parry",
 	"SPACE1889.ConfigOptionalBlockDogeParryRuleInfo": "Block, Dodge and Parry as an Active Defense => Defense = Passive Defense (Constitution) + Active Defense (Athletics, Brawl, or Melee)",
 	"SPACE1889.ConfigCombatSupport": "Combat Support",

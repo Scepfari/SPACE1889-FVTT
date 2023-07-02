@@ -2742,6 +2742,8 @@
 	"SPACE1889.ConfigImprovedEpCalculationInfo": "geänderte Steigerungskosten für Primäre Attribute (Stufe * 10EP statt Stufe * 5EP) sowie für die Spezialisierungen (1=1EP, 2=2EP, 3=3EP, 4=4EP, 5=5EP anstelle von 3EP pro Stufe)",
 	"SPACE1889.ConfigUsePercentForNpcAndCreatureDamageInfo": "NSC Gesundheit in Prozenten",
 	"SPACE1889.ConfigUsePercentForNpcAndCreatureDamageInfoInfo": "Bei Kreaturen und NSCs erfolgt die Schadensinformation bei der Chatausgabe in Prozenten anstelle von Punkten",
+	"SPACE1889.ConfiguseCharacterRulesForNpc": "NSC verwenden SC Regeln",
+	"SPACE1889.ConfiguseCharacterRulesForNpcInfo": "Wenn aktiv sterben NSCs erst bei einer Gesundheit von -5 und können im Bereich von 0 bis -4 Gesundheit ggf. noch agieren. Abgeschaltet erhalten NSCs bereits bei einer Gesundheit von 0 den Zustand  Besiegt/Tot.",
 	"SPACE1889.ConfigOptionalBlockDogeParryRule": "Optionale Regel für Ausweichen, Blocken und Parieren",
 	"SPACE1889.ConfigOptionalBlockDogeParryRuleInfo": "Ausweichen, Blocken und Parieren als Aktive Abwehr => Abwehr = Passive Abwehr (Konstitution) + Aktive Abwehr (Sportlichkeit, Waffenlos oder Nahkampf)",
 	"SPACE1889.ConfigCombatSupport": "Kampfunterstützung",

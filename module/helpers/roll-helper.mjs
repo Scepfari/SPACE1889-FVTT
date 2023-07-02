@@ -816,6 +816,7 @@ export default class SPACE1889RollHelper
 
 		const dmgTypeLabel = dmgType == "lethal" ? game.i18n.localize("SPACE1889.LethalAbbr") : game.i18n.localize("SPACE1889.NonLethalAbbr");
 		const isCharakter = actor.type == "character";
+		const isNpcWithCharakterRules = actor.type == "npc" && this.useCharacterRulesForNpc();
 		const isVehicle = actor.type == "vehicle";
 		let stun = isVehicle ? 1000 : actor.system.secondaries.stun.total;
 		let str = isVehicle ? 1000 : actor.system.abilities.str.total;
@@ -887,7 +888,7 @@ export default class SPACE1889RollHelper
 		let unconscious = damageTuple.nonLethal > 0 && nonLethalValue <= incapacitateThreshold && lethalValue > deathThreshold;
 		let gesamtInfo = "";
 
-		if (isCharakter)
+		if (isCharakter || isNpcWithCharakterRules)
 		{
 			if (newHealth <= incapacitateThreshold)
 			{
@@ -972,6 +973,11 @@ export default class SPACE1889RollHelper
 	static usePercentForNpcAndCreatureDamageInfo()
 	{
 		return game.settings.get("space1889", "usePercentForNpcAndCreatureDamageInfo");
+	}
+
+	static useCharacterRulesForNpc()
+	{
+		return game.settings.get("space1889", "useCharacterRulesForNpc");
 	}
 
 	static getDieType()
