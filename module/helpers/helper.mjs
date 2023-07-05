@@ -1914,7 +1914,7 @@ export default class SPACE1889Helper
 			let appId = appIds[i];
 			let app = ui.windows[appId];
 
-			if (ifIgnoredApp(app))
+			if (app == undefined || this.isIgnoredApp(app) )
 				continue;
 
 			let appZIndex = highestApp?.position.zIndex || 0;
