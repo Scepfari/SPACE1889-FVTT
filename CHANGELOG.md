@@ -2,6 +2,9 @@
 
 ## Zeit der drei namenlosen Weltreiche
 
+### v2.0.4
+- Neue veränderbare Tastenkombination zum Schließen des aktiven Fensters. Die Standardbelegung ist die ESC Taste, womit das von Foundry übliche Verhalten auf Druck der ESC Taste alle offenen, einschließlich der minimierten, Fenster zu schließen, unterbunden wird. Soll die ESC Taste wie früher funktionieren, muss der Funktion zum Schließen des aktiven Fensters eine andere Tastenkombination zugewiesen werden. Dank an Forien auf Discord für das Teilen des Quellcodes.
+
 ### v2.0.3
 - Neue Option in den Einstellungen, um NSCs wie SCs zu behandeln. Wenn aktiv, sind NSCs nicht schon bei Gesundheit von 0 besiegt, sondern sterben wie die Charaktere erst bei einer Gesundheit von -5
 - Waffen können nun spezielle Effekte verursachen die zusätzlich oder ausschließlich bei einem Treffer angewendet werden. Ein Beispiel dafür ist der nun im Kompendium enthaltene Flammenwerfer.
