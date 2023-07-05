@@ -154,6 +154,38 @@ Hooks.once("setup", () =>
 		}
 	});
 
+	game.keybindings.register('space1889', 'closeSingleWindowKey', {
+		name: "SPACE1889.KeyCloseSingleWindow",
+		hint: game.i18n.localize("SPACE1889.KeyInfoCloseSingleWindow"),
+		editable: [
+			{
+				key: 'Escape',
+				modifiers: [],
+			},
+		],
+		onDown: () =>
+		{
+			let currentActiveWindow = ui.activeWindow;
+
+			if (SPACE1889Helper.isIgnoredApp(currentActiveWindow))
+				currentActiveWindow = SPACE1889Helper.findHighestWindow();
+
+			if (currentActiveWindow)
+			{
+				currentActiveWindow.close().then(() =>
+				{
+					ui.activeWindow = SPACE1889Helper.findHighestWindow();
+				});
+
+				return true;
+			}
+
+			return false;
+		},
+		restricted: false,
+		precedence: CONST.KEYBINDING_PRECEDENCE.PRIORITY,
+	});
+
 	registerGetSceneControlButtonsHook();
 })
 

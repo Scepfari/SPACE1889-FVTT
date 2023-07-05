@@ -1898,4 +1898,30 @@ export default class SPACE1889Helper
 			output += seconds.toString() + "s";
 		return output;
 	}
+
+	static isIgnoredApp(app)
+	{
+		return app?.options.id == 'token-action-hud';
+	}
+
+	static findHighestWindow()	
+	{
+		let appIds = Object.keys(ui.windows);
+		let highestApp;
+
+		for (let i in appIds)
+		{
+			let appId = appIds[i];
+			let app = ui.windows[appId];
+
+			if (ifIgnoredApp(app))
+				continue;
+
+			let appZIndex = highestApp?.position.zIndex || 0;
+
+			if (app.position.zIndex > appZIndex)
+				highestApp = app;
+		}
+		return highestApp;
+	}
 }
