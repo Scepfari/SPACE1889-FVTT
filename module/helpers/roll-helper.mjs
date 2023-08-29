@@ -1724,10 +1724,7 @@ export default class SPACE1889RollHelper
 		if (actorToken.actor.isOwner)
 		{
 			const itemId = await SPACE1889RollHelper.addDamageToActor(actorToken.actor, causerName, attackName, damageAmount, damageType);
-			if (effect != "none")
-				await SPACE1889RollHelper.doDamageChatMessage(target.actor, itemId, damageAmount, data.damageType, "", data.effect, data.effectDurationCombatTurns, data.effectOnly);
-			else
-				await SPACE1889RollHelper.doDamageChatMessage(actorToken.actor, itemId, damageAmount, damageType);
+			await SPACE1889RollHelper.doDamageChatMessage(actorToken.actor, itemId, damageAmount, damageType);
 		}
 		else if (useSocket)
 		{
