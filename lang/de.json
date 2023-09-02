@@ -201,6 +201,7 @@
 	"SPACE1889.DataOfTheEvent": "Ereigniszeitpunkt",
 	"SPACE1889.DataOfTheEventAbbr": "Zeitpunkt",
 	"SPACE1889.Probe": "Probe",
+	"SPACE1889.PrimaryAttributeRoll": "Primäre Attributsprobe",
 	"SPACE1889.Resource": "Ressource",
 	"SPACE1889.ResourcePl": "Ressourcen",
 	"SPACE1889.IsBaseResource": "Ist Grundressource",
@@ -2764,6 +2765,8 @@
 	"SPACE1889.ConfigGlobalStyleNaked": "Nacktes Foundry",
 	"SPACE1889.ConfigSubfolder-indent": "Unterordner Einrückung",
 	"SPACE1889.ConfigSubfolder-indentInfo": "Definiert den Wert für die Einrückung jedes Unterordners in Pixeln fest",
+	"SPACE1889.ConfigShowDialogForAllAttributeRolls": "Dialoganzeige bei Attributswürfen",
+	"SPACE1889.ConfigShowDialogForAllAttributeRollsInfo": "Erzwingt die Anzeige des Modifikationsdialogs bei allen Attributswürfen, unabhängig davon ob dabei die Tasten [SHIFT] oder [STRG] gedrückt wurden",
 
 	"SPACE1889.HeroLevelPechvogel": "Pechvogel",
 	"SPACE1889.HeroLevelDurchschnittsbuerger": "Durchschnittsbürger",

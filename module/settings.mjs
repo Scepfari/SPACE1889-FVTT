@@ -255,4 +255,14 @@ export const registerSystemSettings = function ()
 		}
 	});
 
+    game.settings.register("space1889", "showDialogForAllAttributeRolls",
+	    {
+            name: "SPACE1889.ConfigShowDialogForAllAttributeRolls",
+            hint: "SPACE1889.ConfigShowDialogForAllAttributeRollsInfo",
+		    scope: "client",
+		    config: true,
+		    default: false,
+		    type: Boolean
+		});
+
 }

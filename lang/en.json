@@ -201,6 +201,7 @@
 	"SPACE1889.DataOfTheEvent": "Data of the Event",
 	"SPACE1889.DataOfTheEventAbbr": "Data",
 	"SPACE1889.Probe": "Probe",
+	"SPACE1889.PrimaryAttributeRoll": "Primary attribute probe",
 	"SPACE1889.Resource": "Resource",
 	"SPACE1889.ResourcePl": "Resources",
 	"SPACE1889.IsBaseResource": "Is Base Resource",
@@ -2764,6 +2765,8 @@
 	"SPACE1889.ConfigGlobalStyleNaked": "Naked Foundry",
 	"SPACE1889.ConfigSubfolder-indent": "Subfolder indentation",
 	"SPACE1889.ConfigSubfolder-indentInfo": "Set the value for the indentation of each subfolder in pixels.",
+	"SPACE1889.ConfigShowDialogForAllAttributeRolls": "Dialog display for attribute rolls",
+	"SPACE1889.ConfigShowDialogForAllAttributeRollsInfo": "Forces the display of the modification dialog for all attribute casts, regardless of whether the [SHIFT] or [CTRL] keys were pressed in the process.",
 
 	"SPACE1889.HeroLevelPechvogel": "Unlucky Fellow",
 	"SPACE1889.HeroLevelDurchschnittsbuerger": "Everyman",

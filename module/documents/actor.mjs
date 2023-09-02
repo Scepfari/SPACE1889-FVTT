@@ -1811,7 +1811,9 @@ export class Space1889Actor extends Actor
 		if (evaluation.showInfoOnly)
 			return this.showAttributeInfo(game.i18n.localize(CONFIG.SPACE1889.abilities[key]), key, evaluation.whisperInfo);
 
-		return this.rollAttribute(dieCount, evaluation.showDialog, key, evaluation.specialDialog);
+		const showDialog = evaluation.showDialog || game.settings.get("space1889", "showDialogForAllAttributeRolls");
+
+		return this.rollAttribute(dieCount, showDialog, key, evaluation.specialDialog);
 	}
 
 	rollSecondary(key, event)

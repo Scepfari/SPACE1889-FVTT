@@ -1444,7 +1444,11 @@ export class Space1889ActorSheet extends ActorSheet {
 					return actor.showAttributeInfo(dataset.label, dataset.rollKey, evaluation.whisperInfo);
 
 				if (canRoll)
-					return actor.rollAttribute(dieCount, evaluation.showDialog, dataset.rollKey, evaluation.specialDialog);
+				{
+					const isPrimary = CONFIG.SPACE1889.abilities[dataset.rollKey] != undefined;
+					const showDialog = evaluation.showDialog || (isPrimary && game.settings.get("space1889", "showDialogForAllAttributeRolls"));
+					return actor.rollAttribute(dieCount, showDialog, dataset.rollKey, evaluation.specialDialog);
+				}
 			}
 			else if (dataset.rollType == 'actorinfo' &&  dataset.rollKey)
 			{
