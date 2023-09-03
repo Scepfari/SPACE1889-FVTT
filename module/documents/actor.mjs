@@ -23,7 +23,7 @@ export class Space1889Actor extends Actor
 
 		if (actor.type === "character" && actor.isOwner)
 		{
-			actor.update({ "prototypeToken.actorLink" : true })
+			actor.update({ "prototypeToken.actorLink": true })
 		}
 
 		if (actor.type === "character" || actor.type === "npc")
@@ -58,7 +58,7 @@ export class Space1889Actor extends Actor
 
 			if (toAddItems.length > 0 && actor.isOwner)
 				actor.update({ "items": toAddItems });
-		}	
+		}
 
 	}
 
@@ -116,15 +116,15 @@ export class Space1889Actor extends Actor
 		actor.system.speciSkills = [];
 		actor.system.secondaries.defense.total = 0; //toDo mit was sinnvollem füllen
 		actor.system.secondaries.perception.total = 0;
-		
+
 
 		const useCustomValue = actor.system.crew.experience == "custom";
 		const defaultValue = useCustomValue ? actor.system.crew.experienceValue : SPACE1889Helper.getCrewExperienceValue(actor.system.crew.experience);
 		const mod = SPACE1889Helper.getCrewTemperModificator(actor.system.crew.temper);
-		
+
 		for (let [key, position] of Object.entries(actor.system.positions))
 		{
-			position.actorName = game.i18n.localize("SPACE1889.VehicleCrew") +  " (" + game.i18n.localize(CONFIG.SPACE1889.vehicleCrewPositions[key]) + ")";
+			position.actorName = game.i18n.localize("SPACE1889.VehicleCrew") + " (" + game.i18n.localize(CONFIG.SPACE1889.vehicleCrewPositions[key]) + ")";
 			if (position.actorId != "" && game.actors != undefined && position.staffed)
 			{
 				const posActor = game.actors.get(position.actorId);
@@ -211,7 +211,7 @@ export class Space1889Actor extends Actor
 			if (vehicle.system.pilotSkill == "fahren" || vehicle.system.pilotSkill == "reiten")
 				return this._GetSkillLevel(actorOnPosition, vehicle.system.pilotSkill, "");
 
-			return this._GetSkillLevel(actorOnPosition, vehicle.system.pilotSkill, "", "spezielleFahrzeuge" );
+			return this._GetSkillLevel(actorOnPosition, vehicle.system.pilotSkill, "", "spezielleFahrzeuge");
 		}
 
 		if (position == "captain")
@@ -253,7 +253,7 @@ export class Space1889Actor extends Actor
 
 		this.CalcAndSetHealth(actor);
 
-		let malus = SPACE1889Helper.getStructureMalus(actor.system.health.value, actor.system.health.max, actor.system.speed.max, actor.system.health.controlDamage, actor.system.health.propulsionDamage );
+		let malus = SPACE1889Helper.getStructureMalus(actor.system.health.value, actor.system.health.max, actor.system.speed.max, actor.system.health.controlDamage, actor.system.health.propulsionDamage);
 
 		actor.system.weaponLoad.max = actor.system.isAirship ? actor.system.size / 2 : actor.system.size;
 		actor.system.weaponLoad.maxWithOverload = actor.system.health.max;
@@ -269,7 +269,7 @@ export class Space1889Actor extends Actor
 		if (actor.system.weaponLoad.value > actor.system.weaponLoad.maxWithOverload)
 		{
 			actor.system.weaponLoad.isOverloaded = true;
-			ui.notifications?.info(game.i18n.format("SPACE1889.VehicleExceedingOverloadMax", {name: actor.name}));
+			ui.notifications?.info(game.i18n.format("SPACE1889.VehicleExceedingOverloadMax", { name: actor.name }));
 		}
 
 		const rate = crewCurrent / crewMax;
@@ -369,7 +369,7 @@ export class Space1889Actor extends Actor
 		const injuries = [];
 		const money = [];
 		const containers = [];
-		
+
 		for (let item of items)
 		{
 			if (item.type === 'skill')
@@ -526,9 +526,9 @@ export class Space1889Actor extends Actor
 		const siMoveDistance = actor.system.secondaries.move.total * 1.5;
 		const meter = "m";
 		const meterWithSeparator = "m; ";
-		const runFactor = SPACE1889Helper.getTalentLevel(actor, "sprinter") > 0 ?  4 : 2;
+		const runFactor = SPACE1889Helper.getTalentLevel(actor, "sprinter") > 0 ? 4 : 2;
 		const sprintFactor = 4;
-		let info =  game.i18n.localize("SPACE1889.Move") + ": " + siMoveDistance.toString() + meterWithSeparator;
+		let info = game.i18n.localize("SPACE1889.Move") + ": " + siMoveDistance.toString() + meterWithSeparator;
 		info += game.i18n.localize("SPACE1889.Run") + ": " + (siMoveDistance * runFactor).toString() + meterWithSeparator;
 		info += game.i18n.localize("SPACE1889.Sprint") + ": " + (siMoveDistance * sprintFactor).toString() + meter;
 		actor.system.secondaries.move.inSiUnits = info;
@@ -802,7 +802,7 @@ export class Space1889Actor extends Actor
 				siUnits = game.i18n.localize(CONFIG.SPACE1889.creatureMovementType[system.movementType]) + ": ";
 				siUnits += siMoveDistance.toString() + meterWithSeparator;
 				siUnits += (system.movementType == "flying") ? game.i18n.localize("SPACE1889.OnTheGround") : game.i18n.localize("SPACE1889.OnLand") + ": ";
-				siUnits += (siMoveDistance/2).toString() + meter;
+				siUnits += (siMoveDistance / 2).toString() + meter;
 				break;
 			case "fossorial":
 				movement = system.secondaries.move.total.toString() + " (" + (system.secondaries.move.total * 2).toString() + ")";
@@ -964,7 +964,7 @@ export class Space1889Actor extends Actor
 	 * @param {Object} actor 
 	 * @param {string} skillId 
 	 * @param {string} specializationId
-  	 * @param {string} skillGroupId
+		 * @param {string} skillGroupId
 	 * @returns {number}
 	 */
 	_GetSkillLevel(actor, skillId, specializationId, skillGroupId = "")
@@ -1077,7 +1077,7 @@ export class Space1889Actor extends Actor
 			actor.system.block.value = 0;
 			actor.system.block.instinctive = false;
 			actor.system.block.riposte = false;
-			actor.system.block.info = game.i18n.format("SPACE1889.NoBlockParryEvasion", { talentName : game.i18n.format("SPACE1889.Block") });
+			actor.system.block.info = game.i18n.format("SPACE1889.NoBlockParryEvasion", { talentName: game.i18n.format("SPACE1889.Block") });
 			return;
 		}
 
@@ -1121,7 +1121,7 @@ export class Space1889Actor extends Actor
 		if (instinctive)
 		{
 			if (defense < rating)
-				actor.system.block.info = game.i18n.format("SPACE1889.UseInstinctiveBlockParry", { rating: rating.toString(), rating2: (rating - 2).toString(), attackType1: waffenlos, attackType2: nahkampf, defence: defense.toString()});
+				actor.system.block.info = game.i18n.format("SPACE1889.UseInstinctiveBlockParry", { rating: rating.toString(), rating2: (rating - 2).toString(), attackType1: waffenlos, attackType2: nahkampf, defence: defense.toString() });
 			else
 				actor.system.block.info = game.i18n.format("SPACE1889.UselessInstinctiveBlockParryEvasion", { talentName: name });
 		}
@@ -1142,7 +1142,7 @@ export class Space1889Actor extends Actor
 			actor.system.parry.value = 0;
 			actor.system.parry.instinctive = false;
 			actor.system.parry.riposte = false;
-			actor.system.parry.info = game.i18n.format("SPACE1889.NoBlockParryEvasion", { talentName : game.i18n.format("SPACE1889.Parry") });
+			actor.system.parry.info = game.i18n.format("SPACE1889.NoBlockParryEvasion", { talentName: game.i18n.format("SPACE1889.Parry") });
 			return;
 		}
 
@@ -1203,7 +1203,7 @@ export class Space1889Actor extends Actor
 		if (instinctive)
 		{
 			if (defense < skillRating)
-				actor.system.parry.info = game.i18n.format("SPACE1889.UseInstinctiveBlockParry", { rating: skillRating.toString(), rating2: skillRating.toString(), attackType1: nahkampf, attackType2: waffenlos, defence: defense.toString()});
+				actor.system.parry.info = game.i18n.format("SPACE1889.UseInstinctiveBlockParry", { rating: skillRating.toString(), rating2: skillRating.toString(), attackType1: nahkampf, attackType2: waffenlos, defence: defense.toString() });
 			else
 				actor.system.parry.info = game.i18n.format("SPACE1889.UselessInstinctiveBlockParryEvasion", { talentName: name });
 		}
@@ -1225,7 +1225,7 @@ export class Space1889Actor extends Actor
 		{
 			actor.system.evasion.value = 0;
 			actor.system.evasion.instinctive = false;
-			actor.system.evasion.info = game.i18n.format("SPACE1889.NoBlockParryEvasion", { talentName : game.i18n.format("SPACE1889.Evasion") });
+			actor.system.evasion.info = game.i18n.format("SPACE1889.NoBlockParryEvasion", { talentName: game.i18n.format("SPACE1889.Evasion") });
 			return;
 		}
 
@@ -1267,7 +1267,7 @@ export class Space1889Actor extends Actor
 		if (instinctive)
 		{
 			if (defense < rating)
-				actor.system.evasion.info = game.i18n.format("SPACE1889.UseInstinctiveEvasion", { rating: rating.toString(), defence: defense.toString()});
+				actor.system.evasion.info = game.i18n.format("SPACE1889.UseInstinctiveEvasion", { rating: rating.toString(), defence: defense.toString() });
 			else
 				actor.system.evasion.info = game.i18n.format("SPACE1889.UselessInstinctiveBlockParryEvasion", { talentName: name });
 		}
@@ -1364,7 +1364,7 @@ export class Space1889Actor extends Actor
 				if (container.system.carried)
 					loadCarriedBackpack += container.system.totalWeight;
 				else
-					loadStorage += container.system.totalWeight;				
+					loadStorage += container.system.totalWeight;
 			}
 		}
 
@@ -1473,11 +1473,11 @@ export class Space1889Actor extends Actor
 		//ToDo: für neue Benutzerfertigkeiten funktioniert das nicht, da die nicht in der Liste enthalten sind
 		// über die Game Items kann man zu dem Zeitpunkt noch nicht suchen, da die noch nicht angelegt sind
 		// dafür müsste die funktion zu einem späteren Zeitpunkt noch aufgerufen werden
-/*
-		skill = game.items.find(entry => entry.system.id == skillId);
-		if (skill != null && skill != undefined)
-			return skill.system.underlyingAttribute;
-		return "";*/
+		/*
+				skill = game.items.find(entry => entry.system.id == skillId);
+				if (skill != null && skill != undefined)
+					return skill.system.underlyingAttribute;
+				return "";*/
 	}
 
 	/**
@@ -1545,8 +1545,8 @@ export class Space1889Actor extends Actor
 			actor.system.attributes.xp.used = xp;
 			actor.system.attributes.xp.available = actor.system.attributes.xp.value - xp;
 		}
-		else 
-			actor.system.powerEquivalentInXp  = xp;
+		else
+			actor.system.powerEquivalentInXp = xp;
 	}
 
 
@@ -1586,10 +1586,10 @@ export class Space1889Actor extends Actor
 				switch (injury.system.damageType)
 				{
 					case "controls":
-						controlDamage += (2*injury.system.damage) - healthOrStructureDamage;
+						controlDamage += (2 * injury.system.damage) - healthOrStructureDamage;
 						break;
 					case "propulsion":
-						propulsionDamage += (2*injury.system.damage) - healthOrStructureDamage;
+						propulsionDamage += (2 * injury.system.damage) - healthOrStructureDamage;
 						break;
 					case "guns":
 						gunDamage += damage;
@@ -1622,7 +1622,7 @@ export class Space1889Actor extends Actor
 		if (actorType != "vehicle" || damageType == "lethal")
 			return damage;
 
-		return Math.floor(damage/2);
+		return Math.floor(damage / 2);
 	}
 
 	/**
@@ -1786,7 +1786,7 @@ export class Space1889Actor extends Actor
 		if (attackInCombatRound <= 1 || this.type == "vehicle")
 			return 0;
 
-		const sizeBonus = Math.floor(this.system.secondaries.size.value/2);
+		const sizeBonus = Math.floor(this.system.secondaries.size.value / 2);
 		const noMalusDefenses = SPACE1889Helper.getTalentLevel(this, "beweglicheAbwehr") + 1 + sizeBonus;
 		if (attackInCombatRound <= noMalusDefenses)
 			return 0;
@@ -1896,7 +1896,7 @@ export class Space1889Actor extends Actor
 			case 'totalDefense':
 				dieCount = this.system.secondaries.defense.total + this.getTotalDefenseBonus(this);
 				label = game.i18n.localize("SPACE1889.TalentVolleAbwehr");
-				break;			
+				break;
 		}
 
 		const evaluation = SPACE1889RollHelper.getEventEvaluation(event);
@@ -1927,46 +1927,136 @@ export class Space1889Actor extends Actor
 
 	/**
 	 * 
-	 * @param dieCount 
-	 * @param showDialog 
-	*/
+	 * @param dieCount
+	 * @param showDialog
+	 * @param key
+	 * @param specialDialog
+	 */
 	rollAttribute(dieCount, showDialog, key, specialDialog = false)
 	{
 		const theActor = this;
-		const langId = this.getLangId(key);
-		const name = game.i18n.localize(langId) ?? "unbekannt";
-		const titelPartOne = game.i18n.localize("SPACE1889.ModifiedRoll");
-		const inputDesc = game.i18n.localize("SPACE1889.NumberOfModificationDice");
-		const diceDesc = game.i18n.localize("SPACE1889.ConfigDice");
+		let singleOnly = specialDialog;
+
+		const baseValue = dieCount;
+		let attributValue = baseValue;
+		const isAbility = this.isAbility(key);
+		if (isAbility && !specialDialog)
+			attributValue = baseValue * 2;
 
 		let info = game.i18n.localize("SPACE1889.Probe") ?? "Probe";
 		info += ":";
 
-		const isAbility = this.isAbility(key);
-		if (isAbility && !specialDialog)
-			dieCount *= 2;
-
+		let deduction = 0;
 		if ((key == "str" || key == "dex") && theActor.system.healthDeduction > 0)
 		{
-			dieCount -= theActor.system.healthDeduction;
+			deduction = theActor.system.healthDeduction;
+			attributValue -= deduction;
 			const deductionInfo = '<p>' + game.i18n.format("SPACE1889.HealthDeductionRollInfo", { value: theActor.system.healthDeduction }) + '</p>';
 			info = deductionInfo + info;
 		}
 
+		const langId = this.getLangId(key);
+		const name = game.i18n.localize(langId) ?? "unbekannt";
+
+		const titleName = game.i18n.localize("SPACE1889.PrimaryAttributeRoll")
+		const modifierText = game.i18n.localize("SPACE1889.Modifier");
+		const attributeName = name;
+		const modifierLabel = modifierText;
+		const labelNumberOfDice = game.i18n.localize("SPACE1889.NumberOfDice");
+
+		let chatOption = "public";
+		let gmId = "";
+		for (let user of game.users)
+		{
+			if (user.isGM)
+			{
+				gmId = user.id;
+				break;
+			}
+		}
+		const userId = game.user.id;
+
 
 		if (showDialog)
 		{
+			let checkbox = '<li class="flexrow">';
+			checkbox += '<div class="item flexrow flex-group-left">';
+			checkbox += '<input type="' + (isAbility ? "checkbox" : "hidden") + '" id="selected" class="einfachCheckbox" text-align="left"' + (singleOnly ? " checked>" : ">");
+			if (isAbility)
+				checkbox += '<div class="item-name">  ' + game.i18n.localize("SPACE1889.SingleValueOnly") + '</div > ';
+			checkbox += '</div></li>'
+
+			let chatOptions = '<option value="selfAndGm">' + game.i18n.localize("CHAT.RollPrivate") + '</option>';
+			chatOptions += '<option value="self">' + game.i18n.localize("CHAT.RollSelf") + '</option>';
+			chatOptions += '<option value="public" selected="selected">' + game.i18n.localize("CHAT.RollPublic") + '</option>';
+
+			function Recalc()
+			{
+				singleOnly = $('#selected')[0].checked;
+				let mod = Number($("#modifier")[0].value);
+
+				attributValue = getDiceCount(singleOnly, mod, deduction);
+
+				$("#anzahlDerWuerfel")[0].value = attributValue;
+			}
+
+			function handleRender(html)
+			{
+				html.on('change', '.einfachCheckbox', () =>
+				{
+					Recalc();
+				});
+
+				html.on('change', '.modInput', () =>
+				{
+					Recalc();
+				});
+				Recalc();
+			}
+
 			let dialogue = new Dialog(
 				{
-					title: `${titelPartOne}: ${name} (${dieCount} ${diceDesc})`,
-					content: `<p>${inputDesc}: <input type="number" id="anzahlDerWuerfel" value = "0"></p>`,
+					title: `${titleName}`,
+					content: `
+			<form>
+			<h2>${attributeName}: ${baseValue}</h2>
+			<ul>
+				${checkbox}
+				<li class="flexrow">
+					<div class="item flexrow flex-group-left">
+						<div>${modifierLabel}:</div> <input type="number" class="modInput" id="modifier" value = "0">
+					</div>
+				</li>
+				<hr>
+				<h4>
+				<div>
+					<li class="flexrow">
+						<div class="item flexrow flex-group-left">
+							<label for="anzahlDerWuerfel">${labelNumberOfDice}</label>
+							<input id="anzahlDerWuerfel" value = "0" disabled="true" visible="false">
+						</div>
+					</li>
+				</div>
+				</h4>
+				</ul>
+				<hr>
+				<p><select id="choices" name="choices">${chatOptions}</select></p>
+			</form>`,
 					buttons:
 					{
 						ok:
 						{
 							icon: '',
-							label: game.i18n.localize("SPACE1889.Go"),
-							callback: (html) => myCallback(html)
+							label: 'Los!',
+							callback: (html) => 
+							{
+								const mod = parseInt(html.find('#modifier').val());
+								const single = html.find('#selected').is(":checked");
+								const chatoption = html.find('#choices').val();
+								attributValue = getDiceCount(single, mod, deduction);
+
+								ChatMessage.create(getChatData(attributValue, mod, chatoption), {});
+							}
 						},
 						abbruch:
 						{
@@ -1975,36 +2065,66 @@ export class Space1889Actor extends Actor
 							icon: `<i class="fas fa-times"></i>`
 						}
 					},
-					default: "ok"
-				}).render(true);
-
-			function myCallback(html)
-			{
-				const input = html.find('#anzahlDerWuerfel').val();
-				let anzahl = input ? parseInt(input) : 0;
-				anzahl += dieCount;
-				ChatMessage.create(getChatData(anzahl), {});
-			}
+					default: "ok",
+					render: handleRender
+				});
+			dialogue.render(true)
 		}
 		else
 		{
-			ChatMessage.create(getChatData(dieCount), {});
+			ChatMessage.create(getChatData(attributValue, 0, chatOption), {});
 		}
 
-		function getChatData(wurfelAnzahl)
+		function getDiceCount(isSingleOnly, modificator, healthDeduction)
 		{
+			return Math.max(0, ((isSingleOnly || !isAbility) ? baseValue : baseValue * 2) + modificator - healthDeduction);
+		}
+
+		function getIds(option)
+		{
+			let ids = [];
+			if (option == "selfAndGm")
+				ids = gmId != userId ? [gmId, userId] : [userId];
+			else if (option == "self")
+				ids = [userId];
+
+			return ids;
+		}
+
+		function getChatData(wurfelAnzahl, mod, theChatOption)
+		{
+			let unmodifiedValue = getDiceCount(singleOnly, 0, 0);
+			let wert = game.i18n.localize("SPACE1889.Rating");
+			let tooltipInfo = (mod && mod != 0) || deduction ? unmodifiedValue.toString() + "[" + wert + "]" : "";
+			if (mod && mod != 0)
+			{
+				tooltipInfo += (mod > 0 ? " +" : " ") + mod.toString() + "[mod] ";
+			}
+			if (deduction != 0)
+			{
+				tooltipInfo += " -" + deduction.toString() + "[" + game.i18n.localize("SPACE1889.NegativeHealth") + "]";
+			}
+
+			let attribNameAddition = "";
+			if (isAbility)
+				attribNameAddition = ` (${wert} ${baseValue})`;
+
 			const anzahl = Math.max(0, wurfelAnzahl);
-			let messageContent = `<div><h2>${name}</h2></div>`;
+			let messageContent = `<div><h2><strong>${attributeName}</strong>${attribNameAddition}</h2></div>`;
 			const dieType = SPACE1889RollHelper.getDieType();
-			messageContent += `${info} <b>[[${anzahl}${dieType}]] von ${wurfelAnzahl}</b> <br>`;
+			messageContent += `${info} <b>[[${anzahl}${dieType}]] von <a data-tooltip="${tooltipInfo}"> ${wurfelAnzahl}</a></b> <br>`;
+
+			let ids = getIds(theChatOption);
+
 			let chatData =
 			{
 				user: game.user.id,
 				speaker: ChatMessage.getSpeaker({ actor: theActor }),
+				whisper: ids,
 				content: messageContent
 			};
+
 			return chatData;
 		}
 	}
 }
-

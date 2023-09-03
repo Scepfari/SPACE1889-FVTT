@@ -213,6 +213,7 @@
 	"SPACE1889.TotalDefenseDesc": "In manchen Situationen kann es sinnvoll sein, sich völlig auf die Verteidigung zu konzentrieren, auch wenn man dabei auf eigene Angriffsmöglichkeiten verzichten muss: Schläge abwehren, Hiebe parieren und Fernkampfattacken ausweichen. Durch die Aufgabe der eigenen Angriffsaktion erhält der Charakter bis zur nächsten Runde 4 zusätzliche Würfel für seine Abwehr.",
 	"SPACE1889.DexPenalty": "Ge-Malus",
 	"SPACE1889.Quantity": "Anzahl",
+	"SPACE1889.NumberOfDice": "Anzahl der Würfel",
 	"SPACE1889.LoadingLevel": "Beladung",
 	"SPACE1889.LightLoad": "Geringe Last",
 	"SPACE1889.MediumLoad": "Mittlere Last",
@@ -2729,6 +2730,9 @@
 	"SPACE1889.DoAttack": "Wirklich angreifen?",
 	"SPACE1889.NoMeleeWeaponAssasine": "Ein Assasinen-Angriff lässt sich nur mit einer Nahkampfwaffe durchführen. Du hälst aber keine solche in der Hand.",
 	"SPACE1889.HealthDeductionRollInfo": "{value} Abzug durch negative Gesundheit",
+	"SPACE1889.ModificationRollInfo": "verwendete Modifikator: {value}",
+	"SPACE1889.SingleValueOnly": "nur einfacher Wert",
+	"SPACE1889.NegativeHealth": "negative Gesundheit",
 
 	"SPACE1889.ChooseSkill": "Fertigkeitsauswahl für das Talent",
 	"SPACE1889.ChooseSense": "Sinnauswahl für das Talent",

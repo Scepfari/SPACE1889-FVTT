@@ -213,6 +213,7 @@
 	"SPACE1889.TotalDefenseDesc": "In dire circumstances, your character may focus entirely on her defense – blocking blows, parrying strikes, and dodging ranged attacks all at the same time. By giving up her attack action, your character gains a +4 bonus to her Defense rating until her next turn.",
 	"SPACE1889.DexPenalty": "Dex-penalty",
 	"SPACE1889.Quantity": "Quantity",
+	"SPACE1889.NumberOfDice": "Number of dice",
 	"SPACE1889.LoadingLevel": "Encumbrance",
 	"SPACE1889.LightLoad": "Light load",
 	"SPACE1889.MediumLoad": "Medium load",
@@ -2729,6 +2730,9 @@
 	"SPACE1889.DoAttack": "Really attack?",
 	"SPACE1889.NoMeleeWeaponAssasine": "An Assassin attack can only be performed with a melee weapon. But you don't have one in your hand.",
 	"SPACE1889.HealthDeductionRollInfo": "{value} deduction due to negative health",
+	"SPACE1889.ModificationRollInfo": "used modifier: {value}",
+	"SPACE1889.SingleValueOnly": "single value only",
+	"SPACE1889.NegativeHealth": "negative health",
 
 	"SPACE1889.ChooseSkill": "Skill selection for the talent",
 	"SPACE1889.ChooseSense": "Sense selection for the talent",

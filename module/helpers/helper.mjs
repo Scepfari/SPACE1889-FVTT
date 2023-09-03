@@ -1367,6 +1367,16 @@ export default class SPACE1889Helper
 		return false;
 	}
 
+	static getGmId()
+	{
+		for (let user of game.users)
+		{
+			if (user.isGM)
+				return user.id;
+		}
+		return "";
+	}
+
 	static async uniqueCanvasNameForNotLinkedActors(token, update)
 	{
 		if (!this.hasOwnership(token.actor))

@@ -360,11 +360,15 @@ export default class SPACE1889RollHelper
 		
 		if (showDialog)
 		{
+			let chatOptions = '<option value="selfAndGm">' + game.i18n.localize("CHAT.RollPrivate") + '</option>';
+			chatOptions += '<option value="self">' + game.i18n.localize("CHAT.RollSelf") + '</option>';
+			chatOptions += '<option value="public" selected="selected">' + game.i18n.localize("CHAT.RollPublic") + '</option>';
+
 			const diceCount = dieCount - defaultMod;
 			let dialogue = new Dialog(
 				{
 					title: `${titelPartOne}: ${item.system.label} (${diceCount} ${diceDesc})`,
-					content: `<p>${inputDesc}: <input type="number" id="anzahlDerWuerfel" value = "${defaultMod}"></p>`,
+					content: `<p>${inputDesc}: <input type="number" id="anzahlDerWuerfel" value = "${defaultMod}"></p><hr><p><select id="choices" name="choices">${chatOptions}</select></p>`,
 					buttons:
 					{
 						ok:
@@ -385,12 +389,13 @@ export default class SPACE1889RollHelper
 
 			async function myCallback(html)
 			{
+				const chatoption = html.find('#choices').val();
 				const input = html.find('#anzahlDerWuerfel').val();
 				let anzahl = input ? parseInt(input) : 0;
 				toolTipInfo = anzahl == 0 ? "" : game.i18n.format("SPACE1889.ChatDistanceMod", { mod: SPACE1889Helper.getSignedStringFromNumber(anzahl) }); 
 				anzahl += diceCount;
 				const useWeaponChatInfo = await SPACE1889Helper.useWeapon(item, actor);
-				const chatData = await getChatData(anzahl, useWeaponChatInfo);
+				const chatData = await getChatData(anzahl, useWeaponChatInfo, chatoption);
 				ChatMessage.create(chatData, {});
 			}
 		}
@@ -401,7 +406,23 @@ export default class SPACE1889RollHelper
 			ChatMessage.create(chatData, {});
 		}
 
-		async function getChatData(wurfelAnzahl, useWeaponChatInfo)
+		function getIds(option)
+		{
+			let ids = [];
+			if (option == "public")
+				return ids;
+
+			const gmId = SPACE1889Helper.getGmId();
+			const userId = game.user.id;
+			if (option == "selfAndGm")
+				ids = gmId != userId ? [gmId, userId] : [userId];
+			else if (option == "self")
+				ids = [userId];
+
+			return ids;
+		}
+
+		async function getChatData(wurfelAnzahl, useWeaponChatInfo, chatOption="public")
 		{
 			const rollWithHtml = await SPACE1889RollHelper.createInlineRollWithHtml(Math.max(0, wurfelAnzahl), titelInfo, toolTipInfo);
 			let weapon = undefined;
@@ -467,10 +488,14 @@ export default class SPACE1889RollHelper
 				const buttonText = game.i18n.localize("SPACE1889.AutoDefense");
 				messageContent += `<button class="autoDefence chatButton" data-action="defence" data-actor-id="${actor._id}" data-actor-token-id="${speaker.token}" data-target-id="${targetId}" data-attack-name="${item.name}" data-attack-successes="${rollWithHtml.roll.total}" data-damage-type="${weaponDamageType}" data-skill-id="${weaponSkill}" data-reduced-defense="${reducedDefense}" data-area-damage="${areaDamage}" data-effect="${effect}" data-effect-duration-combat-turns="${effectDurationCT}" data-effect-only="${effectOnly}">${buttonText}</button>`;
 			}
+
+			let ids = getIds(chatOption);
+
 			let chatData =
 			{
 				user: game.user.id,
 				speaker: speaker,
+				whisper: ids,
 				content: messageContent
 			};
 			return chatData;
