@@ -392,7 +392,7 @@ export default class SPACE1889RollHelper
 				const chatoption = html.find('#choices').val();
 				const input = html.find('#anzahlDerWuerfel').val();
 				let anzahl = input ? parseInt(input) : 0;
-				toolTipInfo = anzahl == 0 ? "" : game.i18n.format("SPACE1889.ChatDistanceMod", { mod: SPACE1889Helper.getSignedStringFromNumber(anzahl) }); 
+				toolTipInfo = anzahl == 0 ? "" : game.i18n.format("SPACE1889.ChatModifier", { mod: SPACE1889Helper.getSignedStringFromNumber(anzahl) }); 
 				anzahl += diceCount;
 				const useWeaponChatInfo = await SPACE1889Helper.useWeapon(item, actor);
 				const chatData = await getChatData(anzahl, useWeaponChatInfo, chatoption);
