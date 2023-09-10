@@ -2,6 +2,13 @@
 
 ## Zeit der drei namenlosen Weltreiche
 
+### v2.0.5
+- Würfeldialogverbesserungen: 
+  - bei primären Attributswürfen: Umschalter ob einfach oder doppelter Primärattributwert verwendet werden soll, Anzeige der resultierenden Würfelanzahl, sowie Tooltip für die Würfelanzahl im Chat, der über die Zusammensetzung aufklärt
+  - Die Dialoge haben nun die Option ob der Wurf öffentlich, privat oder privat & SL durchgeführt werden soll
+- Neue Einstellungsoption: Der Spieler kann nun erwingen, dass bei jedem Attributswurf der Modifikationsdialog angezeigt werden soll, unabhängig davon ob dabei die Tasten [SHIFT] oder [STRG] gedrückt wurden
+- Bugfix: fehlende Schadensausgabe bei Gegenangriffen wie "Gegenschalg" und "Riposte".
+
 ### v2.0.4
 - Neue veränderbare Tastenkombination zum Schließen des aktiven Fensters. Die Standardbelegung ist die ESC Taste, womit das von Foundry übliche Verhalten auf Druck der ESC Taste alle offenen, einschließlich der minimierten, Fenster zu schließen, unterbunden wird. Soll die ESC Taste wie früher funktionieren, muss der Funktion zum Schließen des aktiven Fensters eine andere Tastenkombination zugewiesen werden. Dank an Forien auf Discord für das Teilen des Quellcodes.
 
