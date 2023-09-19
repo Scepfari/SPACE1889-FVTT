@@ -1786,7 +1786,7 @@ export class Space1889Actor extends Actor
 		if (attackInCombatRound <= 1 || this.type == "vehicle")
 			return 0;
 
-		const sizeBonus = Math.floor(this.system.secondaries.size.value / 2);
+		const sizeBonus = this.system.secondaries.size.value > 0 ? Math.floor(this.system.secondaries.size.value / 2) : 0;
 		const noMalusDefenses = SPACE1889Helper.getTalentLevel(this, "beweglicheAbwehr") + 1 + sizeBonus;
 		if (attackInCombatRound <= noMalusDefenses)
 			return 0;
