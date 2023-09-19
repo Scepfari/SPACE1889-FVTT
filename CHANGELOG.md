@@ -2,6 +2,9 @@
 
 ## Zeit der drei namenlosen Weltreiche
 
+### v2.0.6
+- Bugfix: Fehlerhafte Berechnung der automatischen Abzüge bei Mehrfachverteidigung für kleinen Kreaturen ([#19](https://github.com/Scepfari/SPACE1889-FVTT/issues/19))
+
 ### v2.0.5
 - Würfeldialogverbesserungen: 
   - bei primären Attributswürfen: Umschalter ob einfach oder doppelter Primärattributwert verwendet werden soll, Anzeige der resultierenden Würfelanzahl, sowie Tooltip für die Würfelanzahl im Chat, der über die Zusammensetzung aufklärt
