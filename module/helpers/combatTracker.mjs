@@ -4,7 +4,8 @@ export class Space1889Combatant extends Combatant
 	{
 		if (data.flags == undefined)
 			data.flags = {}
-		mergeObject(data.flags, { space1889: { defenseCount: 0 } });
+		if (data.flags.space1889?.defenseCount == undefined)
+			mergeObject(data.flags, { space1889: { defenseCount: 0 } });
 		super(data, context);
 	}
 }
