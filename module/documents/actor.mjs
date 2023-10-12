@@ -343,7 +343,9 @@ export class Space1889Actor extends Actor
 		for (let [key, ability] of Object.entries(actor.system.abilities))
 		{
 			ability.talentBonus = this.getBonusFromTalents(key, "ability", items);
-			ability.total = ability.value + ability.talentBonus;
+			ability.bonus = ability.talentBonus + this.getAsNumber(ability?.effectBonus);
+			ability.bonusInfo = this.GetBonusInfo(ability);
+			ability.total = ability.value + ability.bonus;
 			primaereAttribute.push(key);
 		}
 		actor.system['primaereAttribute'] = primaereAttribute;
@@ -351,8 +353,9 @@ export class Space1889Actor extends Actor
 		const armorData = this.getArmorBonusMalus(items);
 		if (armorData.malus > 0)
 		{
-			actor.system.abilities["dex"].talentBonus -= armorData.malus;
+			actor.system.abilities["dex"].bonus -= armorData.malus;
 			actor.system.abilities["dex"].total = Math.max(0, actor.system.abilities["dex"].total - armorData.malus);
+			actor.system.abilities["dex"].bonusInfo = this.AddBonusInfo("Rüstung", (-1) * armorData.malus, actor.system.abilities["dex"].bonusInfo);
 		}
 		actor.system.armorTotal = armorData;
 
@@ -374,13 +377,13 @@ export class Space1889Actor extends Actor
 		{
 			if (item.type === 'skill')
 			{
-				item.system.talentBonus = this.getBonusFromTalents(item.system.id, item.type, items);
+				item.system.talentBonus = this.getBonusFromTalents(item.system.id, item.type, items) + this.getAsNumber(item.system.effectBonus);
 				skills.push(item);
 			}
 			// Append to specialization.
 			else if (item.type === 'specialization')
 			{
-				item.system.talentBonus = this.getBonusFromTalents(item.system.id, item.type, items);
+				item.system.talentBonus = this.getBonusFromTalents(item.system.id, item.type, items) + this.getAsNumber(item.system.effectBonus);
 				speciSkills.push(item);
 			}
 			else if (item.type === 'talent')
@@ -438,8 +441,9 @@ export class Space1889Actor extends Actor
 		this.CalcAndSetLoad(actor);
 		if (actor.system.load.dexAndMoveMalus > 0)
 		{
-			actor.system.abilities["dex"].talentBonus -= actor.system.load.dexAndMoveMalus;
+			actor.system.abilities["dex"].bonus -= actor.system.load.dexAndMoveMalus;
 			actor.system.abilities["dex"].total = Math.max(0, actor.system.abilities["dex"].total - actor.system.load.dexAndMoveMalus);
+			actor.system.abilities["dex"].bonusInfo = this.AddBonusInfo("Überladung", (-1) * actor.system.load.dexAndMoveMalus, actor.system.abilities["dex"].bonusInfo);
 		}
 
 		actor.system.healthDeduction = 0;
@@ -496,29 +500,74 @@ export class Space1889Actor extends Actor
 	{
 		const system = actor.system;
 		system.secondaries.move.value = system.abilities.str.total + system.abilities.dex.total;
-		system.secondaries.move.talentBonus = this.getBonusFromTalents("move", "secondary", actor.items) - actor.system.load.dexAndMoveMalus;
-		if (actor.system.health.value < 0)
-			system.secondaries.move.talentBonus += actor.system.health.value;
-		system.secondaries.move.total = Math.max(0, system.secondaries.move.value + system.secondaries.move.talentBonus);
+		this.fillSecondaryBonus("move", actor, system.secondaries.move);
+		system.secondaries.move.total = Math.max(0, system.secondaries.move.value + system.secondaries.move.bonus);
+
 		system.secondaries.perception.value = system.abilities.int.total + system.abilities.wil.total;
-		system.secondaries.perception.talentBonus = this.getBonusFromTalents("perception", "secondary", actor.items) - system.healthDeduction;
-		system.secondaries.perception.total = Math.max(0, system.secondaries.perception.value + system.secondaries.perception.talentBonus);
+		this.fillSecondaryBonus("perception", actor, system.secondaries.perception);
+		system.secondaries.perception.total = Math.max(0, system.secondaries.perception.value + system.secondaries.perception.bonus);
+
 		system.secondaries.initiative.value = system.abilities.dex.total + system.abilities.int.total;
-		system.secondaries.initiative.talentBonus = this.getBonusFromTalents("initiative", "secondary", actor.items) - system.healthDeduction;
-		system.secondaries.initiative.total = Math.max(0, system.secondaries.initiative.value + system.secondaries.initiative.talentBonus);
+		this.fillSecondaryBonus("initiative", actor, system.secondaries.initiative);
+		system.secondaries.initiative.total = Math.max(0, system.secondaries.initiative.value + system.secondaries.initiative.bonus);
+
 		system.secondaries.stun.value = Math.max(system.abilities.con.total, SPACE1889Helper.getTalentLevel(actor, "dickkopf") > 0 ? system.abilities.wil.total : 0);
-		system.secondaries.stun.talentBonus = this.getBonusFromTalents("stun", "secondary", actor.items);
-		system.secondaries.stun.total = system.secondaries.stun.value + system.secondaries.stun.talentBonus;
-		system.secondaries.size.talentBonus = this.getBonusFromTalents("size", "secondary", actor.items);
-		system.secondaries.size.total = system.secondaries.size.value + system.secondaries.size.talentBonus;
-		system.secondaries.defense.value = this.getPassiveDefense(actor) + this.getActiveDefense(actor) - system.secondaries.size.total;
+		this.fillSecondaryBonus("stun", actor, system.secondaries.stun);
+		system.secondaries.stun.total = Math.max(0, system.secondaries.stun.value + system.secondaries.stun.bonus);
+
+		this.fillSecondaryBonus("size", actor, system.secondaries.size);
+		system.secondaries.size.total = system.secondaries.size.value + system.secondaries.size.bonus;
+
+		system.secondaries.defense.value = this.getPassiveDefense(actor) + this.getActiveDefense(actor) - system.secondaries.size.total + this.getAsNumber(system.secondaries.defense?.effectBonus);
 		system.secondaries.defense.armorBonus = system.armorTotal.bonus;
-		system.secondaries.defense.talentBonus = this.getBonusFromTalents("defense", "secondary", actor.items) + system.secondaries.defense.armorBonus - system.healthDeduction;
-		system.secondaries.defense.passiveTotal = Math.max(0, this.getPassiveDefense(actor) - system.secondaries.size.total + system.secondaries.defense.armorBonus - system.healthDeduction);
+		this.fillSecondaryBonus("defense", actor, system.secondaries.defense);
+		system.secondaries.defense.passiveTotal = Math.max(0, this.getPassiveDefense(actor) - system.secondaries.size.total + system.secondaries.defense.armorBonus);
 		system.secondaries.defense.activeTotal = Math.max(0, this.getActiveDefense(actor) - system.secondaries.size.total - system.healthDeduction);
-		const total = system.secondaries.defense.value + system.secondaries.defense.talentBonus;
+		const total = system.secondaries.defense.value + system.secondaries.defense.bonus + this.getAsNumber(system.secondaries.defense?.effectBonus);
 		system.secondaries.defense.total = Math.max(0, total);
 		system.secondaries.defense.totalDefense = total + this.getTotalDefenseBonus(actor);
+	}
+
+	getAsNumber(value)
+	{
+		if (value == null || value == undefined)
+			return 0;
+		return Number(value);
+	}
+
+	fillSecondaryBonus(secondaryAttrib, actor, secondaryReference)
+	{
+		const talentBonus = this.getBonusFromTalents(secondaryAttrib, "secondary", actor.items);
+		const effectBonus = this.getAsNumber(secondaryReference?.effectBonus);
+		let healthBonus = 0;
+		let loadBonus = 0;
+		let armorBonus = (secondaryAttrib == "defense" ? secondaryReference.armorBonus : 0);
+		if (secondaryAttrib == "move")
+		{
+			loadBonus -= actor.system.load.dexAndMoveMalus;
+			if (actor.system.health.value < 0)
+				healthBonus = actor.system.health.value;
+		}
+		else if (secondaryAttrib != "size" && secondaryAttrib != "stun")
+		{
+			healthBonus -= actor.system.healthDeduction;
+		}
+
+		const bonus = talentBonus + effectBonus + healthBonus + loadBonus + armorBonus;
+		let bonusInfo = "";
+		if (armorBonus != 0)
+			bonusInfo = this.AddBonusInfo(game.i18n.localize("SPACE1889.Armor"), armorBonus, bonusInfo);
+		if (talentBonus != 0)
+			bonusInfo = this.AddBonusInfo(game.i18n.localize("SPACE1889.TalentPl"), talentBonus, bonusInfo);
+		if (effectBonus != 0)
+			bonusInfo = this.AddBonusInfo(game.i18n.localize("SPACE1889.EffectPl"), effectBonus, bonusInfo);
+		if (healthBonus != 0)
+			bonusInfo = this.AddBonusInfo(game.i18n.localize("SPACE1889.Health"), healthBonus, bonusInfo);
+		if (loadBonus != 0)
+			bonusInfo = this.AddBonusInfo(game.i18n.localize("SPACE1889.LoadingLevel"), loadBonus, bonusInfo);
+
+		secondaryReference.bonus = bonus;
+		secondaryReference.bonusInfo = bonusInfo;
 	}
 
 	calcAndSetCharacterNpcSiMoveUnits(actor)
@@ -561,7 +610,7 @@ export class Space1889Actor extends Actor
 			if (skl.system.id == 'sportlichkeit' && skl.system.rating > actor.system.secondaries.move.value)
 			{
 				actor.system.secondaries.move.value = skl.system.rating;
-				actor.system.secondaries.move.total = skl.system.rating + actor.system.secondaries.move.talentBonus;
+				actor.system.secondaries.move.total = skl.system.rating + actor.system.secondaries.move.bonus;
 			}
 
 			for (let spe of actor.system.speciSkills)
@@ -864,6 +913,27 @@ export class Space1889Actor extends Actor
 		return bonus;
 	}
 
+	GetBonusInfo(ability)
+	{
+		const effectBonus = this.getAsNumber(ability?.effectBonus);
+		if (ability.talentBonus == 0 && effectBonus == 0)
+			return "";
+
+		let info = "";
+		if (ability.talentBonus != 0)
+			info = this.AddBonusInfo(game.i18n.localize("SPACE1889.TalentPl"), ability.talentBonus, info);
+		if (effectBonus != 0)
+			info = this.AddBonusInfo(game.i18n.localize("SPACE1889.EffectPl"), effectBonus, info);
+
+		return info;
+	}
+
+	AddBonusInfo(name, value, baseInfo)
+	{
+		const info = (baseInfo.length > 0 ? baseInfo + "\n" : "") + name + ": " + SPACE1889Helper.getSignedStringFromNumber(value);
+		return info;
+	}
+
 	getActiveDefense(actor)
 	{
 		let active = actor.system.abilities.dex.total;
@@ -1087,7 +1157,7 @@ export class Space1889Actor extends Actor
 		let instinctive = false;
 		let riposte = false;
 		rating += actor.system.armorTotal.bonus;
-		rating += actor.system.secondaries.defense.talentBonus;
+		rating += actor.system.secondaries.defense.bonus;
 
 		for (let item of actor.items)
 		{
@@ -1166,7 +1236,7 @@ export class Space1889Actor extends Actor
 		if (!noWeapon)
 		{
 			skillRating += actor.system.armorTotal.bonus;
-			skillRating += actor.system.secondaries.defense.talentBonus;
+			skillRating += actor.system.secondaries.defense.bonus;
 
 
 			for (let item of actor.items)
@@ -1237,7 +1307,7 @@ export class Space1889Actor extends Actor
 		let rating = this.GetSkillRating(actor, id1, underlyingAbility1);
 		rating = Math.max(rating, this.GetSkillRating(actor, id2, underlyingAbility2));
 		rating += actor.system.armorTotal.bonus;
-		rating += actor.system.secondaries.defense.talentBonus;
+		rating += actor.system.secondaries.defense.bonus;
 
 		for (let item of actor.items)
 		{

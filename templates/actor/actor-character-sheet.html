@@ -124,7 +124,7 @@
 						<div class="item-max-with40px">
 							<a class="increment-{{key}}-click">{{ability.value}}</a>
 						</div>
-						<label class="items-list item-max-with40px">{{ability.talentBonus}}</label>
+						<label title='{{ability.bonusInfo}}' class="items-list item-max-with40px">{{ability.bonus}}</label>
 						<label class="items-list item-max-with42px resource-label">{{ability.total}}</label>
 					</li>
 					{{/each}}
@@ -145,7 +145,7 @@
 							<label for="system.secondaries.{{key}}.value" class="rollable flexlarge align-left" data-roll-key="{{key}}" data-roll-type="actor" data-roll-diecount="{{secondary.total}}" data-label="{{secondary.label}}">{{secondary.label}}</label>
 						{{/if}}
 						<label class="items-list item-max-with40px">{{secondary.value}}</label>
-						<label class="items-list item-max-with40px">{{secondary.talentBonus}}</label>
+						<label title='{{secondary.bonusInfo}}' class="items-list item-max-with40px">{{secondary.bonus}}</label>
 						<label class="items-list item-max-with40px resource-label">{{secondary.total}}</label>
 					</li>
 					{{/each}}

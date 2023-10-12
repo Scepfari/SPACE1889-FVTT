@@ -82,7 +82,7 @@
 						<div class="item-max-with40px">
 							<a class="increment-{{key}}-click">{{ability.value}}</a>
 						</div>
-						<label class="items-list item-max-with40px">{{ability.talentBonus}}</label>
+						<label title='{{ability.bonusInfo}}' class="items-list item-max-with40px">{{ability.bonus}}</label>
 						<label class="items-list item-max-with42px resource-label">{{ability.total}}</label>
 					</li>
 					{{/each}}
@@ -100,7 +100,7 @@
 						<div class="item-max-with40px">
 							<a class="increment-creaturesize-click">{{system.secondaries.size.value}}</a>
 						</div>
-						<label class="items-list item-max-with40px">{{system.secondaries.size.talentBonus}}</label>
+						<label title='{{system.secondaries.size.bonusInfo}}' class="items-list item-max-with40px">{{system.secondaries.size.bonus}}</label>
 						<label class="items-list item-max-with60px resource-label">{{system.secondaries.size.total}}</label>
 					</li>
 					<li class="flexrow">
@@ -108,7 +108,7 @@
 						<div class="item-max-with40px">
 							<a class="increment-creaturesize-click">{{system.secondaries.move.value}}</a>
 						</div>
-						<label class="items-list item-max-with40px">{{system.secondaries.move.talentBonus}}</label>
+						<label title='{{system.secondaries.move.bonusInfo}}' class="items-list item-max-with40px">{{system.secondaries.move.bonus}}</label>
 						<label class="items-list item-max-with60px resource-label">{{system.secondaries.move.display}}</label>
 					</li>
 					{{#each system.secondaries as |secondary key|}}
@@ -117,7 +117,7 @@
 					<li class="secondary flexrow">
 						<label for="system.secondaries.{{key}}.value" class="rollable align-left" data-roll-key="{{key}}" data-roll-type="actor" data-roll-diecount="{{secondary.total}}" data-label="{{secondary.label}}">{{secondary.label}}</label>
 						<label class="items-list item-max-with40px">{{secondary.value}}</label>
-						<label class="items-list item-max-with40px">{{secondary.talentBonus}}</label>
+						<label title='{{secondary.bonusInfo}}' class="items-list item-max-with40px">{{secondary.bonus}}</label>
 						<label class="items-list item-max-with60px resource-label">{{secondary.total}}</label>
 					</li>
 					{{/if}}
