@@ -1,3 +1,4 @@
+import {onManageActiveEffect} from "../helpers/effects.mjs";
 import SPACE1889Helper from "../helpers/helper.mjs";
 
 /**
@@ -166,6 +167,12 @@ export class Space1889ItemSheet extends ItemSheet {
 				const newId = this.item.createId(this.item.name);
 				this.item.update({ 'system.id': newId });
 			}
+		});
+
+		// Active Effect management
+		html.find(".effect-control").click(ev =>
+		{
+			onManageActiveEffect(ev, this.item)
 		});
 
 	}

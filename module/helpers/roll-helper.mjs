@@ -102,7 +102,7 @@ export default class SPACE1889RollHelper
 			{
 				const skillItem = actor.items.find(e => e.system.id == "waffenlos");
 				if (skillItem != undefined)
-					return Math.max(0, skillItem.system.rating + ((item.system.level.value - 1) * 2));
+					return Math.max(0, skillItem.system.rating + ((item.system.level.total - 1) * 2));
 			}
 			else if (item.system.id == "assassine")
 			{
@@ -113,13 +113,13 @@ export default class SPACE1889RollHelper
 					if (!theWeaponInfo.weapon)
 						return 0;
 					const weaponDamage = theWeaponInfo.damage;
-					return Math.max(0, skillItem.system.rating + weaponDamage + ((item.system.level.value - 1) * 2));
+					return Math.max(0, skillItem.system.rating + weaponDamage + ((item.system.level.total - 1) * 2));
 				}
 			}
 			else if (item.system.id == "eigenartigerKampfstil")
 			{
 				const defense = actor.system.secondaries.defense.total;
-				return (defense + (Number(item.system.level.value) * 2));
+				return (defense + (Number(item.system.level.total) * 2));
 			}
 			return 0;
 		}
@@ -1523,7 +1523,7 @@ export default class SPACE1889RollHelper
 			{
 				const waffenloseParade = actor.system.talents.find(t => t.system.id == "waffenloseParade");
 				if (waffenloseParade)
-					blockValue += (waffenloseParade.system.level.value - 1) * 2;
+					blockValue += (waffenloseParade.system.level.total - 1) * 2;
 				else
 					blockValue -= 2;					
 			}

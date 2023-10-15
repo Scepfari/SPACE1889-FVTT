@@ -340,6 +340,16 @@ export class Space1889Actor extends Actor
 
 		let primaereAttribute = [];
 
+		// Item Effekte der Talente vorbereiten
+		for (let item of items)
+		{
+			if (item.type === 'talent')
+			{
+				item.system.level.effectBonus = SPACE1889Helper.getBonusFromEffects("system.level.effectBonus", item.effects);
+				item.system.level.total = SPACE1889Helper.constrain(item.system.level.value + this.getAsNumber(item.system.level.effectBonus), item.system.level.min, item.system.level.max);
+			}
+		}
+
 		for (let [key, ability] of Object.entries(actor.system.abilities))
 		{
 			ability.talentBonus = this.getBonusFromTalents(key, "ability", items);
@@ -530,9 +540,7 @@ export class Space1889Actor extends Actor
 
 	getAsNumber(value)
 	{
-		if (value == null || value == undefined)
-			return 0;
-		return Number(value);
+		return SPACE1889Helper.getAsNumber(value);
 	}
 
 	fillSecondaryBonus(secondaryAttrib, actor, secondaryReference)
@@ -903,9 +911,10 @@ export class Space1889Actor extends Actor
 
 			if (item.system.bonusTargetType == type && item.system.bonusTarget == whatId)
 			{
-				let factor = item.system.level.value;
+				const level = item.system.level.total ?? item.system.level.value;
+				let factor = level;
 				if (item.system.bonusStartLevel > 1)
-					factor = Math.max(0, item.system.level.value + 1 - item.system.bonusStartLevel);
+					factor = Math.max(0, level + 1 - item.system.bonusStartLevel);
 				bonus += (factor * item.system.bonus);
 			}
 		}
@@ -1167,11 +1176,11 @@ export class Space1889Actor extends Actor
 			if (item.system.id == "blocken")
 			{
 				instinctive = true;
-				rating += item.system.level.value;
+				rating += item.system.level.total;
 			}
-			else if (item.system.id == "gegenschlag" && item.system.level.value > 0)
+			else if (item.system.id == "gegenschlag" && item.system.level.total > 0)
 			{
-				rating += (item.system.level.value - 1) * 2;
+				rating += (item.system.level.total - 1) * 2;
 				riposte = true;
 			}
 		}
@@ -1247,11 +1256,11 @@ export class Space1889Actor extends Actor
 				if (item.system.id == "parade")
 				{
 					instinctive = true;
-					skillRating += item.system.level.value;
+					skillRating += item.system.level.total;
 				}
-				else if (item.system.id == "riposte" && item.system.level.value > 0)
+				else if (item.system.id == "riposte" && item.system.level.total > 0)
 				{
-					skillRating += (item.system.level.value - 1) * 2;
+					skillRating += (item.system.level.total - 1) * 2;
 					riposte = true;
 				}
 			}
@@ -1317,7 +1326,7 @@ export class Space1889Actor extends Actor
 			if (item.system.id == "ausweichen")
 			{
 				instinctive = true;
-				rating += item.system.level.value;
+				rating += item.system.level.total;
 				break;
 			}
 		}
@@ -1396,7 +1405,7 @@ export class Space1889Actor extends Actor
 
 			if (item.system.id == "packesel")
 			{
-				str += item.system.level.value;
+				str += item.system.level.total;
 				break;
 			}
 		}

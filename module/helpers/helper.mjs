@@ -13,7 +13,7 @@ export default class SPACE1889Helper
 		const talent = this.getTalentData(actor, talentId);
 		if (talent != undefined)
 		{
-			return talent.system.level.value;
+			return talent.system.level.total;
 		}
 		return 0;
 	}
@@ -1933,5 +1933,59 @@ export default class SPACE1889Helper
 				highestApp = app;
 		}
 		return highestApp;
+	}
+
+	static constrain(value, min, max)
+	{
+		return Math.min(max, Math.max(value, min));
+	}
+
+	static getAsNumber(value)
+	{
+		if (value == null || value == undefined)
+			return 0;
+		return Number(value);
+	}
+
+	static getBonusFromEffects(searchKey, effects, baseBonusValue = 0)
+	{
+		let bonus = baseBonusValue;
+		for (let effect of effects?._source)
+		{
+			if (effect.disabled)
+				continue;
+
+			for (let change of effect.changes)
+			{
+				if (change.key != searchKey)
+					continue;
+
+				//ToDo: auch die Dauer auswerten
+
+				const changeValue = this.getAsNumber(change.value)
+				switch (change.mode)
+				{
+					case 1:
+						bonus *= changeValue;
+						break;
+					case 2:
+						bonus += changeValue;
+						break;
+					case 3:
+						bonus = Math.min(changeValue, bonus);
+						break;
+					case 4:
+						bonus = Math.max(changeValue, bonus);
+						break;
+					case 5:
+						bonus = changeValue;
+						break;
+					default:
+						//nix
+						break;
+				}
+			}
+		}
+		return bonus;
 	}
 }
