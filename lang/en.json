@@ -2817,6 +2817,8 @@
 	"SPACE1889.NotInRange": "You must stand next to the target to attack it without a ranged weapon",
 	"SPACE1889.OutOfCloseCombatRange": "At least one of the targets is out of melee range. You must be standing next to the targets to be able to attack them without a ranged weapon",
 	"SPACE1889.OutOfRange": "out of range",
+	"SPACE1889.NoParticipantOfTheEncounter": "{name} is not a participant of the encounter",
+	"SPACE1889.EncounterNotStartet": "The encounter has not been started yet. Attacks are only possible in an ongoing encounter or without an encounter at all",
 	"SPACE1889.ChatDistanceMod": "Distance modifier: {mod}",
 	"SPACE1889.ChatModifier": "Modifier: {mod}",
 	"SPACE1889.ChatMultiAttackDefenseModifier": "Multi-attack defense modifier: {mod}",

@@ -2817,6 +2817,8 @@
 	"SPACE1889.NotInRange": "Du musst neben dem Ziel stehen, um es ohne Fernkampfwaffe anzugreifen",
 	"SPACE1889.OutOfCloseCombatRange": "Mindestens eins der Ziele ist außerhalb der Nahkampfreichweite. Du musst neben den Zielen stehen, um sie ohne Fernkampfwaffe anzugreifen zu können",
 	"SPACE1889.OutOfRange": "außerhalb der Reichweite",
+	"SPACE1889.NoParticipantOfTheEncounter": "{name} ist kein Teilnehmer der Begegnung",
+	"SPACE1889.EncounterNotStartet": "Die Begegnung wurde noch nicht gestartet. Angriffe sind nur in einer laufenden Begegnung oder ganz ohne Begegnung möglich",
 	"SPACE1889.ChatDistanceMod": "Entfernungsmodifikator: {mod}",
 	"SPACE1889.ChatModifier": "Modifikator: {mod}",
 	"SPACE1889.ChatMultiAttackDefenseModifier": "Mehrfachangriffsverteidigungsmodifikator: {mod}",

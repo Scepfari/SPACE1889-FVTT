@@ -30,6 +30,9 @@ export default class SPACE1889RollHelper
 	{
 		if (item.type == "weapon" || item.isAttackTalent())
 		{
+			if (!SPACE1889Combat.IsActorParticipantOfTheActiveEncounter(actor, true))
+				return;
+
 			const targetInfo = SPACE1889Helper.getCombatSupportTargetInfo();
 			if (targetInfo.combatSupport && (targetInfo.targets == 0 || targetInfo.isDeadCount > 0))
 			{
@@ -2039,7 +2042,7 @@ export default class SPACE1889RollHelper
 
 	static async logAttack(actor, titelInfo, tokenToUse = undefined)
 	{
-		let attackInfo = "";
+		let attackInfo = titelInfo;
 		const token = tokenToUse ? tokenToUse : (SPACE1889Combat.getCombatToken(actor) || SPACE1889Combat.getToken(actor));
 		if (token)
 		{

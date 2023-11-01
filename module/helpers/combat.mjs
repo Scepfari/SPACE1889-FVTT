@@ -176,18 +176,24 @@ export default class SPACE1889Combat
 
 	static getCombatToken(actor)
 	{
+		if (!game.combat)
+			return undefined;
+
 		let token = undefined;
-		if (actor?.parent)
+		if (actor.isToken && actor.token)
 		{
-			const combatant = game.combat.combatants.find((e) => e.tokenId == actor.parent?.id);
+			const combatant = game.combat?.combatants.find((e) => e.tokenId == actor.token.id);
 			if (combatant)
 				return actor.parent;
 		}
 
-		const combatant = game.combat.combatants.find(e => e.actorId == actor?.id);
-		if (combatant)
+		if (actor.type == 'character')
 		{
-			token = game.scenes.get(combatant.sceneId).tokens.find(e => e.id == combatant.tokenId);
+			const combatant = game.combat?.combatants.find(e => e.actorId == actor?.id);
+			if (combatant)
+			{
+				token = game.scenes.get(combatant.sceneId).tokens.find(e => e.id == combatant.tokenId);
+			}
 		}
 		return token;
 	}
@@ -308,8 +314,6 @@ export default class SPACE1889Combat
 		{
 			const target = game.user.targets.find(e => e.id == targetId);
 			let distanceInfo = DistanceMeasuring.getDistanceInfo(token, target.document, isCloseCombatWeapon);
-			//let targetDistance = distanceInfo.distance;
-			//let distanceString = targetDistance.toFixed(2).toString() + theDistanceInfo.unit;
 			if (isCloseCombatWeapon && !distanceInfo.isCloseCombatRange)
 				++outOfRange;
 		}
@@ -325,13 +329,32 @@ export default class SPACE1889Combat
 		return true;
 	}
 
+	static IsActorParticipantOfTheActiveEncounter(actor, notify)
+	{
+		if (game.combat == null)
+			return true;
+
+		if (game.combat.round == 0)
+		{
+			ui.notifications.info(game.i18n.localize("SPACE1889.EncounterNotStartet"));
+			return false;
+		}
+
+		const isMember = this.getCombatToken(actor) != undefined;
+		if (!isMember && notify)
+		{
+			const token = this.getToken(actor);
+			const name = token ? token.name : actor.name;
+			ui.notifications.info(game.i18n.format("SPACE1889.NoParticipantOfTheEncounter", { name : name }));
+		}
+		return isMember;
+	}
 
 	static testAttackDialog(wantedWeapon = undefined)
 	{
 		// ToDo: 
 
 		// Ein Ziel Angriffe ausgrauen wenn mehr als ein Ziel ausgewählt ist?? 
-		// Range Check für Nah und Fernkampfangriffe, geht das überhaupt
 
 		const controlledToken = SPACE1889Helper.getControlledTokenDocument();
 		if (controlledToken == undefined)
@@ -714,7 +737,6 @@ export default class SPACE1889Combat
 				ui.notifications.info(useWeaponInfo.chatInfo);
 		}
 	}
-
 }
 
 
