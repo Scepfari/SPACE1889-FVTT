@@ -14,6 +14,8 @@ import { Space1889Tour } from "./tours/space1889_tour.mjs";
 import SPACE1889Hotbar from "./ui/hotbar.mjs"
 import SPACE1889Helper from "./helpers/helper.mjs";
 import SPACE1889RollHelper from "./helpers/roll-helper.mjs";
+import SPACE1889Combat from "./helpers/combat.mjs";
+import DistanceMeasuring from "./helpers/distanceMeasuring.mjs";
 import { Space1889Combat, Space1889Combatant } from "./helpers/combatTracker.mjs";
 import TurnMarker from "./helpers/turnMarker.mjs";
 import { registerGetSceneControlButtonsHook } from "./ui/controls.mjs";
@@ -35,6 +37,9 @@ Hooks.once('init', async function() {
 		rollItemMacro,
 		config: SPACE1889,
 		translation: Space1889Translation,
+		helper: SPACE1889Helper,
+		distanceMeasuring: DistanceMeasuring,
+		combat: SPACE1889Combat,
 	};
 
 	// Add custom constants for configuration.
@@ -245,6 +250,11 @@ Hooks.on("renderChatMessage", (app, html, msg) =>
 			autoDefenceButton.remove();
 	}
 
+});
+
+Hooks.on("canvasInit", function ()
+{
+	SquareGrid.prototype.measureDistances = DistanceMeasuring.measureDistances;
 });
 
 Hooks.on("canvasReady", function ()

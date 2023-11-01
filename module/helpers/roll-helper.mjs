@@ -1,4 +1,5 @@
 import SPACE1889Helper from "../helpers/helper.mjs";
+import SPACE1889Combat from "../helpers/combat.mjs";
 import DistanceMeasuring from "../helpers/distanceMeasuring.mjs"
 
 export default class SPACE1889RollHelper
@@ -29,12 +30,15 @@ export default class SPACE1889RollHelper
 	{
 		if (item.type == "weapon" || item.isAttackTalent())
 		{
-			const targetInfo = SPACE1889Helper.getCombatSupportTargetInfo()
-			if (targetInfo.combatSupport && (targetInfo.noTarget || targetInfo.isDead))
+			const targetInfo = SPACE1889Helper.getCombatSupportTargetInfo();
+			if (targetInfo.combatSupport && (targetInfo.targets == 0 || targetInfo.isDeadCount > 0))
 			{
 				this.reallyAttackDialog(item, actor, dieCount, showDialog, targetInfo);
 				return;
 			}
+
+			if (!SPACE1889Combat.isTargetInRange(actor, item))
+				return;
 		}
 
 		if (item.type == 'talent')
@@ -45,7 +49,10 @@ export default class SPACE1889RollHelper
 
 	static reallyAttackDialog(item, actor, dieCount, showDialog, info)
 	{
-		const text = info.noTarget ? game.i18n.localize("SPACE1889.NoTarget") : game.i18n.localize("SPACE1889.DeadTarget");
+		let text = info.targets == 0 ? game.i18n.localize("SPACE1889.NoTarget") : game.i18n.localize("SPACE1889.DeadTarget");
+		if (info.targets > 1 && info.isDeadCount >= 1)
+			text = game.i18n.format("SPACE1889.DeadTargets", { count: info.targets, dead: info.isDeadCount });
+
 		const titelInfo = game.i18n.localize("SPACE1889.DoAttack");
 		let dialogue = new Dialog(
 			{
@@ -76,7 +83,6 @@ export default class SPACE1889RollHelper
 				SPACE1889RollHelper.rollSpecial(item, actor, dieCount, showDialog);
 		}
 	}
-
 
 	static getDieCount(item, actor)
 	{
@@ -171,9 +177,17 @@ export default class SPACE1889RollHelper
 	*/
 	static rollSpecial(item, actor, dieCount, showDialog)
 	{
-
 		if (item.type == "weapon" || item.type == "skill" || item.type == "specialization")
 		{
+			if (item.type == "weapon" && showDialog && (actor.type == "character" || actor.type == "npc"))
+			{
+				if (!this.canActAndUseWeapon(item, actor))
+					return;
+
+				SPACE1889Combat.AttackDialog(actor, item);
+				return;
+			}
+
 			let attackString = "";
 			if (item.type == "weapon")
 			{
@@ -277,9 +291,36 @@ export default class SPACE1889RollHelper
 			ui.notifications.info(game.i18n.localize("SPACE1889.EffectProneInfo"));
 			return true;
 		}
+		else if (statusIds.findIndex(element => element == "totalDefense") >= 0)
+		{
+			ui.notifications.info(game.i18n.localize("SPACE1889.EffectTotalDefenseInfo"));
+			return true;
+		}
 
 		return false;
 	}
+
+	static canActAndUseWeapon(item, actor)
+	{
+		if (this.canNotAttack(actor, true))
+			return false;
+
+		const isWeapon = item.type == "weapon";
+
+		if (isWeapon && !SPACE1889Helper.isWeaponReady(item, actor))
+		{
+			ui.notifications.info(game.i18n.format("SPACE1889.WeaponCanNotUsedIsNotReady", { weapon: item.name }));
+			return false;
+		}
+
+		if (isWeapon && !SPACE1889Helper.canDoUseWeapon(item, actor))
+		{
+			ui.notifications.info(game.i18n.localize("SPACE1889.AmmunitionCanNotFireOutOfAmmo"));
+			return false;
+		}
+		return true;
+	}
+
 
 	/**
 	 *
@@ -291,22 +332,10 @@ export default class SPACE1889RollHelper
 	*/
 	static async rollSubSpecial(item, actor, dieCount, showDialog, titelInfo, withExtraInfo = false)
 	{
-		if (this.canNotAttack(actor, true))
+		if (!this.canActAndUseWeapon(item, actor))
 			return;
 
 		const isWeapon = item.type == "weapon";
-
-		if (isWeapon && !SPACE1889Helper.isWeaponReady(item, actor))
-		{
-			ui.notifications.info(game.i18n.format("SPACE1889.WeaponCanNotUsedIsNotReady", { weapon: item.name }));
-			return;
-		}
-
-		if (isWeapon && !SPACE1889Helper.canDoUseWeapon(item, actor))
-		{
-			ui.notifications.info(game.i18n.localize("SPACE1889.AmmunitionCanNotFireOutOfAmmo"));
-			return;
-		}
 
 		const extraInfo = withExtraInfo ? game.i18n.localize(item.system.infoLangId) : "";
 		let toolTipInfo = "";
@@ -324,7 +353,6 @@ export default class SPACE1889RollHelper
 			let controlledToken = SPACE1889Helper.getControlledTokenDocument();
 			if (actor._id == controlledToken?.actorId)
 			{
-				let distanceInfo = DistanceMeasuring.getDistanceInfo(controlledToken, game.user.targets.first().document);
 				let isRangedCombat = false;
 				if (isWeapon)
 				{
@@ -336,20 +364,15 @@ export default class SPACE1889RollHelper
 				else if (talentWeapon)
 					isRangedCombat = talentWeapon.isRangeWeapon;
 
-				const closeCombatRange = 1.5;
-				if (!isRangedCombat && distanceInfo.distance > closeCombatRange)
-				{
-					if (distanceInfo.xGridDistance > 1.0 || distanceInfo.yGridDistance > 1.0)
-					{
-						ui.notifications.info(game.i18n.localize("SPACE1889.NotInRange"));
-						return;
-					}
-				}
-				if (distanceInfo.distance > closeCombatRange && DistanceMeasuring.getGridWorldSize() <= closeCombatRange &&
-					distanceInfo.xGridDistance <= 1 && distanceInfo.yGridDistance <= 1)
-					distanceInfo.distance = closeCombatRange;
+				let distanceInfo = DistanceMeasuring.getDistanceInfo(controlledToken, game.user.targets.first().document, !isRangedCombat);
 
-				defaultMod = isRangedCombat ? SPACE1889Helper.getDistancePenalty(item, distanceInfo.distance, actor) : 0;
+				if (!isRangedCombat && !distanceInfo.isCloseCombatRange)
+				{
+					ui.notifications.info(game.i18n.localize("SPACE1889.NotInRange"));
+					return;
+				}
+
+				defaultMod = isRangedCombat ? SPACE1889Helper.getDistancePenalty(item, distanceInfo.distance) : 0;
 				dieCount += defaultMod;
 				if (defaultMod != 0)
 					toolTipInfo = game.i18n.format("SPACE1889.ChatDistanceMod", { mod: SPACE1889Helper.getSignedStringFromNumber(defaultMod) });
@@ -394,15 +417,22 @@ export default class SPACE1889RollHelper
 				let anzahl = input ? parseInt(input) : 0;
 				toolTipInfo = anzahl == 0 ? "" : game.i18n.format("SPACE1889.ChatModifier", { mod: SPACE1889Helper.getSignedStringFromNumber(anzahl) }); 
 				anzahl += diceCount;
-				const useWeaponChatInfo = await SPACE1889Helper.useWeapon(item, actor);
-				const chatData = await getChatData(anzahl, useWeaponChatInfo, chatoption);
+				const useWeaponInfo = await SPACE1889Helper.useWeapon(item, actor);
+				if (useWeaponInfo.used)
+					titelInfo = await SPACE1889RollHelper.logAttack(actor, titelInfo);
+
+				const chatData = await SPACE1889RollHelper.getChatDataRollSubSpecial(actor, item, anzahl, [targetId], useWeaponInfo.chatInfo, titelInfo, toolTipInfo, extraInfo, isAttackTalent, chatoption);
+
 				ChatMessage.create(chatData, {});
 			}
 		}
 		else
 		{
-			const useWeaponChatInfo = await SPACE1889Helper.useWeapon(item, actor);
-			const chatData = await getChatData(dieCount, useWeaponChatInfo);
+			const useWeaponInfo = await SPACE1889Helper.useWeapon(item, actor);
+			if (useWeaponInfo.used)
+				titelInfo = await SPACE1889RollHelper.logAttack(actor, titelInfo);
+
+			const chatData = await SPACE1889RollHelper.getChatDataRollSubSpecial(actor, item, dieCount, [targetId], useWeaponInfo.chatInfo, titelInfo, toolTipInfo, extraInfo, isAttackTalent);
 			ChatMessage.create(chatData, {});
 		}
 
@@ -500,6 +530,115 @@ export default class SPACE1889RollHelper
 			};
 			return chatData;
 		}
+	}
+
+	static async getChatDataRollSubSpecial(actor, item, wurfelAnzahl, targetIds, useWeaponChatInfo, titelInfo, toolTipInfo, extraInfo="", isAttackTalent, chatOption="public")
+	{
+		const rollWithHtml = await SPACE1889RollHelper.createInlineRollWithHtml(Math.max(0, wurfelAnzahl), titelInfo, toolTipInfo);
+		const addAutoDefense = game.settings.get("space1889", "combatSupport") && (item.type == 'weapon' || isAttackTalent);
+		let weapon = undefined;
+		let weaponSkill = "";
+		let weaponDamageType = "";
+		let effect = "none";
+		let effectDurationCT = 0;
+		let effectOnly = false;
+		if (item.type == "weapon")
+		{
+			weapon = item;
+			weaponSkill = weapon.system.skillId;
+			weaponDamageType = weapon.system.ammunition.damageType ?? weapon.system.damageType;
+			effect = weapon.system.effect;
+			effectDurationCT = weapon.system.effectDurationCombatTurns;
+			effectOnly = weapon.system.effectOnly;
+		}
+
+		let abbrDamageType = item.system.damageTypeDisplay ? "(" + item.system.damageTypeDisplay + ")" : "";
+
+		let messageContent = `<div><h2>${item.system.label} ${abbrDamageType}</h2></div>`;
+
+		if (item.system.ammunition?.name)
+			messageContent += `<small>${item.system.ammunition.name}</small><br>`;
+
+		let reducedDefense = "";
+		let areaDamage = "0";
+		if (item.system.isAreaDamage && actor.type != 'vehicle')
+		{
+			messageContent += `${game.i18n.localize("SPACE1889.AreaDamageWeaponUse")} <br>`;
+			reducedDefense = "onlyActive";
+			areaDamage = item.system.damage;
+		}
+		if (isAttackTalent)
+		{
+			reducedDefense = item.getDefenceTypeAgainstThisTalant();
+			weapon = SPACE1889RollHelper.getWeaponFromTalent(actor, item);
+			messageContent += `<small>${weapon ? weapon.name : game.i18n.localize("SPACE1889.SkillWaffenlos")}</small><br>`;
+			weaponSkill = weapon ? weapon.system.skillId : "waffenlos";
+			weaponDamageType = weapon ? (weapon.system.ammunition.damageType ?? weapon.system.damageType) : "nonLethal";
+			if (weapon && weapon.system.effect != "none")
+			{
+				effect = weapon.system.effect;
+				effectDurationCT = weapon.system.effectDurationCombatTurns;
+				effectOnly = weapon.system.effectOnly;
+			}
+			if (reducedDefense == "onlyActiveParalyse")
+			{
+				weaponDamageType = "paralyse";
+			}
+		}
+
+		if (extraInfo.length > 0)
+			messageContent += `${extraInfo} <br>`;
+		if (useWeaponChatInfo != "")
+			messageContent += `${useWeaponChatInfo} <br>`;
+		messageContent += `${rollWithHtml.html} <br>`;
+
+		const speaker = ChatMessage.getSpeaker({ actor: actor });
+
+		if (addAutoDefense && targetIds && targetIds.length > 0)
+		{
+			for (const targetId of targetIds)
+			{
+				let buttonToolTip = "";
+				const targetToken = game.user.targets.find(e => e.id == targetId);
+				if (targetToken)
+					buttonToolTip = `title="${targetToken.name}"`;
+				let buttonText = "";
+				if (targetIds.length > 1)
+					buttonText += targetToken.name.length <= 14 ? targetToken.name : "..." + targetToken.name.slice(-12);
+
+				buttonText += buttonText.length > 0 ? ": " : "";
+				buttonText += game.i18n.localize("SPACE1889.AutoDefense");
+
+				messageContent += `<button class="autoDefence chatButton" ${buttonToolTip} data-action="defence" data-actor-id="${actor._id}" data-actor-token-id="${speaker.token}" data-target-id="${targetId}" data-attack-name="${item.name}" data-attack-successes="${rollWithHtml.roll.total}" data-damage-type="${weaponDamageType}" data-skill-id="${weaponSkill}" data-reduced-defense="${reducedDefense}" data-area-damage="${areaDamage}" data-effect="${effect}" data-effect-duration-combat-turns="${effectDurationCT}" data-effect-only="${effectOnly}">${buttonText}</button>`;
+			}
+		}
+
+		let ids = this.getChatIds(chatOption);
+
+		let chatData =
+		{
+			user: game.user.id,
+			speaker: speaker,
+			whisper: ids,
+			content: messageContent
+		};
+		return chatData;
+	}
+
+	static getChatIds(chatOption)
+	{
+		let ids = [];
+		if (chatOption == "public")
+			return ids;
+
+		const gmId = SPACE1889Helper.getGmId();
+		const userId = game.user.id;
+		if (chatOption == "selfAndGm")
+			ids = gmId != userId ? [gmId, userId] : [userId];
+		else if (chatOption == "self")
+			ids = [userId];
+
+		return ids;
 	}
 
 	/**
@@ -1881,4 +2020,37 @@ export default class SPACE1889RollHelper
 			return;
 		await combatant.setFlag("space1889", "defenseCount", defenseCount + 1);
 	}
+
+	static getAttackCount(tokenId)
+	{
+		let attackCount = game.combat?.combatants?.find(c => c.tokenId == tokenId)?.getFlag("space1889", "attackCount") || 0;
+		return attackCount;
+	}
+
+	static async incrementAttackCount(tokenId)
+	{
+		const combatant = game.combat?.combatants?.find(c => c.tokenId == tokenId);
+		if (!combatant)
+			return;
+
+		let attackCount = combatant.getFlag("space1889", "attackCount") || 0;
+		await combatant.setFlag("space1889", "attackCount", attackCount + 1);
+	}
+
+	static async logAttack(actor, titelInfo, tokenToUse = undefined)
+	{
+		let attackInfo = "";
+		const token = tokenToUse ? tokenToUse : (SPACE1889Combat.getCombatToken(actor) || SPACE1889Combat.getToken(actor));
+		if (token)
+		{
+			await SPACE1889RollHelper.incrementAttackCount(token.id);
+			const attackCount = SPACE1889RollHelper.getAttackCount(token.id);
+			if (attackCount > 1 && game.combat)
+			{
+				attackInfo = game.i18n.format("SPACE1889.AttackCountInCombatRound", { count: attackCount, round: game.combat.round }) + "<br>" + titelInfo;
+			}
+		}
+		return attackInfo;
+	}
+
 }

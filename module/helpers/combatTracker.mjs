@@ -19,11 +19,40 @@ export class Space1889Combat extends Combat
 
 	async nextRound()
 	{
+		const dummy = await super.nextRound();
 		for (let k of this.turns)
 		{
-			await k.setFlag("space1889", "defenseCount", 0)
+			await k.setFlag("space1889", "defenseCount", 0);
+			await k.setFlag("space1889", "attackCount", 0);
+			await this.removeNoActiveDefence(k);
 		}
-		return await super.nextRound();
+		return dummy;
+	}
+
+	async removeNoActiveDefence(combatant)
+	{
+		if (!combatant)
+			return;
+
+		const actor = game.scenes.get(combatant.sceneId)?.tokens?.get(combatant.tokenId)?.actor;
+		if (actor)
+		{
+			let effectsToRemove = [];
+			for (let effect of actor.effects)
+			{
+				if (!effect.duration || !effect.duration.startRound || !effect.duration.rounds)
+					continue;
+
+				if ((effect.duration.startRound + effect.duration.rounds <= this.current.round) &&
+					effect.flags?.core?.statusId == "noActiveDefense")
+				{
+					effectsToRemove.push(effect._id);
+				}
+
+			}
+			if (effectsToRemove.length > 0)
+				await actor.deleteEmbeddedDocuments("ActiveEffect", effectsToRemove);
+		}
 	}
 
 	async checkEffectLifeTime()

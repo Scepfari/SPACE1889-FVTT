@@ -769,7 +769,9 @@ SPACE1889.effects = {
 	"fear": "EFFECT.StatusFear",
 	"burning": "EFFECT.StatusBurning",
 	"frozen": "EFFECT.StatusFrozen",
-	"dead": "EFFECT.StatusDead"
+	"dead": "EFFECT.StatusDead",
+	"noActiveDefense": "SPACE1889.EffectNoActiveDefence",
+	"totalDefense": "SPACE1889.TotalDefense",
 }
 
 SPACE1889.effectIcons = {
@@ -780,7 +782,9 @@ SPACE1889.effectIcons = {
 	"fear": "icons/svg/terror.svg",
 	"burning": "icons/svg/fire.svg",
 	"frozen": "icons/svg/frozen.svg",
-	"dead": "icons/svg/skull.svg"
+	"dead": "icons/svg/skull.svg",
+	"noActiveDefense": "systems/space1889/icons/svg/no-active-defense.svg",
+	"totalDefense": "systems/space1889/icons/svg/total-defense.svg"
 }
 
 SPACE1889.vehicleManoeuvres = {

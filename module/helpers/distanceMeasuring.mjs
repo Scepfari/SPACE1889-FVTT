@@ -1,6 +1,22 @@
 export default class DistanceMeasuring
 {
 
+static measureDistances(segments, options = {})
+{
+	if (!options.gridSpaces)
+		return BaseGrid.prototype.measureDistances.call(this, segments, options);
+
+	const gridPxSize = canvas.dimensions.size;
+
+	return segments.map(s =>
+	{
+		let r = s.ray;
+		const gridDistance = r.distance / gridPxSize;
+		const worldDistance = gridDistance * canvas.dimensions.distance;
+		return worldDistance;
+	});
+}
+
 /**
  * 
  * @param {object} start //start.x, start.y
@@ -10,7 +26,7 @@ export default class DistanceMeasuring
 	static getPixelDistance(start, end)
 	{
 		let ray = new Ray(start, end);
-		return ray.distance
+		return ray.distance;
 	}
 
 	
@@ -69,8 +85,13 @@ export default class DistanceMeasuring
 		return distance;
 	}
 
-	static getDistanceInfo(sourceToken, target)
+	static getDistanceInfo(sourceToken, target, isCloseCombatCheck = true)
 	{
+		if (sourceToken == undefined || target == undefined)
+		{
+			return { distance: (isCloseCombatCheck ? this.getCloseCombatRange() : 1.6), unit: canvas.scene.grid.units, xGridDistance: 0, yGridDistance: 0, isCloseCombatRange: isCloseCombatCheck };
+		}
+
 		const targetTile = this.getNearestTileInToken(target, sourceToken);
 		if (targetTile == undefined)
 			return Number.POSITIVE_INFINITY;
@@ -80,8 +101,36 @@ export default class DistanceMeasuring
 		const deltaYinGridTiles = ray.dy / this.getGridPixelSize();
 
 		const tileDistance = targetTile.distance / this.getGridPixelSize();
-		const distance = tileDistance * this.getGridWorldSize();
+		let distance = tileDistance * this.getGridWorldSize();
+		const isCloseCombatRange = this.isCloseCombatRange(distance, deltaXinGridTiles, deltaYinGridTiles, isCloseCombatCheck);
+
+		if (isCloseCombatRange && distance > this.getCloseCombatRange())
+			distance = this.getCloseCombatRange();
+
+		return { distance: distance, unit: canvas.scene.grid.units, xGridDistance: Math.abs(deltaXinGridTiles), yGridDistance: Math.abs(deltaYinGridTiles), isCloseCombatRange: isCloseCombatRange }
+	}
+
+	static isCloseCombatRange(distance, xGridTileDistance, yGridTileDistance, isCloseCombat)
+	{
+		const closeCombatRange = this.getCloseCombatRange();
+		let isCloseCombatRange = distance <= closeCombatRange;
 		
-		return { distance: distance, unit: canvas.scene.grid.units, xGridDistance: Math.abs(deltaXinGridTiles), yGridDistance: Math.abs(deltaYinGridTiles) }
+		if (!isCloseCombatRange)
+		{
+			if ((isCloseCombat && this.getGridWorldSize() > closeCombatRange) || (isCloseCombat && this.getGridWorldSize() <= closeCombatRange))
+				isCloseCombatRange = this.isNeighborTile(xGridTileDistance, yGridTileDistance);
+		}
+
+		return isCloseCombatRange;
+	}
+
+	static isNeighborTile(xGridTileDistance, yGridTileDistance)
+	{
+		return Math.abs(xGridTileDistance) <= 1.0 && Math.abs(yGridTileDistance) <= 1.0
+	}
+
+	static getCloseCombatRange()
+	{
+		return 1.5;
 	}
 }

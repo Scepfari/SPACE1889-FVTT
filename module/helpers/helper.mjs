@@ -615,7 +615,7 @@ export default class SPACE1889Helper
 		return undefined;
 	}
 
-	static getDistancePenalty(item, distance, actor = undefined)
+	static getDistancePenalty(item, distance)
 	{
 		if (item.type != "weapon" || !item.system.isRangeWeapon)
 			return 0;
@@ -775,7 +775,7 @@ export default class SPACE1889Helper
 		});
 	}
 
-	static getWeaponInHands(actor)
+	static getWeaponIdsInHands(actor)
 	{
 		let primaryHand = [];
 		let offHand = [];
@@ -794,10 +794,15 @@ export default class SPACE1889Helper
 		return { primary: primaryHand, off: offHand };
 	}
 
+	static getWeapon(actor, weaponId)
+	{
+		return actor?.system?.weapons?.find(e => e.id == weaponId);
+	}
+
 	static getNextValidHandPosition(weapon, actor, backwardDirection)
 	{
 		const currentHand = weapon.system.usedHands;
-		const weaponInHands = this.getWeaponInHands(actor);
+		const weaponInHands = this.getWeaponIdsInHands(actor);
 
 		const isPrimaryPossible = weaponInHands.primary.length == 0;
 		const isOffPossible = weaponInHands.off.length == 0;
@@ -1009,61 +1014,69 @@ export default class SPACE1889Helper
 		return true;
 	}
 
-	static canDoUseWeapon(weapon, actor)
+	static canDoUseWeapon(weapon, actor, roundsToUse = 1)
 	{
 		if (!weapon.system.isRangeWeapon || actor.type == "vehicle")
 			return true;
 
-		if (weapon.system.ammunition.remainingRounds > 0)
+		if (weapon.system.ammunition.remainingRounds >= roundsToUse)
 			return true;
 
-		if (weapon.system.ammunition.autoReloadRate == 0)
+		const isInstantReload = SPACE1889Helper.getTalentLevel(actor, "schnellladen") > 0
+
+		if (weapon.system.ammunition.autoReloadRate == 0 && !isInstantReload)
 			return false;
+
+		const neededReloadRounds = (roundsToUse - weapon.system.ammunition.remainingRounds);
 
 		let currentAmmo = weapon.system.ammunition.ammos.find(x => x._id == weapon.system.ammunition.currentItemId);
-		if (!currentAmmo || currentAmmo.system.quantity <= 0)
+		if (!currentAmmo || currentAmmo.system.quantity < 0 ||
+			(currentAmmo.system.quantity < neededReloadRounds && currentAmmo.system.capacity == 1))
 			return false;
 
-		const isInstantReload = SPACE1889Helper.getTalentLevel(actor, "schnellladen") > 0
-		let autoReloadNeededLoadActions = Math.round(1 / ((isInstantReload ? 2 : 1) * weapon.system.ammunition.autoReloadRate)) - 1;	
-		if (weapon.system.ammunition.usedLoadingActions >= autoReloadNeededLoadActions)
+		if (weapon.system.ammunition.autoReloadRate > 0)
+		{
+			let autoReloadNeededLoadActions = Math.round(1 / ((isInstantReload ? 2 : 1) * weapon.system.ammunition.autoReloadRate)) - 1;
+			if (weapon.system.ammunition.usedLoadingActions >= autoReloadNeededLoadActions)
+				return true;
+		}
+		else if (weapon.system.capacityType == "internal" || weapon.system.capacityType == "revolver")
+		{
+			let loadRounds = Math.min(neededReloadRounds, currentAmmo.system.quantity);
+			if (game.combat?.started)
+				loadRounds = Math.min(loadRounds, actor.system.abilities.dex.total);
+
+			return (roundsToUse <= weapon.system.ammunition.remainingRounds + loadRounds)
+		}
+		else if (weapon.system.capacityType != "default")
 			return true;
 
 		return false;
 	}
 
-	static async useWeapon(weapon, actor)
+	static async useWeapon(weapon, actor, roundsToUse = 1)
 	{
-		if (!weapon.system.isRangeWeapon || actor =="vehicle")
-			return "";
+		if (!weapon.system.isRangeWeapon || actor == "vehicle")
+			return {used: true, chatInfo: ""};
 
-		if (weapon.system.ammunition.autoReloadRate == 0)
+		if (weapon.system.ammunition.remainingRounds >= roundsToUse)
 		{
-			if (weapon.system.ammunition.remainingRounds <= 0)
-				return game.i18n.localize("SPACE1889.AmmunitionCanNotFireOutOfAmmo");
-
-			await actor.updateEmbeddedDocuments("Item", [{ _id: weapon._id, "system.ammunition.remainingRounds": weapon.system.ammunition.remainingRounds - 1 }]);
-			return "";
+			await actor.updateEmbeddedDocuments("Item", [{ _id: weapon._id, "system.ammunition.remainingRounds": weapon.system.ammunition.remainingRounds - roundsToUse }]);
+			return {used: true, chatInfo: ""};
 		}
 
-		if (weapon.system.ammunition.remainingRounds > 0)
+		let reloadInfo = "";
+		if (SPACE1889Helper.canDoUseWeapon(weapon, actor, roundsToUse))
 		{
-			await actor.updateEmbeddedDocuments("Item", [{ _id: weapon._id, "system.ammunition.remainingRounds": weapon.system.ammunition.remainingRounds - 1 }]);
-			return "";
-		}
-
-
-		if (SPACE1889Helper.canDoUseWeapon(weapon, actor))
-		{
-			const chatInfo = await SPACE1889Helper.reloadWeapon(weapon, actor, true);
-			if (weapon.system.ammunition.remainingRounds > 0)
+			reloadInfo = await SPACE1889Helper.reloadWeapon(weapon, actor, true);
+			if (weapon.system.ammunition.remainingRounds >= roundsToUse)
 			{
-				await actor.updateEmbeddedDocuments("Item", [{ _id: weapon._id, "system.ammunition.remainingRounds": weapon.system.ammunition.remainingRounds - 1 }]);
-				return chatInfo;
+				await actor.updateEmbeddedDocuments("Item", [{ _id: weapon._id, "system.ammunition.remainingRounds": weapon.system.ammunition.remainingRounds - roundsToUse }]);
+				return { used: true, chatInfo: reloadInfo };
 			}
 		}
 
-		return 	game.i18n.localize("SPACE1889.AmmunitionCanNotReload");
+		return { used: false, chatInfo: (reloadInfo != "" ? reloadInfo : game.i18n.localize("SPACE1889.AmmunitionCanNotReload")) };
 	}
 
 	static getAutoReloadRate(weapon)
@@ -1586,7 +1599,7 @@ export default class SPACE1889Helper
 			if (this.hasOneOrMorePlayerOwnership(token.actor.ownership))
 				continue;
 
-			const weaponInHands = this.getWeaponInHands(token.actor);
+			const weaponInHands = this.getWeaponIdsInHands(token.actor);
 			if (weaponInHands.primary.length != 0 || weaponInHands.off.length != 0)
 			{
 				let weapon = weaponInHands.primary.length > 0 ?
@@ -1870,16 +1883,16 @@ export default class SPACE1889Helper
 
 	static getCombatSupportTargetInfo()
 	{
-		if (!game.settings.get("space1889", "combatSupport"))
-			return { combatSupport: false, noTarget: false, isDead: false};
-
-		const noTarget = game.user.targets.size == 0;
-		let isDead = false;
-		const statusIds = SPACE1889RollHelper.getActiveEffectStates(game.user.targets.first()?.actor);
-		if (statusIds.findIndex(element => element == "dead") >= 0)
-			isDead = true;
-
-		return { combatSupport: true, noTarget: noTarget, isDead: isDead };
+		const combatSupport = game.settings.get("space1889", "combatSupport");
+		const targets = game.user.targets.size;
+		let deadCount = 0;
+		for (const target of game.user.targets)
+		{
+			const statusIds = SPACE1889RollHelper.getActiveEffectStates(target?.actor);
+			if (statusIds && statusIds.findIndex(element => element == "dead") >= 0)
+				++deadCount;
+		}
+		return { combatSupport: combatSupport, targets: targets, isDeadCount: deadCount };
 	}
 
 	static isFoundryV10Running()

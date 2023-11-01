@@ -1146,7 +1146,8 @@ export class Space1889Actor extends Actor
 	HasNoActiveDefense(actor)
 	{
 		const statusIds = SPACE1889RollHelper.getActiveEffectStates(actor);
-		return statusIds.findIndex(element => element == "paralysis") >= 0;
+		return statusIds.findIndex(element => element == "paralysis") >= 0 || 
+			statusIds.findIndex(element => element == "noActiveDefense") >= 0;
 	}
 
 	CalcAndSetBlockData(actor)
