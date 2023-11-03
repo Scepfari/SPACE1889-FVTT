@@ -355,6 +355,12 @@
 	font-weight: bold;
 }
 
+.space1889 .h2input 
+{
+	font-size: 18px;
+	text-align: center;
+}
+
 .space1889.sheet.actor select {
 	height: calc(100% - 2px);
 	border: 1px solid #7a7971;

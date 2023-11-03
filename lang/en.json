@@ -3319,6 +3319,14 @@
 	"SPACE1889.AttackTypeStrafing": "Strafing",
 	"SPACE1889.AttackCountInCombatRound": "{count}. attack action in combat round {round}",
 
+	"SPACE1889.DefenseDialogDefenceProbe": "Defence probe",
+	"SPACE1889.DefenseDialogDefenseType": "defense type",
+	"SPACE1889.DefenseDialogTotalDefense": "total defense",
+	"SPACE1889.DefenseDialogSpecialDefense": "Special defensive actions",
+	"SPACE1889.DefenseDialogNomalDefense": "Default defensive actions",
+	"SPACE1889.LossOfAttackAction": "Loss of attack action",
+	"SPACE1889.DefenseDice": "Defense dice",
+
 	"SPACE1889.Warning": "Warning",
 	"SPACE1889.UnableToLoadImage": " Unable to Load Image",
 	"SPACE1889.FoundryBug8180": "<h1>Stop and pay attention!&nbsp;</h1><p><br />You have just migrated this Foundry 9 world to Foundry 10.285. In the process, all tokens not linked to the actor that differ in their items from the original actor (damage is also an item) have unfortunately been irreparably damaged by resetting all item values to their default value. See bug <a title=\"foundry issue 8180\" href=\"https://github.com/foundryvtt/foundryvtt/issues/8180\" target=\"_blank\" rel=\"noopener\">https://github.com/foundryvtt/foundryvtt/issues/8180</a></p><p>&nbsp;</p><h3>You have two options to avoid the migration bug:</h3><ol><li>Switch back to Foundry 9.280, restore the backup and wait for the next Foundry release where bug 8180 will be fixed.</li><li><ol style=\"list-style-type: lower-latin;\"><li>Install Foundry version 10.284 and restore the backup</li><li>Migrate all Space worlds from V9 to 10.284 (the Space 1889 system will automatically touch the tokens to avoid the bug-related data loss when updating to 10.285 later)</li><li>Install Foundry version 10.285 and migrate the worlds from 10.284 to 10.285</li><li>Have fun with Foundry 10</li></ol></li></ol><p>&nbsp;</p>",

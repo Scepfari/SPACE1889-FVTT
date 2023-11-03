@@ -366,6 +366,14 @@ export default class SPACE1889Combat
 
 	}
 
+	static #getHtmlRollOptions()
+	{
+		let options = '<option value="selfAndGm" selected="selected">' + game.i18n.localize("CHAT.RollPrivate") + '</option>';
+		options += '<option value="self" selected="selected">' + game.i18n.localize("CHAT.RollSelf") + '</option>';
+		options += '<option value="public" selected="selected">' + game.i18n.localize("CHAT.RollPublic") + '</option>';
+		return options;
+	}
+
 	static AttackDialog(actor, wantedWeapon = undefined)
 	{
 		const token = this.getCombatToken(actor) || this.getToken(actor);
@@ -464,13 +472,9 @@ export default class SPACE1889Combat
 		if (targetNames.length > 0)
 			targetNamesInBrackets = "(" + (targetNames.length > 45 ? targetNames.slice(0, 42) + "..." : targetNames) + ")";
 
-		let optionen = '<option value="selfAndGm" selected="selected">' + game.i18n.localize("CHAT.RollPrivate") + '</option>';
-		optionen += '<option value="self" selected="selected">' + game.i18n.localize("CHAT.RollSelf") + '</option>';
-		optionen += '<option value="public" selected="selected">' + game.i18n.localize("CHAT.RollPublic") + '</option>';
-
-
+		let optionen = this.#getHtmlRollOptions();
 		const modifierLabel = game.i18n.localize("SPACE1889.Modifier");
-		const labelWurf = game.i18n.localize("SPACE1889.NumberOfDice");
+		const labelWurf = game.i18n.localize("SPACE1889.AttackValue") + ": ";
 
 
 		function Recalc()
@@ -487,7 +491,7 @@ export default class SPACE1889Combat
 
 			let attributValue = baseValue + mod + distanceMod + salveBonus + vollerAngriffBonus + beidhaendigMalus + doppelschussMalus + dauerFeuerBonus + streufeuerBonus + wirbelnBonus + rundumschlagBonus;
 
-			$("#anzahlDerWuerfel")[0].value = attributValue;
+			$("#anzahlDerWuerfel")[0].value = attributValue.toString() + damageType;
 		}
 
 		function handleRender(html)
@@ -602,12 +606,13 @@ export default class SPACE1889Combat
 							<div>${modifierLabel}:</div> <input type="number" class="modInput" id="modifier" value = "0">
 						</div>
 					</li>
+					<hr>
 					<div class="space1889 sheet actor">
 						<li class="flexrow">
-							<div class="item flexrow flex-group-left resource-label">
+							<h2 class="item flexrow flex-group-left ">
 								<label for="zusammensetzung">${labelWurf}</label>
-								<input class="resource-label" id="anzahlDerWuerfel" value="10" disabled="true" visible="false">
-							</div>
+								<input class="h2input" id="anzahlDerWuerfel" value="10" disabled="true" visible="false">
+							</h2>
 						</li>
 					</div>
 					</ul>
@@ -736,6 +741,198 @@ export default class SPACE1889Combat
 			else
 				ui.notifications.info(useWeaponInfo.chatInfo);
 		}
+	}
+
+	static testDefenseDialog()
+	{
+		const controlledToken = SPACE1889Helper.getControlledTokenDocument();
+		if (controlledToken == undefined)
+		{
+			ui.notifications.info(game.i18n.localize("SPACE1889.NoTokensSelected"));
+			return;
+		}
+		this.defenseDialog(controlledToken.actor);
+	}
+
+	static defenseDialog(actor)
+	{
+		const canDoBPE = actor.type == "character" || actor.type == "npc";
+
+		let baseBlock = canDoBPE ? actor.system.block.value : 0;
+		let blockToolTip = canDoBPE ? actor.system.block.info : "";
+		const instinctiveBlock = canDoBPE ? actor.system.block.instinctive : false;
+
+		let baseEvasion = canDoBPE ? actor.system.evasion.value : 0;
+		const instinctiveEvasion = canDoBPE ? actor.system.evasion.instinctive: false;
+		let evasionToolTip = canDoBPE ? actor.system.evasion.info : "";
+
+		let baseParry = canDoBPE ? actor.system.parry.value : 0;
+		const instinctiveParry = canDoBPE ? actor.system.parry.instinctive : false;
+		let parryToolTip = canDoBPE ? actor.system.parry.info : "";
+
+		let base = actor.system.secondaries.defense.total;
+		let instinctive = true;
+
+		const activeDefense = actor.system.secondaries.defense.activeTotal;
+		const passiveDefense = actor.system.secondaries.defense.passiveTotal;
+		const totalDefense = actor.system.secondaries.defense.totalDefense;
+		const disableBlockInHtlmText = "";
+		const hideParryInHtml = "";
+		const disableParryInHtlmText = "";
+		const hideEvasionlnInHtlmText = "";
+		const disableActiveDefenseInHtlmText = "";
+
+		const modifierLabel = game.i18n.localize("SPACE1889.Modifier");
+		const labelWurf = game.i18n.localize("SPACE1889.DefenseDice") + ": ";
+		const options = this.#getHtmlRollOptions();
+
+		const lossOfAA = "(" + game.i18n.localize("SPACE1889.LossOfAttackAction") + ")";
+
+
+		function Recalc()
+		{
+			let mod = Number($("#modifier")[0].value);
+			const value = $('#normal')[0].checked ? base : 0;
+			const totalDefenseValue = $('#totalDefense')[0].checked ? totalDefense : 0;
+			const blockValue = $('#block')[0].checked ? baseBlock : 0;
+			const parryValue = $('#parry')[0].checked ? baseParry : 0;
+			const evasionValue = $('#evasion')[0].checked ? baseEvasion : 0;
+			const passiveDefenseValue = $('#passiveDefense')[0].checked ? passiveDefense : 0;
+			const activeDefenseValue = $('#activeDefense')[0].checked ? activeDefense : 0;
+
+			let attributValue = mod + value + totalDefenseValue + blockValue + parryValue + evasionValue + passiveDefenseValue + activeDefenseValue;
+
+			$("#anzahlDerWuerfel")[0].value = attributValue;
+		}
+
+		function handleRender(html)
+		{
+			html.on('change', '.normal', () =>
+			{
+				Recalc();
+			});
+
+			html.on('change', '.totalDefense', () =>
+			{
+				Recalc();
+			});
+
+			html.on('change', '.block', () =>
+			{
+				Recalc();
+			});
+
+			html.on('change', '.parry', () =>
+			{
+				Recalc();
+			});
+
+			html.on('change', '.evasion', () =>
+			{
+				Recalc();
+			});
+	
+			html.on('change', '.passiveDefense', () =>
+			{
+				Recalc();
+			});
+
+			html.on('change', '.activeDefense', () =>
+			{
+				Recalc();
+			});
+
+			html.on('change', '.modInput', () =>
+			{
+				Recalc();
+			});
+			Recalc();
+		}
+
+		let dialogue = new Dialog(
+		{
+			title: `${game.i18n.localize("SPACE1889.DefenseDialogDefenceProbe")}`,
+			content: `
+				<form >
+					<fieldset>
+						<legend>${game.i18n.localize("SPACE1889.DefenseDialogDefenseType")}</legend>
+						<fieldset>
+							<legend>${game.i18n.localize("SPACE1889.DefenseDialogNomalDefense")}</legend>
+							<input type="radio" id="normal" name="type" class="normal" value="N" checked>
+							<label for="normal">${game.i18n.localize("SPACE1889.SecondaryAttributeDef")} ${base}</label><br>
+
+							<input ${disableActiveDefenseInHtlmText} type="radio" id="activeDefense" class="activeDefense" name="type" value="B">
+							<label ${disableActiveDefenseInHtlmText} for="activeDefense">${game.i18n.localize("SPACE1889.ActiveDefense")} ${activeDefense}</label><br>
+
+							<input type="radio" id="passiveDefense" class="passiveDefense" name="type" value="DA" title="${game.i18n.localize("SPACE1889.AttackDialogFullAutofireToolTip")}">
+							<label for="passiveDefense" title="${game.i18n.localize("SPACE1889.AttackDialogFullAutofireToolTip")}">${game.i18n.localize("SPACE1889.PassiveDefense")} ${passiveDefense}</label><br>
+            
+						</fieldset>
+
+						<fieldset>
+							<legend>${game.i18n.localize("SPACE1889.DefenseDialogSpecialDefense")}</legend>
+							<input type="radio" id="totalDefense" name="type" class="totalDefense" value="V">
+							<label for="totalDefense">${game.i18n.localize("SPACE1889.TotalDefense")}: ${totalDefense} ${lossOfAA}</label><br>
+            
+							<input ${disableBlockInHtlmText} type="radio" id="block" class="block" name="type" value="B" title="${blockToolTip}">
+							<label ${disableBlockInHtlmText} for="block" title="${blockToolTip}">${game.i18n.localize("SPACE1889.Block")} ${baseBlock} ${instinctiveBlock ? "" : lossOfAA}</label><br>
+							<div ${hideParryInHtml}>
+								<input ${disableParryInHtlmText} type="radio" id="parry" class="parry" name="type" value="B" title="${parryToolTip}">
+								<label ${disableParryInHtlmText} for="parry" title="${parryToolTip}">${game.i18n.localize("SPACE1889.Parry")} ${baseParry} ${instinctiveParry ? "" : lossOfAA}</label><br>
+							</div>
+							<div ${hideEvasionlnInHtlmText}>
+								<input type="radio" id="evasion" class="evasion" name="type" value="B" title="${evasionToolTip}">
+								<label for="evasion" title="${evasionToolTip}">${game.i18n.localize("SPACE1889.Evasion")} ${baseEvasion} ${instinctiveEvasion ? "" : lossOfAA}</label><br>
+							</div>
+						</fieldset>
+
+					</fieldset>
+					<ul>
+					<li class="flexrow">
+						<div class="item flexrow flex-group-left">
+							<div>${modifierLabel}:</div>
+							<input type="number" class="modInput" id="modifier" value = "0">
+						</div>
+					</li>
+					<hr>
+					<div class="space1889 sheet actor">
+						<li class="flexrow">
+							<h2 class="item flexrow flex-group-left ">
+								<label for="zusammensetzung">${labelWurf}</label>
+								<input class="h2input" id="anzahlDerWuerfel" value="10" disabled="true" visible="false">
+							</h2>
+						</li>
+					</div>
+					</ul>
+					<hr>
+					<p><select id="choices" name="choices">${options}</select></p>
+				</form>`,
+			buttons:
+			{
+				ok:
+				{
+					icon: '',
+					label: game.i18n.localize("SPACE1889.Go"),
+					callback: (html) => theCallback(html)
+				},
+				abbruch:
+				{
+					label: game.i18n.localize("SPACE1889.Cancel"),
+					callback: () => { ui.notifications.info(game.i18n.localize("SPACE1889.CancelRoll")) },
+					icon: `<i class="fas fa-times"></i>`
+				}
+			},
+			default: "ok",
+			render: handleRender
+		});
+    
+		dialogue.render(true);
+
+		async function theCallback(html)
+		{
+			ui.notifications.info("ok gedrückt");
+		}
+
 	}
 }
 
