@@ -91,7 +91,8 @@ export const registerSystemSettings = function ()
             scope: "world",
             config: true,
             default: false,
-            type: Boolean
+			type: Boolean,
+			requiresReload: true
         });
 
     game.settings.register("space1889", "combatSupport",
