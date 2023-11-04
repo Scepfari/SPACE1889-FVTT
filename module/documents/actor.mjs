@@ -1146,8 +1146,7 @@ export class Space1889Actor extends Actor
 	HasNoActiveDefense(actor)
 	{
 		const statusIds = SPACE1889RollHelper.getActiveEffectStates(actor);
-		return statusIds.findIndex(element => element == "paralysis") >= 0 || 
-			statusIds.findIndex(element => element == "noActiveDefense") >= 0;
+		return statusIds.includes("paralysis") || statusIds.includes("noActiveDefense") || statusIds.includes("unconscious");
 	}
 
 	CalcAndSetBlockData(actor)
@@ -1167,7 +1166,6 @@ export class Space1889Actor extends Actor
 		let instinctive = false;
 		let riposte = false;
 		rating += actor.system.armorTotal.bonus;
-		rating += actor.system.secondaries.defense.bonus;
 
 		for (let item of actor.items)
 		{
@@ -1246,8 +1244,6 @@ export class Space1889Actor extends Actor
 		if (!noWeapon)
 		{
 			skillRating += actor.system.armorTotal.bonus;
-			skillRating += actor.system.secondaries.defense.bonus;
-
 
 			for (let item of actor.items)
 			{
@@ -1317,7 +1313,6 @@ export class Space1889Actor extends Actor
 		let rating = this.GetSkillRating(actor, id1, underlyingAbility1);
 		rating = Math.max(rating, this.GetSkillRating(actor, id2, underlyingAbility2));
 		rating += actor.system.armorTotal.bonus;
-		rating += actor.system.secondaries.defense.bonus;
 
 		for (let item of actor.items)
 		{
