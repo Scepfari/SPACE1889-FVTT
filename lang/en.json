@@ -3326,6 +3326,11 @@
 	"SPACE1889.DefenseDialogNomalDefense": "Default defensive actions",
 	"SPACE1889.LossOfAttackAction": "Loss of attack action",
 	"SPACE1889.DefenseDice": "Defense dice",
+	"SPACE1889.NotSupportedInFoundryV10": "Unfortunately, this function is not supported by Foundry VTT V10.To be able to use it, Foundry VTT must be updated to version 11.",
+	"SPACE1889.TalentEffectBoostNotPossible": "The talent has already reached its maximum value and cannot be increased any further, even by temporarily increasing it.",
+	"SPACE1889.NotEnoughStylePoints": "Not enough style points available for a temporary talent upgrade.",
+	"SPACE1889.TemporaryImprovement": "temporary improvement {name}",
+	"SPACE1889.EffectNotFound": "The talent has no effect with the name \"{name}\". Other talent effects can be deleted in the talent sheet.",
 
 	"SPACE1889.Warning": "Warning",
 	"SPACE1889.UnableToLoadImage": " Unable to Load Image",

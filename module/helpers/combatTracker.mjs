@@ -88,4 +88,31 @@ export class Space1889Combat extends Combat
 			}
 		}
 	}
+
+	async cleanEffectsOnCombatEnd()
+	{
+		if (!game.user.isGM)
+			return;
+
+		for (let combatant of this.combatants)
+		{
+			const token = game.scenes.get(combatant.sceneId).tokens.get(combatant.tokenId);
+
+			const actor = token?.actor;
+			if (actor)
+			{
+				let effectsToRemove = [];
+				for (let effect of actor.appliedEffects)
+				{
+					if (effect.statuses.has("noActiveDefense") || effect.statuses.has("totalDefense"))
+						effectsToRemove.push(effect._id);
+
+					if (effect.statuses.has("temporaryTalentEnhancement"))
+						effect.delete();
+				}
+				if (effectsToRemove.length > 0)
+					await actor.deleteEmbeddedDocuments("ActiveEffect", effectsToRemove);
+			}
+		}
+	}
 }

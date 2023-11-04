@@ -3326,6 +3326,11 @@
 	"SPACE1889.DefenseDialogNomalDefense": "Normale Abwehraktionen",
 	"SPACE1889.LossOfAttackAction": "Verlust der Angriffsaktion",
 	"SPACE1889.DefenseDice": "Abwehrwürfel",
+	"SPACE1889.NotSupportedInFoundryV10": "Die Funktion wird leider von Foundry VTT V10 nicht unterstützt. Um sie nutzen zu können muss auf Foundry VTT auf Version 11 aktualisiert werden.",
+	"SPACE1889.TalentEffectBoostNotPossible": "Das Talent hat schon den maximalen Wert erreicht und kann auch durch temporäre Erhöhung nicht weiter gesteigert werden.",
+	"SPACE1889.NotEnoughStylePoints": "Nicht genug Stilpunkte für eine temporäre Talentverbesserung vorhanden.",
+	"SPACE1889.TemporaryImprovement": "temporäre Verbesserung {name}",
+	"SPACE1889.EffectNotFound": "Das Talent hat keinen Effect mit dem Namen \"{name}\". Andere Talenteffekte können im Talentbogen gelöscht werden.",
 
 	"SPACE1889.Warning": "Warnung",
 	"SPACE1889.UnableToLoadImage": " Bild konnte nicht geladen werden",

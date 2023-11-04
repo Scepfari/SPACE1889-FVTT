@@ -78,6 +78,9 @@ Hooks.once('init', async function() {
 	CleanHeader.default();
 	CleanHeader.handlePopout();
 
+	if (!SPACE1889Helper.isFoundryV10Running())
+		CONFIG.ActiveEffect.legacyTransferral = false;
+
 	return retVal;
 });
 
@@ -99,7 +102,6 @@ Hooks.on("ready", async function ()
 
 	if (!SPACE1889Helper.isFoundryV10Running())
 	{
-		
 		document.documentElement.style.setProperty('--space1889-hotbar2path', 'url(../icons/backgrounds/hotbar2v11.webp)');
 		document.documentElement.style.setProperty('--space1889-hotbar2width', '631px');
 	}
@@ -278,6 +280,12 @@ Hooks.on("updateCombat", function ()
 	if (game.combat)
 		game.combat.checkEffectLifeTime();
 });
+
+Hooks.on("preDeleteCombat", function (combat, dummy, id)
+{
+	if (combat)
+		combat.cleanEffectsOnCombatEnd();
+})
 
 Hooks.on("updateToken", function (token, updates)
 {

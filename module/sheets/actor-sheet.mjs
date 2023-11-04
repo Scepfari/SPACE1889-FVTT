@@ -339,6 +339,11 @@ export class Space1889ActorSheet extends ActorSheet {
 			}
 		});
 
+		html.find('.effectBonus-click').mousedown(ev =>
+		{
+			this.#addRemoveTempTalentImprovement(ev)
+		});
+
 		html.find('.healingFactor-click').mousedown(ev =>
 		{
 			const itemId = this._getItemId(ev);
@@ -675,6 +680,57 @@ export class Space1889ActorSheet extends ActorSheet {
         const editor = new ForeignNotesEditor(this.actor.id, attr, name)
         editor.render(true)
     }
+
+	#addRemoveTempTalentImprovement(ev)
+	{
+		if (SPACE1889Helper.isFoundryV10Running())
+		{
+			ui.notifications.info(game.i18n.localize("SPACE1889.NotSupportedInFoundryV10"));
+			return;
+		}
+		const itemId = this._getItemId(ev);
+		const item = this.actor.items.get(itemId);
+		if (item.type == "talent")
+		{
+			const effectName = game.i18n.format("SPACE1889.TemporaryImprovement", { name: item.name });
+			const remove = ev.button == 2;
+			if (remove)
+			{
+				const effect = item.effects.getName(effectName);
+				if (effect)
+					effect.delete();
+				else if (item.effects.size > 0)
+					ui.notifications.info(game.i18n.format("SPACE1889.EffectNotFound", { name: item.name }));
+
+				return;
+			}
+			if (item.system.level.total == item.system.level.max)
+			{
+				ui.notifications.info(game.i18n.localize("SPACE1889.TalentEffectBoostNotPossible"));
+				return;
+			}
+			if (this.actor.system.style.value < 2)
+			{
+				ui.notifications.info(game.i18n.localize("SPACE1889.NotEnoughStylePoints"));
+				return;
+			}
+
+			//test code
+				
+			SPACE1889Helper.addEffect(item, {
+				name: effectName, tint: "#25cb30", rounds: 50, icon: "icons/svg/upgrade.svg",
+				changes: [{ key: "system.level.effectBonus", mode: 2, priority: null, value: 1 }],
+				statuses: ["temporaryTalentEnhancement"]
+			});
+			this.actor.update({ 'system.style.value': this.actor.system.style.value - 2 });
+			let chatData = {
+				user: game.user._id,
+				speaker: ChatMessage.getSpeaker(),
+				content: "für zwei Stilpunkte wurde das Talent " + item.name + " um eine Stufe verstärkt"
+			};
+			ChatMessage.create(chatData, {});
+		}
+	}
 
 	_doVehiclePositionClick(event, positionKey)
 	{

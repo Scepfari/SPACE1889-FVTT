@@ -454,7 +454,12 @@ export default class SPACE1889Helper
 			infos.push(element);
 		}
 
-		return infos.find(e => e.statuses[0] == effect.name);
+		const theEffect = infos.find(e => e.statuses[0] == effect.name);
+		if (theEffect)
+			return theEffect;
+
+		effect.duration = duration;
+		return effect;
 	}
 
 	static async addEffects(actor, effects)
