@@ -528,12 +528,12 @@ export class Space1889Actor extends Actor
 		this.fillSecondaryBonus("size", actor, system.secondaries.size);
 		system.secondaries.size.total = system.secondaries.size.value + system.secondaries.size.bonus;
 
-		system.secondaries.defense.value = this.getPassiveDefense(actor) + this.getActiveDefense(actor) - system.secondaries.size.total + this.getAsNumber(system.secondaries.defense?.effectBonus);
+		system.secondaries.defense.value = this.getPassiveDefense(actor) + this.getActiveDefense(actor) - system.secondaries.size.total;
 		system.secondaries.defense.armorBonus = system.armorTotal.bonus;
 		this.fillSecondaryBonus("defense", actor, system.secondaries.defense);
-		system.secondaries.defense.passiveTotal = Math.max(0, this.getPassiveDefense(actor) - system.secondaries.size.total + system.secondaries.defense.armorBonus);
+		system.secondaries.defense.passiveTotal = Math.max(0, this.getPassiveDefense(actor) - system.secondaries.size.total + system.secondaries.defense.armorBonus + this.getAsNumber(system.secondaries.defense?.effectBonus));
 		system.secondaries.defense.activeTotal = Math.max(0, this.getActiveDefense(actor) - system.secondaries.size.total - system.healthDeduction);
-		const total = system.secondaries.defense.value + system.secondaries.defense.bonus + this.getAsNumber(system.secondaries.defense?.effectBonus);
+		const total = system.secondaries.defense.value + system.secondaries.defense.bonus;
 		system.secondaries.defense.total = Math.max(0, total);
 		system.secondaries.defense.totalDefense = total + this.getTotalDefenseBonus(actor);
 	}
