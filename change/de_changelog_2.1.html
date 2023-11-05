@@ -1,0 +1,42 @@
+<form class="{{cssClass}} {{actor.type}} flexcol" autocomplete="off">
+	<div align="center">
+		<img class="profile-img artwork" src="systems/space1889/icons/space1889Logo.webp" height="130" width="130" align="middle" />
+	</div>
+	<div class="header-fields" align="center">
+		<h1>Version 2.1.0 -<br />Dynastie der Sterngeborenen</h1>
+	</div>
+
+	<h4><strong>v2.1.0</strong></h4>
+	<ul class="space1889list">
+		<li>Hinzuf&uuml;gen der Effekt-Unterst&uuml;tzung f&uuml;r Attribute. Damit ist es nun m&ouml;glich Effekte hinzuzuf&uuml;gen, die die prim&auml;ren und sekund&auml;ren Attribute ver&auml;ndern. Die n&ouml;tigen Attributschl&uuml;ssel sind in der Hilfe unter 
+		<a class="content-link" data-uuid="Compendium.space1889.help.asbU8WYJJcJEX7q3.JournalEntryPage.fl7QxBLXNWJy2BCD" data-id="fl7QxBLXNWJy2BCD" data-type="JournalEntry" data-pack"space1889.help"data-tooltip="Journal">
+			<i class="fas fa-book-open">
+			</i>
+			Effekte
+		</a> aufgelistet.</li>
+		<li>Die tempor&auml;re Talentsteigerung per Stilpunkt, kann nun direkt per Mausklick im Charakterbogen ausgel&ouml;st werden. Daf&uuml;r wird das Talent mit einem entsprechenden Effekt versehen. Diese Funktion ist nur ab Foundry VTT V11 verf&uuml;gbar, V10 unterst&uuml;tzt das Editieren von eingebetteten Dokumenten in eingebetteten Dokumentn nicht. Einzelheiten dazu <a href="https://foundryvtt.com/article/v11-document-hierarchy/" target="_blank" rel="noopener">hier.</a></li>
+		<li>
+			<p>Neuer Angriffsdialog f&uuml;r modifizierte Angriffe (ben&ouml;tigt aktivierte Kampfunterst&uuml;tzung und ist &uuml;ber Shift + Mausklick erreichbar): &nbsp;</p>
+			<ul>
+				<li>der Angriffsdialog enth&auml;lt nun alle Optionen des vollen Angriffes sowie die Optionen f&uuml;r Autofeuer, soweit die verwendete Waffe dies unterst&uuml;tzt</li>
+				<li>der jeweilige Munitionsverbrauch wird automatisch abgezogen, auch bei Angriffen die mehr als eine Kugel ben&ouml;tigen</li>
+				<li>die Voller Angriff als auch die Autofeuer Man&ouml;ver bewirken jetzt auch den Zustand Voller Angriff in dem die Aktive Abwehr auf 0 sinkt. Dieser Zustand verschwindet automatisch beim &Uuml;bergang in die n&auml;chste Kampfrunde bzw. beim Beenden der Begegnung</li>
+			</ul>
+		</li>
+	</ul>
+	<ul class="space1889list">
+		<li>Das Messband im UI ist nun Euklidisch, also so wie auch die interne Entfernungsberechnung f&uuml;r Schu&szlig;waffenangriffe</li>
+		<li>Fix: Angriffe sind nur noch m&ouml;glich wenn der Angreifer Teilnehmer einer Begegnung ist oder keine Begegnung aktiv ist</li>
+		<li>Bugfix: Bei der Beladungsberechung werden die bedienten Gesch&uuml;tze nicht mehr mit einbezogen.&nbsp;</li>
+		<li>Bugfix: In die Berechnung von Blocken, Parade und Ausweichen geht die getragene R&uuml;stung nicht mehr doppelt ein.</li>
+		<li>Bugfix Laden von Begegnungswerten: Die Anzahl der in der Kampfrunde schon durchgef&uuml;hrten Verteidigungen, bleibt nun auch nach einem Neuladen wie einem Browser F5 Refresh erhalten.</li>
+	</ul>
+
+	<p>
+		<a class="content-link" data-uuid="Compendium.space1889.help.rfmrhN0wxUKN9SQ6" data-id="rfmrhN0wxUKN9SQ6" data-type="JournalEntry" data-pack"space1889.help"data-tooltip="Notiz">
+			<i class="fas fa-book-open">
+			</i>
+			gesamte Versionsgeschichte
+		</a>
+	</p>
+</form>

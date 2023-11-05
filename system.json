@@ -3,12 +3,12 @@
 	"id": "space1889",
 	"title": "Space 1889",
 	"description": "The SPACE 1889 Ubiquity system for FoundryVTT!",
-	"version": "2.0.6",
+	"version": "2.1.0",
 	"minimumCoreVersion": "10",
 	"compatibleCoreVersion": "10",
 	"compatibility": {
 		"minimum": 10,
-		"verified": "11.308",
+		"verified": "11.314",
 		"maximum": 11
 	},
 
@@ -663,7 +663,7 @@
 	"primaryTokenAttribute": "health",
 	"url": "https://github.com/Scepfari/SPACE1889-FVTT",
 	"manifest": "https://github.com/Scepfari/SPACE1889-FVTT/releases/latest/download/system.json",
-	"download": "https://github.com/Scepfari/SPACE1889-FVTT/releases/download/2.0.6/space1889-foundry-2.0.6.zip",
+	"download": "https://github.com/Scepfari/SPACE1889-FVTT/releases/download/2.1.0/space1889-foundry-2.1.0.zip",
 	"bugs": "https://github.com/Scepfari/SPACE1889-FVTT/issues",
 	"flags": {
 		"allowBugReporter": true

@@ -1,0 +1,44 @@
+<form class="{{cssClass}} {{actor.type}} flexcol" autocomplete="off">
+	<div align="center">
+		<img class="profile-img artwork" src="systems/space1889/icons/space1889Logo.webp" height="130" width="130" align="middle" />
+	</div>
+	<div class="header-fields" align="center">
+		<h1>Version 2.1.0 -<br />Dynasty of the Starborn</h1>
+	</div>
+
+	<h4><strong>v2.1.0</strong></h4>
+	<ul class="space1889list">
+		<li>Added effect support for attributes. It is now possible to add effects that change the primary and secondary attributes. The necessary attribute keys are listed in the help under 
+		<a class="content-link" data-uuid="Compendium.space1889.help.MlRz7BgqDGHY7uge.JournalEntryPage.OzerZBF5Mh0K5vFL" data-id="OzerZBF5Mh0K5vFL" data-type="JournalEntry" data-pack"space1889.help"data-tooltip="Journal">
+			<i class="fas fa-book-open">
+			</i>
+			Effects.
+		</a>
+		</li>
+		<li>The temporary talent increase per style point can now be triggered directly with a mouse click in the character sheet. The talent is provided with a corresponding effect for this purpose. This function is only available from Foundry VTT V11, V10 does not support the editing of embedded documents in embedded documents. Details <a href="https://foundryvtt.com/article/v11-document-hierarchy/" target="_blank" rel="noopener">here.</a></li>
+		<li>
+			<p>New attack dialog for modified attacks (requires activated combat support and can be accessed via Shift + mouse click):</p>
+			<ul>
+				<li>the attack dialog now contains all options of the total attack as well as the options for auto fire, if supported by the weapon used</li>
+				<li>the respective ammunition consumption is automatically deducted, even for attacks that require more than one bullet</li>
+				<li>the Total Attack as well as the Auto Fire maneuvers now also cause the Total Attack state in which the Active Defense drops to 0. This state disappears automatically when transitioning to the next combat round or when ending the encounter</li>
+			</ul>
+		</li>
+	</ul>
+	<ul class="space1889list">
+		<li>The measuring tool in the UI is now Euclidean, just like the internal distance calculation for firearm attacks</li>
+		<li>Fix: Attacks are only possible if the attacker is a participant in an encounter or if no encounter is active</li>
+		<li>Bugfix: When calculating the loadout, the weapons that are operated via the gunnery skill are no longer included.</li>
+		<li>Bugfix: The worn armor is no longer included twice in the calculation of block, parry and dodge.</li>
+		<li>Bugfix loading encounter values: The number of defenses already performed in the combat round is now retained even after a reload such as a browser F5 refresh.</li>
+	</ul>
+
+	<p>
+		<a class="content-link" data-uuid="Compendium.space1889.help.htjWa7EwibubbWnm" data-id="htjWa7EwibubbWnm" data-type="JournalEntry" data-pack"space1889.help"data-tooltip="Journal">
+			<i class="fas fa-book-open">
+			</i>
+			entire version history
+		</a>
+	</p>
+	<p>&nbsp;</p>
+</form>

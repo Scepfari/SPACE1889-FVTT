@@ -1,5 +1,21 @@
 # Changelog 
 
+## Dynastie der Sterngeborenen
+
+### v2.1.0
+- Hinzufügen der Effekt-Unterstützung für Attribute. Damit ist es nun möglich Effekte hinzuzufügen, die die primären und sekundären Attribute verändern. Die nötigen Attributschlüssel sind in der Hilfe unter Effekte aufgelistet.
+- Die temporäre Talentsteigerung per Stilpunkt, kann nun direkt per Mausklick im Charakterbogen ausgelöst werden. Dafür wird das Talent mit einem entsprechenden Effekt versehen. Diese Funktion ist nur ab Foundry VTT V11 verfügbar, V10 unterstützt das Editieren von eingebetteten Dokumenten in eingebetteten Dokumentn nicht. Einzelheiten dazu [hier.](https://foundryvtt.com/article/v11-document-hierarchy/)
+- Neuer Angriffsdialog für modifizierte Angriffe (benötigt aktivierte Kampfunterstützung und ist über Shift + Mausklick erreichbar):  
+  - der Angriffsdialog enthält nun alle Optionen des vollen Angriffes sowie die Optionen für Autofeuer, soweit die verwendete Waffe dies unterstützt
+  - der jeweilige Munitionsverbrauch wird automatisch abgezogen, auch bei Angriffen die mehr als eine Kugel benötigen
+  - die Voller Angriff als auch die Autofeuer Manöver bewirken jetzt auch den Zustand Voller Angriff in dem die Aktive Abwehr auf 0 sinkt. Dieser Zustand verschwindet automatisch beim Übergang in die nächste Kampfrunde bzw. beim Beenden der Begegnung
+- Das Messband im UI ist nun Euklidisch, also so wie auch die interne Entfernungsberechnung für Schußwaffenangriffe
+- Fix: Angriffe sind nur noch möglich wenn der Angreifer Teilnehmer einer Begegnung ist oder keine Begegnung aktiv ist
+- Bugfix: Bei der Beladungsberechung werden die bedienten Geschütze nicht mehr mit einbezogen. 
+- Bugfix: In die Berechnung von Blocken, Parade und Ausweichen geht die getragene Rüstung nicht mehr doppelt ein.
+- Bugfix Laden von Begegnungswerten: Die Anzahl der in der Kampfrunde schon durchgeführten Verteidigungen, bleibt nun auch nach einem Neuladen wie einem Browser F5 Refresh erhalten.
+
+
 ## Zeit der drei namenlosen Weltreiche
 
 ### v2.0.6
