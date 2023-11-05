@@ -1,3 +1,5 @@
+import SPACE1889Helper from "./helper.mjs";
+
 export class Space1889Combatant extends Combatant 
 {
 	constructor(data, context)
@@ -44,7 +46,7 @@ export class Space1889Combat extends Combat
 					continue;
 
 				if ((effect.duration.startRound + effect.duration.rounds <= this.current.round) &&
-					effect.flags?.core?.statusId == "noActiveDefense")
+					(Space1889Combat.hasStatus(effect, "noActiveDefense") || Space1889Combat.hasStatus(effect, "totalDefense")) )
 				{
 					effectsToRemove.push(effect._id);
 				}
@@ -102,12 +104,13 @@ export class Space1889Combat extends Combat
 			if (actor)
 			{
 				let effectsToRemove = [];
-				for (let effect of actor.appliedEffects)
+				let effects = SPACE1889Helper.isFoundryV10Running() ? actor.effects : actor.appliedEffects;
+				for (let effect of effects)
 				{
-					if (effect.statuses.has("noActiveDefense") || effect.statuses.has("totalDefense"))
+					if (Space1889Combat.hasStatus(effect, "noActiveDefense") || Space1889Combat.hasStatus(effect, "totalDefense"))
 						effectsToRemove.push(effect._id);
 
-					if (effect.statuses.has("temporaryTalentEnhancement"))
+					if (Space1889Combat.hasStatus(effect, "temporaryTalentEnhancement"))
 						effect.delete();
 				}
 				if (effectsToRemove.length > 0)
@@ -115,4 +118,19 @@ export class Space1889Combat extends Combat
 			}
 		}
 	}
+
+	static hasStatus(effect, searchKey)
+	{
+		if (SPACE1889Helper.isFoundryV10Running())
+		{
+			const statusId = effect.flags?.core?.statusId;
+			if (statusId && statusId == searchKey)
+				return true;
+			return false;
+		}
+
+		// ab V11 
+		return effect.statuses.has(searchKey);
+	}
+
 }
