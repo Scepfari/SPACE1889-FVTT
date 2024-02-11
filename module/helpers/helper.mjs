@@ -744,30 +744,41 @@ export default class SPACE1889Helper
 		const isQuickDraw = SPACE1889Helper.getTalentLevel(actor, "schnellziehen") > 0
 		let desc = "";
 		let title = "";
+		let isWaffenlos = weapon.system.skillId == "waffenlos";
+
 		if (newHand == "none")
 		{
 			title = game.i18n.localize("SPACE1889.WeaponUnReadyWeapon");
-			desc = isQuickDraw ?
-				game.i18n.format("SPACE1889.WeaponQuickDrawHolster", { weapon: weapon.name }) :
-				game.i18n.format("SPACE1889.WeaponActionHolster", { weapon: weapon.name });
+			if (isWaffenlos)
+				desc = game.i18n.format("SPACE1889.WeaponDrawBrawl", { weapon: weapon.name });
+			else
+				desc = isQuickDraw ?
+					game.i18n.format("SPACE1889.WeaponQuickDrawHolster", { weapon: weapon.name }) :
+					game.i18n.format("SPACE1889.WeaponActionHolster", { weapon: weapon.name });
 		}
 		else
 		{
 			title = game.i18n.localize("SPACE1889.WeaponReadyWeapon");
 			const handname = game.i18n.localize(CONFIG.SPACE1889.weaponHand[newHand]);
-			if (newHand == "bothHands")
+			if (isWaffenlos)
 			{
-				desc = isQuickDraw ?
-					game.i18n.format("SPACE1889.WeaponQuickDrawReadyTwoHanded", { weapon: weapon.name }) :
-					game.i18n.format("SPACE1889.WeaponActionReady", { weapon: weapon.name, hands: handname });
+				desc = game.i18n.format("SPACE1889.WeaponDrawReadyBrawl", { weapon: weapon.name });
 			}
 			else
 			{
-				desc = isQuickDraw ?
-					game.i18n.format("SPACE1889.WeaponQuickDrawReadyOneHand", { weapon: weapon.name, hand: handname }) :
-					game.i18n.format("SPACE1889.WeaponActionReady", { weapon: weapon.name, hands: handname });
+				if (newHand == "bothHands")
+				{
+					desc = isQuickDraw ?
+						game.i18n.format("SPACE1889.WeaponQuickDrawReadyTwoHanded", { weapon: weapon.name }) :
+						game.i18n.format("SPACE1889.WeaponActionReady", { weapon: weapon.name, hands: handname });
+				}
+				else
+				{
+					desc = isQuickDraw ?
+						game.i18n.format("SPACE1889.WeaponQuickDrawReadyOneHand", { weapon: weapon.name, hand: handname }) :
+						game.i18n.format("SPACE1889.WeaponActionReady", { weapon: weapon.name, hands: handname });
+				}
 			}
-
 		}
 
 		const speaker = ChatMessage.getSpeaker({ actor: actor });
