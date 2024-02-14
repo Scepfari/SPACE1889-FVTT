@@ -4,6 +4,15 @@
 	font-family: "Roboto", sans-serif;
 }
 
+.window-content {
+	overflow-y: scroll;
+	scrollbar-width: thin;
+}
+
+#chat-log {
+	scrollbar-width: thin;
+}
+
 .rollable:hover, .rollable:focus {
 	color: #000;
 	text-shadow: 0 0 10px red;
