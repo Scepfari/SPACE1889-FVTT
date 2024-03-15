@@ -705,8 +705,12 @@ export default class SPACE1889RollHelper
 		else if (item.type == "resource")
 		{
 			desc = game.i18n.localize(item.system.descriptionLangId);
-			const weakness = game.i18n.localize("SPACE1889.Resource") ?? item.type;
-			label = `<h2><strong>${item.system.label}</strong> [${weakness}]</h2>`;
+			if (desc == item.system.descriptionLangId && item.system.description != "")
+				desc = item.system.description;
+			else if (item.system.description != "")
+				desc += "<br>item.system.description"
+			const resource = game.i18n.localize("SPACE1889.Resource") ?? item.type;
+			label = `<h2><strong>${item.system.label}</strong> [${resource}]</h2>`;
 		}
 		else if (item.type == "weapon")
 		{
