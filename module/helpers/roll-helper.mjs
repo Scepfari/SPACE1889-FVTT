@@ -346,6 +346,7 @@ export default class SPACE1889RollHelper
 		const inputDesc = game.i18n.localize("SPACE1889.NumberOfModificationDice");
 		const diceDesc = game.i18n.localize("SPACE1889.ConfigDice");
 		const isAttackTalent = item.isAttackTalent();
+		const isAttack = isAttackTalent || isWeapon;
 		const talentWeapon = isAttackTalent ? SPACE1889RollHelper.getWeaponFromTalent(actor, item) : null;
 
 		const targetId = game.user.targets.first() ? game.user.targets.first().id : "";
@@ -420,22 +421,33 @@ export default class SPACE1889RollHelper
 				let anzahl = input ? parseInt(input) : 0;
 				toolTipInfo = anzahl == 0 ? "" : game.i18n.format("SPACE1889.ChatModifier", { mod: SPACE1889Helper.getSignedStringFromNumber(anzahl) }); 
 				anzahl += diceCount;
-				const useWeaponInfo = await SPACE1889Helper.useWeapon(item, actor);
-				if (useWeaponInfo.used)
-					titelInfo = await SPACE1889RollHelper.logAttack(actor, titelInfo);
 
-				const chatData = await SPACE1889RollHelper.getChatDataRollSubSpecial(actor, item, anzahl, [targetId], useWeaponInfo.chatInfo, titelInfo, toolTipInfo, extraInfo, isAttackTalent, chatoption);
+				let additionalChatInfo = "";
+				if (isAttack)
+				{
+					const useWeaponInfo = await SPACE1889Helper.useWeapon(item, actor);
+					additionalChatInfo = useWeaponInfo.chatInfo;
+					if (useWeaponInfo.used)
+						titelInfo = await SPACE1889RollHelper.logAttack(actor, titelInfo);
+				}
+
+				const chatData = await SPACE1889RollHelper.getChatDataRollSubSpecial(actor, item, anzahl, [targetId], additionalChatInfo, titelInfo, toolTipInfo, extraInfo, isAttackTalent, chatoption);
 
 				ChatMessage.create(chatData, {});
 			}
 		}
 		else
 		{
-			const useWeaponInfo = await SPACE1889Helper.useWeapon(item, actor);
-			if (useWeaponInfo.used)
-				titelInfo = await SPACE1889RollHelper.logAttack(actor, titelInfo);
+			let additionalChatInfo = "";
+			if (isAttack)
+			{
+				const useWeaponInfo = await SPACE1889Helper.useWeapon(item, actor);
+				additionalChatInfo = useWeaponInfo.chatInfo;
+				if (useWeaponInfo.used)
+					titelInfo = await SPACE1889RollHelper.logAttack(actor, titelInfo);
+			}
 
-			const chatData = await SPACE1889RollHelper.getChatDataRollSubSpecial(actor, item, dieCount, [targetId], useWeaponInfo.chatInfo, titelInfo, toolTipInfo, extraInfo, isAttackTalent);
+			const chatData = await SPACE1889RollHelper.getChatDataRollSubSpecial(actor, item, dieCount, [targetId], additionalChatInfo, titelInfo, toolTipInfo, extraInfo, isAttackTalent);
 			ChatMessage.create(chatData, {});
 		}
 
