@@ -266,4 +266,13 @@ export const registerSystemSettings = function ()
 		    type: Boolean
 		});
 
+    game.settings.register("space1889", "hideInitiativeRollsInChat",
+	    {
+            name: "SPACE1889.ConfigHideInitiativeRollsInChat",
+            hint: "SPACE1889.ConfigHideInitiativeRollsInChatInfo",
+		    scope: "world",
+		    config: true,
+		    default: false,
+		    type: Boolean
+		});
 }

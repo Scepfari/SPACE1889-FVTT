@@ -196,6 +196,26 @@ Hooks.once("setup", () =>
 	registerGetSceneControlButtonsHook();
 })
 
+Hooks.on('preCreateChatMessage', (doc, message, options, userid) =>
+{
+	const hide = game.settings.get("space1889", "hideInitiativeRollsInChat");
+
+	if (hide && message.flags !== undefined)
+	{
+		if (message.flags.core !== undefined)
+		{
+			if (message.flags.core.initiativeRoll)
+			{
+				return false;
+			};
+		};
+		if (message.flags['core.initiativeRoll'])
+		{
+			return false;
+		};
+	};
+});
+
 Hooks.on("chatMessage", (html, content, msg) =>
 {
 	let cmd = content.match(/^\/(help|version|space1889|ammo|addContainer|image)/)

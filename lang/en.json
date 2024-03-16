@@ -2777,6 +2777,8 @@
 	"SPACE1889.ConfigSubfolder-indentInfo": "Set the value for the indentation of each subfolder in pixels.",
 	"SPACE1889.ConfigShowDialogForAllAttributeRolls": "Dialog display for attribute rolls",
 	"SPACE1889.ConfigShowDialogForAllAttributeRollsInfo": "Forces the display of the modification dialog for all attribute casts, regardless of whether the [SHIFT] or [CTRL] keys were pressed in the process.",
+	"SPACE1889.ConfigHideInitiativeRollsInChat": "Hide initiative rolls in chat",
+	"SPACE1889.ConfigHideInitiativeRollsInChatInfo": "Prevents the display of initiative rolls in the chat, for all players as well as the GM",
 
 	"SPACE1889.HeroLevelPechvogel": "Unlucky Fellow",
 	"SPACE1889.HeroLevelDurchschnittsbuerger": "Everyman",
