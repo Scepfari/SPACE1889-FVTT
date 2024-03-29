@@ -1421,7 +1421,9 @@ export class Space1889Actor extends Actor
 		{
 			if (item.type == "item" || item.type == "ammunition")
 				itemWeight = item.system.weight * item.system.quantity;
-			else if ((item.type == "weapon" && item.system.skillId != "geschuetze") || item.type == "armor")
+			else if (item.type == "weapon" && item.system.skillId == "geschuetze" && item.system.location == 'mounted')
+				continue;
+			else if (item.type == "weapon" || item.type == "armor")
 				itemWeight = item.system.weight;
 			else
 				continue;
