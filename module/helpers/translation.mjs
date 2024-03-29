@@ -26,6 +26,7 @@ export class Space1889Translation
 			["space1889.talente", "SPACE1889.Talent", "SPACE1889.CompendiumFolderNameTalent"],
 			["space1889.waffen", "SPACE1889.Weapon", "SPACE1889.CompendiumFolderNameWeapon"],
 			["space1889.fahrzeugwaffen", "SPACE1889.Weapon", "SPACE1889.CompendiumFolderNameWeaponVehicle"],
+			["space1889.munition", "SPACE1889.Ammunition", "SPACE1889.CompendiumFolderNameAmmunition"],
 			["space1889.gegenstaende", "SPACE1889.Item", "SPACE1889.CompendiumFolderNameItem"],
 			["space1889.gelderde", "SPACE1889.Currency", "SPACE1889.CompendiumFolderNameEarthMoney"],
 			["space1889.geldmars", "SPACE1889.Currency", "SPACE1889.CompendiumFolderNameMartianMoney"],
@@ -174,7 +175,7 @@ export class Space1889Translation
 				await this.translateCompendiums();
 				game.settings.set("space1889", "lastCompendiumTranslationLanguage", currentLanguage + '|' + currentVersion);
 			}
-			else if (isNewerVersion(game.version, '10.291') && game.settings.get("space1889", "lastUsedFoundryVersion") === "9.28")
+			else if (isNewerVersion(game.version, '10.303') && game.settings.get("space1889", "lastUsedFoundryVersion") === "9.28")
 			{
 				// frisch auf V11
 				await this.updateFolderNames(currentLanguage);
@@ -199,7 +200,7 @@ export class Space1889Translation
 
 	static async updateFolderNames(currentLanguage)
 	{
-		if (!isNewerVersion(game.version, '10.291'))
+		if (!isNewerVersion(game.version, '10.999'))
 			return;
 
 		const folders = game.packs.folders;
