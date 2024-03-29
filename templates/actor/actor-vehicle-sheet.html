@@ -84,7 +84,7 @@
 					<li class="flexrow">
 						<div class="item-name ">{{localize "SPACE1889.VehiclePilotSkill"}}</div>
 						<div class="resource-content flexrow flex-center flex-between item-marginlr5px">
-							<select name="data.pilotSkill" data-dtype="String">
+							<select name="system.pilotSkill" data-dtype="String">
 								{{#select system.pilotSkill}}
 								{{#each system.pilotSkills as |key char|}}
 								<option value="{{char}}">{{localize key}}</option>
