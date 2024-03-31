@@ -2,6 +2,16 @@
 
 ## Dynastie der Sterngeborenen
 
+### v2.1.1
+
+- Anzeige der Initiativewürfe im Chat (einschließlich der Würfelanimation) lässt sich in den Einstellungen optional abschalten. Würfelt die SL so für unsichtbare Gegner, bemerken die Spieler das nicht.
+- css für schmale Scrollbars hinzugefügt
+- Englische Übersetzung für die Munition im Munitionskompendium hinzugefügt
+- Fix: Im Fahrzeugbogen lässt sich die Pilotenfertigkeit wieder verändern
+- Fix: Ausgabe der Ressourceninformation im Chat enthält jetzt auch die Benutzerbeschreibung
+- Fix: Fertigkeitswürfe werden im Kampf werden im Chat nicht mehr als Angriffsaktion bezeichnet
+- Fix: Gewichtsberechnung, d.h. das Gewicht von Geschützen wird nur noch ignoriert, wenn es sich um ein montiertes Geschütz handelt
+
 ### v2.1.0
 - Hinzufügen der Effekt-Unterstützung für Attribute. Damit ist es nun möglich Effekte hinzuzufügen, die die primären und sekundären Attribute verändern. Die nötigen Attributschlüssel sind in der Hilfe unter Effekte aufgelistet.
 - Die temporäre Talentsteigerung per Stilpunkt, kann nun direkt per Mausklick im Charakterbogen ausgelöst werden. Dafür wird das Talent mit einem entsprechenden Effekt versehen. Diese Funktion ist nur ab Foundry VTT V11 verfügbar, V10 unterstützt das Editieren von eingebetteten Dokumenten in eingebetteten Dokumentn nicht. Einzelheiten dazu [hier.](https://foundryvtt.com/article/v11-document-hierarchy/)
