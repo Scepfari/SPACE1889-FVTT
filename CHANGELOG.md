@@ -9,7 +9,7 @@
 - Englische Übersetzung für die Munition im Munitionskompendium hinzugefügt
 - Fix: Im Fahrzeugbogen lässt sich die Pilotenfertigkeit wieder verändern
 - Fix: Ausgabe der Ressourceninformation im Chat enthält jetzt auch die Benutzerbeschreibung
-- Fix: Fertigkeitswürfe werden im Kampf werden im Chat nicht mehr als Angriffsaktion bezeichnet
+- Fix: Fertigkeitswürfe werden im Kampf im Chat nicht mehr als Angriffsaktion bezeichnet
 - Fix: Gewichtsberechnung, d.h. das Gewicht von Geschützen wird nur noch ignoriert, wenn es sich um ein montiertes Geschütz handelt
 
 ### v2.1.0
