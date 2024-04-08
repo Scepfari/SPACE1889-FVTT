@@ -351,7 +351,13 @@ export default class SPACE1889RollHelper
 
 		const targetId = game.user.targets.first() ? game.user.targets.first().id : "";
 		let addAutoDefense = game.settings.get("space1889", "combatSupport") && (item.type == 'weapon' || isAttackTalent);
+		let firstAidText = "";
 		let defaultMod = 0;
+		let firstAid = (item.type == "specialization" && item.system.id == "ersteHilfe") ? 1 : 0;
+		if (firstAid == 0 && item.type == "skill" && item.system.id == "medizin")
+		{
+			firstAid = (actor.system.speciSkills?.find(entry => entry.system.id == 'ersteHilfe')) ? 2 : 1;
+		}
 		if (addAutoDefense && targetId != "")
 		{
 			let controlledToken = SPACE1889Helper.getControlledTokenDocument();
@@ -383,6 +389,16 @@ export default class SPACE1889RollHelper
 
 				titelInfo += " " + game.i18n.format("SPACE1889.ChatDistanceInBrackets", { distance: distanceInfo.distance.toFixed(1), unit: distanceInfo.unit });
 			}
+		}
+		else if (firstAid > 0 && targetId != "")
+		{
+			if (firstAid == 1)
+			{
+				firstAidText = game.i18n.format("SPACE1889.FirstAidPerson", { targetName: game.user.targets.find(e => e.id == targetId)?.name });
+				firstAid = 3;
+			}
+			else
+				firstAidText = game.i18n.format("SPACE1889.MedicalCarePerson", { targetName: game.user.targets.find(e => e.id == targetId)?.name });
 		}
 		
 		if (showDialog)
@@ -422,7 +438,7 @@ export default class SPACE1889RollHelper
 				toolTipInfo = anzahl == 0 ? "" : game.i18n.format("SPACE1889.ChatModifier", { mod: SPACE1889Helper.getSignedStringFromNumber(anzahl) }); 
 				anzahl += diceCount;
 
-				let additionalChatInfo = "";
+				let additionalChatInfo = firstAidText;
 				if (isAttack)
 				{
 					const useWeaponInfo = await SPACE1889Helper.useWeapon(item, actor);
@@ -431,14 +447,14 @@ export default class SPACE1889RollHelper
 						titelInfo = await SPACE1889RollHelper.logAttack(actor, titelInfo);
 				}
 
-				const chatData = await SPACE1889RollHelper.getChatDataRollSubSpecial(actor, item, anzahl, [targetId], additionalChatInfo, titelInfo, toolTipInfo, extraInfo, isAttackTalent, chatoption);
+				const chatData = await SPACE1889RollHelper.getChatDataRollSubSpecial(actor, item, anzahl, [targetId], additionalChatInfo, titelInfo, toolTipInfo, extraInfo, isAttackTalent, firstAid == 3, chatoption);
 
 				ChatMessage.create(chatData, {});
 			}
 		}
 		else
 		{
-			let additionalChatInfo = "";
+			let additionalChatInfo = firstAidText;
 			if (isAttack)
 			{
 				const useWeaponInfo = await SPACE1889Helper.useWeapon(item, actor);
@@ -447,7 +463,7 @@ export default class SPACE1889RollHelper
 					titelInfo = await SPACE1889RollHelper.logAttack(actor, titelInfo);
 			}
 
-			const chatData = await SPACE1889RollHelper.getChatDataRollSubSpecial(actor, item, dieCount, [targetId], additionalChatInfo, titelInfo, toolTipInfo, extraInfo, isAttackTalent);
+			const chatData = await SPACE1889RollHelper.getChatDataRollSubSpecial(actor, item, dieCount, [targetId], additionalChatInfo, titelInfo, toolTipInfo, extraInfo, isAttackTalent, firstAid == 3);
 			ChatMessage.create(chatData, {});
 		}
 
@@ -547,9 +563,50 @@ export default class SPACE1889RollHelper
 		}
 	}
 
-	static async getChatDataRollSubSpecial(actor, item, wurfelAnzahl, targetIds, useWeaponChatInfo, titelInfo, toolTipInfo, extraInfo="", isAttackTalent, chatOption="public")
+	static async getChatDataRollSubSpecial(actor, item, wurfelAnzahl, targetIds, useWeaponChatInfo, titelInfo, toolTipInfo, extraInfo="", isAttackTalent, isFirstAid="false", chatOption="public")
 	{
 		const rollWithHtml = await SPACE1889RollHelper.createInlineRollWithHtml(Math.max(0, wurfelAnzahl), titelInfo, toolTipInfo);
+		let messageContent = "";
+		const speaker = ChatMessage.getSpeaker({ actor: actor });
+
+		if (item.type == 'weapon' || isAttackTalent)
+			messageContent = this.getAttackChatContent(actor, item, wurfelAnzahl, targetIds, useWeaponChatInfo, titelInfo, toolTipInfo, extraInfo, isAttackTalent, chatOption);
+		else
+		{
+			messageContent = `<div><h2>${item.system.label}</h2></div>`;
+			if (extraInfo.length > 0)
+				messageContent += `${extraInfo} <br>`;
+			if (useWeaponChatInfo != "")
+				messageContent += `${useWeaponChatInfo} <br>`;
+			messageContent += `${rollWithHtml.html} <br>`;
+			if (isFirstAid)
+				messageContent += this.AddFirsAidButton(actor, speaker, targetIds[0], rollWithHtml);
+		}
+
+		let ids = this.getChatIds(chatOption);
+
+		let chatData =
+		{
+			user: game.user.id,
+			speaker: speaker,
+			whisper: ids,
+			content: messageContent
+		};
+		return chatData;
+	}
+
+	static AddFirsAidButton(actor, speaker, targetId, rollWithHtml)
+	{
+		const buttonText = game.i18n.localize("SPACE1889.ApplyFirstAid");
+		const isLivesaver = SPACE1889Helper.getTalentLevel(actor, "lebensretter") > 0;
+		const currentTimeDate = SPACE1889Helper.getCurrentTimestamp();
+		const target = game.user.targets.find(e => e.id == targetId);
+		const buttonToolTip = target ? `title="${target.name}"` : '';
+		return `<button class="applyFirstAid chatButton" ${buttonToolTip} data-action="firstAid" data-actor-id="${actor._id}" data-actor-token-id="${speaker.token}" data-target-id="${targetId}" data-first-aid-successes="${rollWithHtml.roll.total}" data-lifesaver="${isLivesaver}" data-timestamp="${currentTimeDate}">${buttonText}</button>`;
+	}
+
+	static getAttackChatContent(actor, item, rollWithHtml, targetIds, useWeaponChatInfo, extraInfo="", isAttackTalent)
+	{
 		const addAutoDefense = game.settings.get("space1889", "combatSupport") && (item.type == 'weapon' || isAttackTalent);
 		let weapon = undefined;
 		let weaponSkill = "";
@@ -607,10 +664,9 @@ export default class SPACE1889RollHelper
 			messageContent += `${useWeaponChatInfo} <br>`;
 		messageContent += `${rollWithHtml.html} <br>`;
 
-		const speaker = ChatMessage.getSpeaker({ actor: actor });
-
 		if (addAutoDefense && targetIds && targetIds.length > 0)
 		{
+			const speaker = ChatMessage.getSpeaker({ actor: actor });
 			for (const targetId of targetIds)
 			{
 				let buttonToolTip = "";
@@ -628,16 +684,7 @@ export default class SPACE1889RollHelper
 			}
 		}
 
-		let ids = this.getChatIds(chatOption);
-
-		let chatData =
-		{
-			user: game.user.id,
-			speaker: speaker,
-			whisper: ids,
-			content: messageContent
-		};
-		return chatData;
+		return messageContent;
 	}
 
 	static getChatIds(chatOption)

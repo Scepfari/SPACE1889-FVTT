@@ -545,6 +545,15 @@ export default class SPACE1889Helper
 		return this.isModuleEnabled("foundryvtt-simple-calendar");
 	}
 
+	static getCurrentTimestamp()
+	{
+		if (this.isSimpleCalendarEnabled())
+			return SimpleCalendar.api.timestamp();
+
+		const worldDate = new Date();
+		return worldDate;
+	}
+
 	static getCurrentTimeAndDate()
 	{
 		if (this.isSimpleCalendarEnabled())

@@ -731,7 +731,7 @@ export default class SPACE1889Combat
 					const chatInfo = i == 1 ? useWeaponInfo.chatInfo : "";
 					let theTitelInfo = (rolls < 2 ? "" : i.toString() + ". ") + titelInfo;
 					theTitelInfo = await SPACE1889RollHelper.logAttack(actor, theTitelInfo, token);
-					const chatData = await SPACE1889RollHelper.getChatDataRollSubSpecial(actor, weapon, anzahl, game.user.targets.ids, chatInfo, theTitelInfo, toolTipInfo, "", false, chatoption);
+					const chatData = await SPACE1889RollHelper.getChatDataRollSubSpecial(actor, weapon, anzahl, game.user.targets.ids, chatInfo, theTitelInfo, toolTipInfo, "", false, false, chatoption);
 					await ChatMessage.create(chatData, {});
 				}
 
@@ -756,18 +756,26 @@ export default class SPACE1889Combat
 
 	static defenseDialog(actor)
 	{
+		const token = this.getCombatToken(actor) || this.getToken(actor);
+		const hasAttacked = token && SPACE1889RollHelper.getAttackCount(token.id) > 0;
+
+		const hasActiveDefense = !actor.HasNoActiveDefense(actor);
+
 		const canDoBPE = actor.type == "character" || actor.type == "npc";
 
 		let baseBlock = canDoBPE ? actor.system.block.value : 0;
 		let blockToolTip = canDoBPE ? actor.system.block.info : "";
 		const instinctiveBlock = canDoBPE ? actor.system.block.instinctive : false;
+		const canDoBlock = hasActiveDefense && canDoBPE && (!hasAttacked || instinctiveBlock);
 
 		let baseEvasion = canDoBPE ? actor.system.evasion.value : 0;
-		const instinctiveEvasion = canDoBPE ? actor.system.evasion.instinctive: false;
+		const instinctiveEvasion = canDoBPE ? actor.system.evasion.instinctive : false;
+		const canDoEvasion = hasActiveDefense && canDoBPE && (!hasAttacked || instinctiveEvasion);
 		let evasionToolTip = canDoBPE ? actor.system.evasion.info : "";
 
 		let baseParry = canDoBPE ? actor.system.parry.value : 0;
 		const instinctiveParry = canDoBPE ? actor.system.parry.instinctive : false;
+		const canDoParry = hasActiveDefense && canDoBPE && (!hasAttacked || instinctiveParry);
 		let parryToolTip = canDoBPE ? actor.system.parry.info : "";
 
 		let base = actor.system.secondaries.defense.total;
@@ -776,11 +784,16 @@ export default class SPACE1889Combat
 		const activeDefense = actor.system.secondaries.defense.activeTotal;
 		const passiveDefense = actor.system.secondaries.defense.passiveTotal;
 		const totalDefense = actor.system.secondaries.defense.totalDefense;
-		const disableBlockInHtlmText = "";
+
+		const blockName = game.i18n.localize("SPACE1889.TalentBlocken");
+		const disableBlockInHtlmText = canDoBlock ? "" : `disabled="true"`;
+
 		const hideParryInHtml = "";
-		const disableParryInHtlmText = "";
-		const hideEvasionlnInHtlmText = "";
-		const disableActiveDefenseInHtlmText = "";
+		const disableParryInHtlmText = canDoParry ? "" : `disabled="true"`;
+		const disableEvasionInHtlmText = canDoEvasion ? "" : `disabled="true"`;
+		const disableTotalDefenseInHtlmText = hasActiveDefense && !hasAttacked ? "" : `disabled="true" title="${game.i18n.format("SPACE1889.NoBlockParryEvasion", { talentName: game.i18n.localize("SPACE1889.DefenseDialogTotalDefense") } )}"`;
+
+		const disableActiveDefenseInHtlmText = hasActiveDefense ? "" : `disabled="true"`;
 
 		const modifierLabel = game.i18n.localize("SPACE1889.Modifier");
 		const labelWurf = game.i18n.localize("SPACE1889.DefenseDice") + ": ";
@@ -871,8 +884,8 @@ export default class SPACE1889Combat
 
 						<fieldset>
 							<legend>${game.i18n.localize("SPACE1889.DefenseDialogSpecialDefense")}</legend>
-							<input type="radio" id="totalDefense" name="type" class="totalDefense" value="V">
-							<label for="totalDefense">${game.i18n.localize("SPACE1889.TotalDefense")}: ${totalDefense} ${lossOfAA}</label><br>
+							<input  ${disableTotalDefenseInHtlmText} type="radio" id="totalDefense" name="type" class="totalDefense" value="V">
+							<label  ${disableTotalDefenseInHtlmText} for="totalDefense">${game.i18n.localize("SPACE1889.TotalDefense")}: ${totalDefense} ${lossOfAA}</label><br>
             
 							<input ${disableBlockInHtlmText} type="radio" id="block" class="block" name="type" value="B" title="${blockToolTip}">
 							<label ${disableBlockInHtlmText} for="block" title="${blockToolTip}">${game.i18n.localize("SPACE1889.Block")} ${baseBlock} ${instinctiveBlock ? "" : lossOfAA}</label><br>
@@ -880,10 +893,8 @@ export default class SPACE1889Combat
 								<input ${disableParryInHtlmText} type="radio" id="parry" class="parry" name="type" value="B" title="${parryToolTip}">
 								<label ${disableParryInHtlmText} for="parry" title="${parryToolTip}">${game.i18n.localize("SPACE1889.Parry")} ${baseParry} ${instinctiveParry ? "" : lossOfAA}</label><br>
 							</div>
-							<div ${hideEvasionlnInHtlmText}>
-								<input type="radio" id="evasion" class="evasion" name="type" value="B" title="${evasionToolTip}">
-								<label for="evasion" title="${evasionToolTip}">${game.i18n.localize("SPACE1889.Evasion")} ${baseEvasion} ${instinctiveEvasion ? "" : lossOfAA}</label><br>
-							</div>
+							<input ${disableEvasionInHtlmText} type="radio" id="evasion" class="evasion" name="type" value="B" title="${evasionToolTip}">
+							<label ${disableEvasionInHtlmText} for="evasion" title="${evasionToolTip}">${game.i18n.localize("SPACE1889.Evasion")} ${baseEvasion} ${instinctiveEvasion ? "" : lossOfAA}</label><br>
 						</fieldset>
 
 					</fieldset>
