@@ -15,8 +15,8 @@
 	<li class="item row-section flexrow" data-item-id="{{item._id}}">
 		<div class="item-name">{{item.name}}</div>
 		<label class="items-list item-max-with75px">{{item.system.dataOfTheEvent}}</label>
-		<div class="resource-label items-list item-max-with60px">
-			<a class="increment-click items-list item-max-with60px">{{item.system.damage}} {{item.system.damageTypeDisplay}}</a>
+		<div data-tooltip='{{item.system.tooltipInfo}}' class="resource-label items-list item-max-with60px">
+			<a class="increment-click items-list item-max-with60px">{{item.system.remainingDamage}} {{item.system.damageTypeDisplay}}</a>
 		</div>
 		<div class="items-list item-max-with40px">
 			<a class="healingFactor-click items-list item-max-with40px">{{item.system.healingFactor}}</a>

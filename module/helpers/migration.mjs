@@ -15,6 +15,7 @@ export class Space1889Migration
 			await this.ammunitionIntroduction(lastUsedVersion);
 			await this.weaponTwoHandedIntroduction(lastUsedVersion);
 			await this.containerIntroduction(lastUsedVersion);
+			await this.damageRework(lastUsedVersion);
 			await game.settings.set("space1889", "lastUsedSystemVersion", currentVersion);
 		}
 		if (game.user.isGM)
@@ -204,6 +205,17 @@ export class Space1889Migration
 		let actorList = this.getAllActorsWithoutVehicleAndCreature();
 		await SPACE1889Helper.createContainersFromLocation(actorList);
 	}
+
+	static async damageRework(lastUsedVersion)
+	{
+		const lastNonFixVersion = "2.1.1";
+		if (isNewerVersion(lastUsedVersion, lastNonFixVersion) || !game.user.isGM)
+			return;
+
+		let actorList = this.getAllActors();
+		await SPACE1889Helper.createDamageTimestamps(actorList);
+
+	}	
 
 	static async migrateEffectsForFoundryV11(lastUsedVersion, lastUsedFoundryVersion)
 	{

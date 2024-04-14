@@ -1,6 +1,7 @@
 import SPACE1889Helper from "../helpers/helper.mjs";
 import SPACE1889Combat from "../helpers/combat.mjs";
 import DistanceMeasuring from "../helpers/distanceMeasuring.mjs"
+import SPACE1889Time from "../helpers/time.js"
 
 export default class SPACE1889RollHelper
 {
@@ -570,7 +571,7 @@ export default class SPACE1889RollHelper
 		const speaker = ChatMessage.getSpeaker({ actor: actor });
 
 		if (item.type == 'weapon' || isAttackTalent)
-			messageContent = this.getAttackChatContent(actor, item, wurfelAnzahl, targetIds, useWeaponChatInfo, titelInfo, toolTipInfo, extraInfo, isAttackTalent, chatOption);
+			messageContent = this.getAttackChatContent(actor, item, rollWithHtml, targetIds, useWeaponChatInfo, extraInfo, isAttackTalent);
 		else
 		{
 			messageContent = `<div><h2>${item.system.label}</h2></div>`;
@@ -580,7 +581,7 @@ export default class SPACE1889RollHelper
 				messageContent += `${useWeaponChatInfo} <br>`;
 			messageContent += `${rollWithHtml.html} <br>`;
 			if (isFirstAid)
-				messageContent += this.AddFirsAidButton(actor, speaker, targetIds[0], rollWithHtml);
+				messageContent += this.#AddFirsAidButton(actor, speaker, targetIds[0], rollWithHtml);
 		}
 
 		let ids = this.getChatIds(chatOption);
@@ -595,13 +596,13 @@ export default class SPACE1889RollHelper
 		return chatData;
 	}
 
-	static AddFirsAidButton(actor, speaker, targetId, rollWithHtml)
+	static #AddFirsAidButton(actor, speaker, targetId, rollWithHtml)
 	{
 		const buttonText = game.i18n.localize("SPACE1889.ApplyFirstAid");
 		const isLivesaver = SPACE1889Helper.getTalentLevel(actor, "lebensretter") > 0;
-		const currentTimeDate = SPACE1889Helper.getCurrentTimestamp();
+		const currentTimeDate = SPACE1889Time.getCurrentTimestamp();
 		const target = game.user.targets.find(e => e.id == targetId);
-		const buttonToolTip = target ? `title="${target.name}"` : '';
+		const buttonToolTip = target ? `data-tooltip="${target.name}"` : '';
 		return `<button class="applyFirstAid chatButton" ${buttonToolTip} data-action="firstAid" data-actor-id="${actor._id}" data-actor-token-id="${speaker.token}" data-target-id="${targetId}" data-first-aid-successes="${rollWithHtml.roll.total}" data-lifesaver="${isLivesaver}" data-timestamp="${currentTimeDate}">${buttonText}</button>`;
 	}
 
@@ -672,7 +673,7 @@ export default class SPACE1889RollHelper
 				let buttonToolTip = "";
 				const targetToken = game.user.targets.find(e => e.id == targetId);
 				if (targetToken)
-					buttonToolTip = `title="${targetToken.name}"`;
+					buttonToolTip = `data-tooltip="${targetToken.name}"`;
 				let buttonText = "";
 				if (targetIds.length > 1)
 					buttonText += targetToken.name.length <= 14 ? targetToken.name : "..." + targetToken.name.slice(-12);
@@ -1018,9 +1019,22 @@ export default class SPACE1889RollHelper
 					if (damageAmountInt == NaN)
 						damageAmountInt = 1;
 					damageAmountInt = Math.max(1, damageAmountInt);
-					const eventDate = SPACE1889Helper.getCurrentTimeDateString();
+					const eventDate = SPACE1889Time.getCurrentTimeDateString();
+					const timestamp = SPACE1889Time.getCurrentTimestamp();
+					const isCombat = game.combat?.active && game.combat?.started;
 
-					actor.updateEmbeddedDocuments("Item", [{ _id: item._id, "system.damageType": selectedOption, "name": userInputName, "img": path, "system.damage": damageAmountInt, "system.dataOfTheEvent": eventDate }]);
+					actor.updateEmbeddedDocuments("Item", [{
+						_id: item._id,
+						"system.damageType": selectedOption,
+						"name": userInputName,
+						"img": path,
+						"system.damage": damageAmountInt,
+						"system.dataOfTheEvent": eventDate,
+						"system.eventTimestamp": timestamp,
+						"system.combatInfo.id": isCombat ? game.combat.id : "",
+						"system.combatInfo.round": isCombat ? game.combat.round : 0,
+						"system.combatInfo.turn": isCombat ? game.combat.turn : 0
+					}]);
 					SPACE1889RollHelper.doDamageChatMessage(actor, item._id, damageAmountInt, selectedOption, (useInputName ? userInputName : ""));
 				}
 				else if (actor.items.get(item._id) != undefined)
@@ -1038,7 +1052,7 @@ export default class SPACE1889RollHelper
 		return 600;
 	}
 
-	static async doDamageChatMessage(actor, itemId, dmg, dmgType, dmgName = "", effect="none", effectCombatTurns="", effectOnly=false)
+	static async doDamageChatMessage(actor, itemId, dmg, dmgType, dmgName = "", effect="none", effectCombatTurns="", effectOnly=false, addStylePointButton = false)
 	{
 		const item = actor.items.get(itemId);
 		if (item == undefined)
@@ -1187,17 +1201,56 @@ export default class SPACE1889RollHelper
 			game.i18n.format("SPACE1889.ChatInfoDamage", { damage: (!usePercentage ? dmg.toString() : Math.round(100 * dmg / maxHealth).toString() + "%"), damageType: dmgTypeLabel });
 		let messageContent = `<div><h2>${titel}</h2></div>`;
 		messageContent += `${info}`;
+
+		let effectIds = [];
+		if (effects.length > 0)
+			effectIds = await SPACE1889Helper.addEffects(actor, effects);
+
+		const speaker = ChatMessage.getSpeaker({ actor: actor });
+		if (!isVirtualDamage && addStylePointButton && actor.system.style && actor.system.style.value >= 2)
+		{
+			messageContent += this.#AddStylePointDamageReductionButton(actor, speaker, itemId, dmg, dmgType, dmgName, effect, effectCombatTurns, effectOnly, effectIds);
+		}
+
 		let chatData =
 		{
 			user: game.user.id,
-			speaker: ChatMessage.getSpeaker({ actor: actor }),
+			speaker: speaker,
 			content: messageContent
 		};
 
-
 		ChatMessage.create(chatData, {});
-		if (effects.length > 0)
-			await SPACE1889Helper.addEffects(actor, effects);
+	}
+
+	static #AddStylePointDamageReductionButton(actor, speaker, damageId, dmg, dmgType, dmgName, weaponEffect, weaponEffectCombatTurns, effectOnly, effectIds)
+	{
+		const buttonText = game.i18n.localize("SPACE1889.UseStylePoints");
+		const buttonToolTip = game.i18n.localize("SPACE1889.UseSpForDamageReduction");
+		let effectIdsString = "";
+		for (const id of effectIds)
+		{
+			if (effectIdsString.length > 0)
+				effectIdsString += '|'
+			effectIdsString += id.toString();
+		}
+
+		const currentTimeDate = SPACE1889Time.getCurrentTimestamp();
+		//to do : combat Round und Zug 
+
+		return `<button class="applyStylePointDamageReduction chatButton" 
+				data-tooltip="${buttonToolTip}"
+				data-action="damageReduction"
+				data-actor-id="${actor._id}" 
+				data-actor-token-id="${speaker.token}" 
+				data-damage-id="${damageId}" 
+				data-damage="${dmg}" 
+				data-damage-type="${dmgType}" 
+				data-damage-name="${dmgName}" 
+				data-weapon-effect-Name="${weaponEffect}"
+				data-weapon-effect-Turns="${weaponEffectCombatTurns}"
+				data-weapon-effect-Only="${effectOnly}"
+				data-created-effect-Ids="${effectIdsString}"
+				data-timestamp="${currentTimeDate}">${buttonText}</button>`;
 	}
 
 	static usePercentForNpcAndCreatureDamageInfo()
@@ -1778,8 +1831,23 @@ export default class SPACE1889RollHelper
 		const items = await Item.create(damageData, { parent: actor });
 		const item = items.shift();
 		const path = damageType == "lethal" ? "icons/skills/wounds/blood-drip-droplet-red.webp" : "icons/skills/wounds/injury-pain-body-orange.webp";
-		const eventDate = SPACE1889Helper.getCurrentTimeDateString();
-		actor.updateEmbeddedDocuments("Item", [{ _id: item._id, "system.damageType": damageType, "name": damageName, "img": path, "system.damage": damageAmount, "system.dataOfTheEvent": eventDate }]);
+		const eventDate = SPACE1889Time.getCurrentTimeDateString();
+		const timestamp = SPACE1889Time.getCurrentTimestamp();
+		const isCombat = game.combat?.active && game.combat?.started;
+
+		actor.updateEmbeddedDocuments("Item", [{
+			_id: item._id,
+			"system.damageType": damageType,
+			"name": damageName,
+			"img": path,
+			"system.damage": damageAmount,
+			"system.dataOfTheEvent": eventDate,
+			"system.eventTimestamp": timestamp,
+			"system.combatInfo.id": isCombat ? game.combat.id : "",
+			"system.combatInfo.round": isCombat ? game.combat.round : 0,
+			"system.combatInfo.turn": isCombat ? game.combat.turn : 0
+		}]);
+
 		return item._id;
 	}
 
@@ -1843,9 +1911,9 @@ export default class SPACE1889RollHelper
 			{
 				const itemId = await this.addDamageToActor(target.actor, data.actorName, data.attackName, ((doWeaponEffect && data.effectOnly) ? 0 : damageAmount), data.damageType);
 				if (doWeaponEffect)
-					await SPACE1889RollHelper.doDamageChatMessage(target.actor, itemId, damageAmount, data.damageType, "", data.effect, data.effectDurationCombatTurns, data.effectOnly);
+					await SPACE1889RollHelper.doDamageChatMessage(target.actor, itemId, damageAmount, data.damageType, "", data.effect, data.effectDurationCombatTurns, data.effectOnly, true);
 				else
-					await SPACE1889RollHelper.doDamageChatMessage(target.actor, itemId, damageAmount, data.damageType);
+					await SPACE1889RollHelper.doDamageChatMessage(target.actor, itemId, damageAmount, data.damageType, "", "none", "", false, true);
 			}
 			else
 			{
@@ -1867,9 +1935,9 @@ export default class SPACE1889RollHelper
 			{
 				const itemId = await this.addDamageToActor(target.actor, data.actorName, data.attackName, ((doWeaponEffect && data.effectOnly) ? 0 : damageAmount), data.damageType);
 				if (doWeaponEffect)
-					await SPACE1889RollHelper.doDamageChatMessage(target.actor, itemId, damageAmount, data.damageType, "", data.effect, data.effectDurationCombatTurns, data.effectOnly);
+					await SPACE1889RollHelper.doDamageChatMessage(target.actor, itemId, damageAmount, data.damageType, "", data.effect, data.effectDurationCombatTurns, data.effectOnly, true);
 				else
-					await SPACE1889RollHelper.doDamageChatMessage(target.actor, itemId, damageAmount, data.damageType);
+					await SPACE1889RollHelper.doDamageChatMessage(target.actor, itemId, damageAmount, data.damageType, "", "none", "", false, true);
 			}
 		}
 		else if (delta < 0 && data.reducedDefense.indexOf('BlockRiposte') >= 0)

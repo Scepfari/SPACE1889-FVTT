@@ -90,10 +90,15 @@
 					"value": 0,
 					"instinctive": false
 				}
+			},
+			"healing": {
+				"currentHealingDamageId": "",
+				"dehydration": false,
+				"starvation": false
 			}
 		},
 		"character": {
-			"templates": [ "health", "style", "primaries", "secondaries", "biography", "notes", "block", "parry", "evasion" ],
+			"templates": [ "health", "style", "primaries", "secondaries", "biography", "notes", "block", "parry", "evasion", "healing" ],
 			"attributes": {
 				"xp": {
 					"value": 0,
@@ -120,7 +125,7 @@
 			"origin": "merkur"
 		},
 		"npc": {
-			"templates": [ "health", "style", "primaries", "secondaries", "biography", "notes", "block", "parry", "evasion" ],
+			"templates": [ "health", "style", "primaries", "secondaries", "biography", "notes", "block", "parry", "evasion", "healing" ],
 			"attributes": {
 				"archetype": {
 					"value": "arbeiter"
@@ -373,7 +378,19 @@
 			"damageType": "lethal",
 			"healingFactor": 1,
 			"timeToNextCure": "",
-			"dataOfTheEvent": ""
+			"dataOfTheEvent": "",
+			"eventTimestamp": 0,
+			"combatInfo": {
+				"id": "",
+				"round": 0,
+				"turn": 0
+			},
+			"stylePointDamageReduction": 0,
+			"firstAidApplied": false,
+			"firstAidHealing": 0,
+			"firstAidNonLeathalConvertedId": "",
+			"startOfHealingTimeStamp": 0,
+			"completedHealingProgress": 0
 		},
 		"currency": {
 			"templates": [ "description", "id" ],

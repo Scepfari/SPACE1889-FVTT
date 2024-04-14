@@ -1,5 +1,6 @@
 import TurnMarker from "../helpers/turnMarker.mjs";
 import SPACE1889RollHelper from "./roll-helper.mjs";
+import SPACE1889Time from "./time.js";
 
 export default class SPACE1889Helper
 {
@@ -64,9 +65,9 @@ export default class SPACE1889Helper
 				continue;
 
 			if (item.system.damageType == "lethal")
-				lethal += item.system.damage;
+				lethal += item.system.remainingDamage;
 			else
-				nonLethal += item.system.damage;
+				nonLethal += item.system.remainingDamage;
 		}
 
 		return { lethal: lethal, nonLethal: nonLethal };
@@ -464,10 +465,12 @@ export default class SPACE1889Helper
 
 	static async addEffects(actor, effects)
 	{
+		let idList = [];
 		for (const effect of effects)
 		{
-			await this.addEffect(actor, effect);
+			idList.push(await this.addEffect(actor, effect));
 		}
+		return idList;
 	}
 
 	static async addEffect(actor, effect)
@@ -487,7 +490,8 @@ export default class SPACE1889Helper
 			effectData.duration.startRound = gameRound;
 			effectData.duration.startTurn = gameTurn;
 		}
-		await actor.createEmbeddedDocuments("ActiveEffect", [effectData]);
+		const effectDocument = await actor.createEmbeddedDocuments("ActiveEffect", [effectData]);
+		return effectDocument[0].id;
 	}
 
 	static async sleep(sleeptimeInMilliSeconds)
@@ -538,75 +542,6 @@ export default class SPACE1889Helper
 	static refreshTurnMarker(reallyDestroy)
 	{
 		canvas.tokens?.Space1889TurnMarker?.Destroy(reallyDestroy);
-	}
-
-	static isSimpleCalendarEnabled()
-	{
-		return this.isModuleEnabled("foundryvtt-simple-calendar");
-	}
-
-	static getCurrentTimestamp()
-	{
-		if (this.isSimpleCalendarEnabled())
-			return SimpleCalendar.api.timestamp();
-
-		const worldDate = new Date();
-		return worldDate;
-	}
-
-	static getCurrentTimeAndDate()
-	{
-		if (this.isSimpleCalendarEnabled())
-		{
-			const date = SimpleCalendar.api.timestampToDate(SimpleCalendar.api.timestamp());
-			return { year: date.year, month: date.month + 1, day: date.day + 1, hour: date.hour, minute: date.minute, second: date.second };
-		}
-		const worldDate = new Date();
-
-		return {
-			year: worldDate.getFullYear(), month: Number(worldDate.getMonth()) + 1, day: worldDate.getDate(),
-			hour: worldDate.getHours(), minute: worldDate.getMinutes(), second: worldDate.getSeconds()
-		};
-	}
-
-	static getTimeAndDate(timestamp)
-	{
-		if (this.isSimpleCalendarEnabled())
-		{
-			const date = SimpleCalendar.api.timestampToDate(timestamp);
-			return { year: date.year, month: date.month + 1, day: date.day + 1, hour: date.hour, minute: date.minute, second: date.second };
-		}
-		const worldDate = new Date(timestamp);
-
-		return {
-			year: worldDate.getFullYear(), month: Number(worldDate.getMonth()) + 1, day: worldDate.getDate(),
-			hour: worldDate.getHours(), minute: worldDate.getMinutes(), second: worldDate.getSeconds()
-		};
-	}
-
-	static formatTimeDate(date)
-	{
-		let text = date.day.toString() + "." + date.month.toString() + "." + date.year.toString() +
-			" " + date.hour.toString() + ":" + (date.minute < 10 ? "0" : "") + date.minute.toString() +
-			":" + (date.second < 10 ? "0" : "") + date.second.toString();
-		return text;
-	}
-
-	static getCurrentTimeDateString()
-	{
-		return this.formatTimeDate(this.getCurrentTimeAndDate());
-	}
-
-	static formatEffectDuration(effectDuration)
-	{
-		const canDoDate = this.isSimpleCalendarEnabled();
-		const date = canDoDate ? this.formatTimeDate(this.getTimeAndDate(effectDuration.startTime)) : "";
-		let roundInfo = "";
-
-		if (effectDuration.startRound > 0 || effectDuration.startTurn > 0)
-			roundInfo = game.i18n.format("SPACE1889.EffectRoundTurnInfo", { round: effectDuration.startRound, turn: effectDuration.startTurn });
-
-		return date + (date != "" && roundInfo != "" ? "\r\n " : "") + roundInfo;
 	}
 
 	static async showArtwork({ img, name, uuid, isOwner }, hide = false) 
@@ -791,10 +726,10 @@ export default class SPACE1889Helper
 		}
 
 		const speaker = ChatMessage.getSpeaker({ actor: actor });
-		const label = `<h2><strong>${title}</strong></h2>`;
+		const label = `<div><h2>${title}</h2></div>`;
+		desc = label + `<div>${desc}</div>`;
 		ChatMessage.create({
 			speaker: speaker,
-			flavor: label,
 			whisper: whisperList,
 			content: desc
 		});
@@ -974,10 +909,10 @@ export default class SPACE1889Helper
 	
 		const speaker = ChatMessage.getSpeaker({ actor: actor });
 			
-		const label = `<h2><strong>${game.i18n.localize("SPACE1889.AmmunitionReload")}</strong></h2>`;
+		const label = `<div><h2>${game.i18n.localize("SPACE1889.AmmunitionReload")}</h2></div>`;
+		desc = label + `<div>${desc}</div>`;
 		ChatMessage.create({
 			speaker: speaker,
-			flavor: label,
 			whisper: [],
 			content: desc ?? ''
 		});
@@ -1020,11 +955,11 @@ export default class SPACE1889Helper
 		const speaker = ChatMessage.getSpeaker({ actor: actor });
 		const infoId = SPACE1889Helper.getTalentLevel(actor, "schnellladen") > 0 ? "SPACE1889.AmmunitionInstantUnload" : "SPACE1889.AmmunitionDefaultUnloadAction";
 			
-		const desc = game.i18n.format(infoId, { weaponName: weapon.name });
-		const label = `<h2><strong>${game.i18n.localize("SPACE1889.AmmunitionUnload")}</strong></h2>`;
+		let desc = game.i18n.format(infoId, { weaponName: weapon.name });
+		const label = `<div><h2>${game.i18n.localize("SPACE1889.AmmunitionUnload")}</h2></div>`;
+		desc = label + `<div>${desc}</div>`;
 		ChatMessage.create({
 			speaker: speaker,
-			flavor: label,
 			whisper: [],
 			content: desc ?? ''
 		});
@@ -1366,6 +1301,28 @@ export default class SPACE1889Helper
 		}
 	}
 
+	static async createDamageTimestamps(actorList)
+	{
+		const format = 'dd.mm.yyyy hh:ii:ss';
+		for (let actor of actorList)
+		{
+			if (!actor.system.injuries || actor.system.injuries.length == 0)
+				continue;
+
+			let updateData = [];
+			for (let injury of actor.system.injuries)
+			{
+				const timestamp = SPACE1889Time.dateStringToTimestamp(injury.system.dataOfTheEvent, format);
+				updateData.push({ _id: injury._id, "system.eventTimestamp": timestamp });
+			}
+			if (updateData.length > 0)
+			{
+				await actor.updateEmbeddedDocuments("Item", updateData);
+				console.log(game.i18n.format("SPACE1889.MigrationActorDamage", { name: actor.name, id: actor._id }));
+			}
+		}
+	}
+
 	static hasTokenOwnership(tokenId)
 	{
 		if (game.user.isGM)
@@ -1381,12 +1338,22 @@ export default class SPACE1889Helper
 		return this.hasOwnership(token.actor);
 	}
 
-	static hasOwnership(actor)
+	static hasOwnership(actor, notifyIfNot = false)
 	{
 		const permissions = actor?.ownership;
 		if ((permissions["default"] && permissions["default"] == 3) || (permissions[game.userId] && permissions[game.userId] == 3))
 			return true;
 
+		if (notifyIfNot)
+		{
+			let namensliste = "";
+			for (let user of game.users)
+			{
+				if (permissions[user._id] == 3)
+					namensliste += (namensliste.length > 0 ? ", " : "") + user.name;
+			}
+			ui.notifications.info(game.i18n.format("SPACE1889.NoTokenPermission", { player: namensliste }));
+		}
 		return false;
 	}
 
@@ -2025,5 +1992,35 @@ export default class SPACE1889Helper
 			}
 		}
 		return bonus;
+	}
+
+	static markChatButtonAsDone(event, oldButtonText, additionalChatText = "")
+	{
+		const element = $(event.currentTarget);
+		if (element)
+		{
+			if (!game.user.isGM)
+				element.fadeOut();
+
+			const id = element.closest(".message").attr("data-message-id");
+			let message = game.messages.get(id);
+			let newContent = message.content.replace(oldButtonText + "</button>", oldButtonText + " (" + game.i18n.localize("SPACE1889.Done") +  ")</button> <p>" + additionalChatText + "</p>");			
+
+			game.socket.emit("system.space1889", {
+				type: "updateMessage",
+				payload: {
+					id: id,
+					updateData: {
+						[`flags.space1889.userHidden`]: true,
+						[`content`]: newContent
+					}
+				}
+			});
+
+			if (game.user.isGM)
+			{
+				message.update({ "content": newContent, "flags.space1889.userHidden" : true });
+			}
+		}
 	}
 }

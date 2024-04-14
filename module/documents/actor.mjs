@@ -191,10 +191,11 @@ export class Space1889Actor extends Actor
 		for (let injury of injuries)
 		{
 			const isLethal = injury.system.damageType == "lethal";
-			const healingDurationInDays = (isLethal ? 7 : 1) * injury.system.damage / injury.system.healingFactor;
+			injury.system.remainingDamage = this.getRemainingDamage(injury);
+			const healingDurationInDays = (isLethal ? 7 : 1) * injury.system.remainingDamage / injury.system.healingFactor;
 			injury.system.damageTypeDisplay = game.i18n.localize(CONFIG.SPACE1889.vehicleDamageTypeAbbreviations[injury.system.damageType]);
 			injury.system.healingDuration = this.FormatHealingDuration(healingDurationInDays);
-			injury.system.timeToNextCure = this.FormatHealingDuration(healingDurationInDays / injury.system.damage);
+			injury.system.timeToNextCure = (injury.system.remainingDamage != 0 ? this.FormatHealingDuration(healingDurationInDays / injury.system.remainingDamage) : game.i18n.localize("SPACE1889.Repaired"));
 		}
 
 		this._CalcVehicleThings(actor);
@@ -473,10 +474,17 @@ export class Space1889Actor extends Actor
 		for (let injury of injuries)
 		{
 			const isLethal = injury.system.damageType == "lethal";
-			const healingDurationInDays = (isLethal ? 7 : 1) * injury.system.damage / injury.system.healingFactor;
+			const healingDurationInDays = (isLethal ? 7 : 1) * injury.system.remainingDamage / injury.system.healingFactor;
 			injury.system.damageTypeDisplay = game.i18n.localize(CONFIG.SPACE1889.damageTypeAbbreviations[injury.system.damageType]);
 			injury.system.healingDuration = this.FormatHealingDuration(healingDurationInDays);
-			injury.system.timeToNextCure = this.FormatHealingDuration(healingDurationInDays / injury.system.damage);
+			injury.system.timeToNextCure = injury.system.remainingDamage != 0 ? this.FormatHealingDuration(healingDurationInDays / injury.system.remainingDamage) : game.i18n.localize("SPACE1889.HealedOut");
+			injury.system.tooltipInfo = game.i18n.format("SPACE1889.ActorInjuryToolTip", {
+				name: injury.name,
+				origDamage: injury.system.damage,
+				spReduction: injury.system.stylePointDamageReduction,
+				firstAid: (injury.system.firstAidApplied ? injury.system.firstAidHealing : game.i18n.localize("SPACE1889.notCarriedOut")),
+				healing: injury.system.completedHealingProgress
+			});
 		}
 
 		if (SPACE1889Helper.isCreature(actor))
@@ -500,6 +508,15 @@ export class Space1889Actor extends Actor
 
 			this._CalcThings(actor);
 		}
+	}
+
+	getRemainingDamage(injury)
+	{
+		let damage = injury.system.damage - injury.system.stylePointDamageReduction - injury.system.completedHealingProgress;
+		if (injury.system.firstAidApplied)
+			damage -= injury.system.firstAidHealing;
+
+		return Math.max(0, Math.ceil(damage));
 	}
 
 	/**
@@ -1654,7 +1671,8 @@ export class Space1889Actor extends Actor
 
 		for (const injury of actor.system.injuries)
 		{
-			const healthOrStructureDamage = this.GetDamageFromType(injury.system.damage, injury.system.damageType, actor.type);
+			injury.system.remainingDamage = this.getRemainingDamage(injury);
+			const healthOrStructureDamage = this.GetDamageFromType(injury.system.remainingDamage, injury.system.damageType, actor.type);
 
 			damage += healthOrStructureDamage;
 
@@ -1663,16 +1681,16 @@ export class Space1889Actor extends Actor
 				switch (injury.system.damageType)
 				{
 					case "controls":
-						controlDamage += (2 * injury.system.damage) - healthOrStructureDamage;
+						controlDamage += (2 * injury.system.remainingDamage) - healthOrStructureDamage;
 						break;
 					case "propulsion":
-						propulsionDamage += (2 * injury.system.damage) - healthOrStructureDamage;
+						propulsionDamage += (2 * injury.system.remainingDamage) - healthOrStructureDamage;
 						break;
 					case "guns":
 						gunDamage += damage;
 						break;
 					case "crew":
-						crewDamage += injury.system.damage;
+						crewDamage += injury.system.remainingDamage;
 						break;
 				}
 			}
@@ -1877,8 +1895,6 @@ export class Space1889Actor extends Actor
 		const item = items.shift();
 
 		SPACE1889RollHelper.showDamageDialog(this, item, key == 'lethal')
-
-		//ui.notifications.info(`Sorry, noch nicht implementiert. Kommt hoffentlich bald.`);
 	}
 
 	rollPrimary(key, event)
