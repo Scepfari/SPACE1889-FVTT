@@ -1,4 +1,4 @@
-import SPACE1889Helper from "../helpers/helper.mjs";
+import SPACE1889Helper from "../helpers/helper.js";
 
 export class Space1889Migration
 {

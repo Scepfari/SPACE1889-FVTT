@@ -1,5 +1,5 @@
 import TurnMarker from "../helpers/turnMarker.mjs";
-import SPACE1889RollHelper from "./roll-helper.mjs";
+import SPACE1889RollHelper from "./roll-helper.js";
 import SPACE1889Time from "./time.js";
 
 export default class SPACE1889Helper

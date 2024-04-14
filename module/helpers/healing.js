@@ -1,5 +1,5 @@
-import SPACE1889Helper from "./helper.mjs";
-import SPACE1889RollHelper from "../helpers/roll-helper.mjs";
+import SPACE1889Helper from "./helper.js";
+import SPACE1889RollHelper from "../helpers/roll-helper.js";
 import SPACE1889Time from "../helpers/time.js";
 
 export default class SPACE1889Healing

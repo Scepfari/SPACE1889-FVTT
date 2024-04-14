@@ -1,5 +1,5 @@
 import {onManageActiveEffect} from "../helpers/effects.mjs";
-import SPACE1889Helper from "../helpers/helper.mjs";
+import SPACE1889Helper from "../helpers/helper.js";
 
 /**
  * Extend the basic ItemSheet with some very simple modifications

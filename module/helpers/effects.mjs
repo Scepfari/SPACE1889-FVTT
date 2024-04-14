@@ -1,4 +1,4 @@
-import SPACE1889Helper from "./helper.mjs";
+import SPACE1889Helper from "./helper.js";
 /**
  * Manage Active Effect instances through the Actor Sheet via effect control buttons.
  * @param {MouseEvent} event      The left-click event on the effect control

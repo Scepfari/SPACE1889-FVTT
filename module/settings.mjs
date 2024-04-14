@@ -1,4 +1,4 @@
-import SPACE1889Helper from "./helpers/helper.mjs";
+import SPACE1889Helper from "./helpers/helper.js";
 import TurnMarker from "./helpers/turnMarker.mjs";
 
 export const registerSystemSettings = function ()

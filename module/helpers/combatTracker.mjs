@@ -1,4 +1,4 @@
-import SPACE1889Helper from "./helper.mjs";
+import SPACE1889Helper from "./helper.js";
 
 export class Space1889Combatant extends Combatant 
 {

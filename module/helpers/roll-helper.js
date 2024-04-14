@@ -1,6 +1,6 @@
-import SPACE1889Helper from "../helpers/helper.mjs";
-import SPACE1889Combat from "../helpers/combat.mjs";
-import DistanceMeasuring from "../helpers/distanceMeasuring.mjs"
+import SPACE1889Helper from "../helpers/helper.js";
+import SPACE1889Combat from "../helpers/combat.js";
+import DistanceMeasuring from "../helpers/distanceMeasuring.js"
 import SPACE1889Time from "../helpers/time.js"
 
 export default class SPACE1889RollHelper

@@ -1,5 +1,5 @@
-import SPACE1889Helper from "../helpers/helper.mjs";
-import SPACE1889RollHelper from "../helpers/roll-helper.mjs";
+import SPACE1889Helper from "../helpers/helper.js";
+import SPACE1889RollHelper from "../helpers/roll-helper.js";
 
 /**
  * Extend the base Actor document by defining a custom roll data structure which is ideal for the Simple system.
