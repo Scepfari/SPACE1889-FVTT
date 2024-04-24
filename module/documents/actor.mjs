@@ -1,5 +1,7 @@
 import SPACE1889Helper from "../helpers/helper.js";
 import SPACE1889RollHelper from "../helpers/roll-helper.js";
+import SPACE1889Healing from "../helpers/healing.js";
+
 
 /**
  * Extend the base Actor document by defining a custom roll data structure which is ideal for the Simple system.
@@ -191,7 +193,7 @@ export class Space1889Actor extends Actor
 		for (let injury of injuries)
 		{
 			const isLethal = injury.system.damageType == "lethal";
-			injury.system.remainingDamage = this.getRemainingDamage(injury);
+			injury.system.remainingDamage = SPACE1889Healing.calcRemainingDamage(injury);
 			const healingDurationInDays = (isLethal ? 7 : 1) * injury.system.remainingDamage / injury.system.healingFactor;
 			injury.system.damageTypeDisplay = game.i18n.localize(CONFIG.SPACE1889.vehicleDamageTypeAbbreviations[injury.system.damageType]);
 			injury.system.healingDuration = this.FormatHealingDuration(healingDurationInDays);
@@ -477,14 +479,48 @@ export class Space1889Actor extends Actor
 			const healingDurationInDays = (isLethal ? 7 : 1) * injury.system.remainingDamage / injury.system.healingFactor;
 			injury.system.damageTypeDisplay = game.i18n.localize(CONFIG.SPACE1889.damageTypeAbbreviations[injury.system.damageType]);
 			injury.system.healingDuration = this.FormatHealingDuration(healingDurationInDays);
-			injury.system.timeToNextCure = injury.system.remainingDamage != 0 ? this.FormatHealingDuration(healingDurationInDays / injury.system.remainingDamage) : game.i18n.localize("SPACE1889.HealedOut");
-			injury.system.tooltipInfo = game.i18n.format("SPACE1889.ActorInjuryToolTip", {
-				name: injury.name,
-				origDamage: injury.system.damage,
-				spReduction: injury.system.stylePointDamageReduction,
-				firstAid: (injury.system.firstAidApplied ? injury.system.firstAidHealing : game.i18n.localize("SPACE1889.notCarriedOut")),
-				healing: injury.system.completedHealingProgress
-			});
+			if (injury.system.remainingDamage > 0)
+			{
+				if (SPACE1889Helper.isDead(actor))
+				{
+					injury.system.timeToNextCure = game.i18n.localize("SPACE1889.DeadDoNotHeal");
+					injury.system.healingDuration = "∞";
+				}
+				else if (actor.system.healing.currentHealingDamageId != injury.id)
+					injury.system.timeToNextCure = game.i18n.localize("SPACE1889.Paused");
+				else
+				{
+					const timeInSeconds = SPACE1889Healing.getHealingTimeInSecondsForNextHealthPoint(injury, actor.system.healing.currentHealingDamageId, actor.system.healing.startOfHealingTimeStamp);
+					injury.system.timeToNextCure = this.#FormatDuration(timeInSeconds);
+				}
+			}
+			else
+				injury.system.timeToNextCure = game.i18n.localize("SPACE1889.HealedOut");
+			
+			if (actor.system.healing.currentHealingDamageId != injury.id)
+			{
+				injury.system.tooltipInfo = game.i18n.format("SPACE1889.ActorInjuryToolTip", {
+					name: injury.name,
+					origDamage: injury.system.damage,
+					spReduction: injury.system.stylePointDamageReduction,
+					firstAid: (injury.system.firstAidApplied ? injury.system.firstAidHealing : game.i18n.localize("SPACE1889.notCarriedOut")),
+					healing: Math.round(injury.system.completedHealingProgress * 10000) / 10000
+				});
+			}
+			else
+			{
+				const progress = SPACE1889Healing.getHealingProgressOnActivePoint(actor, injury);
+				const prozent = Math.round(progress * 10000) / 100;
+
+				injury.system.tooltipInfo = game.i18n.format("SPACE1889.ActorActiveInjuryToolTip", {
+					name: injury.name,
+					origDamage: injury.system.damage,
+					spReduction: injury.system.stylePointDamageReduction,
+					firstAid: (injury.system.firstAidApplied ? injury.system.firstAidHealing : game.i18n.localize("SPACE1889.notCarriedOut")),
+					healing: Math.floor(injury.system.completedHealingProgress),
+					healingProgress: prozent
+				});
+			}
 		}
 
 		if (SPACE1889Helper.isCreature(actor))
@@ -508,15 +544,6 @@ export class Space1889Actor extends Actor
 
 			this._CalcThings(actor);
 		}
-	}
-
-	getRemainingDamage(injury)
-	{
-		let damage = injury.system.damage - injury.system.stylePointDamageReduction - injury.system.completedHealingProgress;
-		if (injury.system.firstAidApplied)
-			damage -= injury.system.firstAidHealing;
-
-		return Math.max(0, Math.ceil(damage));
 	}
 
 	/**
@@ -1671,7 +1698,7 @@ export class Space1889Actor extends Actor
 
 		for (const injury of actor.system.injuries)
 		{
-			injury.system.remainingDamage = this.getRemainingDamage(injury);
+			injury.system.remainingDamage = SPACE1889Healing.calcRemainingDamage(injury);
 			const healthOrStructureDamage = this.GetDamageFromType(injury.system.remainingDamage, injury.system.damageType, actor.type);
 
 			damage += healthOrStructureDamage;
@@ -1731,6 +1758,7 @@ export class Space1889Actor extends Actor
 		const hours = (healingDurationInDays - days) * 24;
 		const completeHours = Math.floor(hours);
 		const minutes = Math.floor((hours - completeHours) * 60);
+		const seconds = Math.floor((((hours - completeHours) * 60) - minutes) * 60);
 		let duration = "";
 
 		if (days > 0)
@@ -1745,6 +1773,33 @@ export class Space1889Actor extends Actor
 		{
 			duration += minutes.toString() + "m ";
 		}
+		if (seconds > 0)
+		{
+			duration += seconds.toString() + "s";
+		}
+
+		return duration;
+	}
+
+	#FormatDuration(durationInSeconds)
+	{
+		const days = Math.abs(Math.trunc(durationInSeconds / 86400));
+		let restTime = durationInSeconds - (days * 86400);
+		const hours = Math.abs(Math.trunc(restTime / 3600));
+		restTime -= hours * 3600;
+		const minutes = Math.abs(Math.trunc(restTime / 60));
+		restTime -= minutes * 60;
+		const seconds = Math.abs(Math.round(restTime));
+		let duration = "";
+
+		if (days > 0)
+			duration = days.toString() + "d ";
+		if (hours > 0 )
+			duration += hours.toString() + "h ";
+		if (minutes > 0)
+			duration += minutes.toString() + "m ";
+		if (seconds > 0)
+			duration += seconds.toString() + "s";
 
 		return duration;
 	}

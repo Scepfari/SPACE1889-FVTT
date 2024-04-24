@@ -9,11 +9,15 @@
 	<ol>
 		<li class="item flexrow items-header">
 			<label class="resource-label">{{ localize "SPACE1889.Damage"}}</label>
+			<label class="resource-label">{{ localize "SPACE1889.RemainingDamage"}}</label>
 			<label class="resource-label">{{ localize "SPACE1889.DamageType"}}</label>
 		</li>
 		<li class="item flex-group-center flexrow">
 			<div class="resource">
 				<input type="text" name="system.damage" value="{{system.damage}}" data-dtype="Number" />
+			</div>
+			<div class="resource">
+				<label>{{system.remainingDamage}}</label>	
 			</div>
 			<div class="resource">
 				<select name="system.damageType" data-dtype="String">
@@ -23,6 +27,28 @@
 					{{/each}}
 					{{/select}}
 				</select>
+			</div>
+		</li>
+	</ol>
+	<hr />
+	<ol>
+		<li class="item flexrow items-header">
+			<label class="resource-label">{{ localize "SPACE1889.HealingHasTakenPlace"}}</label>
+		</li>
+		<li class="item flexrow items-header">
+			<label class="resource-label">{{ localize "SPACE1889.StylePoints"}}</label>
+			<label class="resource-label">{{ localize "SPACE1889.SpeciSkillErsteHilfe"}}</label>
+			<label class="resource-label">{{ localize "SPACE1889.NaturalHealing"}}</label>
+		</li>
+		<li class="item flex-group-center flexrow">
+			<div class="resource">
+				<label>{{system.stylePointDamageReduction}}</label>
+			</div>
+			<div class="resource">
+				<label>{{system.firstAidHealing}}</label>	
+			</div>
+			<div class="resource">
+				<label>{{system.completedHealingProgress}}</label>
 			</div>
 		</li>
 	</ol>

@@ -187,7 +187,7 @@ export default class SPACE1889Combat
 				return actor.parent;
 		}
 
-		if (actor.type == 'character')
+		if (actor.type == 'character' || actor.link != '')
 		{
 			const combatant = game.combat?.combatants.find(e => e.actorId == actor?.id);
 			if (combatant)
@@ -425,7 +425,7 @@ export default class SPACE1889Combat
 
 
 		let isCloseCombatAttack = this.isCloseCombatWeapon(weapon);
-		let distanceInfo = game.space1889.distanceMeasuring.getDistanceInfo(token, game.user.targets.first()?.document, isCloseCombatAttack);
+		let distanceInfo = DistanceMeasuring.getDistanceInfo(token, game.user.targets.first()?.document, isCloseCombatAttack);
 		const distanceMod = (isCloseCombatAttack ? 0 : SPACE1889Helper.getDistancePenalty(weapon, distanceInfo.distance));
 
 		const hideText = ' hidden="true" ';

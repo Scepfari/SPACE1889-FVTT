@@ -92,13 +92,16 @@
 				}
 			},
 			"healing": {
-				"currentHealingDamageId": "",
-				"dehydration": false,
-				"starvation": false
+				"healing": {
+					"currentHealingDamageId": "",
+					"startOfHealingTimeStamp": 0,
+					"dehydration": false,
+					"starvation": false
+				}
 			}
 		},
 		"character": {
-			"templates": [ "health", "style", "primaries", "secondaries", "biography", "notes", "block", "parry", "evasion", "healing" ],
+			"templates": [ "health", "healing", "style", "primaries", "secondaries", "biography", "notes", "block", "parry", "evasion" ],
 			"attributes": {
 				"xp": {
 					"value": 0,
@@ -117,7 +120,7 @@
 			}
 		},
 		"creature": {
-			"templates": [ "health", "primaries", "secondaries", "notes" ],
+			"templates": [ "health", "healing", "primaries", "secondaries", "notes" ],
 			"archetype": "animal",
 			"animalCompanionLevel": 0,
 			"movementType": "manylegged",
@@ -125,7 +128,7 @@
 			"origin": "merkur"
 		},
 		"npc": {
-			"templates": [ "health", "style", "primaries", "secondaries", "biography", "notes", "block", "parry", "evasion", "healing" ],
+			"templates": [ "health", "healing", "style", "primaries", "secondaries", "biography", "notes", "block", "parry", "evasion" ],
 			"attributes": {
 				"archetype": {
 					"value": "arbeiter"
@@ -389,7 +392,6 @@
 			"firstAidApplied": false,
 			"firstAidHealing": 0,
 			"firstAidNonLeathalConvertedId": "",
-			"startOfHealingTimeStamp": 0,
 			"completedHealingProgress": 0
 		},
 		"currency": {

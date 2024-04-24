@@ -1880,11 +1880,22 @@ export default class SPACE1889Helper
 		let deadCount = 0;
 		for (const target of game.user.targets)
 		{
-			const statusIds = SPACE1889RollHelper.getActiveEffectStates(target?.actor);
-			if (statusIds && statusIds.findIndex(element => element == "dead") >= 0)
+			if (this.isDead(target?.actor))
 				++deadCount;
 		}
 		return { combatSupport: combatSupport, targets: targets, isDeadCount: deadCount };
+	}
+
+	static isDead(actor)
+	{
+		if (!actor)
+			return false;
+
+		const statusIds = SPACE1889RollHelper.getActiveEffectStates(actor);
+		if (statusIds && statusIds.findIndex(element => element == "dead") >= 0)
+			return true;
+
+		return false;
 	}
 
 	static isFoundryV10Running()

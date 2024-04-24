@@ -2,6 +2,7 @@ import SPACE1889Helper from "../helpers/helper.js";
 import SPACE1889Combat from "../helpers/combat.js";
 import DistanceMeasuring from "../helpers/distanceMeasuring.js"
 import SPACE1889Time from "../helpers/time.js"
+import SPACE1889Healing from "./healing.js";
 
 export default class SPACE1889RollHelper
 {
@@ -1023,19 +1024,7 @@ export default class SPACE1889RollHelper
 					const timestamp = SPACE1889Time.getCurrentTimestamp();
 					const isCombat = game.combat?.active && game.combat?.started;
 
-					actor.updateEmbeddedDocuments("Item", [{
-						_id: item._id,
-						"system.damageType": selectedOption,
-						"name": userInputName,
-						"img": path,
-						"system.damage": damageAmountInt,
-						"system.dataOfTheEvent": eventDate,
-						"system.eventTimestamp": timestamp,
-						"system.combatInfo.id": isCombat ? game.combat.id : "",
-						"system.combatInfo.round": isCombat ? game.combat.round : 0,
-						"system.combatInfo.turn": isCombat ? game.combat.turn : 0
-					}]);
-					SPACE1889RollHelper.doDamageChatMessage(actor, item._id, damageAmountInt, selectedOption, (useInputName ? userInputName : ""));
+					doIt(selectedOption, userInputName, path,damageAmountInt,eventDate,timestamp,isCombat, (useInputName ? userInputName : ""));
 				}
 				else if (actor.items.get(item._id) != undefined)
 				{
@@ -1045,6 +1034,24 @@ export default class SPACE1889RollHelper
 			}
 		});
 		dialog.render(true);
+
+		async function doIt(damageType, name, path, damageAmount, eventDate, timestamp, isCombat, userInputName)
+		{
+			await actor.updateEmbeddedDocuments("Item", [{
+				_id: item._id,
+				"system.damageType": damageType,
+				"name": name,
+				"img": path,
+				"system.damage": damageAmount,
+				"system.dataOfTheEvent": eventDate,
+				"system.eventTimestamp": timestamp,
+				"system.combatInfo.id": isCombat ? game.combat.id : "",
+				"system.combatInfo.round": isCombat ? game.combat.round : 0,
+				"system.combatInfo.turn": isCombat ? game.combat.turn : 0
+			}]);
+			await SPACE1889Healing.refreshTheInjuryToBeHealed(actor);
+			await SPACE1889RollHelper.doDamageChatMessage(actor, item._id, damageAmount, damageType, userInputName);
+		}
 	}
 
 	static getMaxRounds()
@@ -1835,7 +1842,7 @@ export default class SPACE1889RollHelper
 		const timestamp = SPACE1889Time.getCurrentTimestamp();
 		const isCombat = game.combat?.active && game.combat?.started;
 
-		actor.updateEmbeddedDocuments("Item", [{
+		await actor.updateEmbeddedDocuments("Item", [{
 			_id: item._id,
 			"system.damageType": damageType,
 			"name": damageName,
@@ -1847,6 +1854,7 @@ export default class SPACE1889RollHelper
 			"system.combatInfo.round": isCombat ? game.combat.round : 0,
 			"system.combatInfo.turn": isCombat ? game.combat.turn : 0
 		}]);
+		await SPACE1889Healing.refreshTheInjuryToBeHealed(actor);
 
 		return item._id;
 	}

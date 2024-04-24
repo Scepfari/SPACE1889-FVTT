@@ -109,6 +109,8 @@ Hooks.on("ready", async function ()
 		document.documentElement.style.setProperty('--space1889-hotbar2path', 'url(../icons/backgrounds/hotbar2v11.webp)');
 		document.documentElement.style.setProperty('--space1889-hotbar2width', '631px');
 	}
+
+	SPACE1889Time.connectHooks();
 });
 
 Hooks.once("setup", () =>
@@ -257,15 +259,13 @@ Hooks.on("renderChatMessage", (app, html, msg) =>
 
 	html.on('click', '.applyFirstAid', ev =>
 	{
-		SPACE1889Healing.OnFirstAid(ev);
+		SPACE1889Healing.onFirstAid(ev);
 	});
-
 
 	html.on('click', '.applyStylePointDamageReduction', ev =>
 	{
-		SPACE1889Healing.OnStylePointDamageReduction(ev);
+		SPACE1889Healing.onStylePointDamageReduction(ev);
 	});
-
 
 	html.on('click', '.space1889-image', ev =>
 	{

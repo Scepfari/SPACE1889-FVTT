@@ -1,5 +1,23 @@
+import SPACE1889Healing from "../helpers/healing.js";
+
 export default class SPACE1889Time
 {
+	static connectHooks()
+	{
+		if (!this.isSimpleCalendarEnabled())
+			return;
+
+		Hooks.on(SimpleCalendar.Hooks.DateTimeChange, (data) => 
+		{
+			SPACE1889Time.#dateTimeChanged(data);
+		});
+
+		Hooks.on(SimpleCalendar.Hooks.Ready, (data) => 
+		{
+			console.log("SimpleCalendar.Rady")
+		});
+	}
+
 	static isSimpleCalendarEnabled()
 	{
 		const id = "foundryvtt-simple-calendar";
@@ -12,7 +30,7 @@ export default class SPACE1889Time
 			return SimpleCalendar.api.timestamp();
 
 		const worldDate = new Date();
-		return worldDate;
+		return worldDate.getTime();
 	}
 
 	static getCurrentTimeAndDate()
@@ -121,4 +139,24 @@ export default class SPACE1889Time
 		return date.getTime();
 	}
 
+	static changeDate(offsetInSeconds)
+	{
+		if (this.isSimpleCalendarEnabled())
+		{
+			if (!SimpleCalendar.api.changeDate({ seconds: offsetInSeconds }))
+			{
+				ui.notifications.info(game.i18n.localize("SPACE1889.CanNotSetTime"));
+			}
+		}
+	}
+
+	static #dateTimeChanged(data)
+	{
+		console.log("neues Datum:" + `${data.date.display.day}.${data.date.display.month}.${data.date.year} ${data.date.display.time}`);
+
+		if (!game.user.isGM)
+			return;
+
+		SPACE1889Healing.healByTime();
+	}
 }

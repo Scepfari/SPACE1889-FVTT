@@ -2,6 +2,8 @@ import {onManageActiveEffect} from "../helpers/effects.mjs";
 import SPACE1889Helper from "../helpers/helper.js";
 import SPACE1889RollHelper from "../helpers/roll-helper.js";
 import ForeignNotesEditor from "../helpers/foreignNotesEditor.mjs"
+import SPACE1889Healing from "../helpers/healing.js";
+import SPACE1889Time from "../helpers/time.js";
 
 /**
  * Extend the basic ActorSheet with some very simple modifications
@@ -348,8 +350,14 @@ export class Space1889ActorSheet extends ActorSheet {
 		{
 			const itemId = this._getItemId(ev);
 			const item = this.actor.items.get(itemId);
-			const newValue = this.incrementValue(ev, item.system.healingFactor, 1, undefined);
-			this.actor.updateEmbeddedDocuments("Item", [{ _id: itemId, "system.healingFactor": newValue }]);
+			const newHealingFactor = this.incrementValue(ev, item.system.healingFactor, 1, undefined);
+			SPACE1889Healing.changeHealingFactor(this.actor, itemId, newHealingFactor);
+		});
+
+		html.find('.rerender-click').mousedown(ev =>
+		{
+			this.actor.prepareDerivedData();
+			this.render();
 		});
 
 		html.find('.location-click').mousedown(ev =>
@@ -1422,7 +1430,12 @@ export class Space1889ActorSheet extends ActorSheet {
 			return;
 
 		const item = this.actor.items.get(idToDelete);
-		item.delete();
+		const isInjury = item.type == "damage";
+		await item.delete();
+
+		if (isInjury)
+			await SPACE1889Healing.refreshTheInjuryToBeHealed(this.actor)
+
 //		li.slideUp(200, () => this.render(false));
 		this.render();
 	}

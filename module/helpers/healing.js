@@ -4,7 +4,19 @@ import SPACE1889Time from "../helpers/time.js";
 
 export default class SPACE1889Healing
 {
-	static OnFirstAid(ev)
+	static calcRemainingDamage(injury)
+	{
+		if (!injury || injury.type != "damage")
+			return 0;
+
+		let damage = injury.system.damage - injury.system.stylePointDamageReduction - injury.system.completedHealingProgress;
+		if (injury.system.firstAidApplied)
+			damage -= injury.system.firstAidHealing;
+
+		return Math.max(0, Math.ceil(damage));
+	}
+
+	static onFirstAid(ev)
 	{
 		const button = $(ev.currentTarget);
 		if (!button)
@@ -24,12 +36,19 @@ export default class SPACE1889Healing
 		if (!token)
 			return;
 
+		const combatant = game.combat?.combatants.find((e) => e.tokenId == targetId);
+		if (combatant)
+		{
+			ui.notifications.info(game.i18n.localize("SPACE1889.FistAidBlockedInCombat"));
+			return;
+		}
+
 		//const healerToken = game.scenes.viewed.tokens.get(actorTokenId);
 		//const healerName = !attackerToken ? 'unbekannt' : attackerToken.name;
 		if (!SPACE1889Helper.hasOwnership(token.actor, true))
 			return;
 
-		this.ApplyFirstAid(token.actor, firstAidSuccesses, isLifesaver, timeStamp);
+		this.#applyFirstAid(token.actor, firstAidSuccesses, isLifesaver, timeStamp);
 
 		SPACE1889Helper.markChatButtonAsDone(ev,
 			game.i18n.localize("SPACE1889.ApplyFirstAid"),
@@ -37,7 +56,7 @@ export default class SPACE1889Healing
 		);
 	}
 
-	static async ApplyFirstAid(actor, firstAidSuccesses, fromLivesaver, timestamp)
+	static async #applyFirstAid(actor, firstAidSuccesses, fromLivesaver, timestamp)
 	{
 		if (actor.type !== "character" && actor.type !== "npc")
 			return;
@@ -50,7 +69,7 @@ export default class SPACE1889Healing
 			if (!SPACE1889Time.isLessThenOneHour(injury.system.eventTimestamp, timestamp))
 				continue;
 
-			if (injury.system.firstAidApplied) //to do: Sp�tere Wiederholung erm�glichen
+			if (injury.system.firstAidApplied) //to do: Spaetere Wiederholung ermoeglichen
 				continue;
 
 			let info = {
@@ -75,6 +94,8 @@ export default class SPACE1889Healing
 			return;
 		}
 
+		let firstAidInfo = { nonLethalCount: 0, lethalCount: 0, transformed: false };
+
 		for (let info of nonLethalInjuries)
 		{
 			if (info.damage <= remainingHealingPoints)
@@ -87,6 +108,7 @@ export default class SPACE1889Healing
 				info.firstAidHealing = remainingHealingPoints;
 				remainingHealingPoints = 0;
 			}
+			firstAidInfo.nonLethalCount += info.firstAidHealing;
 			await updateInjury(actor, info);
 		}
 
@@ -96,6 +118,7 @@ export default class SPACE1889Healing
 			{
 				info.firstAidHealing = info.damage;
 				remainingHealingPoints -= (2 * info.damage);
+				firstAidInfo.lethalCount += info.firstAidHealing;
 			}
 			else if (remainingHealingPoints > 0)
 			{
@@ -103,11 +126,14 @@ export default class SPACE1889Healing
 				{
 					info.firstAidHealing = remainingHealingPoints / 2;
 					remainingHealingPoints = 0;
+					firstAidInfo.lethalCount += info.firstAidHealing;
 				}
 				else
 				{
 					info.firstAidHealing = Math.ceil(remainingHealingPoints / 2);
 					remainingHealingPoints = 0;
+					firstAidInfo.lethalCount += info.firstAidHealing - 1;
+					firstAidInfo.transformed = true;
 
 					const damageData = [{ name: 'Wunde in Bearbeitung', type: 'damage' }];
 					const items = await Item.create(damageData, { parent: actor });
@@ -132,7 +158,10 @@ export default class SPACE1889Healing
 			}
 			await updateInjury(actor, info);
 		}
-		ui.notifications.info('Erste Hilfe ausgeführt');
+
+		this.refreshTheInjuryToBeHealed(actor)
+		SPACE1889Time.changeDate(60); //Heildauer ist 60s
+		this.#sendFirstAidHealingChatMessage(actor, timestamp, firstAidInfo);
 
 		async function updateInjury(actor, updateInfo)
 		{
@@ -145,7 +174,33 @@ export default class SPACE1889Healing
 		}
 	}
 
-	static OnStylePointDamageReduction(ev)
+	static #sendFirstAidHealingChatMessage(actor, time, firstAidInfo)
+	{
+		const timeAsString = SPACE1889Time.formatTimeDate(SPACE1889Time.getTimeAndDate(time));
+		let content = game.i18n.localize("SPACE1889.HealingThroughFirstAid") + timeAsString;
+		content += game.i18n.localize("SPACE1889.FirstAidDuration");
+
+		if (firstAidInfo.lethalCount == 0 && firstAidInfo.nonLethalCount == 0 && !firstAidInfo.transformed)
+			content += game.i18n.localize("SPACE1889.FirstAidFailed");
+		else
+		{
+			if (firstAidInfo.nonLethalCount != 0 || firstAidInfo.lethalCount != 0)
+				content += game.i18n.format("SPACE1889.FirstAidHealing", { "nonLethal": firstAidInfo.nonLethalCount, "lethal": firstAidInfo.lethalCount, });
+			if (firstAidInfo.transformed)
+				content +=  game.i18n.localize("SPACE1889.FirstAidLethalToNl");
+		}
+
+		let chatData =
+		{
+			user: game.user.id,
+			speaker: ChatMessage.getSpeaker({ actor: actor }),
+			content: content
+		};
+
+		ChatMessage.create(chatData, {});
+	}
+
+	static onStylePointDamageReduction(ev)
 	{
 		const button = $(ev.currentTarget);
 		if (!button)
@@ -184,10 +239,10 @@ export default class SPACE1889Healing
 		if (!SPACE1889Helper.hasOwnership(actor, true))
 			return;
 
-		this.StylePointDamageReduction(ev, actor, damageId, originalDamage, originalDamageType, originalDamageName, weaponEffect, weaponEffectTurns, weaponEffectOnly, timeStamp, createdEffectIds);
+		this.#stylePointDamageReduction(ev, actor, damageId, originalDamage, originalDamageType, originalDamageName, weaponEffect, weaponEffectTurns, weaponEffectOnly, timeStamp, createdEffectIds);
 	}
 
-	static StylePointDamageReduction(ev, actor, damageId, originalDamage, originalDamageType, originalDamageName, weaponEffect, weaponEffectTurns, weaponEffectOnly, timeStamp, createdEffectIds)
+	static #stylePointDamageReduction(ev, actor, damageId, originalDamage, originalDamageType, originalDamageName, weaponEffect, weaponEffectTurns, weaponEffectOnly, timeStamp, createdEffectIds)
 	{
 		const injury = actor.items.get(damageId);
 		if (!injury ||
@@ -203,7 +258,6 @@ export default class SPACE1889Healing
 
 		const actorStylePoints = actor.system.style.value;
 		const maxReduction = Math.min(Math.floor(actorStylePoints / 2), originalDamage);
-
 		const damageLocalized = game.i18n.localize("SPACE1889.Damage");
 		const stylePointsLocalized = game.i18n.localize("SPACE1889.StylePoints");
 		let reductionOptions = '<option value="0" selected="selected">-</option>';
@@ -211,9 +265,6 @@ export default class SPACE1889Healing
 		{
 			reductionOptions += `<option value="${i}"> ${i} ${damageLocalized} (${i * 2} ${stylePointsLocalized})</option>`;
 		}
-		
-		//zwei Optionen Schaden reduzieren oder Verteidigung erhöhen, letzteres ist interessant
-		//bei Waffen mit Flächenschaden
 
 		const inputDesc = game.i18n.localize("SPACE1889.ChooseDamageReduction") + ":";
 
@@ -259,13 +310,13 @@ export default class SPACE1889Healing
 					await effect.delete();
 			}
 
+			await SPACE1889Healing.refreshTheInjuryToBeHealed(actor);
 			await SPACE1889RollHelper.doDamageChatMessage(actor, damageId, originalDamage-damageReduction, originalDamageType, originalDamageName, weaponEffect, weaponEffectTurns, weaponEffectOnly, false);
 
 			SPACE1889Helper.markChatButtonAsDone(ev,
 				game.i18n.localize("SPACE1889.UseStylePoints"),
 				game.i18n.format("SPACE1889.StylePointsUsed", { spCount: damageReduction * 2 })
 			);
-
 		}
 
 		function isSameTime(injury)
@@ -284,5 +335,317 @@ export default class SPACE1889Healing
 
 			return isSame;
 		}
+	}
+
+
+	static #findInjuryToHeal(actor, overrideStartHealingTimeStamp = Infinity)
+	{
+		if (!actor || SPACE1889Helper.isDead(actor))
+			return undefined;
+
+		const injuryInHealingId = actor.system.healing.currentHealingDamageId;
+		let minTime = Infinity;
+		let wantedInjury = undefined;
+		const healingStartTimeStamp = overrideStartHealingTimeStamp == Infinity ? actor.system.healing.startOfHealingTimeStamp : overrideStartHealingTimeStamp;
+
+		for (const injury of actor.system.injuries)
+		{
+			if (injury.system.remainingDamage == 0 || injury.system.damageType != "nonLethal")
+				continue;
+
+			const healingTimeForTheNextHealthPoint = this.getHealingTimeInSecondsForNextHealthPoint(injury, injuryInHealingId, healingStartTimeStamp);
+
+			if (healingTimeForTheNextHealthPoint < minTime)
+			{
+				wantedInjury = injury;
+				minTime = healingTimeForTheNextHealthPoint
+			}
+		}
+
+		if (minTime < Infinity && wantedInjury != undefined)
+			return wantedInjury;
+
+		for (const injury of actor.system.injuries)
+		{
+			if (injury.system.remainingDamage == 0 || injury.system.damageType == "nonLethal")
+				continue;
+
+			const healingTimeForTheNextHealthPoint = this.getHealingTimeInSecondsForNextHealthPoint(injury, injuryInHealingId, healingStartTimeStamp);
+
+			if (healingTimeForTheNextHealthPoint < minTime)
+			{
+				wantedInjury = injury;
+				minTime = healingTimeForTheNextHealthPoint;
+			}
+		}
+		return wantedInjury;
+	}
+
+	static getHealingTimeInSecondsForNextHealthPoint(injury, injuryInHealingId, healingStartTimeStamp)
+	{
+		if (!injury || injury.system.remainingDamage == 0)
+			return Infinity;
+
+		let neededSecondsToHeal = this.#getHealingSecondsByDamageType(injury.system?.damageType);
+		const investedTime = injury.system.completedHealingProgress - Math.floor(injury.system.completedHealingProgress);
+		if (investedTime > 0)
+			neededSecondsToHeal *= (1 - investedTime);
+
+		let healingTime = neededSecondsToHeal / injury.system.healingFactor;
+
+		if (injury.id == injuryInHealingId && SPACE1889Time.isSimpleCalendarEnabled())
+			healingTime -= this.#getPastTimeInSeconds(healingStartTimeStamp)
+
+		return healingTime;
+	}
+
+	static #getHealingSecondsByDamageType(damageType)
+	{
+		const oneDayInSeconds = 86400  // 24 * 60 * 60s = 86400s
+		return (damageType == "nonLethal" ? 1 : 7) * oneDayInSeconds;
+	}
+
+	static #getPastTimeInSeconds(healingStartTimeStamp)
+	{
+		if (healingStartTimeStamp == 0 || healingStartTimeStamp == Infinity || !SPACE1889Time.isSimpleCalendarEnabled())
+			return 0;
+
+		// nur wenn der aktuelle Zeitpunkt nach dem Heilstart liegt, wird ein Wert != 0 zurückgeliefert
+		return Math.max(SPACE1889Time.getTimeDifInSeconds(SPACE1889Time.getCurrentTimestamp(), healingStartTimeStamp), 0);
+	}
+
+	static healByTime()
+	{
+		if (!game.user.isGM)
+			return;
+
+		for (let actor of game.actors)
+		{
+			if (actor.type != "npc" && actor.type != "character")
+				continue;
+
+			if (SPACE1889Helper.isDead(actor))
+				continue;
+
+			this.healActorByTime(actor);
+		}
+	}
+
+	static async healActorByTime(actor)
+	{
+		if (!actor)
+			return;
+
+		await this.#removeOutdatedEffects(actor);
+
+		const pastTime = this.#getPastTimeInSeconds(actor.system.healing.startOfHealingTimeStamp);
+		let healingTimeForCurrentHealing = Infinity;
+		let healingInjury = undefined;
+		if (actor.system.healing.currentHealingDamageId != "")
+		{
+			healingInjury = actor.items.get(actor.system.healing.currentHealingDamageId);
+			healingTimeForCurrentHealing = this.getHealingTimeInSecondsForNextHealthPoint(healingInjury, "", actor.system.healing.startOfHealingTimeStamp);
+
+			if (healingTimeForCurrentHealing < Infinity && pastTime >= healingTimeForCurrentHealing)
+			{
+				// es ist genug Zeit verstrichen um mind. eine Gesundheit zu heilen
+				const newStartTimeStamp = actor.system.healing.startOfHealingTimeStamp + healingTimeForCurrentHealing;
+				const completedHealingProgress = Math.floor(healingInjury.system.completedHealingProgress) + 1;
+				await actor.updateEmbeddedDocuments("Item", [{ _id: healingInjury.id, "system.completedHealingProgress": completedHealingProgress }]);
+				this.#sendHealingChatMessage(actor, healingInjury, newStartTimeStamp);
+
+				// nächstes Heilobjekt identifizieren, markieren, benötigte Zeit abstreichen und dann nochmal von vorn
+				const nextInjuryToHeal = this.#findInjuryToHeal(actor, newStartTimeStamp);
+				const nextInjuryId = nextInjuryToHeal ? nextInjuryToHeal.id : "";
+				await actor.update({ 'system.healing.currentHealingDamageId': nextInjuryId, "system.healing.startOfHealingTimeStamp": newStartTimeStamp });
+				await this.healActorByTime(actor);
+				return;
+			}
+		}
+
+		let injury = this.#findInjuryToHeal(actor);
+		if (!injury)
+			return;
+
+		if (actor.system.healing.currentHealingDamageId == injury.id)
+		{
+			actor.prepareData();
+			return;
+		}
+
+		if (actor.system.healing.currentHealingDamageId != "" && healingInjury)
+		{
+			// bisherigen Fortschritt verbuchen
+			let neededSecondsToHeal = this.#getHealingSecondsByDamageType(healingInjury.system?.damageType);
+			const progress = pastTime * healingInjury.system.healingFactor / neededSecondsToHeal;
+			const completedHealingProgress = healingInjury.system.completedHealingProgress + progress;
+			if (Math.floor(completedHealingProgress) != Math.floor(healingInjury.system.completedHealingProgress))
+			{
+				ui.notifications.info(game.i18n.format("SPACE1889.HealingError", { actorName: actor.name, injuryName: healingInjury.name }));
+				const info = `potenzieller Fehler in der Heilung\nActor ${actor.name} (id: ${actor.id}) injury ${healingInjury.name} (id: ${healingInjury.id}) \nHealing progress uncertain: ${Math.floor(completedHealingProgress)} != ${Math.floor(healingInjury.system.completedHealingProgress)}`;
+				console.log(info);
+			}
+
+			await actor.updateEmbeddedDocuments("Item", [{ _id: healingInjury.id, "system.completedHealingProgress": completedHealingProgress }]);
+			await actor.update({ 'system.healing.currentHealingDamageId': injury.id, "system.healing.startOfHealingTimeStamp": SPACE1889Time.getCurrentTimestamp() });
+		}
+		else
+		{
+			await actor.update({ 'system.healing.currentHealingDamageId': injury.id, "system.healing.startOfHealingTimeStamp": SPACE1889Time.getCurrentTimestamp() });			
+		}
+	}
+
+	static async refreshTheInjuryToBeHealed(actor)
+	{
+		let injury = this.#findInjuryToHeal(actor);
+		if (!injury)
+		{
+			if (actor.system.healing.currentHealingDamageId != "")
+				await actor.update({ 'system.healing.currentHealingDamageId': "", "system.healing.startOfHealingTimeStamp": 0 });
+
+			return;
+		}
+
+		if (actor.system.healing.currentHealingDamageId != "" && actor.system.healing.currentHealingDamageId != injury.id)
+		{
+			const healingInjury = actor.items.get(actor.system.healing.currentHealingDamageId);
+			if (healingInjury)
+			{
+				const pastTime = this.#getPastTimeInSeconds(actor.system.healing.startOfHealingTimeStamp);
+				let neededSecondsToHeal = this.#getHealingSecondsByDamageType(healingInjury.system?.damageType);
+				const progress = pastTime * healingInjury.system.healingFactor / neededSecondsToHeal;
+				const completedHealingProgress = healingInjury.system.completedHealingProgress + progress;
+				// bisherigen Fortschritt verbuchen
+				if (Math.floor(completedHealingProgress) == Math.floor(healingInjury.system.completedHealingProgress))
+					await actor.updateEmbeddedDocuments("Item", [{ _id: healingInjury.id, "system.completedHealingProgress": completedHealingProgress }]);
+				else
+					console.log("Fehler in function healActorByTime()");
+			}
+			await actor.update({ 'system.healing.currentHealingDamageId': injury.id, "system.healing.startOfHealingTimeStamp": SPACE1889Time.getCurrentTimestamp() });
+		}
+		if (actor.system.healing.currentHealingDamageId == "")
+		{
+			await actor.update({ 'system.healing.currentHealingDamageId': injury.id, "system.healing.startOfHealingTimeStamp": SPACE1889Time.getCurrentTimestamp() });
+		}
+	}
+
+	static getHealingProgressOnActivePoint(actor, injury)
+	{
+		if (!actor || !injury )
+			return 0;
+
+		const current = actor.items.get(actor.system.healing.currentHealingDamageId);
+		if (!current || current.id != injury.id)
+			return injury.system.completedHealingProgress - Math.floor(injury.system.completedHealingProgress);
+
+		const pastTime = this.#getPastTimeInSeconds(actor.system.healing.startOfHealingTimeStamp);
+		let neededSecondsToHeal = this.#getHealingSecondsByDamageType(injury.system?.damageType);
+		let progress = pastTime * injury.system.healingFactor / neededSecondsToHeal;
+		progress += injury.system.completedHealingProgress - Math.floor(injury.system.completedHealingProgress);
+		return progress;
+	}
+
+	static async changeHealingFactor(actor, injuryId, newHealingFactor)
+	{
+		const injury = actor.items.get(injuryId)
+
+		if (!actor || !injury || !newHealingFactor)
+			return;
+
+		if (this.calcRemainingDamage(injury) == 0)
+		{
+			await actor.updateEmbeddedDocuments("Item", [{ _id: injuryId, "system.healingFactor": newHealingFactor }]);
+			return;
+		}
+
+		const healingInjury = actor.items.get(actor.system.healing.currentHealingDamageId);
+		let setNewTime = false;
+		let isFactorUpdateDone = false;
+		if (healingInjury)
+		{
+			
+			const pastTime = this.#getPastTimeInSeconds(actor.system.healing.startOfHealingTimeStamp);
+			if (pastTime > 0)
+			{
+				setNewTime = true;
+				let neededSecondsToHeal = this.#getHealingSecondsByDamageType(healingInjury.system.damageType);
+				const progress = pastTime * healingInjury.system.healingFactor / neededSecondsToHeal;
+				const progressOfActualPoint = Math.min(progress + healingInjury.system.completedHealingProgress - Math.trunc(healingInjury.system.completedHealingProgress), 1);
+				const completedProgress = Math.trunc(healingInjury.system.completedHealingProgress) + progressOfActualPoint;
+				if (injuryId == healingInjury.id)
+				{
+					await actor.updateEmbeddedDocuments("Item", [{
+						_id: healingInjury.id, "system.completedHealingProgress": completedProgress,
+						"system.healingFactor": newHealingFactor
+					}]);
+					isFactorUpdateDone = true;
+				}
+				else
+				{
+					await actor.updateEmbeddedDocuments("Item", [{
+						_id: healingInjury.id, "system.completedHealingProgress": completedProgress
+					}]);
+				}
+			}
+		}
+
+		if (!isFactorUpdateDone)
+			await actor.updateEmbeddedDocuments("Item", [{ _id: injuryId, "system.healingFactor": newHealingFactor }]);
+
+		let currentTime = SPACE1889Time.getCurrentTimestamp();
+		let newHealing = this.#findInjuryToHeal(actor, currentTime)
+		let newHealingId = newHealing ? newHealing.id : "";
+		if (actor.system.healing.currentHealingDamageId != newHealingId || setNewTime)
+		{
+			let newTime = actor.system.healing.startOfHealingTimeStamp;
+			if (setNewTime || newTime == 0)
+				newTime = currentTime;
+
+			await actor.update({
+				"system.healing.currentHealingDamageId": newHealingId,
+				"system.healing.startOfHealingTimeStamp": newTime
+			});
+		}
+	}
+
+	static #sendHealingChatMessage(actor, injury, time)
+	{
+		const timeAsString = SPACE1889Time.formatTimeDate(SPACE1889Time.getTimeAndDate(time));
+		const messageContent = injury.system.remainingDamage > 0 ?
+			game.i18n.format("SPACE1889.ChatPartiallyHealed", { "name": injury.name, "date": timeAsString, "damage": injury.system.remainingDamage }) :
+			game.i18n.format("SPACE1889.ChatHealed", { "name": injury.name, "date": timeAsString});
+		let chatData =
+		{
+			user: game.user.id,
+			speaker: ChatMessage.getSpeaker({ actor: actor }),
+			content: messageContent
+		};
+
+		ChatMessage.create(chatData, {});
+	}
+
+	static async #removeOutdatedEffects(actor)
+	{
+		if (!actor)
+			return;
+		
+		let effectsToRemove = [];
+		for (let effect of actor.effects)
+		{
+			if (!effect.duration)
+				continue;
+
+			if (effect.duration.combat && game.combats.has(effect.duration.combat)) // do not touch a running combat
+				continue;
+
+			const pastTime = this.#getPastTimeInSeconds(effect.duration.startTime);
+
+			if (effect.duration.seconds > 0 && effect.duration.seconds < pastTime)
+				effectsToRemove.push(effect._id);
+
+		}
+		if (effectsToRemove.length > 0)
+			await actor.deleteEmbeddedDocuments("ActiveEffect", effectsToRemove);
+
 	}
 }

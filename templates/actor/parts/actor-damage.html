@@ -1,7 +1,8 @@
 {{#if system.injuries}}
 <ol class="items-list">
 	<li class="item flexrow items-header">
-		<div class="item-name">{{localize "SPACE1889.InjuryPl"}}</div>
+		<div class="item-name">{{localize "SPACE1889.InjuryPl"}}&#160;
+			<a class="rerender-click" data-tooltip="{{localize "SPACE1889.RefreshHealingTime"}}"> <i class="fa fa-medkit" aria-hidden="true"></i></a></div>
 		<div title='{{localize "SPACE1889.DataOfTheEvent"}}' class="items-list item-max-with75px">{{localize "SPACE1889.DataOfTheEventAbbr"}}</div>
 		<div title='{{localize "SPACE1889.Damage"}}' class="items-list item-max-with60px">{{localize "SPACE1889.Damage"}}</div>
 		<div title='{{localize "SPACE1889.HealingFactor"}}' class="items-list item-max-with40px">{{localize "SPACE1889.HealingFactorAbbr"}}</div>
