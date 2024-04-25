@@ -2,7 +2,7 @@
 
 	{{!-- Sheet Header --}}
 	<header class="sheet-header">
-		<img class="profile-img artwork" src="{{actor.img}}" data-edit="img" title="{{actor.name}}" height="100" width="100"/>
+		<img class="profile-img artwork" src="{{actor.img}}" data-edit="img" data-tooltip="{{actor.name}}" height="100" width="100"/>
 		<div class="header-fields">
 			<h1 class="charname"><input name="name" type="text" value="{{actor.name}}" placeholder="Name"/></h1>
 			{{!-- The grid classes are defined in scss/global/_grid.scss. To use,
@@ -18,7 +18,7 @@
 					<div class="resource-content flexrow item-max-with75px">
 						<div style="display: grid; grid-template-columns: 40% 20% 40%; grid-template-rows: 100%;">
 							<div class="item-margintb4px item-right">
-								<a class="item-create item-margintb4px" align="right" title='{{localize "SPACE1889.InfoAddDamage"}}' data-type="damage">{{system.health.value}}</a>
+								<a class="item-create item-margintb4px" align="right" data-tooltip='{{localize "SPACE1889.InfoAddDamage"}}' data-type="damage">{{system.health.value}}</a>
 							</div>
 							<div class="item-margintb4px"> / </div>
 							<div class="item-margintb4px item-left">{{system.health.max}}</div>
@@ -45,7 +45,7 @@
 				<div class="resource flex-group-center">
 					<label for="system.attributes.xp.used">used {{localize "SPACE1889.Xp"}}</label>
 					<div class="resource-content flexrow flex-center flex-between">
-						<div title='{{localize "SPACE1889.CharacterSheetAvailableAre"}}: {{system.attributes.xp.available}}{{localize "SPACE1889.Xp"}}' class="resource flex-group-center item-margin5px">{{system.attributes.xp.used}}</div>
+						<div data-tooltip='{{localize "SPACE1889.CharacterSheetAvailableAre"}}: {{system.attributes.xp.available}}{{localize "SPACE1889.Xp"}}' class="resource flex-group-center item-margin5px">{{system.attributes.xp.used}}</div>
 					</div>
 				</div>
 
@@ -114,9 +114,9 @@
 					<div class="items-header-center">{{localize "SPACE1889.Abilities"}}</div>
 					<li class="item flexrow items-header">
 						<div class="item-name ">{{localize "SPACE1889.Name"}}</div>
-						<div title='{{localize "SPACE1889.Base"}}' class="items-list item-max-with40px">{{localize "SPACE1889.Base"}}</div>
-						<div title='{{localize "SPACE1889.TalentBonus"}}' class="items-list item-max-with40px">{{localize "SPACE1889.Mod"}}</div>
-						<div title='{{localize "SPACE1889.Rating"}}' class="items-list item-max-with42px">{{localize "SPACE1889.Rating"}}</div>
+						<div data-tooltip='{{localize "SPACE1889.Base"}}' class="items-list item-max-with40px">{{localize "SPACE1889.Base"}}</div>
+						<div data-tooltip='{{localize "SPACE1889.TalentBonus"}}' class="items-list item-max-with40px">{{localize "SPACE1889.Mod"}}</div>
+						<div data-tooltip='{{localize "SPACE1889.Rating"}}' class="items-list item-max-with42px">{{localize "SPACE1889.Rating"}}</div>
 					</li>
 					{{#each system.abilities as |ability key|}}
 					<li class="flexrow">
@@ -124,7 +124,7 @@
 						<div class="item-max-with40px">
 							<a class="increment-{{key}}-click">{{ability.value}}</a>
 						</div>
-						<label title='{{ability.bonusInfo}}' class="items-list item-max-with40px">{{ability.bonus}}</label>
+						<label data-tooltip='{{ability.bonusInfo}}' class="items-list item-max-with40px">{{ability.bonus}}</label>
 						<label class="items-list item-max-with42px resource-label">{{ability.total}}</label>
 					</li>
 					{{/each}}
@@ -133,19 +133,19 @@
 					<div class="items-header-center">{{localize "SPACE1889.SecondaryAttributes"}}</div>
 					<li class="item flexrow items-header">
 						<div class="item-name ">{{localize "SPACE1889.Name"}}</div>
-						<div title='{{localize "SPACE1889.Base"}}' class="items-list item-max-with40px">{{localize "SPACE1889.Base"}}</div>
-						<div title='{{localize "SPACE1889.TalentBonus"}}' class="items-list item-max-with40px">{{localize "SPACE1889.Mod"}}</div>
-						<div title='{{localize "SPACE1889.Rating"}}' class="items-list item-max-with40px">{{localize "SPACE1889.Rating"}}</div>
+						<div data-tooltip='{{localize "SPACE1889.Base"}}' class="items-list item-max-with40px">{{localize "SPACE1889.Base"}}</div>
+						<div data-tooltip='{{localize "SPACE1889.TalentBonus"}}' class="items-list item-max-with40px">{{localize "SPACE1889.Mod"}}</div>
+						<div data-tooltip='{{localize "SPACE1889.Rating"}}' class="items-list item-max-with40px">{{localize "SPACE1889.Rating"}}</div>
 					</li>
 					{{#each system.secondaries as |secondary key|}}
 					<li class="secondary flexrow">
 						{{#if (eq key 'move')}}
-							<label for="system.secondaries.{{key}}.value" class="rollable flexlarge align-left" data-roll-key="{{key}}" data-roll-type="actor" data-roll-diecount="{{secondary.total}}" data-label="{{secondary.label}}"  title="{{secondary.inSiUnits}}">{{secondary.label}}</label>
+							<label for="system.secondaries.{{key}}.value" class="rollable flexlarge align-left" data-roll-key="{{key}}" data-roll-type="actor" data-roll-diecount="{{secondary.total}}" data-label="{{secondary.label}}"  data-tooltip="{{secondary.inSiUnits}}">{{secondary.label}}</label>
 						{{else}}
 							<label for="system.secondaries.{{key}}.value" class="rollable flexlarge align-left" data-roll-key="{{key}}" data-roll-type="actor" data-roll-diecount="{{secondary.total}}" data-label="{{secondary.label}}">{{secondary.label}}</label>
 						{{/if}}
 						<label class="items-list item-max-with40px">{{secondary.value}}</label>
-						<label title='{{secondary.bonusInfo}}' class="items-list item-max-with40px">{{secondary.bonus}}</label>
+						<label data-tooltip='{{secondary.bonusInfo}}' class="items-list item-max-with40px">{{secondary.bonus}}</label>
 						<label class="items-list item-max-with40px resource-label">{{secondary.total}}</label>
 					</li>
 					{{/each}}

@@ -1,6 +1,6 @@
 <form class="{{cssClass}}" autocomplete="off">
     <header class="sheet-header">
-        <img class="profile-img artwork" src="{{item.img}}" data-edit="img" title="{{item.name}}" />
+        <img class="profile-img artwork" src="{{item.img}}" data-edit="img" data-tooltip="{{item.name}}" />
 		<div class="header-fields">
 			<h1 class="charname"><input name="name" type="text" value="{{item.name}}" placeholder="Name" /></h1>
 			{{> "systems/space1889/templates/item/item-sub-id.html"}}
@@ -48,7 +48,7 @@
         <label class="resource-label">2. {{localize "SPACE1889.PreCondition"}}</label>
         <label class="resource-label">{{ localize "SPACE1889.PreConditionType" }}</label>
         <label class="resource-label">{{localize "SPACE1889.Level"}}</label>
-        <label title="{{localize "SPACE1889.OrOperator"}}" class="resource-label"> Operator</label>
+        <label data-tooltip="{{localize "SPACE1889.OrOperator"}}" class="resource-label"> Operator</label>
     </li>
     <li class="item flex-group-center flexrow">
         <div class="resource-content flex-center flex-between">
@@ -90,7 +90,7 @@
 		<label class="resource-label">{{localize "SPACE1889.BonusTarget"}}</label>
 		<label class="resource-label">{{ localize "SPACE1889.TargetType" }}</label>
 		<label class="resource-label">{{localize "SPACE1889.Rating"}}</label>
-		<label class="resource-label" title={{localize "SPACE1889.BonusStartLevel"}}>{{localize "SPACE1889.BonusStartLevelAbbr"}}</label>
+		<label class="resource-label" data-tooltip={{localize "SPACE1889.BonusStartLevel"}}>{{localize "SPACE1889.BonusStartLevelAbbr"}}</label>
 	</li>
 	<li class="item flex-group-center flexrow">
 		<div class="resource-content flex-center flex-between">

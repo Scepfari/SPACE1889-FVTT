@@ -2,7 +2,7 @@
 
 	{{!-- Sheet Header --}}
 	<header class="sheet-header">
-		<img class="profile-img artwork" src="{{actor.img}}" data-edit="img" title="{{actor.name}}" height="150" width="150"/>
+		<img class="profile-img artwork" src="{{actor.img}}" data-edit="img" data-tooltip="{{actor.name}}" height="150" width="150"/>
 		<div class="header-fields">
 			<h2 class="charname"><input name="name" type="text" value="{{actor.name}}" placeholder="Name" /></h2>
 			<h3 class="resource-content flex-center flex-between">
@@ -14,7 +14,7 @@
 					<div class="item item-max-with60px">{{localize "SPACE1889.VehicleStructure"}}</div>
 					<div class="item item-max-with75px">{{localize "SPACE1889.Speed"}}</div>
 					<div class="item item-max-with100px">{{localize "SPACE1889.VehicleManeuverability"}}</div>
-					<div class="item item-max-with75px" title="{{localize "SPACE1889.PassiveDefense"}} - {{localize "SPACE1889.ClickToRoll"}}">
+					<div class="item item-max-with75px" data-tooltip="{{localize "SPACE1889.PassiveDefense"}} - {{localize "SPACE1889.ClickToRoll"}}">
 						<label class="resource-label rollable" data-roll-key="passiveDefense" data-roll-type="actor" data-roll-diecount="{{system.passiveDefense}}" data-label='{{localize "SPACE1889.PassiveDefense"}}'>{{localize "SPACE1889.PassiveDefenseAbbr"}}</label>
 					</div>
 					<div class="item-name item-max-with60px">{{localize "SPACE1889.SecondaryAttributeSiz"}}</div>
@@ -23,7 +23,7 @@
 					<div class="flexrow item-max-with60px">
 						<div style="display: grid; grid-template-columns: 45% 10% 45%; grid-template-rows: 100%;">
 							<div class="item-margintb2px item-right">
-								<a class="item-create item-margintb2px" align="right" title='{{localize "SPACE1889.InfoAddDamage"}}' data-type="damage">{{system.health.value}}</a>
+								<a class="item-create item-margintb2px" align="right" data-tooltip='{{localize "SPACE1889.InfoAddDamage"}}' data-type="damage">{{system.health.value}}</a>
 							</div>
 							<div class="item-margintb2px"> / </div>
 							<div class="item-margintb2px item-left">
@@ -94,19 +94,19 @@
 						</div>
 					</li>
 					<li class="flexrow">
-						<div class="item-name " title="{{localize "SPACE1889.VehicleIsAirshipInfo"}}">{{localize "SPACE1889.VehicleIsAirship"}}</div>
-						<div class="item flexrow flex-group-center" title="{{localize "SPACE1889.VehicleIsAirshipInfo"}}">
+						<div class="item-name " data-tooltip="{{localize "SPACE1889.VehicleIsAirshipInfo"}}">{{localize "SPACE1889.VehicleIsAirship"}}</div>
+						<div class="item flexrow flex-group-center" data-tooltip="{{localize "SPACE1889.VehicleIsAirshipInfo"}}">
 							<input type="checkbox" name="system.isAirship" {{checked system.isAirship}} />
 						</div>
 					</li>
 					<li class="flexrow">
-						<div class="item-name " title="{{localize "SPACE1889.VehicleIsStrengthBasedTempoInfo"}}">{{localize "SPACE1889.VehicleIsStrengthBasedTempo"}}</div>
+						<div class="item-name " data-tooltip="{{localize "SPACE1889.VehicleIsStrengthBasedTempoInfo"}}">{{localize "SPACE1889.VehicleIsStrengthBasedTempo"}}</div>
 						<div style="display: grid; grid-template-columns: 55% 45%; grid-template-rows: 100%;">
-							<div class="item flexrow flex-group-right" title="{{localize "SPACE1889.VehicleIsPureMusclePowerInfo"}}">
+							<div class="item flexrow flex-group-right" data-tooltip="{{localize "SPACE1889.VehicleIsPureMusclePowerInfo"}}">
 								<input type="checkbox" name="system.isStrengthBasedTempo" {{checked system.isStrengthBasedTempo}} />
 							</div>
 							{{#if system.isStrengthBasedTempo}}
-							<div class="item flexrow flex-group-center" title="{{localize "SPACE1889.VehicleStrengthTempoFactor"}}">
+							<div class="item flexrow flex-group-center" data-tooltip="{{localize "SPACE1889.VehicleStrengthTempoFactor"}}">
 								<a class="increment-strengthTempoFactor-click">{{system.strengthTempoFactor.value}}</a>
 							</div>
 							{{/if}}
@@ -159,13 +159,13 @@
 
 
 				<li class="item flexrow items-header">
-					<div class="resource flex-group-center" title="{{localize "SPACE1889.VehicleSelectManoeuvre"}}">
+					<div class="resource flex-group-center" data-tooltip="{{localize "SPACE1889.VehicleSelectManoeuvre"}}">
 						<a class="do-pilot-maneuver-click">{{localize "SPACE1889.VehicleMovementManeuver"}}</a>
 					</div>
-					<div class="resource flex-group-center" title="{{localize "SPACE1889.VehicleSelectManoeuvre"}}">
+					<div class="resource flex-group-center" data-tooltip="{{localize "SPACE1889.VehicleSelectManoeuvre"}}">
 						<a class="do-gunner-maneuver-click">{{localize "SPACE1889.VehicleAttackManeuver"}}</a>
 					</div>
-					<div class="resource flex-group-center" title="{{localize "SPACE1889.ClickToRoll"}}">
+					<div class="resource flex-group-center" data-tooltip="{{localize "SPACE1889.ClickToRoll"}}">
 						<a class="resource-label roll-vehicle-defense-click" data-label='{{localize "SPACE1889.SecondaryAttributeDef"}}'>{{localize "SPACE1889.SecondaryAttributeDef"}}: </a>
 						<label class="items-list item-max-with60px">{{system.secondaries.defense.total}}</label>
 					</div>
@@ -178,14 +178,14 @@
 					<div class="items-list item-max-with150px">{{localize "SPACE1889.Name"}}</div>
 					<div class="items-list item-max-with42px">{{#if (eq system.crew.experience 'custom')}}{{localize "SPACE1889.Base"}}{{else}}{{/if}}</div>
 					<div class="items-list item-max-with42px">{{localize "SPACE1889.Mod"}}</div>
-					<div title='{{localize "SPACE1889.Rating"}}' class="items-list item-max-with42px">{{localize "SPACE1889.Rating"}}</div>
+					<div data-tooltip='{{localize "SPACE1889.Rating"}}' class="items-list item-max-with42px">{{localize "SPACE1889.Rating"}}</div>
 					<div class="items-list item-max-with20px"></div>
 				</li>
 				{{#each system.positions as |position key|}}
 				<li class="item row-section flexrow">
 					<label for="system.positions.{{key}}.value" class="rollable item-name" data-roll-key="{{key}}" data-roll-type="actor" data-roll-diecount="{{position.total}}" data-label="{{position.label}}">{{position.label}}</label>
 
-					<div title='{{localize "SPACE1889.VehicelScCrewPositionToolTip"}}' class="items-list item-max-with150px">
+					<div data-tooltip='{{localize "SPACE1889.VehicelScCrewPositionToolTip"}}' class="items-list item-max-with150px">
 						<a class="do-vehicle-{{key}}-click">{{position.actorName}}</a>
 					</div>
 
@@ -200,9 +200,9 @@
 					<label class="items-list item-max-with42px resource-label">{{position.total}}</label>
 					<div class="position item-max-with20px" data-id="{{key}}">
 						{{#if position.staffed}}
-						<a class="condition-toggle" title="{{localize 'SPACE1889.VehicleCrewPosition'}} {{localize 'SPACE1889.Staffed'}}"><i class="far fa-check-circle"></i></a> 
+						<a class="condition-toggle" data-tooltip="{{localize 'SPACE1889.VehicleCrewPosition'}} {{localize 'SPACE1889.Staffed'}}"><i class="far fa-check-circle"></i></a> 
 						{{else}}
-						<a class="condition-toggle" title="{{localize 'SPACE1889.VehicleCrewPosition'}} {{localize 'SPACE1889.NotStaffed'}}"><i class="far fa-circle"></i></a> 
+						<a class="condition-toggle" data-tooltip="{{localize 'SPACE1889.VehicleCrewPosition'}} {{localize 'SPACE1889.NotStaffed'}}"><i class="far fa-circle"></i></a> 
 						{{/if}}
 					</div>
 				</li>

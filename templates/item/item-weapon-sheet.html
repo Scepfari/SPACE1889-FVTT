@@ -1,6 +1,6 @@
 <form class="{{cssClass}}" autocomplete="off">
 	<header class="sheet-header">
-		<img class="profile-img artwork" src="{{item.img}}" data-edit="img" title="{{item.name}}" />
+		<img class="profile-img artwork" src="{{item.img}}" data-edit="img" data-tooltip="{{item.name}}" />
 		<div class="header-fields">
 			<h1 class="charname"><input name="name" type="text" value="{{item.name}}" placeholder="Name" /></h1>
 			{{> "systems/space1889/templates/item/item-sub-id.html"}}
@@ -83,7 +83,7 @@
 		<label class="resource-label">{{ localize "SPACE1889.AdditionalWeaponEffect"}}</label>
 		<label class="resource-label">{{ localize "SPACE1889.DurationCombatTurns"}}</label>
 		<label class="resource-label">{{ localize "SPACE1889.EffectDuration"}}</label>
-		<label class="resource-label" title="{{localize "SPACE1889.EffectOnlyAndNoDamageInfo"}}">{{ localize "SPACE1889.EffectOnlyAndNoDamage"}}</label>
+		<label class="resource-label" data-tooltip="{{localize "SPACE1889.EffectOnlyAndNoDamageInfo"}}">{{ localize "SPACE1889.EffectOnlyAndNoDamage"}}</label>
 
 	</li>
 	<li class="item flex-group-center flexrow">

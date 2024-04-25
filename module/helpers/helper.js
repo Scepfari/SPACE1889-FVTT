@@ -1840,7 +1840,7 @@ export default class SPACE1889Helper
 		{
 			dialogData.buttons.zero =  {
 				icon: '<img src="systems/space1889/icons/space1889Logo.webp" alt="logo SPACE 1889" height="50px">',
-				label: "<div title=\"Freunde des gepflegten Rollenspiels\">privates Forum</div>",
+				label: "<div data-tooltip=\"Freunde des gepflegten Rollenspiels\">privates Forum</div>",
 				callback: () => {
 					var windowObjectReference = window.open("http://www.space1889.shadowbroker.de/", "_blank");
 				}

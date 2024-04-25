@@ -1,6 +1,6 @@
 <form class="{{cssClass}}" autocomplete="off">
 	<header class="sheet-header">
-		<img class="profile-img artwork" src="{{item.img}}" data-edit="img" title="{{ localize 'SPACE1889.Skill' }}"/>
+		<img class="profile-img artwork" src="{{item.img}}" data-edit="img" data-tooltip="{{ localize 'SPACE1889.Skill' }}"/>
 		<div class="header-fields">
 			<h1 class="charname"><input name="name" type="text" value="{{item.name}}" placeholder="Name" /></h1>
 			{{> "systems/space1889/templates/item/item-sub-id.html"}}
@@ -18,11 +18,11 @@
 				<div style="display: grid; grid-template-columns: 35% 55% 10%; grid-template-rows: 100%;">
 					{{#if system.noSelection}}
 					<label class="resource-label item-margintb2px">{{ localize "SPACE1889.BaseSkill" }}</label>
-					<div class="resource-content" title="{{localize "SPACE1889.UnderlyingSkillIdInfo"}}">
+					<div class="resource-content" data-tooltip="{{localize "SPACE1889.UnderlyingSkillIdInfo"}}">
 						<input type="text" name="system.underlyingSkillId" value="{{system.underlyingSkillId}}" />
 					</div>
 					<div class="resource-content flex-group-center item-margintb2px">
-						<a class="noSelection-toggle" title="{{localize "SPACE1889.UnderlyingSkillSelection"}}"><i class="fa fa-toggle-off"></i></a>
+						<a class="noSelection-toggle" data-tooltip="{{localize "SPACE1889.UnderlyingSkillSelection"}}"><i class="fa fa-toggle-off"></i></a>
 					</div>
 					{{else}}
 					<label class="resource-label item-margintb2px">{{ localize "SPACE1889.BaseSkill" }}</label>
@@ -34,7 +34,7 @@
 						{{/select}}
 					</select>
 					<div class="resource-content flex-group-center item-margintb2px">
-						<a class="noSelection-toggle" title="{{ localize "SPACE1889.UnderlyingSkillNoSelection"}}"><i class="fa fa-toggle-on"></i></a>
+						<a class="noSelection-toggle" data-tooltip="{{ localize "SPACE1889.UnderlyingSkillNoSelection"}}"><i class="fa fa-toggle-on"></i></a>
 					</div>
 					{{/if}}
 				</div>

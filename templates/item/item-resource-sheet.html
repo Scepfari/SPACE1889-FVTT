@@ -1,6 +1,6 @@
 <form class="{{cssClass}}" autocomplete="off">
 	<header class="sheet-header">
-		<img class="profile-img artwork" src="{{item.img}}" data-edit="img" title="{{item.name}}" />
+		<img class="profile-img artwork" src="{{item.img}}" data-edit="img" data-tooltip="{{item.name}}" />
 		<div class="header-fields">
 			<h1 class="charname"><input name="name" type="text" value="{{item.name}}" placeholder="Name" /></h1>
 			{{> "systems/space1889/templates/item/item-sub-id.html"}}
@@ -37,7 +37,7 @@
 			<input type="checkbox" name="system.isBase" {{checked system.isBase}} />
 		</div>
 		<div class="resource-content flex-center flex-between">
-			<input title="{{localize "SPACE1889.NoEpCauseTempCampaingnEffect"}}" type="checkbox" name="system.noEp" {{checked system.noEp}} />
+			<input data-tooltip="{{localize "SPACE1889.NoEpCauseTempCampaingnEffect"}}" type="checkbox" name="system.noEp" {{checked system.noEp}} />
 		</div>
 	</li>
 

@@ -1821,7 +1821,7 @@ export default class SPACE1889RollHelper
 		const index = outerHtml.indexOf('class=""');
 		let pre = (probeName != "" ? probeName : game.i18n.localize("SPACE1889.Probe")) + ": <b>";
 		let post = " " + game.i18n.localize("SPACE1889.Of");
-		post += (tooltipInfo != "") ? " <span title='" + tooltipInfo + "'>" + diceCount.toString() + "</span></b>" : " " + diceCount.toString() + "</b>";
+		post += (tooltipInfo != "") ? " <span data-tooltip='" + tooltipInfo + "'>" + diceCount.toString() + "</span></b>" : " " + diceCount.toString() + "</b>";
 		let fullHtml = '';
 		if (index > -1)
 			fullHtml = pre + outerHtml.substring(0, index) + `class="inline-roll inline-result" ` + outerHtml.substring(index + 8) + post;

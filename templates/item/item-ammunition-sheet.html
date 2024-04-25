@@ -1,6 +1,6 @@
 <form class="{{cssClass}}" autocomplete="off">
 	<header class="sheet-header">
-		<img class="profile-img artwork" src="{{item.img}}" data-edit="img" title="{{item.name}}" />
+		<img class="profile-img artwork" src="{{item.img}}" data-edit="img" data-tooltip="{{item.name}}" />
 		<div class="header-fields">
 			<h1 class="charname"><input name="name" type="text" value="{{item.name}}" placeholder="Name" /></h1>
 			{{> "systems/space1889/templates/item/item-sub-id.html"}}
@@ -37,10 +37,10 @@
 	</li>
 
 	<li class="item flexrow items-header">
-		<label class="resource-label" title="{{ localize "SPACE1889.DamageType"}}">{{ localize "SPACE1889.DamageTypeAbbr"}}</label>
-		<label class="resource-label" title="{{ localize "SPACE1889.AmmunitionDamageModifier"}}">{{ localize "SPACE1889.AmmunitionDamageModifierAbbr"}}</label>
-		<label class="resource-label" title="{{ localize "SPACE1889.AmmunitionRangeModifierFactor"}}">{{ localize "SPACE1889.AmmunitionRangeModifierFactorAbbr"}}</label>
-		<label class="resource-label" title="{{ localize "SPACE1889.AmmunitionIsConeDamageEffect"}}">{{ localize "SPACE1889.AmmunitionIsConeDamageEffectAbbr"}}</label>
+		<label class="resource-label" data-tooltip="{{ localize "SPACE1889.DamageType"}}">{{ localize "SPACE1889.DamageTypeAbbr"}}</label>
+		<label class="resource-label" data-tooltip="{{ localize "SPACE1889.AmmunitionDamageModifier"}}">{{ localize "SPACE1889.AmmunitionDamageModifierAbbr"}}</label>
+		<label class="resource-label" data-tooltip="{{ localize "SPACE1889.AmmunitionRangeModifierFactor"}}">{{ localize "SPACE1889.AmmunitionRangeModifierFactorAbbr"}}</label>
+		<label class="resource-label" data-tooltip="{{ localize "SPACE1889.AmmunitionIsConeDamageEffect"}}">{{ localize "SPACE1889.AmmunitionIsConeDamageEffectAbbr"}}</label>
 	</li>
 	<li class="item flex-group-center flexrow">
 		<div class="resource">

@@ -431,27 +431,27 @@ export default class SPACE1889Combat
 		const hideText = ' hidden="true" ';
 
 		const canDoAutoFeuer = weapon != undefined && (weapon.system.skillId == "geschuetze" || weapon.system.skillId == "schusswaffen") && (weapon.system.rateOfFire == "V" || weapon.system.rateOfFire == "H/V");
-		const disableAutoFeuerInHtmlText = !canDoAutoFeuer ? `disabled="true" title="${game.i18n.localize("SPACE1889.AttackDialogCanNotAutoFire")}"` : `title="${game.i18n.localize("SPACE1889.AttackDialogBurstFireToolTip")}"`;
+		const disableAutoFeuerInHtmlText = !canDoAutoFeuer ? `disabled="true" data-tooltip="${game.i18n.localize("SPACE1889.AttackDialogCanNotAutoFire")}"` : `data-tooltip="${game.i18n.localize("SPACE1889.AttackDialogBurstFireToolTip")}"`;
 		const hideSalveInHtlmText = canDoAutoFeuer ? "" : hideText;
 		const baseSalve = 1 + autofeuerBoost;
 
-		const disableBeidhaendigInHtlmText = !canDoBeidhaendig ? `disabled="true" title="${game.i18n.localize("SPACE1889.AttackDialogCanNotDualWield")}"` : `title="${game.i18n.localize("SPACE1889.AttackDialogDualWieldToolTip")}"`;
+		const disableBeidhaendigInHtlmText = !canDoBeidhaendig ? `disabled="true" data-tooltip="${game.i18n.localize("SPACE1889.AttackDialogCanNotDualWield")}"` : `data-tooltip="${game.i18n.localize("SPACE1889.AttackDialogDualWieldToolTip")}"`;
 
 		let canDoDoppelschuss = weapon != undefined && (weapon.system.skillId == "geschuetze" || weapon.system.skillId == "schusswaffen" || weapon.system.skillId == "primitiverFernkampf");
 		const hideDoppelschussInHtml = canDoDoppelschuss ? "" : hideText;
 		canDoDoppelschuss &= (weapon.system.rateOfFire == "V" || weapon.system.rateOfFire == "H/V" || weapon.system.rateOfFire == "H" || Number(weapon.system.rateOfFire) >= 2);
-		const disableDoppelschussInHtlmText = !canDoDoppelschuss ? `disabled="true" title="${game.i18n.localize("SPACE1889.AttackDialogCanNotRapidFire")}"` : `title="${game.i18n.localize("SPACE1889.AttackDialogRapidFireToolTip")}"`;
+		const disableDoppelschussInHtlmText = !canDoDoppelschuss ? `disabled="true" data-tooltip="${game.i18n.localize("SPACE1889.AttackDialogCanNotRapidFire")}"` : `data-tooltip="${game.i18n.localize("SPACE1889.AttackDialogRapidFireToolTip")}"`;
 
 		const canDoRundumschlag = weapon != undefined && isCloseCombatAttack;
 		const hideRundumschalgInHtlmText = !canDoRundumschlag ? hideText : "";
 		const baseRundumschlag = this.getSweepingBlowModificator(actor);
-		const disableRundumschlagInHtlmText = !canDoRundumschlag || game.user.targets.size < 2 ? `disabled="true" title="${game.i18n.localize("SPACE1889.AttackDialogTooFewTargets")}"`: `title="${game.i18n.localize("SPACE1889.AttackDialogSweepingBlowToolTip")}"`;
+		const disableRundumschlagInHtlmText = !canDoRundumschlag || game.user.targets.size < 2 ? `disabled="true" data-tooltip="${game.i18n.localize("SPACE1889.AttackDialogTooFewTargets")}"`: `data-tooltip="${game.i18n.localize("SPACE1889.AttackDialogSweepingBlowToolTip")}"`;
 
 		const canDoWirbeln = canDoRundumschlag;
 		const hideWirbelnInHtlmText = !canDoWirbeln ? hideText : "";
 		const baseWirbeln = -4 + (2 * SPACE1889Helper.getTalentLevel(actor, "wirbeln"));
 
-		const disableStreufeuerInHtlmText = game.user.targets.size < 2 ? `disabled="true" title="${game.i18n.localize("SPACE1889.AttackDialogTooFewTargets")}"`: `title="${game.i18n.localize("SPACE1889.AttackDialogStrafingToolTip")}"`;
+		const disableStreufeuerInHtlmText = game.user.targets.size < 2 ? `disabled="true" data-tooltip="${game.i18n.localize("SPACE1889.AttackDialogTooFewTargets")}"`: `data-tooltip="${game.i18n.localize("SPACE1889.AttackDialogStrafingToolTip")}"`;
 
 
 		let targetToolTip = "";
@@ -556,7 +556,7 @@ export default class SPACE1889Combat
 			content: `
 				<form >
 					<h2>${waffenName}: ${game.i18n.localize("SPACE1889.AttackDialogBaseValue")} ${baseValue}${damageType}</h2>
-					<label title="${targetToolTip}">${game.i18n.localize("SPACE1889.AttackDialogTargetCount")}: ${game.user.targets.size} ${targetNamesInBrackets}</label><br>
+					<label data-tooltip="${targetToolTip}">${game.i18n.localize("SPACE1889.AttackDialogTargetCount")}: ${game.user.targets.size} ${targetNamesInBrackets}</label><br>
 					<label>${game.i18n.localize("SPACE1889.Distance")} ${distanceInfo.distance.toFixed(2)}${distanceInfo.unit}: ${SPACE1889Helper.getSignedStringFromNumber(distanceMod)}</label>
 					<fieldset>
 						<legend>${game.i18n.localize("SPACE1889.AttackDialogAttackType")}</legend>
@@ -565,8 +565,8 @@ export default class SPACE1889Combat
 							<input type="radio" id="normal" name="type" class="normal" value="N" checked>
 							<label for="normal">${game.i18n.localize("SPACE1889.AttackDialogRegular")}</label><br>
 							<div ${hideSalveInHtlmText}>            
-								<input ${disableAutoFeuerInHtmlText} type="radio" id="salve" name="type" class="salve" value="S" title="${game.i18n.localize("SPACE1889.AttackDialogBurstFireToolTip")}">
-								<label ${disableAutoFeuerInHtmlText} for="salve" title="${game.i18n.localize("SPACE1889.AttackDialogBurstFireToolTip")}">${game.i18n.format("SPACE1889.AttackDialogBurstFire", { bonus: SPACE1889Helper.getSignedStringFromNumber(baseSalve) })}</label><br>
+								<input ${disableAutoFeuerInHtmlText} type="radio" id="salve" name="type" class="salve" value="S" data-tooltip="${game.i18n.localize("SPACE1889.AttackDialogBurstFireToolTip")}">
+								<label ${disableAutoFeuerInHtmlText} for="salve" data-tooltip="${game.i18n.localize("SPACE1889.AttackDialogBurstFireToolTip")}">${game.i18n.format("SPACE1889.AttackDialogBurstFire", { bonus: SPACE1889Helper.getSignedStringFromNumber(baseSalve) })}</label><br>
 							</div>
 						</fieldset>
 
@@ -575,15 +575,15 @@ export default class SPACE1889Combat
 							<input type="radio" id="vollerAngriff" name="type" class="vollerAngriff" value="V">
 							<label for="vollerAngriff">${game.i18n.localize("SPACE1889.AttackDialogTotalAttack")}</label><br>
             
-							<input ${disableBeidhaendigInHtlmText} type="radio" id="beidhaendig" class="beidhaendig" name="type" value="B" title="${game.i18n.localize("SPACE1889.AttackDialogDualWieldToolTip")}">
-							<label ${disableBeidhaendigInHtlmText} for="beidhaendig" title="${game.i18n.localize("SPACE1889.AttackDialogDualWieldToolTip")}">${game.i18n.format("SPACE1889.AttackDialogDualWield", { malus: SPACE1889Helper.getSignedStringFromNumber(baseBeidhaendig), hand: isNebenHand ? game.i18n.localize("SPACE1889.WeaponUseOffHand") : game.i18n.localize("SPACE1889.WeaponUsePrimaryHand")})}</label><br>
+							<input ${disableBeidhaendigInHtlmText} type="radio" id="beidhaendig" class="beidhaendig" name="type" value="B" data-tooltip="${game.i18n.localize("SPACE1889.AttackDialogDualWieldToolTip")}">
+							<label ${disableBeidhaendigInHtlmText} for="beidhaendig" data-tooltip="${game.i18n.localize("SPACE1889.AttackDialogDualWieldToolTip")}">${game.i18n.format("SPACE1889.AttackDialogDualWield", { malus: SPACE1889Helper.getSignedStringFromNumber(baseBeidhaendig), hand: isNebenHand ? game.i18n.localize("SPACE1889.WeaponUseOffHand") : game.i18n.localize("SPACE1889.WeaponUsePrimaryHand")})}</label><br>
 							<div ${hideDoppelschussInHtml}>
-								<input ${disableDoppelschussInHtlmText} type="radio" id="doppelschusss" class="doppelschusss" name="type" value="B" title="${game.i18n.localize("SPACE1889.AttackDialogRapidFireToolTip")}">
-								<label ${disableDoppelschussInHtlmText} for="doppelschusss" title="${game.i18n.localize("SPACE1889.AttackDialogRapidFireToolTip")}">${game.i18n.format("SPACE1889.AttackDialogRapidFire", { malus: SPACE1889Helper.getSignedStringFromNumber(baseDoppelschuss) })}</label><br>
+								<input ${disableDoppelschussInHtlmText} type="radio" id="doppelschusss" class="doppelschusss" name="type" value="B" data-tooltip="${game.i18n.localize("SPACE1889.AttackDialogRapidFireToolTip")}">
+								<label ${disableDoppelschussInHtlmText} for="doppelschusss" data-tooltip="${game.i18n.localize("SPACE1889.AttackDialogRapidFireToolTip")}">${game.i18n.format("SPACE1889.AttackDialogRapidFire", { malus: SPACE1889Helper.getSignedStringFromNumber(baseDoppelschuss) })}</label><br>
 							</div>
 							<div ${hideWirbelnInHtlmText}>
-								<input type="radio" id="wirbeln" class="wirbeln" name="type" value="B" title="${game.i18n.localize("SPACE1889.AttackDialogFlurryToolTip")}">
-								<label for="wirbeln" title="${game.i18n.localize("SPACE1889.AttackDialogFlurryToolTip")}">${game.i18n.format("SPACE1889.AttackDialogFlurry", { malus: SPACE1889Helper.getSignedStringFromNumber(baseWirbeln) })}</label><br>
+								<input type="radio" id="wirbeln" class="wirbeln" name="type" value="B" data-tooltip="${game.i18n.localize("SPACE1889.AttackDialogFlurryToolTip")}">
+								<label for="wirbeln" data-tooltip="${game.i18n.localize("SPACE1889.AttackDialogFlurryToolTip")}">${game.i18n.format("SPACE1889.AttackDialogFlurry", { malus: SPACE1889Helper.getSignedStringFromNumber(baseWirbeln) })}</label><br>
 							</div>
 							<div ${hideRundumschalgInHtlmText}>
 								<input ${disableRundumschlagInHtlmText} type="radio" id="rundumschlag" class="rundumschlag" name="type" value="B">
@@ -593,8 +593,8 @@ export default class SPACE1889Combat
 
 						<fieldset ${!canDoAutoFeuer ? hideText : ""}>
 							<legend>${game.i18n.localize("SPACE1889.AttackDialogAutoFireHeadline")}</legend>
-							<input type="radio" id="dauerFeuer" class="dauerFeuer" name="type" value="DA" title="${game.i18n.localize("SPACE1889.AttackDialogFullAutofireToolTip")}">
-							<label for="dauerFeuer" title="${game.i18n.localize("SPACE1889.AttackDialogFullAutofireToolTip")}">${game.i18n.format("SPACE1889.AttackDialogFullAutofire", { bonus: SPACE1889Helper.getSignedStringFromNumber(baseDauerfeuer) })}</label><br>
+							<input type="radio" id="dauerFeuer" class="dauerFeuer" name="type" value="DA" data-tooltip="${game.i18n.localize("SPACE1889.AttackDialogFullAutofireToolTip")}">
+							<label for="dauerFeuer" data-tooltip="${game.i18n.localize("SPACE1889.AttackDialogFullAutofireToolTip")}">${game.i18n.format("SPACE1889.AttackDialogFullAutofire", { bonus: SPACE1889Helper.getSignedStringFromNumber(baseDauerfeuer) })}</label><br>
             
 							<input ${disableStreufeuerInHtlmText} type="radio" id="streuFeuer" class="streuFeuer" name="type" value="B">
 							<label ${disableStreufeuerInHtlmText} for="streuFeuer">${game.i18n.format("SPACE1889.AttackDialogStrafing", { bonus: SPACE1889Helper.getSignedStringFromNumber(baseStreufeuer) })}</label><br>
@@ -791,7 +791,7 @@ export default class SPACE1889Combat
 		const hideParryInHtml = "";
 		const disableParryInHtlmText = canDoParry ? "" : `disabled="true"`;
 		const disableEvasionInHtlmText = canDoEvasion ? "" : `disabled="true"`;
-		const disableTotalDefenseInHtlmText = hasActiveDefense && !hasAttacked ? "" : `disabled="true" title="${game.i18n.format("SPACE1889.NoBlockParryEvasion", { talentName: game.i18n.localize("SPACE1889.DefenseDialogTotalDefense") } )}"`;
+		const disableTotalDefenseInHtlmText = hasActiveDefense && !hasAttacked ? "" : `disabled="true" data-tooltip="${game.i18n.format("SPACE1889.NoBlockParryEvasion", { talentName: game.i18n.localize("SPACE1889.DefenseDialogTotalDefense") } )}"`;
 
 		const disableActiveDefenseInHtlmText = hasActiveDefense ? "" : `disabled="true"`;
 
@@ -877,8 +877,8 @@ export default class SPACE1889Combat
 							<input ${disableActiveDefenseInHtlmText} type="radio" id="activeDefense" class="activeDefense" name="type" value="B">
 							<label ${disableActiveDefenseInHtlmText} for="activeDefense">${game.i18n.localize("SPACE1889.ActiveDefense")} ${activeDefense}</label><br>
 
-							<input type="radio" id="passiveDefense" class="passiveDefense" name="type" value="DA" title="${game.i18n.localize("SPACE1889.AttackDialogFullAutofireToolTip")}">
-							<label for="passiveDefense" title="${game.i18n.localize("SPACE1889.AttackDialogFullAutofireToolTip")}">${game.i18n.localize("SPACE1889.PassiveDefense")} ${passiveDefense}</label><br>
+							<input type="radio" id="passiveDefense" class="passiveDefense" name="type" value="DA" data-tooltip="${game.i18n.localize("SPACE1889.AttackDialogFullAutofireToolTip")}">
+							<label for="passiveDefense" data-tooltip="${game.i18n.localize("SPACE1889.AttackDialogFullAutofireToolTip")}">${game.i18n.localize("SPACE1889.PassiveDefense")} ${passiveDefense}</label><br>
             
 						</fieldset>
 
@@ -887,14 +887,14 @@ export default class SPACE1889Combat
 							<input  ${disableTotalDefenseInHtlmText} type="radio" id="totalDefense" name="type" class="totalDefense" value="V">
 							<label  ${disableTotalDefenseInHtlmText} for="totalDefense">${game.i18n.localize("SPACE1889.TotalDefense")}: ${totalDefense} ${lossOfAA}</label><br>
             
-							<input ${disableBlockInHtlmText} type="radio" id="block" class="block" name="type" value="B" title="${blockToolTip}">
-							<label ${disableBlockInHtlmText} for="block" title="${blockToolTip}">${game.i18n.localize("SPACE1889.Block")} ${baseBlock} ${instinctiveBlock ? "" : lossOfAA}</label><br>
+							<input ${disableBlockInHtlmText} type="radio" id="block" class="block" name="type" value="B" data-tooltip="${blockToolTip}">
+							<label ${disableBlockInHtlmText} for="block" data-tooltip="${blockToolTip}">${game.i18n.localize("SPACE1889.Block")} ${baseBlock} ${instinctiveBlock ? "" : lossOfAA}</label><br>
 							<div ${hideParryInHtml}>
-								<input ${disableParryInHtlmText} type="radio" id="parry" class="parry" name="type" value="B" title="${parryToolTip}">
-								<label ${disableParryInHtlmText} for="parry" title="${parryToolTip}">${game.i18n.localize("SPACE1889.Parry")} ${baseParry} ${instinctiveParry ? "" : lossOfAA}</label><br>
+								<input ${disableParryInHtlmText} type="radio" id="parry" class="parry" name="type" value="B" data-tooltip="${parryToolTip}">
+								<label ${disableParryInHtlmText} for="parry" data-tooltip="${parryToolTip}">${game.i18n.localize("SPACE1889.Parry")} ${baseParry} ${instinctiveParry ? "" : lossOfAA}</label><br>
 							</div>
-							<input ${disableEvasionInHtlmText} type="radio" id="evasion" class="evasion" name="type" value="B" title="${evasionToolTip}">
-							<label ${disableEvasionInHtlmText} for="evasion" title="${evasionToolTip}">${game.i18n.localize("SPACE1889.Evasion")} ${baseEvasion} ${instinctiveEvasion ? "" : lossOfAA}</label><br>
+							<input ${disableEvasionInHtlmText} type="radio" id="evasion" class="evasion" name="type" value="B" data-tooltip="${evasionToolTip}">
+							<label ${disableEvasionInHtlmText} for="evasion" data-tooltip="${evasionToolTip}">${game.i18n.localize("SPACE1889.Evasion")} ${baseEvasion} ${instinctiveEvasion ? "" : lossOfAA}</label><br>
 						</fieldset>
 
 					</fieldset>
