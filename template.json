@@ -391,7 +391,7 @@
 			"stylePointDamageReduction": 0,
 			"firstAidApplied": false,
 			"firstAidHealing": 0,
-			"firstAidNonLeathalConvertedId": "",
+			"firstAidNonLethalConvertedId": "",
 			"completedHealingProgress": 0
 		},
 		"currency": {

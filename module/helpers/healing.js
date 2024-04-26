@@ -76,7 +76,7 @@ export default class SPACE1889Healing
 				id: injury._id,
 				injury: injury,
 				damage: injury.system.damage - injury.system.stylePointDamageReduction,
-				firstAidNonLeathalConvertedId: "",
+				firstAidNonLethalConvertedId: "",
 //				firstAidApplied: false, //injury.system.firstAidApplied,
 				firstAidHealing: 0 //injury.system.firstAidHealing
 			}
@@ -153,7 +153,7 @@ export default class SPACE1889Healing
 						"system.firstAidApplied": true
 					}]);
 
-					info.firstAidNonLeathalConvertedId = nonLethalInjury._id;
+					info.firstAidNonLethalConvertedId = nonLethalInjury._id;
 				}
 			}
 			await updateInjury(actor, info);
@@ -169,7 +169,7 @@ export default class SPACE1889Healing
 			await injury.update({
 				'system.firstAidHealing': updateInfo.firstAidHealing,
 				'system.firstAidApplied': true,
-				'system.firstAidNonLeathalConvertedId': updateInfo.firstAidNonLeathalConvertedId
+				'system.firstAidNonLethalConvertedId': updateInfo.firstAidNonLethalConvertedId
 			});
 		}
 	}
