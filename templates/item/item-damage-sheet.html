@@ -47,8 +47,12 @@
 			<div class="resource">
 				<label>{{system.firstAidHealing}}</label>	
 			</div>
-			<div class="resource">
+			<div class="resource" data-tooltip="{{ localize "SPACE1889.GmHealingOnly" }}">
+				{{#if (isGm " ")}}
+				<input title="" type="number" step="0.001" name="system.completedHealingProgress" value="{{system.completedHealingProgress}}" min="0"/>
+				{{else}}
 				<label>{{system.completedHealingProgress}}</label>
+				{{/if}}
 			</div>
 		</li>
 	</ol>

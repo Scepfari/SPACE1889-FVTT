@@ -144,6 +144,7 @@
 	"SPACE1889.PlayerNotesLimited": "Die Notiz kann nur geändert werden wenn die Spielleitung im Spiel ist. \rSie ändert ausschließlich den Akteur, d.h. auch bei nicht verbunden Figuren wird der Akteur und nicht die Figur(=Token) geändert",
 	"SPACE1889.GmNotes": "SL Notizen",
 	"SPACE1889.GmNotesInfo": "Diese Notiz bekommt nur die SL zu sehen, d.h. auch Spieler mit Besitzer Rechten sehen diese Information nicht.",
+	"SPACE1889.GmHealingOnly": "Nur die SL (oder die Zeit) kann das ändern",
 	"SPACE1889.Choices": "Auswahl",
 	"SPACE1889.Id": "Id",
 	"SPACE1889.Max": "Max",
