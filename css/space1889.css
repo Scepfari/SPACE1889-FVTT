@@ -763,6 +763,23 @@ font-size: 12px;
 	color: #f4eded;
 }
 
+.itemTooltip {
+	text-align: left;
+	font-size: 12px;
+}
+
+.itemTooltipH4{
+	text-align: center;
+	font-size: 14px;
+}
+
+/*.tooltip {
+	background: #fefac9;
+	border: 2px dashed #f0db4f;
+	cursor: default;
+	display: inline-block;
+	padding: 0 5px;
+}*/
 
 .space1889list {
 	list-style-type: none;

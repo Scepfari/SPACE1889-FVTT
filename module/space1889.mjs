@@ -21,7 +21,8 @@ import DistanceMeasuring from "./helpers/distanceMeasuring.js";
 import { Space1889Combat, Space1889Combatant } from "./helpers/combatTracker.mjs";
 import TurnMarker from "./helpers/turnMarker.mjs";
 import { registerGetSceneControlButtonsHook } from "./ui/controls.mjs";
-import * as CleanHeader from "./ui/cleanHeader.mjs";
+import * as CleanHeader from "./ui/cleanHeader.js";
+import * as sideBar from "./ui/sidebar.js";
 
 
 
@@ -78,6 +79,8 @@ Hooks.once('init', async function() {
 	let retVal = preloadHandlebarsTemplates();
 
 	$('body').addClass(game.settings.get("space1889", "globalStyle"));
+
+	sideBar.default();
 
 	CleanHeader.default();
 	CleanHeader.handlePopout();
@@ -424,6 +427,48 @@ Handlebars.registerHelper('isGm', function (str)
 Handlebars.registerHelper('isFvttV10', function (str)
 {
 	return SPACE1889Helper.isFoundryV10Running();
+})
+
+Handlebars.registerHelper('fullItemToolTipDescription', function (item)
+{
+	if (item && item.type == "skill")
+	{
+		const type = item.system.isSkillGroup ? game.i18n.localize("SPACE1889.SkillGroup") : game.i18n.localize("SPACE1889.Skill");
+		let desc = game.i18n.localize(item.system.descriptionLangId);
+		if (desc == item.system.descriptionLangId && item.system.description != "")
+			desc = item.system.description;
+
+		const fullDesc = `<div class="itemTooltipH4"><h4><strong>${item.name}</strong> [${type}]</h4></div><div class="itemTooltip">${desc}</div>`;
+		return fullDesc; 
+	}
+	if (item && item.type === "talent")
+	{
+		const type = game.i18n.localize("SPACE1889.Talent");
+		let desc = game.i18n.localize(item.system.descriptionLangId);
+		if (desc === item.system.descriptionLangId && item.system.description !== "")
+			desc = item.system.description;
+
+		const fullDesc = `<div class="itemTooltipH4"><h4><strong>${item.name}</strong> [${type}]</h4></div><div class="itemTooltip">${desc}</div>`;
+		return fullDesc; 
+	}
+	if (item && item.type == "item")
+	{
+		const type = game.i18n.localize("SPACE1889.Item");
+		let desc = game.i18n.localize(item.system.descriptionLangId);
+		if (desc == item.system.descriptionLangId)
+			desc = "";
+		if (item.system.description != "")
+			desc += (desc == "" ? "" : "<br>") + item.system.description;
+
+		const image = item.img != 'icons/svg/item-bag.svg' ?
+			`<img class="profile-img artwork" src="${item.img}" data-edit="img" height="120"/>` :
+			"";
+		const fullDesc = `${image}<h4 class="itemTooltipH4"><strong>${item.name}</strong> [${type}]</h4><div class="itemTooltip">${desc}</div>`;
+		return fullDesc; 
+	}
+
+
+	return "under construction";
 })
 
 /* -------------------------------------------- */

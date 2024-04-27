@@ -3349,6 +3349,9 @@
 	"SPACE1889.ExternalLinksModules": "Modules",
 	"SPACE1889.ExternalLinksZeughaus": "Armory",
 
+	"SPACE1889.BugReport": "Report a SPACE 1889 bug",
+	"SPACE1889.BugReportTooltip": "Report bugs directly on Github",
+
 	"SPACE1889.AddLinkedTokenTitle": "Add token",
 	"SPACE1889.AddLinkedTokenContent": "The token you want to add is linked to the actor. Changes to this token will also change the other tokens that also reference this actor. Do you really want that?",
 	"SPACE1889.AddLinkedTokenDoIt": "Yes, go ahead",
