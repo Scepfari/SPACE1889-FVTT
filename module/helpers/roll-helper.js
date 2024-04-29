@@ -3,6 +3,7 @@ import SPACE1889Combat from "../helpers/combat.js";
 import DistanceMeasuring from "../helpers/distanceMeasuring.js"
 import SPACE1889Time from "../helpers/time.js"
 import SPACE1889Healing from "./healing.js";
+import { SPACE1889 } from "./config.mjs";
 
 export default class SPACE1889RollHelper
 {
@@ -345,7 +346,6 @@ export default class SPACE1889RollHelper
 		return true;
 	}
 
-
 	/**
 	 *
 	 * @param {object} item
@@ -374,10 +374,10 @@ export default class SPACE1889RollHelper
 		let addAutoDefense = game.settings.get("space1889", "combatSupport") && (item.type == 'weapon' || isAttackTalent);
 		let firstAidText = "";
 		let defaultMod = 0;
-		let firstAid = (item.type == "specialization" && item.system.id == "ersteHilfe") ? 1 : 0;
-		if (firstAid == 0 && item.type == "skill" && item.system.id == "medizin")
+		let firstAid = (item.type == "specialization" && item.system.id == "ersteHilfe") ? "firstAid" : "";
+		if (firstAid == "" && item.type == "skill" && item.system.id == "medizin")
 		{
-			firstAid = (actor.system.speciSkills?.find(entry => entry.system.id == 'ersteHilfe')) ? 2 : 1;
+			firstAid = (actor.system.speciSkills?.find(entry => entry.system.id == 'ersteHilfe')) ? "medical" : "firstAid";
 		}
 		if (addAutoDefense && targetId != "")
 		{
@@ -411,15 +411,26 @@ export default class SPACE1889RollHelper
 				titelInfo += " " + game.i18n.format("SPACE1889.ChatDistanceInBrackets", { distance: distanceInfo.distance.toFixed(1), unit: distanceInfo.unit });
 			}
 		}
-		else if (firstAid > 0 && targetId != "")
+		else if (firstAid.length > 0 && targetId != "")
 		{
-			if (firstAid == 1)
+			const target = game.user.targets.find(e => e.id == targetId);
+			const isDying = SPACE1889Helper.isDying(target?.actor);
+
+			if (isDying)
 			{
-				firstAidText = game.i18n.format("SPACE1889.FirstAidPerson", { targetName: game.user.targets.find(e => e.id == targetId)?.name });
-				firstAid = 3;
+				firstAidText = game.i18n.format("SPACE1889.FirstAidPersonStabilizing", { targetName: target?.name, skill: item.system.label});
+				firstAid = "stabilizing";
+				const damage = SPACE1889Helper.getDamageTuple(target?.actor);
+				defaultMod = Math.min(target?.actor.system.health.max - damage.lethal, 0);
+				dieCount += defaultMod;
+				toolTipInfo = game.i18n.format("SPACE1889.ChatNegativeHealthPenalty", { penalty: defaultMod });
+			}
+			else if (firstAid == "firstAid")
+			{
+				firstAidText = game.i18n.format("SPACE1889.FirstAidPerson", { targetName: target?.name });
 			}
 			else
-				firstAidText = game.i18n.format("SPACE1889.MedicalCarePerson", { targetName: game.user.targets.find(e => e.id == targetId)?.name });
+				firstAidText = game.i18n.format("SPACE1889.MedicalCarePerson", { targetName: target?.name });
 		}
 		
 		if (showDialog)
@@ -468,7 +479,7 @@ export default class SPACE1889RollHelper
 						titelInfo = await SPACE1889RollHelper.logAttack(actor, titelInfo);
 				}
 
-				const chatData = await SPACE1889RollHelper.getChatDataRollSubSpecial(actor, item, anzahl, [targetId], additionalChatInfo, titelInfo, toolTipInfo, extraInfo, isAttackTalent, firstAid == 3, chatoption);
+				const chatData = await SPACE1889RollHelper.getChatDataRollSubSpecial(actor, item, anzahl, [targetId], additionalChatInfo, titelInfo, toolTipInfo, extraInfo, isAttackTalent, firstAid, chatoption);
 
 				ChatMessage.create(chatData, {});
 			}
@@ -484,7 +495,7 @@ export default class SPACE1889RollHelper
 					titelInfo = await SPACE1889RollHelper.logAttack(actor, titelInfo);
 			}
 
-			const chatData = await SPACE1889RollHelper.getChatDataRollSubSpecial(actor, item, dieCount, [targetId], additionalChatInfo, titelInfo, toolTipInfo, extraInfo, isAttackTalent, firstAid == 3);
+			const chatData = await SPACE1889RollHelper.getChatDataRollSubSpecial(actor, item, dieCount, [targetId], additionalChatInfo, titelInfo, toolTipInfo, extraInfo, isAttackTalent, firstAid);
 			ChatMessage.create(chatData, {});
 		}
 
@@ -584,7 +595,7 @@ export default class SPACE1889RollHelper
 		}
 	}
 
-	static async getChatDataRollSubSpecial(actor, item, wurfelAnzahl, targetIds, useWeaponChatInfo, titelInfo, toolTipInfo, extraInfo="", isAttackTalent, isFirstAid="false", chatOption="public")
+	static async getChatDataRollSubSpecial(actor, item, wurfelAnzahl, targetIds, useWeaponChatInfo, titelInfo, toolTipInfo, extraInfo="", isAttackTalent, firstAid="", chatOption="public")
 	{
 		const rollWithHtml = await SPACE1889RollHelper.createInlineRollWithHtml(Math.max(0, wurfelAnzahl), titelInfo, toolTipInfo);
 		let messageContent = "";
@@ -594,14 +605,38 @@ export default class SPACE1889RollHelper
 			messageContent = this.getAttackChatContent(actor, item, rollWithHtml, targetIds, useWeaponChatInfo, extraInfo, isAttackTalent);
 		else
 		{
-			messageContent = `<div><h2>${item.system.label}</h2></div>`;
+			const titel = firstAid === "stabilizing" ? game.i18n.localize("SPACE1889.ChatStabilizing") : `<h2>${item.system.label}</h2>`
+			messageContent = `<div>${titel}</div>`;
 			if (extraInfo.length > 0)
 				messageContent += `${extraInfo} <br>`;
 			if (useWeaponChatInfo != "")
 				messageContent += `${useWeaponChatInfo} <br>`;
 			messageContent += `${rollWithHtml.html} <br>`;
-			if (isFirstAid)
+			if (firstAid === "firstAid")
 				messageContent += this.#AddFirsAidButton(actor, speaker, targetIds[0], rollWithHtml);
+			else if (firstAid === "stabilizing")
+			{
+				const target = game.user.targets.find(e => e.id == targetIds[0]);
+
+				if (rollWithHtml.roll.total >= 2)
+				{
+					if (SPACE1889Helper.hasOwnership(target.actor))
+						SPACE1889Healing.removeDyingEffect(target.actor);
+					else if (target?.id)
+					{
+						game.socket.emit("system.space1889", {
+							type: "removeDyingEffect",
+							payload: {
+								tokenId: target.id,
+								sceneId: game.scenes.viewed.id
+							}
+						});
+					}
+					messageContent += game.i18n.format("SPACE1889.ChatFirstAidStabilizingSuccess", { name: target?.name });
+				}
+				else
+					messageContent += game.i18n.format("SPACE1889.ChatFirstAidStabilizingFail", { name: target?.name });
+			}
 		}
 
 		let ids = this.getChatIds(chatOption);

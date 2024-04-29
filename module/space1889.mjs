@@ -517,7 +517,12 @@ Hooks.once("ready", async function() {
 					const actor = game.actors.get(data.payload.actorId);
 					if (actor)
 						actor.update({ "system.notes.value": data.payload.updateData });
-					break;						
+					break;
+				case "removeDyingEffect":
+					const dyingToken = game.scenes.get(data.payload.sceneId)?.tokens?.get(data.payload.tokenId);
+					if (dyingToken)
+						SPACE1889Healing.removeDyingEffect(dyingToken.actor);
+
 				default:
 					console.warn(`Unhandled socket data type ${data.type}`)
 			}

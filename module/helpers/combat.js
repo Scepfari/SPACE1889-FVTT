@@ -731,7 +731,7 @@ export default class SPACE1889Combat
 					const chatInfo = i == 1 ? useWeaponInfo.chatInfo : "";
 					let theTitelInfo = (rolls < 2 ? "" : i.toString() + ". ") + titelInfo;
 					theTitelInfo = await SPACE1889RollHelper.logAttack(actor, theTitelInfo, token);
-					const chatData = await SPACE1889RollHelper.getChatDataRollSubSpecial(actor, weapon, anzahl, game.user.targets.ids, chatInfo, theTitelInfo, toolTipInfo, "", false, false, chatoption);
+					const chatData = await SPACE1889RollHelper.getChatDataRollSubSpecial(actor, weapon, anzahl, game.user.targets.ids, chatInfo, theTitelInfo, toolTipInfo, "", false, "", chatoption);
 					await ChatMessage.create(chatData, {});
 				}
 
