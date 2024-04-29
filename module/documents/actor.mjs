@@ -1952,6 +1952,13 @@ export class Space1889Actor extends Actor
 		SPACE1889RollHelper.showDamageDialog(this, item, key == 'lethal')
 	}
 
+	async addDamageWithData(damageData)
+	{
+		const items = await Item.create(damageData, { parent: this });
+		const item = items.shift();
+		return item;
+	}
+
 	rollPrimary(key, event)
 	{
 		const dieCount = this.system.abilities[key]?.total;

@@ -272,6 +272,25 @@ export default class SPACE1889RollHelper
 		return effectList;
 	}
 
+	static hasActiveEffectState(effect, statusId)
+	{
+		if (SPACE1889Helper.isFoundryV10Running())
+		{
+			const id = effect.flags?.core?.statusId;
+			if (id && statusId === id)
+				return true;
+		}
+		else
+		{
+			for (let id of effect.statuses)
+			{
+				if (id === statusId)
+					return true;
+			}
+		}
+		return false;
+	}
+
 	static canNotAttack(actor, sendNotify)
 	{
 		const statusIds = this.getActiveEffectStates(actor);
@@ -1157,6 +1176,7 @@ export default class SPACE1889RollHelper
 				else
 				{
 					gesamtInfo += game.i18n.localize("SPACE1889.ChatInfoDangerOfDeath") + "<br>";
+					effects.push({ name: "dying", rounds: 10 });
 					if (lethalValue < incapacitateThreshold)
 						unconscious = true;
 				}

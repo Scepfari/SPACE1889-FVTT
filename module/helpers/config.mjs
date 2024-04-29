@@ -772,6 +772,7 @@ SPACE1889.effects = {
 	"dead": "EFFECT.StatusDead",
 	"noActiveDefense": "SPACE1889.EffectNoActiveDefence",
 	"totalDefense": "SPACE1889.TotalDefense",
+	"dying": "SPACE1889.EffectDying"
 }
 
 SPACE1889.effectIcons = {
@@ -784,7 +785,8 @@ SPACE1889.effectIcons = {
 	"frozen": "icons/svg/frozen.svg",
 	"dead": "icons/svg/skull.svg",
 	"noActiveDefense": "systems/space1889/icons/svg/no-active-defense.svg",
-	"totalDefense": "systems/space1889/icons/svg/total-defense.svg"
+	"totalDefense": "systems/space1889/icons/svg/total-defense.svg",
+	"dying": "systems/space1889/icons/svg/dying.svg"
 }
 
 SPACE1889.vehicleManoeuvres = {

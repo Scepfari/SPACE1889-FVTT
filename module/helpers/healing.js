@@ -250,7 +250,7 @@ export default class SPACE1889Healing
 			injury.system?.damageType != originalDamageType ||
 			injury.system?.stylePointDamageReduction != 0 ||
 			injury.system?.firstAidApplied ||
-			!isSameTime(injury) )
+			!this.isSameTime(injury) )
 		{
 			ui.notifications.info(game.i18n.localize("SPACE1889.InvalidDamageForStylePointUse"));
 			return;
@@ -292,7 +292,6 @@ export default class SPACE1889Healing
 
 		async function myCallback(html)
 		{
-			const chatoption = "public";
 			const input = html.find('#choices').val();
 			const damageReduction = input ? Number(input) : 0;
 
@@ -318,25 +317,23 @@ export default class SPACE1889Healing
 				game.i18n.format("SPACE1889.StylePointsUsed", { spCount: damageReduction * 2 })
 			);
 		}
-
-		function isSameTime(injury)
-		{
-			const checkTimestamps = SPACE1889Time.isSimpleCalendarEnabled();
-
-			let isSame = checkTimestamps ? injury.system.eventTimestamp == SPACE1889Time.getCurrentTimestamp() : true;
-
-			const isCombat = game.combat?.active && game.combat?.started;
-			if ((isCombat || injury.system.combatInfo.id != "") && isSame)
-			{
-				isSame = injury.system.combatInfo.id == (isCombat ? game.combat.id : "") &&
-					injury.system.combatInfo.round == (isCombat ? game.combat.round : 0) &&
-					injury.system.combatInfo.turn == (isCombat ? game.combat.turn : 0)
-			}
-
-			return isSame;
-		}
 	}
 
+	static isSameTime(injury)
+	{
+		const checkTimestamps = SPACE1889Time.isSimpleCalendarEnabled();
+
+		let isSame = checkTimestamps ? injury.system.eventTimestamp == SPACE1889Time.getCurrentTimestamp() : true;
+		const isCombat = game.combat?.active && game.combat?.started;
+		if ((isCombat || injury.system.combatInfo.id != "") && isSame)
+		{
+			isSame = injury.system.combatInfo.id == (isCombat ? game.combat.id : "") &&
+				injury.system.combatInfo.round == (isCombat ? game.combat.round : 0) &&
+				injury.system.combatInfo.turn == (isCombat ? game.combat.turn : 0)
+		}
+
+		return isSame;
+	}
 
 	static #findInjuryToHeal(actor, overrideStartHealingTimeStamp = Infinity)
 	{
@@ -647,5 +644,251 @@ export default class SPACE1889Healing
 		if (effectsToRemove.length > 0)
 			await actor.deleteEmbeddedDocuments("ActiveEffect", effectsToRemove);
 
+	}
+
+	
+	static async checkDying()
+	{
+		if (game.user.isGM)
+		{
+			const combatTokenId = game.combat?.combatant?.token?.id;
+			const token = canvas.tokens.get(combatTokenId);
+			const actor = token?.actor;
+			await this.stabilize(actor, token.name);
+		}
+	}
+
+	static async stabilize(actor, tokenName)
+	{
+		if (!actor || !SPACE1889Helper.isDying(actor))
+			return;
+
+		const damage = SPACE1889Helper.getDamageTuple(actor);
+		const penalty = Math.min(actor.system.health.max - damage.lethal, 0);
+		const dice = (2 * actor.system.abilities.con.total) + penalty;
+
+		let messageContent = game.i18n.localize("SPACE1889.ChatStabilizing");
+		const info = game.i18n.localize("SPACE1889.ChatReflexiveBodyRoll");
+		const toolTipInfo = game.i18n.format("SPACE1889.ChatNegativeHealthPenalty", { penalty: penalty });
+
+		const rollWithHtml = await SPACE1889RollHelper.createInlineRollWithHtml(Math.max(0, dice), info, toolTipInfo);
+		messageContent += `${rollWithHtml.html} <br>`;
+
+		const speaker = ChatMessage.getSpeaker({ actor: actor });
+		const name = tokenName ? tokenName : actor.name;
+
+		if (rollWithHtml.roll.total >= 2)
+		{
+			
+			messageContent += game.i18n.format("SPACE1889.ChatStabilizingSuccess", { name: name });
+			this.removeDyingEffect(actor);
+		}
+		else
+		{
+			messageContent += game.i18n.format("SPACE1889.ChatStabilizingFail", { name: name });
+			const combatData = this.getCombatData();
+			const damageId = await this.addFailStabilizingDamage(actor, combatData);
+			const damageInfo = this.getDamageInfo;
+
+			let healthInfo = game.i18n.format("SPACE1889.ChatInfoHealth", { health: actor.system.health.value.toString() });
+			if (damageInfo.nonLethalValue !== damageInfo.lethalValue)
+				healthInfo += game.i18n.format("SPACE1889.ChatInfoHealthLethalDamageOnly", { lethalHealth: (damageInfo.lethalValue).toString() });
+
+			messageContent += `<br><small> ${healthInfo}</small>`;
+			let effectIds = [];
+
+			if (damageInfo.isDead)
+			{
+				messageContent += "<p><b>" + game.i18n.localize("SPACE1889.Dead") + ":</b> ";
+				messageContent += game.i18n.localize("SPACE1889.ChatInfoDead") + "</p>";
+
+				const effects = [{ name: "dead", rounds: SPACE1889RollHelper.getMaxRounds() }];
+				effectIds = await SPACE1889Helper.addEffects(actor, effects);
+			}
+
+			messageContent += this.createStylePointStabilizingButton(actor, speaker, damageId, combatData, effectIds, rollWithHtml.roll.total);
+		}
+
+		let chatData =
+		{
+			user: game.user.id,
+			speaker: speaker,
+			content: messageContent
+		};
+
+		ChatMessage.create(chatData, {});
+	}
+
+	static async removeDyingEffect(actor)
+	{
+		let effectsToRemove = [];
+		for (let effect of actor.effects)
+		{
+			if (SPACE1889RollHelper.hasActiveEffectState(effect, "dying"))
+				effectsToRemove.push(effect.id);
+		}
+		if (effectsToRemove.length > 0)
+			await actor.deleteEmbeddedDocuments("ActiveEffect", effectsToRemove);
+	}
+
+	static createStylePointStabilizingButton(actor, speaker, damageId, combatData, effectIds, rollTotal)
+	{
+		const buttonText = game.i18n.localize("SPACE1889.UseStylePoints");
+		const buttonToolTip = game.i18n.localize("SPACE1889.UseSpForStabilizing");
+
+		const currentTimeDate = SPACE1889Time.getCurrentTimestamp();
+		let effectIdsString = "";
+		for (const id of effectIds)
+		{
+			if (effectIdsString.length > 0)
+				effectIdsString += "|";
+			effectIdsString += id.toString();
+		}
+
+		return `<button class="applyStylePointForStabilizing chatButton" 
+				data-tooltip="${buttonToolTip}"
+				data-action="stabilizing"
+				data-actor-id="${actor._id}" 
+				data-actor-token-id="${speaker.token}" 
+				data-damage-id="${damageId}" 
+				data-roll-total="${rollTotal}"
+				data-created-effect-Ids="${effectIdsString}" 
+				data-combat-id="${combatData.id}" 
+				data-combat-round="${combatData.round}" 
+				data-combat-turn="${combatData.turn}" 
+				data-timestamp="${currentTimeDate}">${buttonText}</button>`;
+	}
+
+	/**
+	 *
+	 * @param {Space1889Actor} actor
+	 * @param {object} combatData
+	 */
+	static async addFailStabilizingDamage(actor, combatData)
+	{
+		const data = [{
+			name: game.i18n.localize("SPACE1889.BleedToDeath"),
+			type: "damage",
+			img: "icons/skills/wounds/blood-drip-droplet-red.webp"
+		}];
+
+		const item = await actor.addDamageWithData(data);
+
+		await actor.updateEmbeddedDocuments("Item", [{
+			_id: item.id,
+			"system.damageType": "lethal",
+			"system.damage": 1,
+			"system.dataOfTheEvent": combatData.date,
+			"system.eventTimestamp": combatData.timestamp,
+			"system.combatInfo.id": combatData.id,
+			"system.combatInfo.round": combatData.round,
+			"system.combatInfo.turn": combatData.turn
+		}]);
+		return item.id;
+	}
+
+	static getCombatData()
+	{
+		const isCombat = game.combat?.active && game.combat?.started;
+		const data = {
+			timestamp: SPACE1889Time.getCurrentTimestamp(),
+			date: SPACE1889Time.getCurrentTimeDateString(),
+			id: (isCombat ? game.combat.id : ""),
+			round: (isCombat ? game.combat.round : 0),
+			turn: (isCombat ? game.combat.turn : 0)
+		};
+		return data;
+	}
+
+	static getDamageInfo(actor)
+	{
+		const damageTuple = SPACE1889Helper.getDamageTuple(actor);
+		let lethalValue = actor.system.health.max - damageTuple.lethal;
+		let nonLethalValue = lethalValue - damageTuple.nonLethal;
+		const deathThreshold = SPACE1889Helper.getDeathThreshold(actor);
+		if (lethalValue > deathThreshold && nonLethalValue < deathThreshold)
+		{
+			const transformedNonLethal = nonLethalValue - deathThreshold;
+			nonLethalValue -= transformedNonLethal;
+			lethalValue += transformedNonLethal;
+		}
+		return {lethalValue: lethalValue, nonLethalValue: nonLethalValue, deathThreshold: deathThreshold, isDead: lethalValue <= deathThreshold};
+	}
+
+	static async onStylePointStabilizing(ev)
+	{
+		const button = $(ev.currentTarget);
+		if (!button)
+			return;
+
+		const actorId = button[0].dataset.actorId;
+		const speakerTokenId = button[0].dataset.actorTokenId;
+		const damageId = button[0].dataset.damageId;
+		const rollTotal = Number(button[0].dataset.rollTotal);
+		const combatId = button[0].dataset.combatId;
+		const combatTurn = Number(button[0].dataset.combatTurn);
+		const combatRound = Number(button[0].dataset.combatRound);
+		const timeStamp = Number(button[0].dataset.timestamp);
+		let createdEffectIds = [];
+		const createdEffectIdsString = button[0].dataset.createdEffectIds;
+		if (createdEffectIdsString.length > 0)
+			createdEffectIds = createdEffectIdsString.split("|");
+		
+		if (speakerTokenId === "" && actorId === "")
+			return;
+
+		let actor = game.scenes.viewed.tokens.get(speakerTokenId)?.actor;
+		if (!actor)
+			actor = game.actors.get(actorId);
+
+		if (!actor)
+			return;
+
+		const stylePoints = 4 - (2 * rollTotal);
+		if (actor.system.style.value < stylePoints)
+		{
+			ui.notifications.info(game.i18n.format("SPACE1889.NotEnoughStylePointsToStabilize", {name: actor.name, needed: stylePoints, existSp: actor.system.style.value}));
+		}
+
+		if (!SPACE1889Helper.hasOwnership(actor, true))
+			return;
+
+		const injury = actor.items.get(damageId);
+		if (!injury || !this.isSameTime(injury) )
+		{
+			ui.notifications.info(game.i18n.localize("SPACE1889.InvalidStylePointStabilizationUse"));
+			return;
+		}
+
+		await actor.deleteEmbeddedDocuments("Item", [damageId]);
+		await actor.update({ "system.style.value": actor.system.style.value - (stylePoints) });
+
+		// effekte löschen
+		for (const id of createdEffectIds)
+		{
+			let effect = actor.effects.get(id);
+			if (effect)
+				await effect.delete();
+		}
+		await this.removeDyingEffect(actor);
+
+		await SPACE1889Healing.refreshTheInjuryToBeHealed(actor);
+
+		SPACE1889Helper.markChatButtonAsDone(ev,
+			game.i18n.localize("SPACE1889.UseStylePoints"),
+			game.i18n.format("SPACE1889.StylePointsUsed", { spCount: stylePoints })
+		);
+
+		let content = game.i18n.localize("SPACE1889.ChatStabilizing") + game.i18n.format("SPACE1889.ChatStabilizingSuccess", { name: actor.name });
+
+		let chatData =
+		{
+			user: game.user.id,
+			speaker: ChatMessage.getSpeaker({ actor: actor }),
+			whisper: [],
+			content: content
+		};
+
+		ChatMessage.create(chatData, {});
 	}
 }

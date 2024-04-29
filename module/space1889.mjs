@@ -258,7 +258,7 @@ Hooks.on("renderChatMessage", (app, html, msg) =>
 	html.on('click', '.autoDefence', ev =>
 	{
 		SPACE1889RollHelper.onAutoDefense(ev);
-	})
+	});
 
 	html.on('click', '.applyFirstAid', ev =>
 	{
@@ -268,6 +268,11 @@ Hooks.on("renderChatMessage", (app, html, msg) =>
 	html.on('click', '.applyStylePointDamageReduction', ev =>
 	{
 		SPACE1889Healing.onStylePointDamageReduction(ev);
+	});
+
+	html.on('click', '.applyStylePointForStabilizing', ev =>
+	{
+		SPACE1889Healing.onStylePointStabilizing(ev);
 	});
 
 	html.on('click', '.space1889-image', ev =>
@@ -320,7 +325,7 @@ Hooks.on("canvasReady", function ()
 		{
 			SPACE1889Helper.regenerateMarkers();
 			if (canvas.tokens.Space1889TurnMarker && !canvas.tokens.Space1889TurnMarker.token)
-				canvas.tokens.Space1889TurnMarker.MoveToCombatant()
+				canvas.tokens.Space1889TurnMarker.MoveToCombatant();
 		});
 	}
 });
@@ -329,7 +334,10 @@ Hooks.on("updateCombat", function ()
 {
 	SPACE1889Helper.regenerateMarkers();
 	if (game.combat)
+	{
 		game.combat.checkEffectLifeTime();
+		SPACE1889Healing.checkDying();
+	}
 });
 
 Hooks.on("preDeleteCombat", function (combat, dummy, id)

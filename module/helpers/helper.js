@@ -1892,7 +1892,19 @@ export default class SPACE1889Helper
 			return false;
 
 		const statusIds = SPACE1889RollHelper.getActiveEffectStates(actor);
-		if (statusIds && statusIds.findIndex(element => element == "dead") >= 0)
+		if (statusIds && statusIds.findIndex(element => element === "dead") >= 0)
+			return true;
+
+		return false;
+	}
+
+	static isDying(actor)
+	{
+		if (!actor)
+			return false;
+
+		const statusIds = SPACE1889RollHelper.getActiveEffectStates(actor);
+		if (statusIds && statusIds.findIndex(element => element === "dying") >= 0)
 			return true;
 
 		return false;
