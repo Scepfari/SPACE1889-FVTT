@@ -1,6 +1,7 @@
 import TurnMarker from "../helpers/turnMarker.mjs";
 import SPACE1889RollHelper from "./roll-helper.js";
 import SPACE1889Time from "./time.js";
+import SPACE1889Healing from "../helpers/healing.js";
 
 export default class SPACE1889Helper
 {
@@ -1303,6 +1304,9 @@ export default class SPACE1889Helper
 
 	static async createDamageTimestamps(actorList)
 	{
+		if (!SPACE1889Time.isSimpleCalendarEnabled())
+			return;
+
 		const format = 'dd.mm.yyyy hh:ii:ss';
 		for (let actor of actorList)
 		{
@@ -1319,6 +1323,7 @@ export default class SPACE1889Helper
 			{
 				await actor.updateEmbeddedDocuments("Item", updateData);
 				console.log(game.i18n.format("SPACE1889.MigrationActorDamage", { name: actor.name, id: actor._id }));
+				await SPACE1889Healing.refreshTheInjuryToBeHealed(actor);
 			}
 		}
 	}

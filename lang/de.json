@@ -3383,6 +3383,7 @@
 	"SPACE1889.TokenChangeDisplay": "Tokenanzeige ändern",
 	"SPACE1889.TokenForceChange": "Soll der neue Modus für alle Tokens auf der Szene erzwungen werden? Anderenfalls werden nur die Tokens, bei denen beide Werte auf <i>\"Niemals\"</i> stehen verändert.",
 	"SPACE1889.MigrationActorContainer": "{name} (id: {id}) wurde bezüglich der Standardbehälter (Rucksack, Lager) aktualisiert",
+	"SPACE1889.MigrationActorDamage": "{name} (id: {id}) wurde bezüglich der Verletzungen aktualisiert",
 
 	"SPACE1889.AttackDialogAttackProbe": "Angriffsprobe",
 	"SPACE1889.AttackDialogBaseValue": "Basiswert",

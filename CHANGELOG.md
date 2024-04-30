@@ -1,9 +1,30 @@
 # Changelog 
 
+## Niedergang der Errungenschafte
+
+### v2.2.0
+- Heilung und Schaden überarbeitet 
+  - Einführung des Zustandes Lebensgefahr 
+  - Unterstützung für Stabilisieren, automatisch über Konstitionsprobe oder Erste Hilfe/Medizinprobe
+  - direkte Möglichkeit, um Stilpunkte bei einem Stabilisierungswurf einzusetzen
+  - Erste Hilfe
+  - natürliche Heilung über die Zeit (setzt das Modul Simple Calendar voraus)
+  - entfernen von Effekten nach deren Ablauf (setzt das Modul Simple Calendar voraus)
+  - verbesserter Schadens-Tooltip im SC/NSC Bogen
+  - erweiterter Schadensbogen
+  - Hilfe um das Thema Heilung erweitert
+- Direkte Möglichkeit bei Erhalt von Schaden Stilpunkten zur Reduzierung aufzuwenden, wodurch der Schaden reduziert wird und ggf. dann nicht mehr auftretenden Effekte, wie Betäubt, wieder entfernt werden.
+- Überarbeitung der Tooltips
+  - nun alle im Foundry Style 
+  - nun auch für Gegenstände und Fertigkeiten
+- neue Knöpfe in den Spieleinstellungen -> Dokumentation um direkt per Klick sowohl die Bedienhilfe aufzurufen, als auch einen Fehler zu melden
+- die Eingabe vom Gewicht von Gegenständen erlaubt nun sowohl "." als auch "," als Dezimaltrennzeichen
+- bugfixes
+
+
 ## Dynastie der Sterngeborenen
 
 ### v2.1.1
-
 - Anzeige der Initiativewürfe im Chat (einschließlich der Würfelanimation) lässt sich in den Einstellungen optional abschalten. Würfelt die SL so für unsichtbare Gegner, bemerken die Spieler das nicht.
 - css für schmale Scrollbars hinzugefügt
 - Englische Übersetzung für die Munition im Munitionskompendium hinzugefügt

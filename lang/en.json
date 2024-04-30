@@ -3383,6 +3383,7 @@
 	"SPACE1889.TokenChangeDisplay": "Change token display",
 	"SPACE1889.TokenForceChange": "Should the new mode be forced for all tokens on the scene? Otherwise only the tokens with both values set to <i>\"Never Displayed\"</i> will be changed.",
 	"SPACE1889.MigrationActorContainer": "{name} (id: {id}) has been updated regarding the standard containers (backpack, storage)",
+	"SPACE1889.MigrationActorDamage": "{name} (id: {id}) has been updated regarding the injuries",
 
 	"SPACE1889.AttackDialogAttackProbe": "Attack probe",
 	"SPACE1889.AttackDialogBaseValue": "Base value",
