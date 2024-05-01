@@ -2,6 +2,9 @@
 
 ## Niedergang der Errungenschafte
 
+### v2.2.1
+- Migration bugfix
+
 ### v2.2.0
 - Heilung und Schaden überarbeitet 
   - Einführung des Zustandes Lebensgefahr 

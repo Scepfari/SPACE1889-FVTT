@@ -491,7 +491,7 @@ export class Space1889Actor extends Actor
 				else
 				{
 					const timeInSeconds = SPACE1889Healing.getHealingTimeInSecondsForNextHealthPoint(injury, actor.system.healing.currentHealingDamageId, actor.system.healing.startOfHealingTimeStamp);
-					injury.system.timeToNextCure = this.#FormatDuration(timeInSeconds);
+					injury.system.timeToNextCure = this.FormatDuration(timeInSeconds);
 				}
 			}
 			else
@@ -1092,19 +1092,25 @@ export class Space1889Actor extends Actor
 	 */
 	_GetSkillLevel(actor, skillId, specializationId, skillGroupId = "")
 	{
-		for (let speci of actor.system.speciSkills)
+		if (actor.system.speciSkills)
 		{
-			if (specializationId == speci.system.id)
-				return speci.system.rating;
+			for (let speci of actor.system.speciSkills)
+			{
+				if (specializationId == speci.system.id)
+					return speci.system.rating;
+			}
 		}
 
 		let skillGroups = [];
-		for (let skill of actor.system.skills)
+		if (actor.system.skills)
 		{
-			if (skillId == skill.system.id)
-				return skill.system.rating;
-			if (skill.system.isSkillGroup && skillGroupId == skill.system.skillGroupName)
-				skillGroups.push(skill);
+			for (let skill of actor.system.skills)
+			{
+				if (skillId == skill.system.id)
+					return skill.system.rating;
+				if (skill.system.isSkillGroup && skillGroupId == skill.system.skillGroupName)
+					skillGroups.push(skill);
+			}
 		}
 
 		if (skillGroupId != "")
@@ -1114,7 +1120,7 @@ export class Space1889Actor extends Actor
 			if (skillGroups.length == 0)
 			{
 				// kein Fachbereich aus der Fertigkeitsgruppe gelernt
-				const uni = actor.system.talents.find(v => v.system.id == "universalist");
+				const uni = actor.system.talents?.find(v => v.system.id == "universalist");
 				if (uni != undefined && uni != null)
 				{
 					rating = this.GetSkillRating(actor, skillId, "");  // Funktion behandelt fertigkeitsgruppen wie fertigkeiten
@@ -1557,11 +1563,11 @@ export class Space1889Actor extends Actor
 	{
 		let rating = 0;
 
-		let skill = actor.system.skills.find(entry => entry.system.id == skillId);
+		let skill = actor.system.skills?.find(entry => entry.system.id == skillId);
 		if (skill != null && skill != undefined)
 			return skill.system.rating;
 
-		if (underlyingAbility != "" && actor.system.primaereAttribute.indexOf(underlyingAbility) >= 0)
+		if (underlyingAbility != "" && actor.system.primaereAttribute?.indexOf(underlyingAbility) >= 0)
 			return Math.max(0, actor.system.abilities[underlyingAbility].total - 2);
 
 		let underlying = this.FindUnderlyingAbility(actor, skillId);
@@ -1579,11 +1585,11 @@ export class Space1889Actor extends Actor
 	FindUnderlyingAbility(actor, skillId)
 	{
 		//Talente überprüfen ob ein rerouting auf ein anderes Attribut aktiv ist
-		const talent = actor.system.talents.find(t => t.system.changedSkill == skillId && t.system.newBase != "");
+		const talent = actor.system.talents?.find(t => t.system.changedSkill == skillId && t.system.newBase != "");
 		if (talent != undefined)
 			return talent.system.newBase;
 
-		const element = CONFIG.SPACE1889.skillUnderlyingAttribute.find(e => e[0] === skillId);
+		const element = CONFIG.SPACE1889.skillUnderlyingAttribute?.find(e => e[0] === skillId);
 		if (element != undefined)
 			return element[1];
 
@@ -1781,7 +1787,7 @@ export class Space1889Actor extends Actor
 		return duration;
 	}
 
-	#FormatDuration(durationInSeconds)
+	FormatDuration(durationInSeconds)
 	{
 		const days = Math.abs(Math.trunc(durationInSeconds / 86400));
 		let restTime = durationInSeconds - (days * 86400);

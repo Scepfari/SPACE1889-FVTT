@@ -48,7 +48,7 @@ export default class SPACE1889Healing
 		if (!SPACE1889Helper.hasOwnership(token.actor, true))
 			return;
 
-		this.#applyFirstAid(token.actor, firstAidSuccesses, isLifesaver, timeStamp);
+		this.applyFirstAid(token.actor, firstAidSuccesses, isLifesaver, timeStamp);
 
 		SPACE1889Helper.markChatButtonAsDone(ev,
 			game.i18n.localize("SPACE1889.ApplyFirstAid"),
@@ -56,7 +56,7 @@ export default class SPACE1889Healing
 		);
 	}
 
-	static async #applyFirstAid(actor, firstAidSuccesses, fromLivesaver, timestamp)
+	static async applyFirstAid(actor, firstAidSuccesses, fromLivesaver, timestamp)
 	{
 		if (actor.type !== "character" && actor.type !== "npc")
 			return;
@@ -161,7 +161,7 @@ export default class SPACE1889Healing
 
 		this.refreshTheInjuryToBeHealed(actor)
 		SPACE1889Time.changeDate(60); //Heildauer ist 60s
-		this.#sendFirstAidHealingChatMessage(actor, timestamp, firstAidInfo);
+		this.sendFirstAidHealingChatMessage(actor, timestamp, firstAidInfo);
 
 		async function updateInjury(actor, updateInfo)
 		{
@@ -174,7 +174,7 @@ export default class SPACE1889Healing
 		}
 	}
 
-	static #sendFirstAidHealingChatMessage(actor, time, firstAidInfo)
+	static sendFirstAidHealingChatMessage(actor, time, firstAidInfo)
 	{
 		const timeAsString = SPACE1889Time.formatTimeDate(SPACE1889Time.getTimeAndDate(time));
 		let content = game.i18n.localize("SPACE1889.HealingThroughFirstAid") + timeAsString;
@@ -239,10 +239,10 @@ export default class SPACE1889Healing
 		if (!SPACE1889Helper.hasOwnership(actor, true))
 			return;
 
-		this.#stylePointDamageReduction(ev, actor, damageId, originalDamage, originalDamageType, originalDamageName, weaponEffect, weaponEffectTurns, weaponEffectOnly, timeStamp, createdEffectIds);
+		this.stylePointDamageReduction(ev, actor, damageId, originalDamage, originalDamageType, originalDamageName, weaponEffect, weaponEffectTurns, weaponEffectOnly, timeStamp, createdEffectIds);
 	}
 
-	static #stylePointDamageReduction(ev, actor, damageId, originalDamage, originalDamageType, originalDamageName, weaponEffect, weaponEffectTurns, weaponEffectOnly, timeStamp, createdEffectIds)
+	static stylePointDamageReduction(ev, actor, damageId, originalDamage, originalDamageType, originalDamageName, weaponEffect, weaponEffectTurns, weaponEffectOnly, timeStamp, createdEffectIds)
 	{
 		const injury = actor.items.get(damageId);
 		if (!injury ||
@@ -335,7 +335,7 @@ export default class SPACE1889Healing
 		return isSame;
 	}
 
-	static #findInjuryToHeal(actor, overrideStartHealingTimeStamp = Infinity)
+	static findInjuryToHeal(actor, overrideStartHealingTimeStamp = Infinity)
 	{
 		if (!actor || SPACE1889Helper.isDead(actor))
 			return undefined;
@@ -383,7 +383,7 @@ export default class SPACE1889Healing
 		if (!injury || injury.system.remainingDamage == 0)
 			return Infinity;
 
-		let neededSecondsToHeal = this.#getHealingSecondsByDamageType(injury.system?.damageType);
+		let neededSecondsToHeal = this.getHealingSecondsByDamageType(injury.system?.damageType);
 		const investedTime = injury.system.completedHealingProgress - Math.floor(injury.system.completedHealingProgress);
 		if (investedTime > 0)
 			neededSecondsToHeal *= (1 - investedTime);
@@ -391,18 +391,18 @@ export default class SPACE1889Healing
 		let healingTime = neededSecondsToHeal / injury.system.healingFactor;
 
 		if (injury.id == injuryInHealingId && SPACE1889Time.isSimpleCalendarEnabled())
-			healingTime -= this.#getPastTimeInSeconds(healingStartTimeStamp)
+			healingTime -= this.getPastTimeInSeconds(healingStartTimeStamp)
 
 		return healingTime;
 	}
 
-	static #getHealingSecondsByDamageType(damageType)
+	static getHealingSecondsByDamageType(damageType)
 	{
 		const oneDayInSeconds = 86400  // 24 * 60 * 60s = 86400s
 		return (damageType == "nonLethal" ? 1 : 7) * oneDayInSeconds;
 	}
 
-	static #getPastTimeInSeconds(healingStartTimeStamp)
+	static getPastTimeInSeconds(healingStartTimeStamp)
 	{
 		if (healingStartTimeStamp == 0 || healingStartTimeStamp == Infinity || !SPACE1889Time.isSimpleCalendarEnabled())
 			return 0;
@@ -433,9 +433,9 @@ export default class SPACE1889Healing
 		if (!actor)
 			return;
 
-		await this.#removeOutdatedEffects(actor);
+		await this.removeOutdatedEffects(actor);
 
-		const pastTime = this.#getPastTimeInSeconds(actor.system.healing.startOfHealingTimeStamp);
+		const pastTime = this.getPastTimeInSeconds(actor.system.healing.startOfHealingTimeStamp);
 		let healingTimeForCurrentHealing = Infinity;
 		let healingInjury = undefined;
 		if (actor.system.healing.currentHealingDamageId != "")
@@ -449,10 +449,10 @@ export default class SPACE1889Healing
 				const newStartTimeStamp = actor.system.healing.startOfHealingTimeStamp + healingTimeForCurrentHealing;
 				const completedHealingProgress = Math.floor(healingInjury.system.completedHealingProgress) + 1;
 				await actor.updateEmbeddedDocuments("Item", [{ _id: healingInjury.id, "system.completedHealingProgress": completedHealingProgress }]);
-				this.#sendHealingChatMessage(actor, healingInjury, newStartTimeStamp);
+				this.sendHealingChatMessage(actor, healingInjury, newStartTimeStamp);
 
 				// nächstes Heilobjekt identifizieren, markieren, benötigte Zeit abstreichen und dann nochmal von vorn
-				const nextInjuryToHeal = this.#findInjuryToHeal(actor, newStartTimeStamp);
+				const nextInjuryToHeal = this.findInjuryToHeal(actor, newStartTimeStamp);
 				const nextInjuryId = nextInjuryToHeal ? nextInjuryToHeal.id : "";
 				await actor.update({ 'system.healing.currentHealingDamageId': nextInjuryId, "system.healing.startOfHealingTimeStamp": newStartTimeStamp });
 				await this.healActorByTime(actor);
@@ -460,7 +460,7 @@ export default class SPACE1889Healing
 			}
 		}
 
-		let injury = this.#findInjuryToHeal(actor);
+		let injury = this.findInjuryToHeal(actor);
 		if (!injury)
 			return;
 
@@ -473,7 +473,7 @@ export default class SPACE1889Healing
 		if (actor.system.healing.currentHealingDamageId != "" && healingInjury)
 		{
 			// bisherigen Fortschritt verbuchen
-			let neededSecondsToHeal = this.#getHealingSecondsByDamageType(healingInjury.system?.damageType);
+			let neededSecondsToHeal = this.getHealingSecondsByDamageType(healingInjury.system?.damageType);
 			const progress = pastTime * healingInjury.system.healingFactor / neededSecondsToHeal;
 			const completedHealingProgress = healingInjury.system.completedHealingProgress + progress;
 			if (Math.floor(completedHealingProgress) != Math.floor(healingInjury.system.completedHealingProgress))
@@ -494,7 +494,7 @@ export default class SPACE1889Healing
 
 	static async refreshTheInjuryToBeHealed(actor)
 	{
-		let injury = this.#findInjuryToHeal(actor);
+		let injury = this.findInjuryToHeal(actor);
 		if (!injury)
 		{
 			if (actor.system.healing.currentHealingDamageId != "")
@@ -508,8 +508,8 @@ export default class SPACE1889Healing
 			const healingInjury = actor.items.get(actor.system.healing.currentHealingDamageId);
 			if (healingInjury)
 			{
-				const pastTime = this.#getPastTimeInSeconds(actor.system.healing.startOfHealingTimeStamp);
-				let neededSecondsToHeal = this.#getHealingSecondsByDamageType(healingInjury.system?.damageType);
+				const pastTime = this.getPastTimeInSeconds(actor.system.healing.startOfHealingTimeStamp);
+				let neededSecondsToHeal = this.getHealingSecondsByDamageType(healingInjury.system?.damageType);
 				const progress = pastTime * healingInjury.system.healingFactor / neededSecondsToHeal;
 				const completedHealingProgress = healingInjury.system.completedHealingProgress + progress;
 				// bisherigen Fortschritt verbuchen
@@ -535,8 +535,8 @@ export default class SPACE1889Healing
 		if (!current || current.id != injury.id)
 			return injury.system.completedHealingProgress - Math.floor(injury.system.completedHealingProgress);
 
-		const pastTime = this.#getPastTimeInSeconds(actor.system.healing.startOfHealingTimeStamp);
-		let neededSecondsToHeal = this.#getHealingSecondsByDamageType(injury.system?.damageType);
+		const pastTime = this.getPastTimeInSeconds(actor.system.healing.startOfHealingTimeStamp);
+		let neededSecondsToHeal = this.getHealingSecondsByDamageType(injury.system?.damageType);
 		let progress = pastTime * injury.system.healingFactor / neededSecondsToHeal;
 		progress += injury.system.completedHealingProgress - Math.floor(injury.system.completedHealingProgress);
 		return progress;
@@ -561,11 +561,11 @@ export default class SPACE1889Healing
 		if (healingInjury)
 		{
 			
-			const pastTime = this.#getPastTimeInSeconds(actor.system.healing.startOfHealingTimeStamp);
+			const pastTime = this.getPastTimeInSeconds(actor.system.healing.startOfHealingTimeStamp);
 			if (pastTime > 0)
 			{
 				setNewTime = true;
-				let neededSecondsToHeal = this.#getHealingSecondsByDamageType(healingInjury.system.damageType);
+				let neededSecondsToHeal = this.getHealingSecondsByDamageType(healingInjury.system.damageType);
 				const progress = pastTime * healingInjury.system.healingFactor / neededSecondsToHeal;
 				const progressOfActualPoint = Math.min(progress + healingInjury.system.completedHealingProgress - Math.trunc(healingInjury.system.completedHealingProgress), 1);
 				const completedProgress = Math.trunc(healingInjury.system.completedHealingProgress) + progressOfActualPoint;
@@ -590,7 +590,7 @@ export default class SPACE1889Healing
 			await actor.updateEmbeddedDocuments("Item", [{ _id: injuryId, "system.healingFactor": newHealingFactor }]);
 
 		let currentTime = SPACE1889Time.getCurrentTimestamp();
-		let newHealing = this.#findInjuryToHeal(actor, currentTime)
+		let newHealing = this.findInjuryToHeal(actor, currentTime)
 		let newHealingId = newHealing ? newHealing.id : "";
 		if (actor.system.healing.currentHealingDamageId != newHealingId || setNewTime)
 		{
@@ -605,7 +605,7 @@ export default class SPACE1889Healing
 		}
 	}
 
-	static #sendHealingChatMessage(actor, injury, time)
+	static sendHealingChatMessage(actor, injury, time)
 	{
 		const timeAsString = SPACE1889Time.formatTimeDate(SPACE1889Time.getTimeAndDate(time));
 		const messageContent = injury.system.remainingDamage > 0 ?
@@ -621,7 +621,7 @@ export default class SPACE1889Healing
 		ChatMessage.create(chatData, {});
 	}
 
-	static async #removeOutdatedEffects(actor)
+	static async removeOutdatedEffects(actor)
 	{
 		if (!actor)
 			return;
@@ -635,7 +635,7 @@ export default class SPACE1889Healing
 			if (effect.duration.combat && game.combats.has(effect.duration.combat)) // do not touch a running combat
 				continue;
 
-			const pastTime = this.#getPastTimeInSeconds(effect.duration.startTime);
+			const pastTime = this.getPastTimeInSeconds(effect.duration.startTime);
 
 			if (effect.duration.seconds > 0 && effect.duration.seconds < pastTime)
 				effectsToRemove.push(effect._id);

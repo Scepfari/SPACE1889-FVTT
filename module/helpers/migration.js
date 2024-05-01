@@ -212,9 +212,8 @@ export class Space1889Migration
 		if (isNewerVersion(lastUsedVersion, lastNonFixVersion) || !game.user.isGM)
 			return;
 
-		let actorList = this.getAllActors();
+		let actorList = this.getAllActorsWithoutVehicleAndCreature();
 		await SPACE1889Helper.createDamageTimestamps(actorList);
-
 	}	
 
 	static async migrateEffectsForFoundryV11(lastUsedVersion, lastUsedFoundryVersion)

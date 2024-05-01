@@ -1316,6 +1316,8 @@ export default class SPACE1889Helper
 			let updateData = [];
 			for (let injury of actor.system.injuries)
 			{
+				if (injury.system.dataOfTheEvent.length < 10)
+					continue;
 				const timestamp = SPACE1889Time.dateStringToTimestamp(injury.system.dataOfTheEvent, format);
 				updateData.push({ _id: injury._id, "system.eventTimestamp": timestamp });
 			}

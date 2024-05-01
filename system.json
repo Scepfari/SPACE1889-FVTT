@@ -3,7 +3,7 @@
 	"id": "space1889",
 	"title": "Space 1889",
 	"description": "The SPACE 1889 Ubiquity system for FoundryVTT!",
-	"version": "2.2.0",
+	"version": "2.2.1",
 	"minimumCoreVersion": "10",
 	"compatibleCoreVersion": "10",
 	"compatibility": {
