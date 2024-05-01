@@ -663,7 +663,7 @@
 	"primaryTokenAttribute": "health",
 	"url": "https://github.com/Scepfari/SPACE1889-FVTT",
 	"manifest": "https://github.com/Scepfari/SPACE1889-FVTT/releases/latest/download/system.json",
-	"download": "https://github.com/Scepfari/SPACE1889-FVTT/releases/download/2.2.0/space1889-foundry-2.2.0.zip",
+	"download": "https://github.com/Scepfari/SPACE1889-FVTT/releases/download/2.2.1/space1889-foundry-2.2.1.zip",
 	"bugs": "https://github.com/Scepfari/SPACE1889-FVTT/issues",
 	"flags": {
 		"allowBugReporter": true
