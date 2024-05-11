@@ -31,6 +31,22 @@ SPACE1889.secondaries = {
 	"stun": "SPACE1889.SecondaryAttributeStu"
 };
 
+SPACE1889.itemTypes = {
+	"ammunition": "ITEM.TypeAmmunition",
+	"armor": "ITEM.TypeArmor",
+	"container": "ITEM.TypeContainer",
+	"currency": "ITEM.TypeCurrency",
+	"damage": "ITEM.TypeDamage",
+	"item": "ITEM.TypeItem",
+	"language": "ITEM.TypeLanguage",
+	"resource": "ITEM.TypeResource",
+	"skill": "ITEM.TypeSkill",
+	"specialization": "ITEM.TypeSpecialization",
+	"talent": "ITEM.TypeTalent",
+	"weakness": "ITEM.TypeWeakness",
+	"weapon": "ITEM.TypeWeapon"
+}
+
 SPACE1889.skillUnderlyingAttribute = [
 	["akrobatik", "dex"],
 	["anthropologie", "int"],
@@ -722,6 +738,17 @@ SPACE1889.weaponCapacityTypes = {
 	"revolver": "SPACE1889.WeaponCapacityTypeRevolver",
 	"powercell": "SPACE1889.WeaponCapacityTypePowercell",
 	"chemicalcontainer": "SPACE1889.WeaponCapacityTypeChemicalTank"
+}
+
+SPACE1889.weaponCapacityTypesAbbr = {
+	"default": "",
+	"belt": "SPACE1889.WeaponCapacityTypeBeltAbbr",
+	"strip": "SPACE1889.WeaponCapacityTypeStripAbbr",
+	"internal": "SPACE1889.WeaponCapacityTypeInternalAbbr",
+	"magazine": "SPACE1889.WeaponCapacityTypeMagazineAbbr",
+	"revolver": "SPACE1889.WeaponCapacityTypeRevolverAbbr",
+	"powercell": "SPACE1889.WeaponCapacityTypePowercellAbbr",
+	"chemicalcontainer": "SPACE1889.WeaponCapacityTypeChemicalTankAbbr"
 }
 
 SPACE1889.ammunitionCapacityTypes = {

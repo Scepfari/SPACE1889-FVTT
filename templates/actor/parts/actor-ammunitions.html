@@ -14,7 +14,7 @@
 	{{#each system.ammunitions as |item id|}}
 	<li class="item row-section flexrow" data-item-id="{{item._id}}">
 		<div class="item-name">
-			<div class="item-name-name">
+			<div data-tooltip="{{fullItemToolTipDescription item}}" class="item-name-name">
 				<h4 for="" class="rollable" data-roll-type="item" data-label="{{item.name}}">{{item.system.label}}</h4>
 			</div>
 		</div>

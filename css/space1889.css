@@ -649,6 +649,26 @@ font-size: 12px;
 	margin-right: 5px;
 }
 
+.space1889 .item-image-small-fix-ratio {
+	width: 18px;
+	height: 18px;
+	border: none;
+	margin-right: 5px;
+	object-fit: scale-down;
+}
+
+.space1889 .container-image-small {
+	width: 18px;
+	height: 18px;
+	border: none;
+	margin-right: 5px;
+	margin-left: 5px;
+	object-fit: scale-down;
+}
+
+.scale-down {
+	object-fit: scale-down;
+}
 
 .space1889 .items-list .item-prop {
 	text-align: center;
@@ -768,10 +788,16 @@ font-size: 12px;
 	font-size: 12px;
 }
 
-.itemTooltipH4{
+.itemTooltipH3{
 	text-align: center;
 	font-size: 14px;
 }
+
+.itemChat {
+	text-align: left;
+	font-size: 13px;
+}
+
 
 /*.tooltip {
 	background: #fefac9;

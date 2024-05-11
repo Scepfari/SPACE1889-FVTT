@@ -330,6 +330,217 @@ export class Space1889Item extends Item {
 	{
 		SPACE1889RollHelper.rollItem(this, this.actor, dieCount, showDialog);
 	}
+
+	getInfoText(forChat)
+	{
+		const type = this._getTypeText();
+
+		if (this.type === "skill" || this.type === "talent" || this.type === "specialization" || this.type === "weakness")
+		{
+			let desc = game.i18n.localize(this.system.descriptionLangId);
+			if (desc === this.system.descriptionLangId && this.system.description !== "")
+				desc = this.system.description;
+
+			const fullDesc = this._ComposeHtmlTextInfo("", this.name, type, desc, forChat);
+			return fullDesc;
+		}
+
+		if (this.type === "resource")
+		{
+			let desc = "<p>" + this._addLine("SPACE1889.Level", this.system.level.value, "", false);
+			if (this.system.noEp)
+				desc += `<br>${game.i18n.localize("SPACE1889.IsCampaingnEffect")}`;
+
+			desc += "</p>";
+			if (this.system.description !== "")
+				desc += this.system.description;
+
+			const idDesc = game.i18n.localize(this.system.descriptionLangId);
+			if (idDesc !== this.system.descriptionLangId)
+				desc += idDesc;
+
+			const fullDesc = this._ComposeHtmlTextInfo("", this.system.label, type, desc, forChat);
+			return fullDesc;
+		}
+
+		if (this.type === "item" || this.type === "container" || this.type === "armor")
+		{
+			let desc = game.i18n.localize(this.system.descriptionLangId);
+			if (desc === this.system.descriptionLangId)
+				desc = "";
+			if (this.system.description !== "")
+				desc += (desc === "" ? "" : "<br>") + this.system.description;
+
+			const image = this._getImageIfNotDefault(forChat);
+			const fullDesc = this._ComposeHtmlTextInfo(image, this.name, type, desc, forChat);
+			return fullDesc;
+		}
+
+		if (this.type === "weapon")
+		{
+			return this._getWeaponInfoText(type, forChat);
+		}
+		if (this.type === "ammunition")
+		{
+			let desc = this._addLineFromToIds("SPACE1889.DamageType", CONFIG.SPACE1889.damageTypes[this.system.damageType], false);
+
+			desc += this._addLineFromToIds("SPACE1889.AmmunitionType", CONFIG.SPACE1889.weaponAmmunitionTypes[this.system.type]);
+
+			if (this.system.caliber !== "")
+				desc += this._addLine("SPACE1889.Caliber", this.system.caliber);
+
+			if (this.system.capacityType != "default")
+			{
+				desc +=this._addLineFromToIds("SPACE1889.CapacityTypeLong", CONFIG.SPACE1889.ammunitionCapacityTypes[this.system.capacityType]);
+				desc += this._addLine("SPACE1889.Capacity", this.system.capacity.toString());
+			}
+
+			if (this.system.damageModifikator !== 0)
+				desc += this._addLine("SPACE1889.AmmunitionDamageModifier", this.system.damageModifikator);
+			if (this.system.rangeModFactor !== 1)
+				desc += this._addLine("SPACE1889.AmmunitionRangeModifierFactor", this.system.rangeModFactor);
+			if (this.system.description !== "")
+				desc += this.system.description;
+
+			const image = this._getImageIfNotDefault(forChat);
+			const fullDesc = this._ComposeHtmlTextInfo(image, this.name, type, desc, forChat);
+			return fullDesc;
+		}
+		if (this.type === "language")
+		{
+			let desc = this._addLine("SPACE1889.LanguageOrigin", this.system.origin, "", false);
+			desc += this._addLine("SPACE1889.FamilyOfLanguages", this.system.family);
+			if (this.system.isDialectSourceId !== "no")
+				desc += this._addLine("SPACE1889.IsDialectFrom", this.system.dialect);
+			if (this.system.old)
+				desc += "<br>" + this.system.oldInfo;
+
+			const fullDesc = this._ComposeHtmlTextInfo("", this.system.label, type, desc, forChat);
+			return fullDesc;
+		}
+		if (this.type === "currency")
+		{
+			let desc = "";
+			if (this.system.type !== "money")
+			{
+				const typeId = CONFIG.SPACE1889.moneyTypes[this.system.type];
+				if (typeId != undefined)
+				{
+					const typename = game.i18n.localize(typeId);
+					if (typename !== "" && typename !== typeId)
+						desc = "<small>" + typename + "</small><br>";
+				}
+			}
+
+			desc += this.system.quantity.toString() + " " + this.system.abbr + " ~ " + this.system.exchangeValue + "<br>";
+			desc += game.i18n.localize("SPACE1889.ExchangeRate") + ": ";
+			desc += "1 " + game.i18n.localize("SPACE1889.CurrencyBritishPoundsAbbr") + " = " + this.system.exchangeRateForOnePound.toString() + " " + this.system.abbr;
+
+			const fullDesc = this._ComposeHtmlTextInfo("", this.system.label, type, desc, forChat);
+			return fullDesc;
+		}
+
+		// fall back for all other types
+		const image = this._getImageIfNotDefault(forChat);
+		const fullDesc = this._ComposeHtmlTextInfo(image, this.name, type, this.system.description, forChat);
+		return fullDesc;
+	}
+
+	_getWeaponInfoText(type, forChat = false)
+	{
+		const item = this;
+		const hasAmmo = item.system.ammunition.currentItemId !== "";
+		let desc = "";
+		if (item.system.specializationId !== "none")
+			desc += this._addLineFromToIds("SPACE1889.CombatSpecialization", CONFIG.SPACE1889.combatSpecializations[item.system.specializationId], false);
+
+		if (hasAmmo)
+			desc += this._addLine("SPACE1889.Ammunition", item.system.ammunition.name, "", desc.length > 0);
+
+		const ammoBonus = hasAmmo && item.system.ammunition?.damageMod ? item.system.ammunition.damageMod : 0;
+
+		desc += this._addLine("SPACE1889.Damage", (item.system.damage + ammoBonus).toString(),  item.system.damageTypeDisplay, desc.length > 0);
+
+		if (item.system.range !== "")
+		{
+			desc += this._addLine("SPACE1889.Range", item.system.calculatedRange.toString(), "m");
+			if (item.system.templateConeAngle)
+				desc += this._addLine("SPACE1889.ConeAngle", item.system.templateConeAngle, "&deg;");
+			desc += this._addLine("SPACE1889.Capacity",
+				item.system.capacity,
+				" " + game.i18n.localize(CONFIG.SPACE1889.weaponCapacityTypesAbbr[item.system.capacityType]));
+		}
+		desc += this._addLine("SPACE1889.Weight", item.system.weight.toString(), "kg");
+
+		if (item.system.location === "mounted")
+		{
+			desc += this._addLine("SPACE1889.SecondaryAttributeSiz", item.system.size);
+			desc += this._addLineFromToIds("SPACE1889.WeaponGunPosition", CONFIG.SPACE1889.weaponMountSpots[item.system.vehicle.spot]);
+
+			if (item.system.vehicle.isSwivelMounted)
+				desc += this._addLine("SPACE1889.WeaponSwivelingRange", item.system.vehicle.swivelingRange, "&deg;");
+			else
+				desc += "<br>" + game.i18n.localize("SPACE1889.WeaponIsRigidlyMounted");
+		}
+
+		if (item.system.description !== "")
+			desc += this._addLine("SPACE1889.Description", item.system.description);
+
+		const image = this._getImageIfNotDefault(forChat);
+		const fullDesc = this._ComposeHtmlTextInfo(image, this.system.label, type, desc, forChat);
+		return fullDesc;
+	}
+
+	_getTypeText()
+	{
+		let type = this.type === "skill" && this.system.isSkillGroup 
+			? game.i18n.localize("SPACE1889.SkillGroup") + " " + this.system.skillGroup
+			: game.i18n.localize(CONFIG.SPACE1889.itemTypes[this.type]);
+
+		if (this.type === "specialization")
+		{
+			const skillLangId = 'SPACE1889.Skill' + this.system.underlyingSkillId.replace(/^(.)/, function (b) { return b.toUpperCase(); });
+			let skillName = game.i18n.localize(skillLangId);
+			if (skillName === skillLangId)
+				skillName = this.system.underlyingSkillId;
+
+			type = skillName + " " + type;
+		}
+		return type;
+	}
+
+	_getImageIfNotDefault(forChat)
+	{
+		if (!SPACE1889RollHelper.showItemImage(this))
+			return "";
+
+		if (forChat)
+			return SPACE1889Helper.getItemChatImageHtml(this.img, SPACE1889RollHelper.isSmallItemImage(this));
+		else
+			return SPACE1889Helper.getItemChatImageHtml(this.img, true, 150);
+	}
+
+	_addLineFromToIds(langId, secLangId, addLineBreak = true)
+	{
+		const line = (addLineBreak ? "<br>" : "") + game.i18n.localize(langId) + ": " + game.i18n.localize(secLangId);
+		return line;
+	}
+
+	_addLine(langId, value, unit="", addLineBreak = true)
+	{
+		const line = (addLineBreak ? "<br>" : "") + game.i18n.localize(langId) + ": " + value + unit;
+		return line;
+	}
+
+	_ComposeHtmlTextInfo(image, name, type, desc, forChat)
+	{
+		const headerClass = forChat ? "" : "class=\"itemTooltipH3\"";
+		const textClass = forChat ? "" : "itemTooltip";
+
+		const composition =
+			`${image}<h3 ${headerClass}><strong>${name}</strong> <small>[${type}]</small></h3><div class="${textClass}">${desc}</div>`;
+		return composition;
+	}
 }
 
 

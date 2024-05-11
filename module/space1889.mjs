@@ -407,77 +407,43 @@ Handlebars.registerHelper('toLowerCase', function(str) {
 	return str.toLowerCase();
 });
 
-Handlebars.registerHelper('doubleCheck', function (firstLeft, fistRight, secondLeft, secondRight)
+Handlebars.registerHelper('doubleCheck', function (firstLeft, fistRight, secondLeft, secondRight) 
 {
 	return firstLeft == fistRight && secondLeft == secondRight;
-})
+});
 
 Handlebars.registerHelper('formatTime', function (gameTime)
 {
 	return SPACE1889Time.formatTimeDate(SPACE1889Helper.getTimeAndDate(gameTime));
-})
+});
 
 Handlebars.registerHelper('formatEffectDuration', function (effectDuration)
 {
 	return SPACE1889Time.formatEffectDuration(effectDuration);
-})
+});
 
 Handlebars.registerHelper('formatNumber', function (number, decimal)
 {
 	return number.toFixed(Number(decimal));
-})
+});
 
 Handlebars.registerHelper('isGm', function (str)
 {
 	return game.user.isGM;
-})
+});
 
 Handlebars.registerHelper('isFvttV10', function (str)
 {
 	return SPACE1889Helper.isFoundryV10Running();
-})
+});
 
-Handlebars.registerHelper('fullItemToolTipDescription', function (item)
+Handlebars.registerHelper('fullItemToolTipDescription', function (item) 
 {
-	if (item && item.type == "skill")
-	{
-		const type = item.system.isSkillGroup ? game.i18n.localize("SPACE1889.SkillGroup") : game.i18n.localize("SPACE1889.Skill");
-		let desc = game.i18n.localize(item.system.descriptionLangId);
-		if (desc == item.system.descriptionLangId && item.system.description != "")
-			desc = item.system.description;
+	if (!item)
+		return "";
 
-		const fullDesc = `<div class="itemTooltipH4"><h4><strong>${item.name}</strong> [${type}]</h4></div><div class="itemTooltip">${desc}</div>`;
-		return fullDesc; 
-	}
-	if (item && item.type === "talent")
-	{
-		const type = game.i18n.localize("SPACE1889.Talent");
-		let desc = game.i18n.localize(item.system.descriptionLangId);
-		if (desc === item.system.descriptionLangId && item.system.description !== "")
-			desc = item.system.description;
-
-		const fullDesc = `<div class="itemTooltipH4"><h4><strong>${item.name}</strong> [${type}]</h4></div><div class="itemTooltip">${desc}</div>`;
-		return fullDesc; 
-	}
-	if (item && item.type == "item")
-	{
-		const type = game.i18n.localize("SPACE1889.Item");
-		let desc = game.i18n.localize(item.system.descriptionLangId);
-		if (desc == item.system.descriptionLangId)
-			desc = "";
-		if (item.system.description != "")
-			desc += (desc == "" ? "" : "<br>") + item.system.description;
-
-		const image = item.img != 'icons/svg/item-bag.svg' ?
-			`<img class="profile-img artwork" src="${item.img}" data-edit="img" height="120"/>` :
-			"";
-		const fullDesc = `${image}<h4 class="itemTooltipH4"><strong>${item.name}</strong> [${type}]</h4><div class="itemTooltip">${desc}</div>`;
-		return fullDesc; 
-	}
-
-
-	return "under construction";
-})
+	return item.getInfoText();
+});
 
 /* -------------------------------------------- */
 /*  Ready Hook                                  */

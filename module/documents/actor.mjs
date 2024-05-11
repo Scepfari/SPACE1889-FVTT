@@ -839,6 +839,7 @@ export class Space1889Actor extends Actor
 
 		for (let weapon of weapons)
 		{
+			weapon.system.calculatedRange = parseFloat(SPACE1889Helper.replaceCommaWithPoint(weapon.system.range));
 			if (weapon.system.skillId == "none" && weapon.system.isAreaDamage)
 			{
 				weapon.system.sizeMod = "-";
@@ -1173,7 +1174,7 @@ export class Space1889Actor extends Actor
 		var isHausregel = game.settings.get("space1889", "improvedForeignLanguageCountCalculation");
 
 		if (rating >= 10)
-			return 16;
+			return ((rating - 10) * 4) + 16;
 		if (rating >= 9)
 			return (isHausregel ? 12 : 8);
 		if (rating >= 8)

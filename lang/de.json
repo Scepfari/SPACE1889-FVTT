@@ -2913,6 +2913,7 @@
 	"SPACE1889.AreaDamageWeaponUse": "Der Angriff erfolgt nur mit der Waffenfertigkeit gegen die Aktive Abwehr. Bei Erfolg erleidet das Ziel den Waffenschaden (ggf. modifiziert durch Zielgröße)",
 	"SPACE1889.NoTokenPermission": "Du besitzt nicht die Rechte um die Aktion auszuführen, das können nur folgende Personen: {player}",
 	"SPACE1889.NoTokensSelected": "Keine Figur ausgewählt",
+	"SPACE1889.NoPcOrNpcTokenSelected": "Die ausgewählte Figur ist weder Charakter noch NSC",
 	"SPACE1889.NotInRange": "Du musst neben dem Ziel stehen, um es ohne Fernkampfwaffe anzugreifen",
 	"SPACE1889.OutOfCloseCombatRange": "Mindestens eins der Ziele ist außerhalb der Nahkampfreichweite. Du musst neben den Zielen stehen, um sie ohne Fernkampfwaffe anzugreifen zu können",
 	"SPACE1889.OutOfRange": "außerhalb der Reichweite",

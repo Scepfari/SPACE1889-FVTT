@@ -14,7 +14,7 @@
 			{{#each system.languageLeft as |item key|}}
 			<li class="item flexrow" data-item-id="{{item._id}}">
 				<div class="item-name">
-					<h4 class="rollable" data-roll-type="item" data-tooltip='{{localize "SPACE1889.FamilyOfLanguages"}}: {{item.system.family}} , {{localize "SPACE1889.LanguageOrigin"}}: {{item.system.origin}} &#13;{{item.system.oldInfo}}'>{{item.system.label}}</h4>
+					<h4 class="rollable" data-roll-type="item" data-tooltip="{{fullItemToolTipDescription item}}">{{item.system.label}}</h4>
 				</div>
 				<div class="item-controls item-max-with75px">
 					<a class="item-control item-edit" data-tooltip="Edit Item"><i class="fas fa-edit"></i></a>
@@ -27,7 +27,7 @@
 			{{#each system.languageRight as |item key|}}
 			<li class="item flexrow" data-item-id="{{item._id}}">
 				<div class="item-name">
-					<h4 class="rollable" data-roll-type="item" data-tooltip='{{localize "SPACE1889.FamilyOfLanguages"}}: {{item.system.family}} , {{localize "SPACE1889.LanguageOrigin"}}: {{item.system.origin}} &#13;{{item.system.oldInfo}}'>{{item.system.label}}</h4>
+					<h4 class="rollable" data-roll-type="item" data-tooltip="{{fullItemToolTipDescription item}}">{{item.system.label}}</h4>
 				</div>
 				<div class="item-controls item-max-with75px">
 					<a class="item-control item-edit" data-tooltip="Edit Item"><i class="fas fa-edit"></i></a>

@@ -15,7 +15,7 @@
 		{{#each system.money as |item id|}}
 		<li class="item row-section flexrow" data-item-id="{{item._id}}">
 			<div class="item-name">
-				<h4 for="" class="rollable" data-roll-type="item" data-label="{{item.name}}" data-tooltip="{{item.system.label}}">{{item.system.abbr}}</h4>
+				<h4 for="" class="rollable" data-roll-type="item" data-label="{{item.name}}" data-tooltip="{{fullItemToolTipDescription item}}">{{item.system.abbr}}</h4>
 			</div>
 			<div class="items-list item-max-with60px">
 				<a class="increment-click">{{item.system.quantity}}</a>

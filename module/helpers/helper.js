@@ -1740,10 +1740,10 @@ export default class SPACE1889Helper
 		return game.i18n.localize(CONFIG.SPACE1889.damageTypeAbbreviations[damageType]);
 	}
 
-	static getItemChatImageHtml(imagepath, small = false)
+	static getItemChatImageHtml(imagepath, small = false, smallSize = 75)
 	{
-		let html = "<img class=\"space1889-image\" src=" + imagepath + " alt=\"" + game.i18n.localize("SPACE1889.UnableToLoadImage") + "\"";
-		html += (small ? "height=\"75\" />" : "/>") + "<br>";
+		let html = "<img class=\"space1889-image scale-down\" src=" + imagepath + " alt=\"" + game.i18n.localize("SPACE1889.UnableToLoadImage") + "\"";
+		html += (small ? `height="${smallSize}" />` : "/>") + "<br>";
 		return html;
 	}
 
