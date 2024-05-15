@@ -17,7 +17,7 @@
 				<div class="item-image-small">
 					<a class="rollable" data-roll-type="item" data-roll-diecount="{{item.system.rating}}"><img src="../../icons/svg/dice-target.svg" data-tooltip='{{item.system.label}} {{localize "SPACE1889.Probe"}}' width="18" height="18"/></a>
 				</div>
-				<div class="item-name-name" data-tooltip="{{fullItemToolTipDescription item}}">
+				<div class="item-name" data-tooltip="{{fullItemToolTipDescription item}}" data-tooltip-direction="LEFT">
 					{{#if item.system.isSkillGroup }}
 					<h4 for="" class="rollable" data-roll-type="item" data-label="{{item.system.label}} ({{item.system.skillGroup}})">
 						{{item.system.label}} ({{item.system.skillGroup}})
@@ -41,7 +41,7 @@
 		{{#each ../system.speciSkills as |speci id|}}
 	    {{#if (eq speci.system.underlyingSkillId item.system.id)}}
 		<li class="item row-section flexrow" data-item-id="{{speci._id}}">
-			<div class="item-name item-marginl20px">
+			<div class="item-name item-marginl20px" data-tooltip="{{fullItemToolTipDescription speci}}" data-tooltip-direction="LEFT">
 				<div class="item-image-small">
 					<a>&#8627</a>
 				</div>
@@ -49,7 +49,7 @@
 					<a class="rollable" data-label="{{speci.system.label}}" data-roll-type="item" data-roll-diecount="{{speci.system.rating}}"><img src="../../icons/svg/dice-target.svg" data-tooltip="{{speci.system.label}}" width="18" height="18"/></a>
 				</div>
 				<div class="item-name-name">
-					<h4 for="" class="rollable" data-roll-type="item" data-label="{{speci.system.label}}" data-tooltip="{{fullItemToolTipDescription speci}}">{{speci.system.label}}</h4>
+					<h4 for="" class="rollable" data-roll-type="item" data-label="{{speci.system.label}}">{{speci.system.label}}</h4>
 				</div>
 			</div>
 			<label class="items-list item-max-with40px">{{speci.system.basis}}</label>

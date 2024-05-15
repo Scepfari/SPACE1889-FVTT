@@ -13,8 +13,8 @@
 		<div class="left flexcol" style="grid-column: 1 / span 1">
 			{{#each system.weaknessLeft as |item id|}}
 			<li class="item flexrow" data-item-id="{{item._id}}">
-				<div class="item-name">
-					<h4 class="rollable" data-roll-type="item" data-tooltip="{{fullItemToolTipDescription item}}">{{item.system.label}}</h4>
+				<div class="item-name" data-tooltip="{{fullItemToolTipDescription item}}" data-tooltip-direction="LEFT">
+					<h4 class="rollable" data-roll-type="item">{{item.system.label}}</h4>
 				</div>
 				<div class="item-controls item-max-with60px">
 					<a class="item-control item-edit" data-tooltip="Edit Item"><i class="fas fa-edit"></i></a>
@@ -26,8 +26,8 @@
 		<div class="right flexcol" style="grid-column: 3 / span 1">
 			{{#each system.weaknessRight as |item id|}}
 			<li class="item flexrow" data-item-id="{{item._id}}">
-				<div class="item-name">
-					<h4 class="rollable" data-roll-type="item" data-tooltip="{{fullItemToolTipDescription item}}">{{item.system.label}}</h4>
+				<div class="item-name" data-tooltip="{{fullItemToolTipDescription item}}" data-tooltip-direction="LEFT">
+					<h4 class="rollable" data-roll-type="item">{{item.system.label}}</h4>
 				</div>
 				<div class="item-controls item-max-with60px">
 					<a class="item-control item-edit" data-tooltip="Edit Item"><i class="fas fa-edit"></i></a>

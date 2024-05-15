@@ -791,6 +791,7 @@ export default class SPACE1889RollHelper
 			case "skill":
 			case "specialization":
 			case "talent":
+			case "container":
 				return item.img != "icons/svg/item-bag.svg";
 			case "armor":
 				return item.img != "icons/svg/shield.svg";

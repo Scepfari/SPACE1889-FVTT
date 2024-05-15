@@ -17,8 +17,8 @@
 				<a class="rollable" data-roll-type="talent" ><img src="../../icons/svg/dice-target.svg" data-tooltip='{{item.system.label}} {{localize "SPACE1889.Probe"}}' width="18" height="18"/></a>
 			</div>
 			{{/if}}
-			<div class="item-name">
-				<h4 class="rollable" data-roll-type="item" data-tooltip="{{fullItemToolTipDescription item}} {{#if item.system.showDetail}} {{localize item.system.bonusTargetLangId}} {{/if}}">{{item.system.label}}	</h4>
+			<div class="item-name" data-tooltip="{{fullItemToolTipDescription item}} {{#if item.system.showDetail}} {{localize item.system.bonusTargetLangId}} {{/if}}" data-tooltip-direction="LEFT">
+				<h4 class="rollable" data-roll-type="item">{{item.system.label}}	</h4>
 			</div>
 			<div class="item-max-with40px">
 				<a class="increment-click">{{item.system.level.value}}</a>
@@ -48,8 +48,8 @@
 	</li>
 	{{#each system.resources as |resource Id|}}
 		<li class="item flexrow" data-item-id="{{resource._id}}">
-			<div class="item-name">
-				<h4 class="rollable" data-roll-type="item" data-tooltip="{{fullItemToolTipDescription resource}}">{{resource.system.label}} {{#if resource.system.isBase }} ({{localize "SPACE1889.BaseResource"}}) {{/if}}</h4>
+			<div class="item-name" data-tooltip="{{fullItemToolTipDescription resource}}" data-tooltip-direction="LEFT">
+				<h4 class="rollable" data-roll-type="item">{{resource.system.label}} {{#if resource.system.isBase }} ({{localize "SPACE1889.BaseResource"}}) {{/if}}</h4>
 			</div>
 			<div class="item-max-with40px resource-label">
 				<a class="increment-click">{{resource.system.level.value}}</a>

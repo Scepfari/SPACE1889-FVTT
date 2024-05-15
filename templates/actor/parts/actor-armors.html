@@ -12,7 +12,7 @@
 	</li>
 	{{#each system.armors as |item id|}}
 	<li class="item row-section flexrow" data-item-id="{{item._id}}">
-		<div class="item-name" data-tooltip="{{fullItemToolTipDescription item}}">
+		<div class="item-name" data-tooltip="{{fullItemToolTipDescription item}}" data-tooltip-direction="LEFT">
 			<h4 for="" class="rollable" data-roll-type="item" data-label="{{item.name}}">{{item.system.label}}</h4>
 		</div>
 		<label class="items-list item-max-with60px">{{item.system.defenseBonus}}</label>

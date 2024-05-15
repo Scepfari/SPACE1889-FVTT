@@ -1,4 +1,4 @@
-{{#if weaknessLeft}}
+{{#if system.weaknessLeft}}
 <ol class="items-list">
 	<li class="item flexrow items-header">
 		<div class="item-name">{{localize "SPACE1889.WeaknessPl"}}</div>
@@ -11,7 +11,7 @@
 		<div class="left flexcol" style="grid-column: 1 / span 1">
 			{{#each system.weaknessLeft as |item id|}}
 			<li class="item flexrow" data-item-id="{{item._id}}">
-				<div class="item-name">
+				<div class="item-name" data-tooltip-direction="LEFT">
 					<h4 class="rollable" data-roll-type="item" data-tooltip="{{#if (eq item.system.descriptionLangId (localize item.system.descriptionLangId))}} {{item.system.description}} {{else}} {{localize item.system.descriptionLangId}} {{/if}}">{{item.system.label}}</h4>
 				</div>
 				<div class="item-controls item-max-with60px">
@@ -24,7 +24,7 @@
 		<div class="right flexcol" style="grid-column: 3 / span 1">
 			{{#each system.weaknessRight as |item id|}}
 			<li class="item flexrow" data-item-id="{{item._id}}">
-				<div class="item-name">
+				<div class="item-name" data-tooltip-direction="LEFT">
 					<h4 class="rollable" data-roll-type="item" data-tooltip="{{#if (eq item.system.descriptionLangId (localize item.system.descriptionLangId))}} {{item.system.description}} {{else}} {{localize item.system.descriptionLangId}} {{/if}}">{{item.system.label}}</h4>
 				</div>
 				<div class="item-controls item-max-with60px">
