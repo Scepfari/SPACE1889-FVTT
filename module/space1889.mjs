@@ -445,6 +445,20 @@ Handlebars.registerHelper('fullItemToolTipDescription', function (item)
 	return item.getInfoText();
 });
 
+Handlebars.registerHelper('abilityToolTipDescription', function (actor, key)
+{
+	if (!actor)
+		return "";
+	return actor.getAbilityInfoText(key);
+});
+
+Handlebars.registerHelper('secondaryToolTipDescription', function (actor, key)
+{
+	if (!actor)
+		return "";
+	return actor.getSecondaryInfoText(key);
+});
+
 /* -------------------------------------------- */
 /*  Ready Hook                                  */
 /* -------------------------------------------- */

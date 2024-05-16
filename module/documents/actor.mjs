@@ -903,7 +903,7 @@ export class Space1889Actor extends Actor
 				movement = system.secondaries.move.total.toString() + " (" + second.toString() + ")";
 				siUnits = game.i18n.localize(CONFIG.SPACE1889.creatureMovementType[system.movementType]) + ": ";
 				siUnits += siMoveDistance.toString() + meterWithSeparator;
-				siUnits += (system.movementType == "flying") ? game.i18n.localize("SPACE1889.OnTheGround") : game.i18n.localize("SPACE1889.OnLand") + ": ";
+				siUnits += ((system.movementType == "flying") ? game.i18n.localize("SPACE1889.OnTheGround") : game.i18n.localize("SPACE1889.OnLand")) + ": ";
 				siUnits += (siMoveDistance / 2).toString() + meter;
 				break;
 			case "fossorial":
@@ -1860,6 +1860,37 @@ export class Space1889Actor extends Actor
 		// Process additional NPC data here.
 	}
 
+	getAbilityInfoText(key, forChat = false)
+	{
+		const headerClass = forChat ? "" : "class=\"itemTooltipH3\"";
+		const textClass = forChat ? "" : "itemTooltip";
+		const langId = this.getLangId(key) + "Desc";
+		const desc = game.i18n.localize(langId) ?? langId;
+		const name = game.i18n.localize(CONFIG.SPACE1889.abilities[key]);
+		const type = game.i18n.localize("SPACE1889.PreConTypePrimary");
+
+		const composition =
+			`<h3 ${headerClass}><strong>${name}</strong> <small>[${type}]</small></h3><div class="${textClass}">${desc}</div>`;
+		return composition;
+	}
+
+	getSecondaryInfoText(key, forChat = false)
+	{
+		const headerClass = forChat ? "" : "class=\"itemTooltipH3\"";
+		const textClass = forChat ? "" : "itemTooltip";
+		const langId = this.getLangId(key) + "Desc";
+		const desc = game.i18n.localize(langId) ?? langId;
+		const name = game.i18n.localize(CONFIG.SPACE1889.secondaries[key]);
+		const type = game.i18n.localize("SPACE1889.PreConTypeSecondary");
+		let moveExtra = "";
+
+		if (key === "move")
+			moveExtra = `<h3 ${headerClass}>${this.system.secondaries.move.inSiUnits}</h3>`;
+
+		const composition =
+			`<h3 ${headerClass}><strong>${name}</strong> <small>[${type}]</small></h3>${moveExtra}<div class="${textClass}">${desc}</div>`;
+		return composition;
+	}
 
 	showAttributeInfo(name, key, whisper)
 	{

@@ -120,7 +120,7 @@
 					</li>
 					{{#each system.abilities as |ability key|}}
 					<li class="flexrow">
-						<label for="system.abilities.{{key}}.value" class="rollable flexlarge align-left" data-roll-key="{{key}}" data-roll-type="actor" data-roll-diecount="{{ability.total}}" data-label="{{ability.label}}">{{ability.label}}</label>
+						<label for="system.abilities.{{key}}.value" class="rollable flexlarge align-left" data-roll-key="{{key}}" data-roll-type="actor" data-roll-diecount="{{ability.total}}" data-label="{{ability.label}}" data-tooltip="{{abilityToolTipDescription ../actor key}}" data-tooltip-direction="LEFT">{{ability.label}}</label>
 						<div class="item-max-with40px">
 							<a class="increment-{{key}}-click">{{ability.value}}</a>
 						</div>
@@ -139,11 +139,7 @@
 					</li>
 					{{#each system.secondaries as |secondary key|}}
 					<li class="secondary flexrow">
-						{{#if (eq key 'move')}}
-							<label for="system.secondaries.{{key}}.value" class="rollable flexlarge align-left" data-roll-key="{{key}}" data-roll-type="actor" data-roll-diecount="{{secondary.total}}" data-label="{{secondary.label}}"  data-tooltip="{{secondary.inSiUnits}}">{{secondary.label}}</label>
-						{{else}}
-							<label for="system.secondaries.{{key}}.value" class="rollable flexlarge align-left" data-roll-key="{{key}}" data-roll-type="actor" data-roll-diecount="{{secondary.total}}" data-label="{{secondary.label}}">{{secondary.label}}</label>
-						{{/if}}
+						<label for="system.secondaries.{{key}}.value" class="rollable flexlarge align-left" data-roll-key="{{key}}" data-roll-type="actor" data-roll-diecount="{{secondary.total}}" data-label="{{secondary.label}}" data-tooltip="{{secondaryToolTipDescription ../actor key}}" data-tooltip-direction="LEFT">{{secondary.label}}</label>
 						<label class="items-list item-max-with40px">{{secondary.value}}</label>
 						<label data-tooltip='{{secondary.bonusInfo}}' class="items-list item-max-with40px">{{secondary.bonus}}</label>
 						<label class="items-list item-max-with40px resource-label">{{secondary.total}}</label>

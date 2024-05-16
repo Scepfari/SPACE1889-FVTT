@@ -12,7 +12,7 @@
 			{{#each system.weaknessLeft as |item id|}}
 			<li class="item flexrow" data-item-id="{{item._id}}">
 				<div class="item-name" data-tooltip-direction="LEFT">
-					<h4 class="rollable" data-roll-type="item" data-tooltip="{{#if (eq item.system.descriptionLangId (localize item.system.descriptionLangId))}} {{item.system.description}} {{else}} {{localize item.system.descriptionLangId}} {{/if}}">{{item.system.label}}</h4>
+					<h4 class="rollable" data-roll-type="item" data-tooltip="{{fullItemToolTipDescription item}}" data-tooltip-direction="LEFT">{{item.system.label}}</h4>
 				</div>
 				<div class="item-controls item-max-with60px">
 					<a class="item-control item-edit" data-tooltip="Edit Item"><i class="fas fa-edit"></i></a>
@@ -25,7 +25,7 @@
 			{{#each system.weaknessRight as |item id|}}
 			<li class="item flexrow" data-item-id="{{item._id}}">
 				<div class="item-name" data-tooltip-direction="LEFT">
-					<h4 class="rollable" data-roll-type="item" data-tooltip="{{#if (eq item.system.descriptionLangId (localize item.system.descriptionLangId))}} {{item.system.description}} {{else}} {{localize item.system.descriptionLangId}} {{/if}}">{{item.system.label}}</h4>
+					<h4 class="rollable" data-roll-type="item" data-tooltip="{{fullItemToolTipDescription item}}" data-tooltip-direction="LEFT">{{item.system.label}}</h4>
 				</div>
 				<div class="item-controls item-max-with60px">
 					<a class="item-control item-edit" data-tooltip="Edit Item"><i class="fas fa-edit"></i></a>

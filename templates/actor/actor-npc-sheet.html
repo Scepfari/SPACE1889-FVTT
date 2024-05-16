@@ -64,6 +64,11 @@
 					<div class="item-max-with40px">{{system.powerEquivalentInXp}}</div>
 				</li>
 			</div>
+			{{#if (ne system.load.dexAndMoveMalus 0)}}
+			<div class="resource flex-group-center">
+				<i class="fas fa-weight-hanging fa-beat" data-tooltip="{{localize "SPACE1889.Overloaded"}}! <br/> {{localize system.load.bodyAndBackpackLoadConsequence}}"></i>
+			</div>
+			{{/if}}
 		</div>
 	</header>
 
@@ -91,7 +96,7 @@
 					</li>
 					{{#each system.abilities as |ability key|}}
 					<li class="item flexrow">
-						<label for="system.abilities.{{key}}.value" class="rollable align-left item-name" data-roll-key="{{key}}" data-roll-type="actor" data-roll-diecount="{{ability.total}}" data-label="{{ability.label}}">{{ability.label}}</label>
+						<label for="system.abilities.{{key}}.value" class="rollable align-left item-name" data-roll-key="{{key}}" data-roll-type="actor" data-roll-diecount="{{ability.total}}" data-label="{{ability.label}}" data-tooltip="{{abilityToolTipDescription ../actor key}}" data-tooltip-direction="LEFT">{{ability.label}}</label>
 						<div class="item-max-with40px">
 							<a class="increment-{{key}}-click">{{ability.value}}</a>
 						</div>
@@ -109,7 +114,7 @@
 						<div data-tooltip='{{localize "SPACE1889.Rating"}}' class="items-list item-max-with60px">{{localize "SPACE1889.Rating"}}</div>
 					</li>
 					<li class="item flexrow">
-						<label class="align-left item-name">{{system.secondaries.size.label}}</label>
+						<label class="align-left item-name" data-tooltip='{{secondaryToolTipDescription actor "size"}}' data-tooltip-direction="LEFT">{{system.secondaries.size.label}}</label>
 						<div class="item-max-with40px">
 							<a class="increment-creaturesize-click">{{system.secondaries.size.value}}</a>
 						</div>
@@ -119,11 +124,7 @@
 					{{#each system.secondaries as |secondary key|}}
 					{{#if (ne key 'size')}}
 					<li class="secondary item flexrow">
-						{{#if (eq key 'move')}}
-						<label for="system.secondaries.{{key}}.value" class="rollable item-name" data-roll-key="{{key}}" data-roll-type="actor" data-roll-diecount="{{secondary.total}}" data-label="{{secondary.label}}" data-tooltip="{{secondary.inSiUnits}}">{{secondary.label}}</label>
-						{{else}}
-						<label for="system.secondaries.{{key}}.value" class="rollable item-name" data-roll-key="{{key}}" data-roll-type="actor" data-roll-diecount="{{secondary.total}}" data-label="{{secondary.label}}">{{secondary.label}}</label>
-						{{/if}}
+						<label for="system.secondaries.{{key}}.value" class="rollable item-name" data-roll-key="{{key}}" data-roll-type="actor" data-roll-diecount="{{secondary.total}}" data-label="{{secondary.label}}" data-tooltip="{{secondaryToolTipDescription ../actor key}}" data-tooltip-direction="LEFT">{{secondary.label}}</label>
 						<label class="items-list item-max-with40px">{{secondary.value}}</label>
 						<label data-tooltip='{{secondary.bonusInfo}}' class="items-list item-max-with40px">{{secondary.bonus}}</label>
 						<label class="items-list item-max-with60px resource-label">{{secondary.total}}</label>

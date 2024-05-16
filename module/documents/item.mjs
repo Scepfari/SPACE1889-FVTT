@@ -335,13 +335,27 @@ export class Space1889Item extends Item {
 	{
 		const type = this._getTypeText();
 
-		if (this.type === "skill" || this.type === "talent" || this.type === "specialization" || this.type === "weakness")
+		if (this.type === "skill" || this.type === "specialization" || this.type === "weakness")
 		{
 			let desc = game.i18n.localize(this.system.descriptionLangId);
 			if (desc === this.system.descriptionLangId && this.system.description !== "")
 				desc = this.system.description;
 
 			const fullDesc = this._ComposeHtmlTextInfo("", this.name, type, desc, forChat);
+			return fullDesc;
+		}
+
+		if (this.type === "talent")
+		{
+			let desc = game.i18n.localize(this.system.descriptionLangId);
+			if (desc === this.system.descriptionLangId && this.system.description !== "")
+				desc = this.system.description;
+
+			let secondHeader = "";
+			if (this.system.showDetail)
+				secondHeader = game.i18n.localize(this.system.bonusTargetLangId);
+
+			const fullDesc = this._ComposeHtmlTextInfo2("", this.name, secondHeader, type, desc, forChat);
 			return fullDesc;
 		}
 
@@ -534,11 +548,17 @@ export class Space1889Item extends Item {
 
 	_ComposeHtmlTextInfo(image, name, type, desc, forChat)
 	{
+		return this._ComposeHtmlTextInfo2(image, name, "", type, desc, forChat);
+	}
+
+	_ComposeHtmlTextInfo2(image, name, secondHeader, type, desc, forChat)
+	{
 		const headerClass = forChat ? "" : "class=\"itemTooltipH3\"";
 		const textClass = forChat ? "" : "itemTooltip";
+		const second = secondHeader === "" ? "" : `<h3 ${headerClass}>${secondHeader}</h3>`;
 
 		const composition =
-			`${image}<h3 ${headerClass}><strong>${name}</strong> <small>[${type}]</small></h3><div class="${textClass}">${desc}</div>`;
+			`${image}<h3 ${headerClass}><strong>${name}</strong> <small>[${type}]</small></h3>${second}<div class="${textClass}">${desc}</div>`;
 		return composition;
 	}
 }
