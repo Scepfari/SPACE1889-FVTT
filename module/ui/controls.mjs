@@ -80,6 +80,17 @@ function getSceneControlButtons(controls)
 				button: true,
 			},
 			{
+				name: "hidenames",
+				title: game.i18n.localize("CONTROLS.Space1889MenuHideNameOfNonCharacters"),
+				icon: "fa fa-low-vision",
+				onClick: () =>
+				{
+					SPACE1889Helper.hideNameOfNonCharactersWithDialog();
+				},
+				visible: game.user.isGM,
+				button: true
+			},
+			{
 				name: "showtokennameandbar",
 				title: game.i18n.localize("CONTROLS.Space1889MenuShowNameAndBar"),
 				icon: "fa fa-eye",

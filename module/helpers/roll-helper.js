@@ -74,7 +74,7 @@ export default class SPACE1889RollHelper
 					},
 					abbruch:
 					{
-						label: 'Abbrechen',
+						label: game.i18n.localize("SPACE1889.Cancel"),
 						icon: `<i class="fas fa-times"></i>`
 					}
 				},
@@ -454,7 +454,7 @@ export default class SPACE1889RollHelper
 						},
 						abbruch:
 						{
-							label: 'Abbrechen',
+							label: game.i18n.localize("SPACE1889.Cancel"),
 							callback: () => { ui.notifications.info(game.i18n.localize("SPACE1889.CancelRoll")) },
 							icon: `<i class="fas fa-times"></i>`
 						}
@@ -1499,7 +1499,7 @@ export default class SPACE1889RollHelper
 					},
 					abbruch:
 					{
-						label: 'Abbrechen',
+						label: game.i18n.localize("SPACE1889.Cancel"),
 						callback: () => { ui.notifications.info(game.i18n.localize("SPACE1889.CancelRoll")) },
 						icon: `<i class="fas fa-times"></i>`
 					}
@@ -1960,7 +1960,7 @@ export default class SPACE1889RollHelper
 					},
 					abbruch:
 					{
-						label: 'Abbrechen',
+						label: game.i18n.localize("SPACE1889.Cancel"),
 						callback: () => { ui.notifications.info(game.i18n.localize("SPACE1889.NoAutoDefenseCancel")) },
 						icon: `<i class="fas fa-times"></i>`
 					}

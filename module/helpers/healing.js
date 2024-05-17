@@ -282,7 +282,7 @@ export default class SPACE1889Healing
 					},
 					abbruch:
 					{
-						label: 'Abbrechen',
+						label: game.i18n.localize("SPACE1889.Cancel"),
 						callback: () => { },
 						icon: `<i class="fas fa-times"></i>`
 					}

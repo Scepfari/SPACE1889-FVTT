@@ -1364,16 +1364,18 @@ export default class SPACE1889Helper
 		return false;
 	}
 
-	static hasOneOrMorePlayerOwnership(ownership)
+	static hasOneOrMorePlayerOwnership(ownership, level = 3)
 	{
-		if (ownership["default"] && ownership["default"] == 3)
+		// level: 0=Nichts, 1=Beschränkt, 2=Beobachter, 3=Besitzer
+
+		if (ownership["default"] && ownership["default"] >= level)
 			return true;
 
 		for (let user of game.users)
 		{
 			if (user.isGM)
 				continue;
-			if (ownership[user.id] && ownership[user.id] == 3)
+			if (ownership[user.id] && ownership[user.id] >= level)
 				return true;
 		}
 		return false;
@@ -1549,7 +1551,7 @@ export default class SPACE1889Helper
 				},
 				abbruch:
 				{
-					label: 'Abbrechen',
+					label: game.i18n.localize("SPACE1889.Cancel"),
 					callback: () => { ui.notifications.info(game.i18n.localize("SPACE1889.FunctionCanceled")) },
 					icon: `<i class="fas fa-times"></i>`
 				}
@@ -1616,6 +1618,85 @@ export default class SPACE1889Helper
 		}
 	}
 
+	static async hideNameOfNonCharactersWithDialog()
+	{
+		let dialogue = new Dialog(
+		{
+			title: `${game.i18n.localize("SPACE1889.RenameTokens")}`,
+			content: `
+					${game.i18n.localize("SPACE1889.HideTokenNamesSelectedOnly")}
+					<br>
+				`,
+			buttons:
+			{
+				yes:
+				{
+					icon: '',
+					label: game.i18n.localize("SPACE1889.SelectedOnly"),
+					callback: () => 
+					{
+						this.hideNameOfNonCharacters(true);
+					}
+				},
+				all:
+				{
+					label: game.i18n.localize("SPACE1889.All"),
+					callback: () => { this.hideNameOfNonCharacters(false); },
+				},
+				abbruch:
+				{
+					label: game.i18n.localize("SPACE1889.Cancel"),
+					callback: () => { ui.notifications.info(game.i18n.localize("SPACE1889.FunctionCanceled")) },
+					icon: `<i class="fas fa-times"></i>`
+				}
+			},
+			default: "ok"
+		});
+    
+		dialogue.render(true);		
+	}
+
+	static async hideNameOfNonCharacters(selectedOnly)
+	{
+		// ausschließlich vom SL kontrollierte Tokens werden verändert
+
+		if (!game.user.isGM)
+		{
+			ui.notifications.info(game.i18n.localize("SPACE1889.SlOnly"));
+			return true;
+		}
+
+		let tokenDocs = canvas.scene.tokens;
+		if (selectedOnly)
+		{
+			let tokDoc = [];
+			for (let token of canvas.tokens.controlled)
+			{
+				tokDoc.push(token.document);
+			}
+			if (tokDoc.length == 0)
+			{
+				ui.notifications.info(game.i18n.localize("SPACE1889.NoTokensSelected"));
+				return true;
+			}
+
+			tokenDocs = tokDoc;
+		}
+
+		let counter = 1;
+		for (let tokenDoc of tokenDocs)
+		{
+			if (this.hasOneOrMorePlayerOwnership(tokenDoc.actor.ownership, 1))
+				continue;
+
+			const oldName = tokenDoc.name;
+			let newName = game.i18n.localize("TYPES.Actor." + tokenDoc.actor.type) + " " + counter.toString();
+			++counter;
+			await tokenDoc.update({ "name": newName });
+			ui.notifications.info(game.i18n.format("SPACE1889.NameChanged", { "oldName": oldName, "newName": newName }));
+		}
+	}
+
 	static showTokenNameAndBarWithDialog()
 	{
 		let options = { force: false, displayBars: 30, displayName: 30 };
@@ -1654,7 +1735,7 @@ export default class SPACE1889Helper
 				},
 				abbruch:
 				{
-					label: 'Abbrechen',
+					label: game.i18n.localize("SPACE1889.Cancel"),
 					callback: () => { ui.notifications.info(game.i18n.localize("SPACE1889.FunctionCanceled")) },
 					icon: `<i class="fas fa-times"></i>`
 				}

@@ -41,6 +41,7 @@
 	"CONTROLS.Space1889MenuShowImage": "Bild in Chat anzeigen",
 	"CONTROLS.Space1889MenuShowNameAndBar": "Aktiviere Token Name und Lebensleiste Anzeige für alle Spieler",
 	"CONTROLS.Space1889MenuNpcsDrawWeapon": "Alle NSCs machen ihre Waffen bereit, ohne Chatanzeige für die Spieler",
+	"CONTROLS.Space1889MenuHideNameOfNonCharacters": "Alle Figuren Namen von NSCs und Kreaturen durch generische Namen ersetzen",
 
 	"SPACE1889.Pc": "SC",
 	"SPACE1889.Npc": "NSC",
@@ -338,6 +339,10 @@
 	"SPACE1889.WeaponDrawReady": "{name} macht die Waffe {weapon} bereit",
 	"SPACE1889.WeaponIsAlreadyReady": "{name} ist schon bereit mit Waffe {weapon}",
 	"SPACE1889.TokensSelectedOnly": "nur ausgewählte Figuren",
+	"SPACE1889.SelectedOnly": "nur ausgewählte",
+	"SPACE1889.HideTokenNamesSelectedOnly": "<p>Soll die Umbenennung nur auf die ausgewählten Figuren angewendet werden, oder auf alle Figuren der aktiven Szene?</p><p>Info: Figuren an denen die Spieler Rechte haben, werden nicht umbenannt.</p>",
+	"SPACE1889.NameChanged": "Name der Figur {oldName} in {newName} geändert",
+	"SPACE1889.RenameTokens": "Figuren umbenennen",
 
 	"SPACE1889.VehicleTypeOrClass": "Typ / Klasse",
 	"SPACE1889.VehicleIsAirship": "Ist Luftschiff",
@@ -2956,6 +2961,9 @@
 	"SPACE1889.Submit": "Bestätigen",
 	"SPACE1889.Cancel": "Abbrechen",
 	"SPACE1889.Ok": "Ok",
+	"SPACE1889.Yes": "Ja",
+	"SPACE1889.No": "Nein",
+	"SPACE1889.All": "Alle",
 	"SPACE1889.SpaceRoll": "SPACE 1889 Wurf",
 	"SPACE1889.ReasonForThrowingTheDice": "Grund des Würfelwurfes",
 	"SPACE1889.MakePaperPlanes": "z.B. Papierflieger basteln...",

@@ -2253,7 +2253,7 @@ export class Space1889Actor extends Actor
 						},
 						abbruch:
 						{
-							label: 'Abbrechen',
+							label: game.i18n.localize("SPACE1889.Cancel"),
 							callback: () => { ui.notifications.info(game.i18n.localize("SPACE1889.CancelRoll")) },
 							icon: `<i class="fas fa-times"></i>`
 						}

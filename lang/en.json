@@ -41,6 +41,7 @@
 	"CONTROLS.Space1889MenuShowImage": "Show image in chat",
 	"CONTROLS.Space1889MenuShowNameAndBar": "Enable token name and life bar display for all players",
 	"CONTROLS.Space1889MenuNpcsDrawWeapon": "All NPCs make their weapons ready, without chat display for the players",
+	"CONTROLS.Space1889MenuHideNameOfNonCharacters": "Replace all token names of NPCs, creatures and vehicles with generic names",
 
 	"SPACE1889.Pc": "PC",
 	"SPACE1889.Npc": "NPC",
@@ -338,6 +339,10 @@
 	"SPACE1889.WeaponDrawReady": "{name} readies the weapon {weapon}",
 	"SPACE1889.WeaponIsAlreadyReady": "{name} is already ready with weapon {weapon}",
 	"SPACE1889.TokensSelectedOnly": "selected tokens only",
+	"SPACE1889.SelectedOnly": "selected only",
+	"SPACE1889.HideTokenNamesSelectedOnly": "<p>Should the renaming only be applied to the selected characters or to all characters in the active scene?</p><p>Info: Characters to which the players have rights are not renamed.</p>",
+	"SPACE1889.NameChanged": "Name of the token {oldName} changed to {newName}",
+	"SPACE1889.RenameTokens": "Rename tokens",
 
 	"SPACE1889.VehicleTypeOrClass": "Type / Class",
 	"SPACE1889.VehicleIsAirship": "Is Airship",
@@ -2956,6 +2961,9 @@
 	"SPACE1889.Submit": "Submit",
 	"SPACE1889.Cancel": "Cancel",
 	"SPACE1889.Ok": "Ok",
+	"SPACE1889.Yes": "Yes",
+	"SPACE1889.No": "No",
+	"SPACE1889.All": "Alle",
 	"SPACE1889.SpaceRoll": "SPACE 1889 Roll",
 	"SPACE1889.ReasonForThrowingTheDice": "Reason for throwing the dice",
 	"SPACE1889.MakePaperPlanes": "e.g. make paper planes...",

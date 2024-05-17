@@ -796,7 +796,7 @@ export class Space1889ActorSheet extends ActorSheet {
 			},
 			abbruch:
 			{
-			  label: 'Abbrechen',
+			  label: game.i18n.localize("SPACE1889.Cancel"),
 			  callback: ()=> {ui.notifications.info(game.i18n.localize("SPACE1889.CancelRoll"))},
 			  icon: `<i class="fas fa-times"></i>`
 			}
@@ -820,41 +820,41 @@ export class Space1889ActorSheet extends ActorSheet {
 		const userId = game.user.id;
 
 		let dialogue = new Dialog(
-		{
-		  title: `${titleName}`,
-		  content: `<p><select id="manoeverauswahl" name="manoeverauswahl">${optionen}</select></p>`,
-		  buttons: 
-		  {
-			ok: 
 			{
-			  icon: '',
-			  label: game.i18n.localize("SPACE1889.Go"),
-			  callback: (html) => 
-			  {
-				const selectedOption = html.find('#manoeverauswahl').val();
-				if (selectedOption == "one")
-				  this.actor.rollManoeuvre("Attack", event);
-				else if (selectedOption == "two")
-				  this.actor.rollManoeuvre("TotalAttack", event);
-				else if (selectedOption == "three")
-				  this.actor.rollManoeuvre("DoubleShot", event);
-				else if (selectedOption == "four")
-				  this.actor.rollManoeuvre("ContinuousFire", event);
-				else if (selectedOption == "five")
-				  this.actor.rollManoeuvre("AimedShot", event);
-			  }
-			},
-			abbruch:
-			{
-			  label: 'Abbrechen',
-			  callback: ()=> {ui.notifications.info(game.i18n.localize("SPACE1889.CancelRoll"))},
-			  icon: `<i class="fas fa-times"></i>`
-			}
-		  },
-		  default: "ok"
-		})
+				title: `${titleName}`,
+				content: `<p><select id="manoeverauswahl" name="manoeverauswahl">${optionen}</select></p>`,
+				buttons:
+				{
+					ok:
+					{
+						icon: '',
+						label: game.i18n.localize("SPACE1889.Go"),
+						callback: (html) =>
+						{
+							const selectedOption = html.find('#manoeverauswahl').val();
+							if (selectedOption == "one")
+								this.actor.rollManoeuvre("Attack", event);
+							else if (selectedOption == "two")
+								this.actor.rollManoeuvre("TotalAttack", event);
+							else if (selectedOption == "three")
+								this.actor.rollManoeuvre("DoubleShot", event);
+							else if (selectedOption == "four")
+								this.actor.rollManoeuvre("ContinuousFire", event);
+							else if (selectedOption == "five")
+								this.actor.rollManoeuvre("AimedShot", event);
+						}
+					},
+					abbruch:
+					{
+						label: game.i18n.localize("SPACE1889.Cancel"),
+						callback: () => { ui.notifications.info(game.i18n.localize("SPACE1889.CancelRoll")) },
+						icon: `<i class="fas fa-times"></i>`
+					}
+				},
+				default: "ok"
+			});
 
-		dialogue.render(true)
+		dialogue.render(true);
 	}
 
 /*  async _onDrop(event) {
