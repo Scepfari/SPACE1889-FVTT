@@ -2,11 +2,7 @@
 <div class="resource">
 	<label class="resource-label">{{ localize "SPACE1889.LanguageOrigin" }}: </label>
 	<select name="system.origin" data-dtype="String">
-		{{#select system.origin}}
-		{{#each system.origins as |ch char|}}
-		<option value="{{char}}">{{localize ch}}</option>
-		{{/each}}
-		{{/select}}
+		{{selectOptions system.origins selected=system.origin localize=true}}
 	</select>
 </div>
 {{else}}

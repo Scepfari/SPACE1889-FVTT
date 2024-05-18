@@ -85,11 +85,7 @@
 						<div class="item-name ">{{localize "SPACE1889.VehiclePilotSkill"}}</div>
 						<div class="resource-content flexrow flex-center flex-between item-marginlr5px">
 							<select name="system.pilotSkill" data-dtype="String">
-								{{#select system.pilotSkill}}
-								{{#each system.pilotSkills as |key char|}}
-								<option value="{{char}}">{{localize key}}</option>
-								{{/each}}
-								{{/select}}
+								{{selectOptions system.pilotSkills selected=system.pilotSkill localize=true}}
 							</select>
 						</div>
 					</li>
@@ -132,11 +128,7 @@
 						<div class="item-name ">{{localize "SPACE1889.VehicleCrewExperience"}}</div>
 						<div class="resource-content flexrow flex-center flex-between item-marginlr5px">
 							<select name="system.crew.experience" data-dtype="String">
-								{{#select system.crew.experience}}
-								{{#each system.crewExperiences as |key char|}}
-								<option value="{{char}}">{{localize key}}</option>
-								{{/each}}
-								{{/select}}
+								{{selectOptions system.crewExperiences selected=system.crew.experience localize=true}}
 							</select>
 						</div>
 					</li>
@@ -144,11 +136,7 @@
 						<div class="item-name ">{{localize "SPACE1889.VehicleCrewTemper"}}</div>
 						<div class="resource-content flexrow flex-center flex-between item-marginlr5px">
 							<select name="system.crew.temper" data-dtype="String">
-								{{#select system.crew.temper}}
-								{{#each system.crewTempers as |key char|}}
-								<option value="{{char}}">{{localize key}}</option>
-								{{/each}}
-								{{/select}}
+								{{selectOptions system.crewTempers selected=system.crew.temper localize=true}}
 							</select>
 						</div>
 					</li>

@@ -36,22 +36,14 @@
 			<label class="resource-label">{{ localize "SPACE1889.BaseAbility" }}</label>
 			<div>
 				<select name="system.underlyingAttribute" data-dtype="String">
-					{{#select system.underlyingAttribute}}
-					{{#each system.abilities as |ch char|}}
-					<option value="{{char}}">{{localize ch}}</option>
-					{{/each}}
-					{{/select}}
+					{{selectOptions system.abilities selected=system.underlyingAttribute localize=true}}
 				</select>
 			</div>
 		</div>
 		<div class="resource">
 			<label class="resource-label">{{ localize "SPACE1889.Publication" }}</label>
 			<select name="system.source.publication" data-dtype="String">
-				{{#select system.source.publication}}
-				{{#each system.publications as |ch char|}}
-				<option value="{{char}}">{{localize ch}}</option>
-				{{/each}}
-				{{/select}}
+				{{selectOptions system.publications selected=system.source.publication localize=true}}
 			</select>
 		</div>
 	</div>

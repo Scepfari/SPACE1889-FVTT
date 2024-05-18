@@ -21,11 +21,7 @@
 			</div>
 			<div class="resource">
 				<select name="system.damageType" data-dtype="String">
-					{{#select system.damageType}}
-					{{#each system.damageTypes as |ch char|}}
-					<option value="{{char}}">{{localize ch}}</option>
-					{{/each}}
-					{{/select}}
+					{{selectOptions system.damageTypes selected=system.damageType localize=true}}
 				</select>
 			</div>
 		</li>

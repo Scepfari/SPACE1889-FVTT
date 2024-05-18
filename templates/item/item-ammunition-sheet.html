@@ -18,18 +18,10 @@
 			<input type="text" name="system.caliber" value="{{system.caliber}}" />
 		</div>
 		<select name="system.type" system-dtype="String">
-			{{#select system.type}}
-			{{#each system.ammunitionTypes as |value key|}}
-			<option value="{{key}}">{{localize value}}</option>
-			{{/each}}
-			{{/select}}
+			{{selectOptions system.ammunitionTypes selected=system.type localize=true}}
 		</select>
 		<select name="system.capacityType" system-dtype="String">
-			{{#select system.capacityType}}
-			{{#each system.capacityTypes as |ch char|}}
-			<option value="{{char}}">{{localize ch}}</option>
-			{{/each}}
-			{{/select}}
+			{{selectOptions system.capacityTypes selected=system.capacityType localize=true}}
 		</select>
 		<div class="resource-content flex-center flex-between">
 			<input type="text" name="system.capacity" value="{{system.capacity}}" data-dtype="Number" />
@@ -45,11 +37,7 @@
 	<li class="item flex-group-center flexrow">
 		<div class="resource">
 			<select name="system.damageType" data-dtype="String">
-				{{#select system.damageType}}
-				{{#each system.damageTypes as |ch char|}}
-				<option value="{{char}}">{{localize ch}}</option>
-				{{/each}}
-				{{/select}}
+				{{selectOptions system.damageTypes selected=system.damageType localize=true}}
 			</select>
 		</div>
 		<div class="resource">

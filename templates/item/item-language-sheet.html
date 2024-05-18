@@ -15,20 +15,12 @@
 	<li class="item flex-group-center flexrow">
 		<div class="resource">
 			<select name="system.familyId" data-dtype="String">
-				{{#select system.familyId}}
-				{{#each system.families as |ch char|}}
-				<option value="{{char}}">{{localize ch}}</option>
-				{{/each}}
-				{{/select}}
+				{{selectOptions system.families selected=system.familyId localize=true}}
 			</select>
 		</div>
 		<div class="resource">
 			<select name="system.originId" data-dtype="String">
-				{{#select system.originId}}
-				{{#each system.origins as |ch char|}}
-				<option value="{{char}}">{{localize ch}}</option>
-				{{/each}}
-				{{/select}}
+				{{selectOptions system.origins selected=system.originId localize=true}}
 			</select>
 		</div>
 	</li>
@@ -42,11 +34,7 @@
 		</div>
 		<div class="resource">
 			<select name="system.isDialectSourceId" data-dtype="String">
-				{{#select system.isDialectSourceId}}
-				{{#each system.languages as |ch char|}}
-				<option value="{{char}}">{{localize ch}}</option>
-				{{/each}}
-				{{/select}}
+				{{selectOptions system.languages selected=system.isDialectSourceId localize=true}}
 			</select>
 		</div>
 	</li>

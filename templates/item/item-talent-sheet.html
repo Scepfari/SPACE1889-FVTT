@@ -28,13 +28,9 @@
             <input type="text" name="system.preconditionName" value="{{system.preconditionName}}" />
         </div>
         <div class="resource">
-            <select name="system.preconditionType" data-dtype="String">
-                {{#select system.preconditionType}}
-                {{#each system.preConditionTypes as |ch char|}}
-                <option value="{{char}}">{{localize ch}}</option>
-                {{/each}}
-                {{/select}}
-            </select>
+	        <select name="system.preconditionType" data-dtype="String">
+		        {{selectOptions system.preConditionTypes selected=system.preconditionType localize=true}}
+	        </select>
         </div>
         <div class="resource-content flex-center flex-between">
             <input type="text" name="system.preconditionLevel" value="{{system.preconditionLevel}}" data-dtype="Number" />
@@ -55,13 +51,9 @@
             <input type="text" name="system.secondPreconditionName" value="{{system.secondPreconditionName}}" />
         </div>
         <div class="resource">
-            <select name="system.secondPreconditionType" data-dtype="String">
-                {{#select system.secondPreconditionType}}
-                {{#each system.preConditionTypes as |ch char|}}
-                <option value="{{char}}">{{localize ch}}</option>
-                {{/each}}
-                {{/select}}
-            </select>
+	        <select name="system.secondPreconditionType" data-dtype="String">
+		        {{selectOptions system.preConditionTypes selected=system.secondPreconditionType localize=true}}
+	        </select>
         </div>
         <div class="resource-content flex-center flex-between">
             <input type="text" name="system.secondPreconditionLevel" value="{{system.secondPreconditionLevel}}" data-dtype="Number" />
@@ -114,13 +106,9 @@
         </li>
         <li class="item flex-group-center flexrow">
             <div class="resource">
-                <select name="system.source.publication" data-dtype="String">
-                    {{#select system.source.publication}}
-                    {{#each system.publications as |ch char|}}
-                    <option value="{{char}}">{{localize ch}}</option>
-                    {{/each}}
-                    {{/select}}
-                </select>
+	            <select name="system.source.publication" data-dtype="String">
+		            {{selectOptions system.publications selected=system.source.publication localize=true}}
+	            </select>
             </div>
             <div class="resource-content flex-center flex-between">
                 <input type="text" name="system.publication.page" value="{{system.publication.page}}" />

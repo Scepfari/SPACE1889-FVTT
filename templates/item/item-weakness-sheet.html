@@ -10,11 +10,7 @@
 	<div class="resource">
 		<label class="resource-label">{{ localize "SPACE1889.WeaknessType" }}</label>
 		<select name="system.type" data-dtype="String">
-			{{#select system.type}}
-				{{#each system.weaknessTypes as |ch char|}}
-				<option value="{{char}}">{{localize ch}}</option>
-				{{/each}}
-			{{/select}}
+			{{selectOptions system.weaknessTypes selected=system.type localize=true}}
 		</select>
 	</div>
 

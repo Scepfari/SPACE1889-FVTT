@@ -31,20 +31,12 @@
 					</div>
 					<div class="resource-content flexrow flex-center flex-between item-marginlr5px">
 						<select name="system.archetype" data-dtype="String">
-							{{#select system.archetype}}
-							{{#each system.archetypes as |ch char|}}
-							<option value="{{char}}">{{localize ch}}</option>
-							{{/each}}
-							{{/select}}
+							{{selectOptions system.archetypes selected=system.archetype localize=true}}
 						</select>
 					</div>
 					<div class="resource-content flexrow flex-center flex-between item-marginlr5px">
 						<select name="system.movementType" data-dtype="String">
-							{{#select system.movementType}}
-							{{#each system.movementTypes as |ch char|}}
-							<option value="{{char}}">{{localize ch}}</option>
-							{{/each}}
-							{{/select}}
+							{{selectOptions system.movementTypes selected=system.movementType localize=true}}
 						</select>
 					</div>
 				</li>

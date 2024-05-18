@@ -18,11 +18,7 @@
 			<input type="text" name="system.quantity" value="{{system.quantity}}" data-dtype="Number" />
 		</div>
 		<select name="system.type" data-dtype="String">
-			{{#select system.type}}
-			{{#each system.moneyTypes as |ch char|}}
-			<option value="{{char}}">{{localize ch}}</option>
-			{{/each}}
-			{{/select}}
+			{{selectOptions system.moneyTypes selected=system.type localize=true}}
 		</select>
 		<div class="resource-content flex-center flex-between">
 			<input type="text" name="system.exchangeRateForOnePound" value="{{system.exchangeRateForOnePound}}" data-dtype="Number" />
