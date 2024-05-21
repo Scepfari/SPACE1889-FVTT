@@ -13,7 +13,7 @@ export class Space1889ActorSheet extends ActorSheet {
 
 	/** @override */
 	static get defaultOptions() {
-		return mergeObject(super.defaultOptions, {
+		return foundry.utils.mergeObject(super.defaultOptions, {
 			classes: ["space1889", "sheet", "actor"],
 			template: "systems/space1889/templates/actor/actor-sheet.html",
 			width: 500,

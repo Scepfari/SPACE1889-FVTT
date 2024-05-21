@@ -12,7 +12,7 @@ export default class ForeignNotesEditor extends FormApplication{
 
     static get defaultOptions() {
         const options = super.defaultOptions;
-        mergeObject(options, {
+        foundry.utils.mergeObject(options, {
             resizable: true,
             width: 600,
             height: 600
@@ -41,7 +41,7 @@ export default class ForeignNotesEditor extends FormApplication{
 
     async getData(options){
         const data = super.getData(options)
-        mergeObject(data, {
+        foundry.utils.mergeObject(data, {
             fieldContent: this.object.fieldContent
         })
         return data

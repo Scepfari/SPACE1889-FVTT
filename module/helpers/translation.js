@@ -193,7 +193,7 @@ export class Space1889Translation
 
 			let newLabel = game.i18n.localize(comp[2]);
 			if (newLabel && newLabel != comp[2])
-				mergeObject(pack.metadata, { label: newLabel });
+				foundry.utils.mergeObject(pack.metadata, { label: newLabel });
 		}
 		ui.sidebar.tabs.compendium.render();
 	}

@@ -9,7 +9,7 @@ export class Space1889ItemSheet extends ItemSheet {
 
 	/** @override */
 	static get defaultOptions() {
-		return mergeObject(super.defaultOptions, {
+		return foundry.utils.mergeObject(super.defaultOptions, {
 			classes: ["space1889", "sheet", "item"],
 			width: 500,
 			height: 500,
