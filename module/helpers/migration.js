@@ -8,7 +8,7 @@ export class Space1889Migration
 		const lastUsedVersion = game.settings.get("space1889", "lastUsedSystemVersion");
 		const lastUsedFoundryVersion = game.settings.get("space1889", "lastUsedFoundryVersion");
 
-		if (isNewerVersion(currentVersion, lastUsedVersion) && game.user.isGM)
+		if (foundry.utils.isNewerVersion(currentVersion, lastUsedVersion) && game.user.isGM)
 		{
 			await this.fixEisenschaedel(lastUsedVersion);
 			await this.fixVolleAbwehr(lastUsedVersion);
@@ -30,7 +30,7 @@ export class Space1889Migration
 	static async fixVolleAbwehr(lastUsedVersion)
 	{
 		const lastNonFixVersion = "0.7.4";
-		if (isNewerVersion(lastUsedVersion, lastNonFixVersion))
+		if (foundry.utils.isNewerVersion(lastUsedVersion, lastNonFixVersion))
 			return;
 
 		for (let actor of game.actors.values())
@@ -47,7 +47,7 @@ export class Space1889Migration
 	static async fixEisenschaedel(lastUsedVersion)
 	{
 		const lastNonFixVersion = "0.7.4";
-		if (isNewerVersion(lastUsedVersion, lastNonFixVersion))
+		if (foundry.utils.isNewerVersion(lastUsedVersion, lastNonFixVersion))
 			return;
 
 		for (let actor of game.actors.values())
@@ -64,7 +64,7 @@ export class Space1889Migration
 	static async ammunitionIntroduction(lastUsedVersion)
 	{
 		const lastNonFixVersion = "1.2.1";
-		if (isNewerVersion(lastUsedVersion, lastNonFixVersion) || !game.user.isGM)
+		if (foundry.utils.isNewerVersion(lastUsedVersion, lastNonFixVersion) || !game.user.isGM)
 			return;
 
 		let actorList = this.getAllActorsWithoutVehicleAndCreature();
@@ -117,7 +117,7 @@ export class Space1889Migration
 	static async weaponTwoHandedIntroduction(lastUsedVersion)
 	{
 		const lastNonFixVersion = "1.3.4";
-		if (isNewerVersion(lastUsedVersion, lastNonFixVersion) || !game.user.isGM)
+		if (foundry.utils.isNewerVersion(lastUsedVersion, lastNonFixVersion) || !game.user.isGM)
 			return;
 
 		let actorList = [];
@@ -199,7 +199,7 @@ export class Space1889Migration
 	static async containerIntroduction(lastUsedVersion)
 	{
 		const lastNonFixVersion = "1.4.3";
-		if (isNewerVersion(lastUsedVersion, lastNonFixVersion) || !game.user.isGM)
+		if (foundry.utils.isNewerVersion(lastUsedVersion, lastNonFixVersion) || !game.user.isGM)
 			return;
 
 		let actorList = this.getAllActorsWithoutVehicleAndCreature();
@@ -209,7 +209,7 @@ export class Space1889Migration
 	static async damageRework(lastUsedVersion)
 	{
 		const lastNonFixVersion = "2.1.1";
-		if (isNewerVersion(lastUsedVersion, lastNonFixVersion) || !game.user.isGM)
+		if (foundry.utils.isNewerVersion(lastUsedVersion, lastNonFixVersion) || !game.user.isGM)
 			return;
 
 		let actorList = this.getAllActorsWithoutVehicleAndCreature();
@@ -222,7 +222,7 @@ export class Space1889Migration
 			return;
 
 		const lastNonFixVersion = "2.0.0";
-		if (!game.user.isGM || (isNewerVersion(lastUsedVersion, lastNonFixVersion) && isNewerVersion(lastUsedFoundryVersion, "10.291")))
+		if (!game.user.isGM || (foundry.utils.isNewerVersion(lastUsedVersion, lastNonFixVersion) && foundry.utils.isNewerVersion(lastUsedFoundryVersion, "10.291")))
 			return;
 
 		let actorList = this.getAllActors();
@@ -268,7 +268,7 @@ export class Space1889Migration
 	{
 		const info = game.settings.get("space1889", "newVersionPopup").split("|");
 		const currentVersion = game.version;
-		if (game.user.isGM && (isNewerVersion(currentVersion, info[1]) || info[0] > 0))
+		if (game.user.isGM && (foundry.utils.isNewerVersion(currentVersion, info[1]) || info[0] > 0))
 		{
 			let content = game.i18n.localize("SPACE1889.FoundryBug8180");
 			const understood = game.i18n.localize("SPACE1889.Understood");
@@ -301,7 +301,7 @@ export class Space1889Migration
 	{
 		const info = game.settings.get("space1889", "newVersionPopup").split("|");
 		const currentVersion = game.system.version;
-		if (noCheck || (game.user.isGM && (isNewerVersion(currentVersion, info[1]) || info[0] > 0)))
+		if (noCheck || (game.user.isGM && (foundry.utils.isNewerVersion(currentVersion, info[1]) || info[0] > 0)))
 		{
 			//let content = game.i18n.localize("SPACE1889.VersionInfo");
 			const isGerman = game.settings.get('core', 'language') == "de";

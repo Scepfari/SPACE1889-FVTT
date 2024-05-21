@@ -166,7 +166,7 @@ export class Space1889Translation
 				lastUsedVersion = info[1];
 			}
 			
-			const isNewVersion = isNewerVersion(currentVersion, lastUsedVersion);
+			const isNewVersion = foundry.utils.isNewerVersion(currentVersion, lastUsedVersion);
 
 			if ((isNewVersion && currentLanguage != 'de') ||
 				(!isNewVersion && lastUsedLanguage != currentLanguage))
@@ -175,7 +175,7 @@ export class Space1889Translation
 				await this.translateCompendiums();
 				game.settings.set("space1889", "lastCompendiumTranslationLanguage", currentLanguage + '|' + currentVersion);
 			}
-			else if (isNewerVersion(game.version, '10.303') && game.settings.get("space1889", "lastUsedFoundryVersion") === "9.28")
+			else if (foundry.utils.isNewerVersion(game.version, '10.303') && game.settings.get("space1889", "lastUsedFoundryVersion") === "9.28")
 			{
 				// frisch auf V11
 				await this.updateFolderNames(currentLanguage);
@@ -200,7 +200,7 @@ export class Space1889Translation
 
 	static async updateFolderNames(currentLanguage)
 	{
-		if (!isNewerVersion(game.version, '10.999'))
+		if (!foundry.utils.isNewerVersion(game.version, '10.999'))
 			return;
 
 		const folders = game.packs.folders;
