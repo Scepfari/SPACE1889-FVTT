@@ -484,7 +484,7 @@ export class Space1889Item extends Item {
 				item.system.capacity,
 				" " + game.i18n.localize(CONFIG.SPACE1889.weaponCapacityTypesAbbr[item.system.capacityType]));
 		}
-		desc += this._addLine("SPACE1889.Weight", item.system.weight.toString(), "kg");
+		desc += this._addLine("SPACE1889.Weight", item.system.weight?.toString(), "kg");
 
 		if (item.system.location === "mounted")
 		{
@@ -542,7 +542,7 @@ export class Space1889Item extends Item {
 
 	_addLine(langId, value, unit="", addLineBreak = true)
 	{
-		const line = (addLineBreak ? "<br>" : "") + game.i18n.localize(langId) + ": " + value + unit;
+		const line = (addLineBreak ? "<br>" : "") + game.i18n.localize(langId) + ": " + (value ? value : "") + unit;
 		return line;
 	}
 
