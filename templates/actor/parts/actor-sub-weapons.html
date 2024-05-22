@@ -31,14 +31,14 @@
 		<!--<label class="items-list item-max-with60px">{{item.system.sizeMod}}</label>-->
 		{{#if item.system.isRangeWeapon}}
 		<select data-tooltip="{{item.system.ammunition.display}} " name="currentAmmo-{{item._id}}" class="ammo-selector" data-item-id="{{item._id}}" data-dtype="String">
-			{{#select item.system.ammunition.currentItemId}}
+			{{#oldSelect item.system.ammunition.currentItemId}}
 			<option class="ammo-option" value="">-</option>
 			{{#each item.system.ammunition.ammos as |ammo a|}}
 			<option class="ammo-option" value="{{ammo._id}}">
 				{{ammo.name}}
 			</option>
 			{{/each}}
-			{{/select}}
+			{{/oldSelect}}
 		</select>
 
 		<div data-tooltip="{{item.system.ammunition.loadStateDisplay}}" class="items-list resource-label item-max-with40px">
