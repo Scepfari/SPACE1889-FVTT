@@ -201,6 +201,7 @@ SPACE1889.combatSpecializations ={
 	"blasrohr": "SPACE1889.SpeciSkillBlasrohr",
 	"bogen": "SPACE1889.SpeciSkillBogen",
 	"bomben": "SPACE1889.SpeciSkillBomben",
+	"feuerlanze": "SPACE1889.SpeciSkillFeuerlanze",
 	"gewehr": "SPACE1889.SpeciSkillGewehr",
 	"kanonen": "SPACE1889.SpeciSkillKanonen",
 	"knueppel": "SPACE1889.SpeciSkillKnueppel",
