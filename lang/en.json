@@ -37,7 +37,8 @@
 
 	"CONTROLS.Space1889Menu": "SPACE 1889 Menu",
 	"CONTROLS.Space1889MenuGMScreen": "<h3>GM Screen</h3><p>opens the document with the SL screen content</p>",
-	"CONTROLS.Space1889MenuHelp": "<h3>Operating help</h3><p>opens the document with the help</p>",
+	"CONTROLS.Space1889MenuHelp": "Operating help",
+	"CONTROLS.Space1889MenuHelpTooltip": "<h3>Operating help</h3><p>opens the document with the help</p>",
 	"CONTROLS.Space1889MenuShowImage": "<h3>Show image in chat</h3><p>Opens the Foundry dialogue for image selection and then displays the selected image in the chat. There it can be enlarged in its own window by left-clicking, even by the players</p>",
 	"CONTROLS.Space1889MenuShowNameAndBar": "<h3>Change token display</h3><p>Sets the display mode for the name and life bar display for all tokens in the current scene</p>",
 	"CONTROLS.Space1889MenuNpcsDrawWeapon": "<h3>Combat readiness</h3><p>All NPCs make their weapons ready, without chat display for the players</p>",

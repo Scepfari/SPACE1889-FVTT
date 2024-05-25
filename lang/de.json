@@ -37,7 +37,8 @@
 
 	"CONTROLS.Space1889Menu": "SPACE 1889 Menü",
 	"CONTROLS.Space1889MenuGMScreen": "<h3>SL Schirm</h3><p>öffnet das Dokument mit den SL Schirm Inhalten</p>",
-	"CONTROLS.Space1889MenuHelp": "<h3>Bedienungshilfe</h3><p>öffnet das Dokument mit der Hilfe</p>",
+	"CONTROLS.Space1889MenuHelp": "Bedienungshilfe",
+	"CONTROLS.Space1889MenuHelpTooltip": "<h3>Bedienungshilfe</h3><p>öffnet das Dokument mit der Hilfe</p>",
 	"CONTROLS.Space1889MenuShowImage": "<h3>Bild in den Chat stellen</h3><p>Öffnet den Foundry Dialog zur Bildauswahl und zeigt das ausgewählte Bild anschließend im Chat an. Dort kann es per Linksklick, auch von den Spielern, vergrößert im eigenen Fenster dargestellt werden</p>",
 	"CONTROLS.Space1889MenuShowNameAndBar": "<h3>Figuren Anzeige ändern</h3><p>Setzt für alle Figuren der aktuellen Szene den Anzeigemodus für die Namens- und Lebensleistenanzeige</p>",
 	"CONTROLS.Space1889MenuNpcsDrawWeapon": "<h3>Kampfbereitschaft herstellen</h3><p>Alle bzw. die ausgewählten NSCs der Szene machen ihre Waffen bereit und zwar ohne Chatanzeige für die Spieler</p>",
