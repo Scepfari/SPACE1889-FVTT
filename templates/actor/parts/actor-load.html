@@ -30,13 +30,13 @@
 	</li>
 	<li class="flexrow item">
 		<label class=" item-max-with75px">{{localize "SPACE1889.StorageLocationKoerper"}}</label>
-		<label class=" item-max-with75px">{{system.load.bodyLoad}}kg</label>
+		<label data-tooltip='{{localize "SPACE1889.BodyLoadTooltip" gravity=system.gravity.gravityFactor}}' data-tooltip-direction="LEFT" class=" item-max-with75px">{{system.load.bodyLoad}}kg</label>
 		<label class=" item-max-with75px">{{localize system.load.bodyLoadLevel}}</label>
 		<label class=" flex-group-center">{{localize system.load.bodyLoadConsequence}}</label>
 	</li>
 	<li class="item row-section flexrow">
 		<label class="item-max-with75px">{{localize "SPACE1889.LoadingLevel"}}</label>
-		<label data-tooltip='{{localize "SPACE1889.StorageLocationRucksack"}}: {{system.load.backpackLoad}}kg' class="item-max-with75px">{{system.load.bodyAndBackpackLoad}}kg</label>
+		<label data-tooltip='{{localize "SPACE1889.LoadTooltip" gravity=system.gravity.gravityFactor backpackLoad=system.load.backpackLoad}}' data-tooltip-direction="LEFT" class="item-max-with75px">{{system.load.bodyAndBackpackLoad}}kg</label>
 		<label class="item-max-with75px">{{localize system.load.bodyAndBackpackLoadLevel}}</label>
 		<label class="flex-group-center">{{localize system.load.bodyAndBackpackLoadConsequence}}</label>
 	</li>

@@ -1443,6 +1443,10 @@ export class Space1889Actor extends Actor
 
 	CalcAndSetLoad(actor)
 	{
+		const gravity = SPACE1889Helper.getGravity();
+		actor.system.gravity = gravity;
+		const gravityFactor = actor.system.gravity.gravityFactor;
+
 		let str = actor.system.abilities["str"].total;
 
 		for (let item of actor.items)
@@ -1463,9 +1467,6 @@ export class Space1889Actor extends Actor
 		let levels = [4, 10, 20, 40, 100, 150, 250, 300, 350, 400, 450, 500];
 		str = Math.max(str, 1);
 		str = Math.min(str, 10);
-
-		const gravity = SPACE1889Helper.getGravity();
-		const gravityFactor = gravity?.gravityFactor ? gravity.gravityFactor : 1.0;
 
 		let loadBody = 0;
 		let loadCarriedBackpack = 0;
@@ -1500,7 +1501,7 @@ export class Space1889Actor extends Actor
 					loadStorage += container.system.totalWeight;
 			}
 		}
-		loadStorage *= gravityFactor;
+		
 		loadCarriedBackpack *= gravityFactor;
 
 		let bodyLoadLevel = this.GetLoadingLevel(loadBody, levels[str - 1], levels[str], levels[str + 1]);

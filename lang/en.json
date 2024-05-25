@@ -51,9 +51,12 @@
 	"SPACE1889.GravityLuna": "Luna",
 	"SPACE1889.GravityVenus": "Venus",
 	"SPACE1889.GravityZeroGravity": "Zero Gravity",
-	"SPACE1889.GravitySetTooltip": "<h3>Change Gravity</h3><p>Current gravity: {planet}<br>Zone: {zone}g</p><p><small>Automatically affects the character's load calculation. Deductions on certain skills such as climbing must be made manually.</small></p>",
+	"SPACE1889.GravitySetTooltip": "<h3>Gravity</h3><p>Current gravity: {planet}<br>Zone: {zone}<br>Malus for those familiar with earth gravity: {malus} </p><p><small>Automatically affects the character's load calculation. Deductions on certain skills such as climbing must be made manually.</small></p>",
 	"SPACE1889.SetGravityDialogTitle": "Change Gravity",
 	"SPACE1889.GravityZone": "{value}g Zone",
+	"SPACE1889.GravityValue": "{value}g",
+	"SPACE1889.BodyLoadTooltip": "<h3 class=\"itemTooltipH3\">Body Load</h3> <p class=\"itemTooltip\">Total weight of all items carried on the body, excluding containers such as backpacks, multiplied by the current gravity factor of {gravity}g to obtain the correct load level.</p>",
+	"SPACE1889.LoadTooltip": "<h3 class=\"itemTooltipH3\">Load</h3> <p class=\"itemTooltip\">Total weight of all items carried on the body including all carried containers and their contents ({backpackLoad}kg) multiplied by the current gravity factor of {gravity}g to obtain the correct load level.</p>",
 
 	"SPACE1889.Pc": "PC",
 	"SPACE1889.Npc": "NPC",

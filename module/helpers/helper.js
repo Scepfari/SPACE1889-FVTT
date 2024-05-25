@@ -1809,25 +1809,25 @@ export default class SPACE1889Helper
 			return;
 		}
 
-		let opt = `<label class="align-center" for="grav-select">${game.i18n.localize("SPACE1889.Gravity")}</label><br>`;
+		let opt = `<div class="flexrow"><label class="align-center" for="grav-select">${game.i18n.localize("SPACE1889.Gravity")}: </label>`;
 		opt += '<select class="align-center" id="grav-select">';
 		const currentZone = game.settings.get("space1889", "gravityZone");
 
 		for (let [k, v] of Object.entries(CONFIG.SPACE1889.gravity)) 
 		{
 			const selected = (k === currentZone ? " selected" : "");
-			const gravVal = CONFIG.SPACE1889.gravityZone[k]?.zone.toFixed(1);
-			const gravText = game.i18n.format("SPACE1889.GravityZone", { value: gravVal });
+			const gravVal = CONFIG.SPACE1889.gravityZone[k]?.value.toFixed(2);
+			const gravText = game.i18n.format("SPACE1889.GravityValue", { value: gravVal });
 			opt += `<option value="${k}"${selected}>${game.i18n.localize(v)} (${gravText} )</option>`;
 		}
-		opt += '</select>';
+		opt += '</select></div>';
 
 		const dialogue = new Dialog({
 			title: `${game.i18n.localize("SPACE1889.SetGravityDialogTitle")}`,
 			content: `
 				<form>
 				${opt}
-				<br>
+				<hr>
 				</form>`,
 			buttons:
 			{
@@ -1850,16 +1850,25 @@ export default class SPACE1889Helper
 
 		async function theCallback(html)
 		{
-			const newZone = html.find('#grav-select')[0].value;
-			const newGravity = CONFIG.SPACE1889.gravityZone[newZone]?.value;
-			if (CONFIG.SPACE1889.gravity[newZone] && newGravity)
+			const newKey = html.find('#grav-select')[0].value;
+			const newGravity = CONFIG.SPACE1889.gravityZone[newKey]?.value;
+			if (CONFIG.SPACE1889.gravity[newKey] && newGravity)
 			{
-				await game.settings.set("space1889", "gravityZone", newZone);
+				await game.settings.set("space1889", "gravityZone", newKey);
 
-				Hooks.call("space1889GravityChanged", { key: newZone, gravity: newGravity });
+				Hooks.call("space1889GravityChanged", { key: newKey, gravity: newGravity });
 				game.socket.emit("system.space1889", {
 					type: "gravityChanged",
-					gravity: {key: newZone, gravity: newGravity}
+					gravity: {key: newKey, gravity: newGravity}
+				});
+
+				const name = game.i18n.localize(CONFIG.SPACE1889.gravity[newKey]);
+				const newZone = CONFIG.SPACE1889.gravityZone[newKey].zone;
+				const malus = SPACE1889Helper.getGravityMalus(1.0, newZone)
+				let theContent = game.i18n.format("SPACE1889.GravitySetTooltip", {planet: name, zone:  newZone.toFixed(1), value: (newGravity < 0.2 ? newGravity.toFixed(2) : newGravity.toFixed(2)), malus: malus });
+				ChatMessage.create({
+					content: `${theContent}`,
+					type: CONST.CHAT_MESSAGE_TYPES.OTHER
 				});
 			}
 		}
@@ -1871,7 +1880,17 @@ export default class SPACE1889Helper
 		const gravity = CONFIG.SPACE1889.gravityZone[key]?.value;
 		const zone = CONFIG.SPACE1889.gravityZone[key]?.zone;
 		const langId = CONFIG.SPACE1889.gravity[key];
-		return { key: key, gravityFactor: gravity, zone: zone, langId: langId };
+		if (!key || !gravity || !zone)
+			return { key: "earth", gravityFactor: 1.0, zone: 1.0, langId: "SPACE1889.GravityEarth" , malusToEarth: 0};
+
+		const malus = this.getGravityMalus(CONFIG.SPACE1889.gravityZone["earth"].zone, zone);
+		return { key: key, gravityFactor: gravity, zone: zone, langId: langId, malusToEarth: malus };
+	}
+
+	static getGravityMalus(baseZone, currentZone)
+	{
+		const malus = Math.round(100 * Math.abs(baseZone - currentZone) / 0.2) / 100;
+		return malus;
 	}
 
 	static doGravityChangeReaktion(changeInfo)
@@ -1879,17 +1898,38 @@ export default class SPACE1889Helper
 		const spaceMenu = Object.values(ui.windows).find((app) => app instanceof Space1889Menu);
 		if (spaceMenu)
 			spaceMenu.render();
+
+		this.updateAllCharacterData()
 		this.refreshAllOpenCharacterSheets();
 	}
 
+	static updateAllCharacterData()
+	{
+		const isGM = game.user.isGM;
 
-	static refreshAllOpenCharacterSheets()
+		const actors = game.actors.filter(e => e.type === "character" || e.type === "npc")
+		for (let actor of actors)
+		{
+			if (isGM || this.hasOwnership(actor))
+				actor.prepareDerivedData();
+		}
+
+		const tokens = game.scenes.viewed.tokens.filter(e => e.actorLink === false);
+		for (let token of tokens)
+		{
+			if (isGM || this.hasOwnership(token.actor))
+				token.actor.prepareDerivedData();
+		}
+	}
+
+	static refreshAllOpenCharacterSheets(doDataUpdate = true)
 	{
 		for (let app of Object.values(ui.windows))
 		{
 			if (app instanceof Space1889ActorSheet && app.actor)
 			{
-				app.actor.prepareDerivedData();
+				if (doDataUpdate)
+					app.actor.prepareDerivedData();
 				app.render();
 			}
 		}

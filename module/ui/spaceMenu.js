@@ -28,10 +28,12 @@ export class Space1889Menu extends FormApplication {
 	{
 		const data = {};
 
-		const zoneName = game.settings.get("space1889", "gravityZone");
-		const name = game.i18n.localize(CONFIG.SPACE1889.gravity[zoneName]);
-		const gravityZone = CONFIG.SPACE1889.gravityZone[zoneName]?.zone;
-		data.gravityTooltip = game.i18n.format("SPACE1889.GravitySetTooltip", { planet: name, zone: gravityZone.toFixed(1) });
+		const gravity = SPACE1889Helper.getGravity();
+
+		const name = game.i18n.localize(gravity.langId);
+		const gravityZone = gravity.zone;
+		const gravityValue = gravity.gravityFactor;
+		data.gravityTooltip = game.i18n.format("SPACE1889.GravitySetTooltip", { planet: name, zone: gravityZone.toFixed(1), value: (gravityValue < 0.2 ? gravityValue.toFixed(2) : gravityValue.toFixed(1)), malus : gravity.malusToEarth });
 
 		return data;
 	}
