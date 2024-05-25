@@ -1,0 +1,41 @@
+<li class="flexrow space1889-menu-header ">
+	{{#if (isGm " ")}}
+	<div class="resource">
+		<button class="showGmScreen menuButton" type="button" data-tooltip="{{localize "CONTROLS.Space1889MenuGMScreen"}}">
+			<i class="far fa-map"></i>
+		</button>
+	</div>
+	{{/if}}
+	<div class="resource">
+		<button class="setGravity {{#if (isGm ' ')}}menuButton{{else}}menuButtonNonGM{{/if}}" type="button" data-tooltip="{{gravityTooltip}}">
+			<i class="fa fa-globe"></i>
+		</button>
+	</div>
+	{{#if (isGm " ")}}
+	<div class="resource">
+		<button class="npcsDrawWeapon menuButton" type="button" data-tooltip="{{localize "CONTROLS.Space1889MenuNpcsDrawWeapon"}}">
+			<i class="far fa-hand-rock"></i>
+		</button>
+	</div>
+	<div class="resource">
+		<button class="showTokenNameAndBar menuButton" type="button" data-tooltip="{{localize "CONTROLS.Space1889MenuShowNameAndBar"}}">
+			<i class="fa fa-eye"></i>
+		</button>
+	</div>
+	<div class="resource">
+		<button class="hideNames menuButton" type="button" data-tooltip="{{localize "CONTROLS.Space1889MenuHideNameOfNonCharacters"}}">
+			<i class="fa fa-low-vision"></i>
+		</button>
+	</div>
+	<div class="resource">
+		<button class="showImage menuButton" type="button" data-tooltip="{{localize "CONTROLS.Space1889MenuShowImage"}}">
+			<i class="fas fa-file-image"></i>
+		</button>
+	</div>
+	{{/if}}
+	<div class="resource">
+		<button class="showHelp {{#if (isGm ' ')}}menuButton{{else}}menuButtonNonGM{{/if}}" type="button" data-tooltip="{{localize "CONTROLS.Space1889MenuHelp"}}">
+			<i class="fa fa-info"></i>
+		</button>
+	</div>
+</li>

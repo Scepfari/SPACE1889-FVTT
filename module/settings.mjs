@@ -275,4 +275,24 @@ export const registerSystemSettings = function ()
 		    default: false,
 		    type: Boolean
 		});
+
+    game.settings.register("space1889", "menuPosition",
+	    {
+		    name: "space menu position",
+		    hint: "left and top",
+		    scope: "client",
+		    config: false,
+		    default: "-1|-1",
+		    type: String
+		});
+
+    game.settings.register("space1889", "gravityZone",
+	    {
+		    name: "gravity zone",
+		    hint: "current in game gravity zone",
+		    scope: "world",
+		    config: false,
+		    default: "earth",
+		    type: String
+	    });
 }

@@ -2,6 +2,8 @@ import TurnMarker from "../helpers/turnMarker.mjs";
 import SPACE1889RollHelper from "./roll-helper.js";
 import SPACE1889Time from "./time.js";
 import SPACE1889Healing from "../helpers/healing.js";
+import { Space1889Menu } from "../ui/spaceMenu.js";
+import { Space1889ActorSheet } from "../sheets/actor-sheet.mjs";
 
 export default class SPACE1889Helper
 {
@@ -372,6 +374,12 @@ export default class SPACE1889Helper
 
 	static async showGmScreen()
 	{
+		if (!game.user.isGM)
+		{
+			ui.notifications.info(game.i18n.localize("SPACE1889.NoPermissionGmOnly"));
+			return;
+		}
+
 		let pac = game.packs.get("space1889.gminfos");
 		let docs = await pac.getDocuments();
 		const language = game.settings.get('core', 'language')
@@ -1503,6 +1511,12 @@ export default class SPACE1889Helper
 
 	static async npcsDrawWeaponsWithDialog()
 	{
+		if (!game.user.isGM)
+		{
+			ui.notifications.info(game.i18n.localize("SPACE1889.NoPermissionGmOnly"));
+			return;
+		}
+
 		let checkbox = '<ul class="space1889 sheet actor"><li class="flexrow"><div class="item-name">' + game.i18n.localize("SPACE1889.TokensSelectedOnly") + ':</div>';
 		checkbox += '<div class="item flexrow flex-group-left"><input type="checkbox" id="selected"';
 		if (canvas.tokens.controlled.length > 0)
@@ -1620,6 +1634,12 @@ export default class SPACE1889Helper
 
 	static async hideNameOfNonCharactersWithDialog()
 	{
+		if (!game.user.isGM)
+		{
+			ui.notifications.info(game.i18n.localize("SPACE1889.NoPermissionGmOnly"));
+			return;
+		}
+
 		let dialogue = new Dialog(
 		{
 			title: `${game.i18n.localize("SPACE1889.RenameTokens")}`,
@@ -1662,7 +1682,7 @@ export default class SPACE1889Helper
 
 		if (!game.user.isGM)
 		{
-			ui.notifications.info(game.i18n.localize("SPACE1889.SlOnly"));
+			ui.notifications.info(game.i18n.localize("SPACE1889.NoPermissionGmOnly"));
 			return true;
 		}
 
@@ -1699,6 +1719,12 @@ export default class SPACE1889Helper
 
 	static showTokenNameAndBarWithDialog()
 	{
+		if (!game.user.isGM)
+		{
+			ui.notifications.info(game.i18n.localize("SPACE1889.NoPermissionGmOnly"));
+			return;
+		}
+
 		let options = { force: false, displayBars: 30, displayName: 30 };
 		const barHtml = this.getTokenDisplayOptions("bar-select", game.i18n.localize("SPACE1889.TokenLifebarDisplayType"));
 		const nameHtml = this.getTokenDisplayOptions("name-select", game.i18n.localize("SPACE1889.TokenNameDisplayType"));
@@ -1774,6 +1800,101 @@ export default class SPACE1889Helper
 		if (counter == 0)
 			ui.notifications.info(game.i18n.localize("SPACE1889.TokensNotChanged"));
 	}
+
+	static async showSetGravityDialog()
+	{
+		if (!game.user.isGM)
+		{
+			ui.notifications.info(game.i18n.localize("SPACE1889.NoPermissionGmOnly"));
+			return;
+		}
+
+		let opt = `<label class="align-center" for="grav-select">${game.i18n.localize("SPACE1889.Gravity")}</label><br>`;
+		opt += '<select class="align-center" id="grav-select">';
+		const currentZone = game.settings.get("space1889", "gravityZone");
+
+		for (let [k, v] of Object.entries(CONFIG.SPACE1889.gravity)) 
+		{
+			const selected = (k === currentZone ? " selected" : "");
+			const gravVal = CONFIG.SPACE1889.gravityZone[k]?.zone.toFixed(1);
+			const gravText = game.i18n.format("SPACE1889.GravityZone", { value: gravVal });
+			opt += `<option value="${k}"${selected}>${game.i18n.localize(v)} (${gravText} )</option>`;
+		}
+		opt += '</select>';
+
+		const dialogue = new Dialog({
+			title: `${game.i18n.localize("SPACE1889.SetGravityDialogTitle")}`,
+			content: `
+				<form>
+				${opt}
+				<br>
+				</form>`,
+			buttons:
+			{
+				ok:
+				{
+					icon: '',
+					label: game.i18n.localize("SPACE1889.Submit"),
+					callback: (html) => theCallback(html)
+				},
+				abbruch:
+				{
+					label: game.i18n.localize("SPACE1889.Cancel"),
+					callback: () => { ui.notifications.info(game.i18n.localize("SPACE1889.FunctionCanceled")) },
+					icon: `<i class="fas fa-times"></i>`
+				}
+			},
+			default: "ok"
+		});
+		dialogue.render(true);
+
+		async function theCallback(html)
+		{
+			const newZone = html.find('#grav-select')[0].value;
+			const newGravity = CONFIG.SPACE1889.gravityZone[newZone]?.value;
+			if (CONFIG.SPACE1889.gravity[newZone] && newGravity)
+			{
+				await game.settings.set("space1889", "gravityZone", newZone);
+
+				Hooks.call("space1889GravityChanged", { key: newZone, gravity: newGravity });
+				game.socket.emit("system.space1889", {
+					type: "gravityChanged",
+					gravity: {key: newZone, gravity: newGravity}
+				});
+			}
+		}
+	}
+
+	static getGravity()
+	{
+		const key = game.settings.get("space1889", "gravityZone");
+		const gravity = CONFIG.SPACE1889.gravityZone[key]?.value;
+		const zone = CONFIG.SPACE1889.gravityZone[key]?.zone;
+		const langId = CONFIG.SPACE1889.gravity[key];
+		return { key: key, gravityFactor: gravity, zone: zone, langId: langId };
+	}
+
+	static doGravityChangeReaktion(changeInfo)
+	{
+		const spaceMenu = Object.values(ui.windows).find((app) => app instanceof Space1889Menu);
+		if (spaceMenu)
+			spaceMenu.render();
+		this.refreshAllOpenCharacterSheets();
+	}
+
+
+	static refreshAllOpenCharacterSheets()
+	{
+		for (let app of Object.values(ui.windows))
+		{
+			if (app instanceof Space1889ActorSheet && app.actor)
+			{
+				app.actor.prepareDerivedData();
+				app.render();
+			}
+		}
+	}
+
 
 	static getBestWeapon(actor, preferredWeapon)
 	{

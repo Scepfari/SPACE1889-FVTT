@@ -910,6 +910,24 @@ SPACE1889.styles = {
     "space1889-naked": "SPACE1889.ConfigGlobalStyleNaked"
 }
 
+SPACE1889.gravity = {
+	"earth": "SPACE1889.GravityEarth",
+	"mars": "SPACE1889.GravityMars",
+	"mercury": "SPACE1889.GravityMercury",
+	"luna": "SPACE1889.GravityLuna",
+	"venus": "SPACE1889.GravityVenus",
+	"zeroGravity": "SPACE1889.GravityZeroGravity"
+}
+
+SPACE1889.gravityZone = {
+	"earth": { zone: 1.0, value: 1.0},
+	"mars": { zone: 1.0, value: 0.9},
+	"mercury": { zone: 0.4, value: 0.4},
+	"luna": { zone: 0.2, value: 0.16},
+	"venus": { zone: 1.0, value: 1.0},
+	"zeroGravity": { zone: 0.0, value: 0.001}
+}
+
 SPACE1889.umlautMap = {
 	'\u00dc': 'UE',
 	'\u00c4': 'AE',

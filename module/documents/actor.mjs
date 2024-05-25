@@ -1407,7 +1407,7 @@ export class Space1889Actor extends Actor
 		}
 	}
 
-	CalcContainerLoad(actor)
+	async CalcContainerLoad(actor)
 	{
 		if (!SPACE1889Helper.hasOwnership(actor))
 			return;
@@ -1436,7 +1436,7 @@ export class Space1889Actor extends Actor
 			const total = load + container.system.weight;
 			if (container.system.payloadWeight != load || container.system.totalWeight != total)
 			{
-				actor.updateEmbeddedDocuments("Item", [{ _id: container._id, "system.payloadWeight": load, "system.totalWeight": total }]);
+				await actor.updateEmbeddedDocuments("Item", [{ _id: container._id, "system.payloadWeight": load, "system.totalWeight": total }]);
 			}
 		}
 	}
@@ -1464,6 +1464,9 @@ export class Space1889Actor extends Actor
 		str = Math.max(str, 1);
 		str = Math.min(str, 10);
 
+		const gravity = SPACE1889Helper.getGravity();
+		const gravityFactor = gravity?.gravityFactor ? gravity.gravityFactor : 1.0;
+
 		let loadBody = 0;
 		let loadCarriedBackpack = 0;
 		let loadStorage = 0;
@@ -1482,6 +1485,8 @@ export class Space1889Actor extends Actor
 			if (item.system.containerId == null)
 				loadBody += itemWeight;
 		}
+		itemWeight *= gravityFactor;
+		loadBody *= gravityFactor;
 
 		for (let container of actor.system.containers)
 		{
@@ -1495,6 +1500,8 @@ export class Space1889Actor extends Actor
 					loadStorage += container.system.totalWeight;
 			}
 		}
+		loadStorage *= gravityFactor;
+		loadCarriedBackpack *= gravityFactor;
 
 		let bodyLoadLevel = this.GetLoadingLevel(loadBody, levels[str - 1], levels[str], levels[str + 1]);
 		let bodyAndBackpackLoadLevel = this.GetLoadingLevel(loadBody + loadCarriedBackpack, levels[str - 1], levels[str], levels[str + 1]);

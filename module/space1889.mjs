@@ -20,9 +20,9 @@ import SPACE1889Time from "./helpers/time.js";
 import DistanceMeasuring from "./helpers/distanceMeasuring.js";
 import { Space1889Combat, Space1889Combatant } from "./helpers/combatTracker.mjs";
 import TurnMarker from "./helpers/turnMarker.mjs";
-import { registerGetSceneControlButtonsHook } from "./ui/controls.mjs";
 import * as CleanHeader from "./ui/cleanHeader.js";
 import * as sideBar from "./ui/sidebar.js";
+import { Space1889Menu } from "./ui/spaceMenu.js";
 
 
 
@@ -201,9 +201,7 @@ Hooks.once("setup", () =>
 		restricted: false,
 		precedence: CONST.KEYBINDING_PRECEDENCE.PRIORITY,
 	});
-
-	registerGetSceneControlButtonsHook();
-})
+});
 
 Hooks.on('preCreateChatMessage', (doc, message, options, userid) =>
 {
@@ -388,6 +386,42 @@ Hooks.on("renderPause", () => {
 	$("#pause figcaption").attr("class", "pause-space1889");
 });
 
+Hooks.on("space1889GravityChanged", (changeInfo) =>
+{
+	if (changeInfo && changeInfo.key && changeInfo.gravity)
+		SPACE1889Helper.doGravityChangeReaktion(changeInfo);
+});
+
+Hooks.on('renderSceneControls', (sceneControls, html, options) =>
+{
+	const tooltip = game.i18n.localize("CONTROLS.Space1889Menu");
+
+	const spaceControl = $(`<li class="scene-control" role="tab" data-tooltip="${tooltip}"><i class="fas fa-space1889"></i></li>`);
+	spaceControl.on('click', () =>
+	{
+		const presetMenu = Object.values(ui.windows).find((app) => app instanceof Space1889Menu);
+		if (presetMenu) {
+			presetMenu.close();
+			return;
+		}
+
+		const savedPos = game.settings.get("space1889", "menuPosition").split("|");
+		let savedLeft = Number(savedPos[0]);
+		let savedTop = Number(savedPos[1]);
+		if (savedLeft < 0 || savedTop < 0)
+		{
+			savedLeft = spaceControl.position().left + (2 * spaceControl.width());
+			savedTop = spaceControl.position().top;
+		}
+
+		new Space1889Menu({
+			left: savedLeft,
+			top: savedTop
+		}).render(true);
+	});
+	html.find('.control-tools').find('.scene-control').last().after(spaceControl);
+});
+
 /* -------------------------------------------- */
 /*  Handlebars Helpers                          */
 /* -------------------------------------------- */
@@ -467,6 +501,7 @@ Handlebars.registerHelper('secondaryToolTipDescription', function (actor, key)
 	return actor.getSecondaryInfoText(key);
 });
 
+
 /* -------------------------------------------- */
 /*  Ready Hook                                  */
 /* -------------------------------------------- */
@@ -485,6 +520,17 @@ Hooks.once("ready", async function() {
 			values.prepareDerivedData();
 	});
 	Space1889Tour.registerTours();
+
+	game.socket.on("system.space1889", data =>
+	{
+		if (data.type === "gravityChanged")
+		{
+			if (data.gravity && data.gravity.key && data.gravity.gravity)
+			{
+				SPACE1889Helper.doGravityChangeReaktion(data.gravity);
+			}
+		}
+	});
 
 	if (game.user.isGM)
 	{
