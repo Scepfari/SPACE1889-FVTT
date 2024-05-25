@@ -1032,6 +1032,7 @@
 	"SPACE1889.ArchetypeAnfuehrerin": "Female Leader",
 	"SPACE1889.ArchetypeArbeiter": "Worker",
 	"SPACE1889.ArchetypeArbeiterin": "Female Worker",
+	"SPACE1889.ArchetypeArtefakt": "Artifact",
 	"SPACE1889.ArchetypeArzt": "Doctor",
 	"SPACE1889.ArchetypeAerztin": "Female Doctor",
 	"SPACE1889.ArchetypeAusgestossene": "Outcast Woman ",
@@ -1121,7 +1122,7 @@
 	"SPACE1889.SpeciesSumpfmarsianer": "Swamp Martian",
 	"SPACE1889.SpeciesSelenit": "Selenit",
 	"SPACE1889.SpeciesVenusianer": "Venusian",
-
+	"SPACE1889.SpeciesKonstrukt": "Construct",
 
 	"SPACE1889.MotivationAnstand": "Decency",
 	"SPACE1889.MotivationBewahren": "Preserve",

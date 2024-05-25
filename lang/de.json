@@ -1032,6 +1032,7 @@
 	"SPACE1889.ArchetypeAnfuehrerin": "Anführerin",
 	"SPACE1889.ArchetypeArbeiter": "Arbeiter",
 	"SPACE1889.ArchetypeArbeiterin": "Arbeiterin",
+	"SPACE1889.ArchetypeArtefakt": "Artefakt",
 	"SPACE1889.ArchetypeArzt": "Arzt",
 	"SPACE1889.ArchetypeAerztin": "Ärztin",
 	"SPACE1889.ArchetypeAusgestossene": "Ausgestoßene",
@@ -1121,7 +1122,7 @@
 	"SPACE1889.SpeciesSumpfmarsianer": "Sumpfmarsianer",
 	"SPACE1889.SpeciesSelenit": "Selenit",
 	"SPACE1889.SpeciesVenusianer": "Venusianer",
-
+	"SPACE1889.SpeciesKonstrukt": "Konstrukt",
 
 	"SPACE1889.MotivationAnstand": "Anstand",
 	"SPACE1889.MotivationBewahren": "Bewahren",

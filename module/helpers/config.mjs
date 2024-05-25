@@ -276,6 +276,7 @@ SPACE1889.archetypes = {
 	"anfuehrerin": "SPACE1889.ArchetypeAnfuehrerin",
 	"arbeiter": "SPACE1889.ArchetypeArbeiter",
 	"arbeiterin": "SPACE1889.ArchetypeArbeiterin",
+	"artefakt": "SPACE1889.ArchetypeArtefakt",
 	"arzt": "SPACE1889.ArchetypeArzt",
 	"aerztin": "SPACE1889.ArchetypeAerztin",
 	"ausgestossene": "SPACE1889.ArchetypeAusgestossene",
@@ -365,7 +366,8 @@ SPACE1889.species = {
 	"ornumDrobet": "SPACE1889.SpeciesOrnumDrobet",
 	"sumpfmarsianer": "SPACE1889.SpeciesSumpfmarsianer",
 	"selenit": "SPACE1889.SpeciesSelenit",
-	"venusianer": "SPACE1889.SpeciesVenusianer"
+	"venusianer": "SPACE1889.SpeciesVenusianer",
+	"konstrukt": "SPACE1889.SpeciesKonstrukt"
 };
 
 SPACE1889.motivations = {
