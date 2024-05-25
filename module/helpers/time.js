@@ -1,4 +1,5 @@
 import SPACE1889Healing from "../helpers/healing.js";
+import SPACE1889Helper from "./helper.js";
 
 export default class SPACE1889Time
 {
@@ -153,6 +154,8 @@ export default class SPACE1889Time
 	static #dateTimeChanged(data)
 	{
 		console.log("neues Datum:" + `${data.date.display.day}.${data.date.display.month}.${data.date.year} ${data.date.display.time}`);
+
+		SPACE1889Helper.refreshAllOpenCharacterSheets();
 
 		if (!game.user.isGM)
 			return;
