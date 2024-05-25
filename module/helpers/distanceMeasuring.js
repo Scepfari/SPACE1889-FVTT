@@ -117,7 +117,7 @@ static measureDistances(segments, options = {})
 		
 		if (!isCloseCombatRange)
 		{
-			if ((isCloseCombat && this.getGridWorldSize() > closeCombatRange) || (isCloseCombat && this.getGridWorldSize() <= closeCombatRange))
+			if (isCloseCombat || this.getGridWorldSize() <= closeCombatRange)
 				isCloseCombatRange = this.isNeighborTile(xGridTileDistance, yGridTileDistance);
 		}
 
