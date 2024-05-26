@@ -3466,6 +3466,7 @@
 	"SPACE1889.NotEnoughStylePoints": "Not enough style points available for a temporary talent upgrade.",
 	"SPACE1889.TemporaryImprovement": "temporary improvement {name}",
 	"SPACE1889.EffectNotFound": "The talent has no effect with the name \"{name}\". Other talent effects can be deleted in the talent sheet.",
+	"SPACE1889.ErrorInFunction": "Error in function <em>{name}</em>",
 
 	"SPACE1889.Warning": "Warning",
 	"SPACE1889.UnableToLoadImage": " Unable to Load Image",

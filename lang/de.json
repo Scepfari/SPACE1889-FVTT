@@ -3466,6 +3466,7 @@
 	"SPACE1889.NotEnoughStylePoints": "Nicht genug Stilpunkte für eine temporäre Talentverbesserung vorhanden.",
 	"SPACE1889.TemporaryImprovement": "temporäre Verbesserung {name}",
 	"SPACE1889.EffectNotFound": "Das Talent hat keinen Effect mit dem Namen \"{name}\". Andere Talenteffekte können im Talentbogen gelöscht werden.",
+	"SPACE1889.ErrorInFunction": "Fehler in der Funktion <em>{name}</em>",
 
 	"SPACE1889.Warning": "Warnung",
 	"SPACE1889.UnableToLoadImage": " Bild konnte nicht geladen werden",
