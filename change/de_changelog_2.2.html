@@ -3,8 +3,47 @@
 		<img class="profile-img artwork" src="systems/space1889/icons/space1889Logo.webp" height="130" width="130" align="middle" />
 	</div>
 	<div class="header-fields" align="center">
-		<h1>Version 2.2.1 -<br />Niedergang der Errungenschaften</h1>
+		<h1>Version 2.2.2 -<br />Niedergang der Errungenschaften</h1>
 	</div>
+
+	<h4 data-anchor="v2.2.2"><strong>v2.2.2</strong></h4>
+	<ul class="space1889list">
+		<li>
+			<p>Space Men&uuml; &Uuml;berarbeitung &nbsp;</p>
+			<ul>
+				<li>Ein Klick auf den Knopf wechselt nicht mehr in eine spezielle Foundry Ebene, sondern l&auml;sst die aktuelle Foundry Ebene unangetastet und &ouml;ffnet ein schwebendes Fenster in dem die bekannten Men&uuml;unterfunktionen enthalten sind.</li>
+				<li>Damit ist es nun auch mit V11 wieder m&ouml;glich Figuren auszuw&auml;hlen, bevor eine der Funktion aufgerufen wird</li>
+				<li>Die Position des Space Men&uuml;-Fensters wird sich vom System gemerkt, womit es nach dem Schlie&szlig;en und erneuten &Ouml;ffnen an der vorhergehenden Position erscheint</li>
+				<li>
+					<p>Neuer Eintrag "Schwerkraft" <i class="fa fa-globe" style="width: 25px;"> </i>im Space Men&uuml;: Damit l&auml;sst sich die aktuelle Schwerkraft einstellen, die sich auf die Beladungsstufe der Charaktere auswirkt</p>
+				</li>
+				<li>
+					<p>Neuer Eintrag "Figurennamen verschleiern" <i class="fa fa-low-vision" style="width: 25px; "> </i>im Space Men&uuml;, mit dem ausgew&auml;hlte oder alle Figuren der Szene einen generischen Namen erhalten, soweit die Spielenden keine Rechte an der Figur haben. Damit sehen die Spieler weder im Chat noch in der Begegnungsliste, dass sie es z.B. mit der&nbsp;<em>Rechten Hand des Oberb&ouml;sewichtes</em>&nbsp;zu tun haben, sondern nur mit&nbsp;<em>NPC 1</em>.</p>
+				</li>
+			</ul>
+		</li>
+		<li>
+			<p>Weiter Arbeiten an den Tooltips</p>
+			<ul>
+				<li>Sowohl die Tooltips als auch die Chat info Erzeugung von Items basieren jetzt auf dem gleichen Code und unterscheiden sich nur noch in der Darstellung die per css geregelt ist</li>
+				<li>Tooltips von den Listen Objekten (wie Fertigkeiten, Talente, Gegenst&auml;nde, Waffen, Munition, Geld usw.) erfolgt nun nicht mehr unter, sondern links vom Feld.</li>
+				<li>Tooltips f&uuml;r prim&auml;re und sekund&auml;re Attribute</li>
+				<li>Tooltips auch im NPC und Kreaturen Bogen</li>
+				<li>Damage Tooltip im gleichen Design wie der Rest</li>
+			</ul>
+		</li>
+		<li>Unterst&uuml;tzung von Feuerlanzen, d.h. in den Kompendien befinden sich nun die Waffe "Feuerlanze", die Munition "FL-Energiespeicherkristall", als auch die Gewehr Spezialisierung "Feuerlanze"</li>
+		<li>Fremdsprachenlimit erh&ouml;ht sich jetzt weiter, wenn Linguistik gr&ouml;&szlig;er als 10 wird, und zwar um 4 pro Stufe</li>
+		<li>Automatische Heilzeit Updates im Charakterbogen. Das funktioniert allerdings nur, wenn die Spieler auch das Recht im Simple Calendar Modul erhalten haben, die Zeit zu verstellen, da sonst der Simple Calendar kein DateTimeChange Event feuert.</li>
+		<li>Neuer Archetyp "Artefakt" hinzugef&uuml;gt</li>
+		<li>Neue Spezies "Konstrukt" hinzugef&uuml;gt</li>
+		<li>Im Hilfedokument, erreichbar &uuml;ber das i im Space Men&uuml;, wurde um Informationen zur Talenterstellung erg&auml;nzt, insbesondere um die Auflistung und Bedeutung der Schl&uuml;ssel Ids.&nbsp;<a class="content-link" draggable="true" data-hash="eigene-talente" data-uuid="Compendium.space1889.help.asbU8WYJJcJEX7q3.JournalEntryPage.toQpX1spGVzPjRnJ" data-id="toQpX1spGVzPjRnJ" data-type="JournalEntryPage" data-pack="space1889.help" data-tooltip="Kapitel Eigene Talente">Eigene Talente</a></li>
+		<li>Bugfix: &Uuml;berladungssymbol wird nun auch im NSC Bogen angezeigt</li>
+		<li>Bugfix: Die Miniaturbilder von Gegenst&auml;nden behalten nun ihr urspr&uuml;nglichen aspect ratio bei.</li>
+		<li>Bugfix: Abstandsberechnung bei Fernkampfangriffen, liefert nun 1,5m anstelle von 2,12m zur&uuml;ck, wenn die zwei Figuren diagonal nebeneinander stehen und die Gittergr&ouml;&szlig;e kleiner gleich 1,5m ist.</li>
+		<li>Erste interne Umbauten um Foundry V12 kompatibel zu werden</li>
+	</ul>
+	<p>&nbsp;</p>
 
 	<h4><strong>v2.2.1</strong></h4>
 	<ul class="space1889list">
@@ -24,7 +63,7 @@
 			<li>verbesserter Schadens-Tooltip im SC/NSC Bogen</li>
 			<li>erweiterter Schadensbogen</li>
 			<li>
-				Hilfe um das Thema 
+				Hilfe um das Thema
 				<a class="content-link" data-uuid="Compendium.space1889.help.asbU8WYJJcJEX7q3.JournalEntryPage.Ubt10GHPJVlew1qT" data-id="Ubt10GHPJVlew1qT" data-type="JournalEntryPage" data-pack"space1889.help" data-tooltip="Kapitel Heilung und Schaden">
 					<i class="fas fa-file-lines"></i>
 					Heilung

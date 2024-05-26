@@ -323,9 +323,9 @@ export class Space1889Migration
 						icon: '<i class="fas fa-times"></i>',
 						label: `${stayAway}`,
 						callback: () => game.settings.set("space1889", "newVersionPopup", `0|${currentVersion}`),
-					},
-				},
-			}).render(true, { resizable: true, height: 750 });
+					}
+				}
+			}).render(true, { resizable: true, width: 650, height: 750});
 		}
 	}
 }

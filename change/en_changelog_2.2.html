@@ -3,9 +3,47 @@
 		<img class="profile-img artwork" src="systems/space1889/icons/space1889Logo.webp" height="130" width="130" align="middle" />
 	</div>
 	<div class="header-fields" align="center">
-		<h1>Version 2.2.1 -<br />Decline of achievements</h1>
+		<h1>Version 2.2.2 -<br />Decline of achievements</h1>
 	</div>
-
+	<p>&nbsp;</p>
+	<h4><strong>v2.2.2</strong></h4>
+	<ul class="space1889list">
+		<li>
+			<p>Space menu revision</p>
+			<ul>
+				<li>Clicking on the button no longer switches to a special foundry level, but leaves the current foundry level untouched and opens a floating window containing the familiar menu sub-functions.</li>
+				<li>This means that with foundry V11 it is now once again possible to select tokens before calling one of the functions</li>
+				<li>The position of the Space menu window is memorised by the system so that it appears at the previous position after closing and reopening</li>
+				<li>
+					<p>New "Gravity" <i class="fa fa-globe" style="width: 25px;"> </i>entry in the Space menu: This allows you to set the current gravity, which affects the load level of the characters</p>
+				</li>
+				<li>
+					<p>New entry "Disguise token names" <i class="fa fa-low-vision" style="width: 25px; "> </i>in the space menu, which gives selected or all tokens in the scene a generic name if the players have no rights to the tokens. This means that players will not see in the chat or in the encounter list that they are dealing with the <em>right hand of the main villain</em>, for example, but only with <em>NPC 1</em>.</p>
+				</li>
+			</ul>
+		</li>
+		<li>
+			<p>Further work on the tooltips</p>
+			<ul>
+				<li>Both the tooltips and the chat info creation of items are now based on the same code and differ only in the display which is regulated by css</li>
+				<li>Tooltips of the list items (such as skills, talents, items, weapons, ammunition, money, etc.) are now no longer displayed below the field, but to the left of it.</li>
+				<li>Tooltips for primary and secondary attributes</li>
+				<li>Tooltips also in the NPC and creature sheets</li>
+				<li>Damage tooltip in the same design as the rest</li>
+			</ul>
+		</li>
+		<li>Support for fire lances, i.e. the "Fire Lance" weapon, the "FL Energy Storage Crystal" ammunition and the "Fire Lance" rifle specialisation can now be found in the compendiums</li>
+		<li>Foreign language limit now increases further when Linguistics becomes greater than 10, by 4 per level</li>
+		<li>Automatic healing time updates in the character sheet. However, this only works if the players have also been given the right to adjust the time in the Simple Calendar module, otherwise the Simple Calendar will not fire a DateTimeChange event.</li>
+		<li>New archetype "Artefact" added</li>
+		<li>New species "Construct" added</li>
+		<li>In the help document, accessible via the i in the Space menu, information on talent creation has been added, in particular the listing and meaning of the key IDs. <a class="content-link" draggable="true" data-hash="eigene-talente" data-uuid="Compendium.space1889.help.MlRz7BgqDGHY7uge.JournalEntryPage.u6OVmmrJPxIETCft" data-id="u6OVmmrJPxIETCft" data-type="JournalEntryPage" data-pack="space1889.help" data-tooltip="Chapter Own talents">Own talents</a></li>
+		<li>Bugfix: Overload symbol is now also displayed in the NPC sheet</li>
+		<li>Bugfix: The thumbnails of items now retain their original aspect ratio.</li>
+		<li>Bugfix: Distance calculation for ranged attacks, now returns 1.5m instead of 2.12m if the two tokens are diagonally next to each other and the grid size is less than or equal to 1.5m.</li>
+		<li>First internal conversions to become Foundry V12 compatible</li>
+	</ul>
+	<p>&nbsp;</p>
 	<h4><strong>v2.2.1</strong></h4>
 	<ul class="space1889list">
 		<li>Migration bugfix</li>

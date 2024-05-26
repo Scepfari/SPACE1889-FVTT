@@ -1,6 +1,30 @@
 # Changelog 
 
-## Niedergang der Errungenschafte
+## Niedergang der Errungenschaften
+
+### v2.2.2
+- Space Menü Überarbeitung:
+  - Ein Klick auf den Knopf wechselt nicht mehr in eine spezielle Foundry Ebene, sondern lässt die aktuelle Foundry Ebene unangetastet und öffnet ein schwebendes Fenster in dem die bekannten Menüunterfunktionen enthalten sind.
+  - Damit ist es nun auch mit V11 wieder möglich Figuren auszuwählen, bevor eine der Funktion aufgerufen wird
+  - Die Position des Space Menü-Fensters wird sich vom System gemerkt, womit es nach dem Schließen und erneuten Öffnen an der vorhergehenden Position erscheint
+  - Neuer Eintrag "Schwerkraft" im Space Menü: Damit lässt sich die aktuelle Schwerkraft einstellen, die sich auf die Beladungsstufe der Charaktere auswirkt
+  - Neuer Eintrag "Figurennamen verschleiern" im Space Menü, mit dem ausgewählte oder alle Figuren der Szene einen generischen Namen erhalten, soweit die Spielenden keine Rechte an der Figur haben. Damit sehen die Spieler weder im Chat noch in der Begegnungsliste, dass sie es z.B. mit der Rechten Hand des Oberbösewichtes zu tun haben, sondern nur mit NPC 1.
+- Weiter Arbeiten an den Tooltips
+  - Sowohl die Tooltips als auch die Chat info Erzeugung von Items basieren jetzt auf dem gleichen Code und unterscheiden sich nur noch in der Darstellung die per css geregelt ist
+  - Tooltips von den Listen Objekten (wie Fertigkeiten, Talente, Gegenstände, Waffen, Munition, Geld usw.) erfolgt nun nicht mehr unter, sondern links vom Feld.
+  - Tooltips für primäre und sekundäre Attribute
+  - Tooltips auch im NPC und Kreaturen Bogen
+  - Damage Tooltip im gleichen Design wie der Rest
+- Unterstützung von Feuerlanzen, d.h. in den Kompendien befinden sich nun die Waffe "Feuerlanze", die Munition "FL-Energiespeicherkristall", als auch die Gewehr Spezialisierung "Feuerlanze"
+- Fremdsprachenlimit erhöht sich jetzt weiter, wenn Linguistik größer als 10 wird, und zwar um 4 pro Stufe
+- Automatische Heilzeit Updates im Charakterbogen. Das funktioniert allerdings nur, wenn die Spieler auch das Recht im Simple Calendar Modul erhalten haben, die Zeit zu verstellen, da sonst der Simple Calendar kein DateTimeChange Event feuert.
+- Neuer Archetyp "Artefakt" hinzugefügt
+- Neue Spezies "Konstrukt" hinzugefügt
+- Im Hilfedokument, erreichbar über das i im Space Menü, wurde um Informationen zur Talenterstellung ergänzt, insbesondere um die Auflistung und Bedeutung der Schlüssel Ids.
+- Bugfix: Überladungssymbol wird nun auch im NSC Bogen angezeigt
+- Bugfix: Die Miniaturbilder von Gegenständen behalten nun ihr ursprünglichen aspect ratio bei.
+- Bugfix: Abstandsberechnung bei Fernkampfangriffen, liefert nun 1,5m anstelle von 2,12m zurück, wenn die zwei Figuren diagonal nebeneinander stehen und die Gittergröße kleiner gleich 1,5m ist.
+- Erste interne Umbauten um Foundry V12 kompatibel zu werden
 
 ### v2.2.1
 - Migration bugfix

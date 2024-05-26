@@ -333,131 +333,138 @@ export class Space1889Item extends Item {
 
 	getInfoText(forChat)
 	{
-		const type = this._getTypeText();
-
-		if (this.type === "skill" || this.type === "specialization" || this.type === "weakness")
+		try
 		{
-			let desc = game.i18n.localize(this.system.descriptionLangId);
-			if (desc === this.system.descriptionLangId && this.system.description !== "")
-				desc = this.system.description;
+			const type = this._getTypeText();
 
-			const fullDesc = this._ComposeHtmlTextInfo("", this.name, type, desc, forChat);
-			return fullDesc;
-		}
-
-		if (this.type === "talent")
-		{
-			let desc = game.i18n.localize(this.system.descriptionLangId);
-			if (desc === this.system.descriptionLangId && this.system.description !== "")
-				desc = this.system.description;
-
-			let secondHeader = "";
-			if (this.system.showDetail)
-				secondHeader = game.i18n.localize(this.system.bonusTargetLangId);
-
-			const fullDesc = this._ComposeHtmlTextInfo2("", this.name, secondHeader, type, desc, forChat);
-			return fullDesc;
-		}
-
-		if (this.type === "resource")
-		{
-			let desc = "<p>" + this._addLine("SPACE1889.Level", this.system.level.value, "", false);
-			if (this.system.noEp)
-				desc += `<br>${game.i18n.localize("SPACE1889.IsCampaingnEffect")}`;
-
-			desc += "</p>";
-			if (this.system.description !== "")
-				desc += this.system.description;
-
-			const idDesc = game.i18n.localize(this.system.descriptionLangId);
-			if (idDesc !== this.system.descriptionLangId)
-				desc += idDesc;
-
-			const fullDesc = this._ComposeHtmlTextInfo("", this.system.label, type, desc, forChat);
-			return fullDesc;
-		}
-
-		if (this.type === "item" || this.type === "container" || this.type === "armor")
-		{
-			let desc = game.i18n.localize(this.system.descriptionLangId);
-			if (desc === this.system.descriptionLangId)
-				desc = "";
-			if (this.system.description !== "")
-				desc += (desc === "" ? "" : "<br>") + this.system.description;
-
-			const image = this._getImageIfNotDefault(forChat);
-			const fullDesc = this._ComposeHtmlTextInfo(image, this.name, type, desc, forChat);
-			return fullDesc;
-		}
-
-		if (this.type === "weapon")
-		{
-			return this._getWeaponInfoText(type, forChat);
-		}
-		if (this.type === "ammunition")
-		{
-			let desc = this._addLineFromToIds("SPACE1889.DamageType", CONFIG.SPACE1889.damageTypes[this.system.damageType], false);
-
-			desc += this._addLineFromToIds("SPACE1889.AmmunitionType", CONFIG.SPACE1889.weaponAmmunitionTypes[this.system.type]);
-
-			if (this.system.caliber !== "")
-				desc += this._addLine("SPACE1889.Caliber", this.system.caliber);
-
-			if (this.system.capacityType != "default")
+			if (this.type === "skill" || this.type === "specialization" || this.type === "weakness")
 			{
-				desc +=this._addLineFromToIds("SPACE1889.CapacityTypeLong", CONFIG.SPACE1889.ammunitionCapacityTypes[this.system.capacityType]);
-				desc += this._addLine("SPACE1889.Capacity", this.system.capacity.toString());
+				let desc = game.i18n.localize(this.system.descriptionLangId);
+				if (desc === this.system.descriptionLangId && this.system.description !== "")
+					desc = this.system.description;
+
+				const fullDesc = this._ComposeHtmlTextInfo("", this.name, type, desc, forChat);
+				return fullDesc;
 			}
 
-			if (this.system.damageModifikator !== 0)
-				desc += this._addLine("SPACE1889.AmmunitionDamageModifier", this.system.damageModifikator);
-			if (this.system.rangeModFactor !== 1)
-				desc += this._addLine("SPACE1889.AmmunitionRangeModifierFactor", this.system.rangeModFactor);
-			if (this.system.description !== "")
-				desc += this.system.description;
-
-			const image = this._getImageIfNotDefault(forChat);
-			const fullDesc = this._ComposeHtmlTextInfo(image, this.name, type, desc, forChat);
-			return fullDesc;
-		}
-		if (this.type === "language")
-		{
-			let desc = this._addLine("SPACE1889.LanguageOrigin", this.system.origin, "", false);
-			desc += this._addLine("SPACE1889.FamilyOfLanguages", this.system.family);
-			if (this.system.isDialectSourceId !== "no")
-				desc += this._addLine("SPACE1889.IsDialectFrom", this.system.dialect);
-			if (this.system.old)
-				desc += "<br>" + this.system.oldInfo;
-
-			const fullDesc = this._ComposeHtmlTextInfo("", this.system.label, type, desc, forChat);
-			return fullDesc;
-		}
-		if (this.type === "currency")
-		{
-			let desc = "";
-			if (this.system.type !== "money")
+			if (this.type === "talent")
 			{
-				const typeId = CONFIG.SPACE1889.moneyTypes[this.system.type];
-				if (typeId != undefined)
+				let desc = game.i18n.localize(this.system.descriptionLangId);
+				if (desc === this.system.descriptionLangId && this.system.description !== "")
+					desc = this.system.description;
+
+				let secondHeader = "";
+				if (this.system.showDetail)
+					secondHeader = game.i18n.localize(this.system.bonusTargetLangId);
+
+				const fullDesc = this._ComposeHtmlTextInfo2("", this.name, secondHeader, type, desc, forChat);
+				return fullDesc;
+			}
+
+			if (this.type === "resource")
+			{
+				let desc = "<p>" + this._addLine("SPACE1889.Level", this.system.level.value, "", false);
+				if (this.system.noEp)
+					desc += `<br>${game.i18n.localize("SPACE1889.IsCampaingnEffect")}`;
+
+				desc += "</p>";
+				if (this.system.description !== "")
+					desc += this.system.description;
+
+				const idDesc = game.i18n.localize(this.system.descriptionLangId);
+				if (idDesc !== this.system.descriptionLangId)
+					desc += idDesc;
+
+				const fullDesc = this._ComposeHtmlTextInfo("", this.system.label, type, desc, forChat);
+				return fullDesc;
+			}
+
+			if (this.type === "item" || this.type === "container" || this.type === "armor")
+			{
+				let desc = game.i18n.localize(this.system.descriptionLangId);
+				if (desc === this.system.descriptionLangId)
+					desc = "";
+				if (this.system.description !== "")
+					desc += (desc === "" ? "" : "<br>") + this.system.description;
+
+				const image = this._getImageIfNotDefault(forChat);
+				const fullDesc = this._ComposeHtmlTextInfo(image, this.name, type, desc, forChat);
+				return fullDesc;
+			}
+
+			if (this.type === "weapon")
+			{
+				return this._getWeaponInfoText(type, forChat);
+			}
+			if (this.type === "ammunition")
+			{
+				let desc = this._addLineFromToIds("SPACE1889.DamageType", CONFIG.SPACE1889.damageTypes[this.system.damageType], false);
+
+				desc += this._addLineFromToIds("SPACE1889.AmmunitionType", CONFIG.SPACE1889.weaponAmmunitionTypes[this.system.type]);
+
+				if (this.system.caliber !== "")
+					desc += this._addLine("SPACE1889.Caliber", this.system.caliber);
+
+				if (this.system.capacityType != "default")
 				{
-					const typename = game.i18n.localize(typeId);
-					if (typename !== "" && typename !== typeId)
-						desc = "<small>" + typename + "</small><br>";
+					desc += this._addLineFromToIds("SPACE1889.CapacityTypeLong", CONFIG.SPACE1889.ammunitionCapacityTypes[this.system.capacityType]);
+					desc += this._addLine("SPACE1889.Capacity", this.system.capacity.toString());
 				}
+
+				if (this.system.damageModifikator !== 0)
+					desc += this._addLine("SPACE1889.AmmunitionDamageModifier", this.system.damageModifikator);
+				if (this.system.rangeModFactor !== 1)
+					desc += this._addLine("SPACE1889.AmmunitionRangeModifierFactor", this.system.rangeModFactor);
+				if (this.system.description !== "")
+					desc += this.system.description;
+
+				const image = this._getImageIfNotDefault(forChat);
+				const fullDesc = this._ComposeHtmlTextInfo(image, this.name, type, desc, forChat);
+				return fullDesc;
+			}
+			if (this.type === "language")
+			{
+				let desc = this._addLine("SPACE1889.LanguageOrigin", this.system.origin, "", false);
+				desc += this._addLine("SPACE1889.FamilyOfLanguages", this.system.family);
+				if (this.system.isDialectSourceId !== "no")
+					desc += this._addLine("SPACE1889.IsDialectFrom", this.system.dialect);
+				if (this.system.old)
+					desc += "<br>" + this.system.oldInfo;
+
+				const fullDesc = this._ComposeHtmlTextInfo("", this.system.label, type, desc, forChat);
+				return fullDesc;
+			}
+			if (this.type === "currency")
+			{
+				let desc = "";
+				if (this.system.type !== "money")
+				{
+					const typeId = CONFIG.SPACE1889.moneyTypes[this.system.type];
+					if (typeId != undefined)
+					{
+						const typename = game.i18n.localize(typeId);
+						if (typename !== "" && typename !== typeId)
+							desc = "<small>" + typename + "</small><br>";
+					}
+				}
+
+				desc += this.system.quantity.toString() + " " + this.system.abbr + " ~ " + this.system.exchangeValue + "<br>";
+				desc += game.i18n.localize("SPACE1889.ExchangeRate") + ": ";
+				desc += "1 " + game.i18n.localize("SPACE1889.CurrencyBritishPoundsAbbr") + " = " + this.system.exchangeRateForOnePound.toString() + " " + this.system.abbr;
+
+				const fullDesc = this._ComposeHtmlTextInfo("", this.system.label, type, desc, forChat);
+				return fullDesc;
 			}
 
-			desc += this.system.quantity.toString() + " " + this.system.abbr + " ~ " + this.system.exchangeValue + "<br>";
-			desc += game.i18n.localize("SPACE1889.ExchangeRate") + ": ";
-			desc += "1 " + game.i18n.localize("SPACE1889.CurrencyBritishPoundsAbbr") + " = " + this.system.exchangeRateForOnePound.toString() + " " + this.system.abbr;
-
-			const fullDesc = this._ComposeHtmlTextInfo("", this.system.label, type, desc, forChat);
+			// fall back for all other types
+			const image = this._getImageIfNotDefault(forChat);
+			const fullDesc = this._ComposeHtmlTextInfo(image, this.name, type, this.system.description, forChat);
 			return fullDesc;
 		}
-
-		// fall back for all other types
-		const image = this._getImageIfNotDefault(forChat);
-		const fullDesc = this._ComposeHtmlTextInfo(image, this.name, type, this.system.description, forChat);
-		return fullDesc;
+		catch (e)
+		{
+			return game.i18n.format("SPACE1889.ErrorInFunction", {name : "getInfoText"});
+		}
 	}
 
 	_getWeaponInfoText(type, forChat = false)
@@ -480,9 +487,8 @@ export class Space1889Item extends Item {
 			desc += this._addLine("SPACE1889.Range", item.system.calculatedRange.toString(), "m");
 			if (item.system.templateConeAngle)
 				desc += this._addLine("SPACE1889.ConeAngle", item.system.templateConeAngle, "&deg;");
-			desc += this._addLine("SPACE1889.Capacity",
-				item.system.capacity,
-				" " + game.i18n.localize(CONFIG.SPACE1889.weaponCapacityTypesAbbr[item.system.capacityType]));
+			if (item.system.capacityType && item.system.capacityType === "" && CONFIG.SPACE1889.weaponCapacityTypesAbbr[item.system.capacityType])
+				desc += this._addLine("SPACE1889.Capacity", item.system.capacity, " " + game.i18n.localize(CONFIG.SPACE1889.weaponCapacityTypesAbbr[item.system.capacityType]));
 		}
 		desc += this._addLine("SPACE1889.Weight", item.system.weight?.toString(), "kg");
 
