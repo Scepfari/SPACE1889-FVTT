@@ -1,12 +1,12 @@
 export default class ForeignNotesEditor extends FormApplication{
     constructor(actorId, field, name){
-        super()
-        this.editfield = field
-        this.actorId = actorId
-        this.fieldname = name
-        const actor = game.actors.get(this.actorId)
+		super();
+		this.editfield = field;
+		this.actorId = actorId;
+		this.fieldname = name;
+		const actor = game.actors.get(this.actorId);
         this.object = {
-            fieldContent: getProperty(actor, this.editfield)
+            fieldContent: foundry.utils.getProperty(actor, this.editfield)
         }
     }
 
@@ -26,7 +26,7 @@ export default class ForeignNotesEditor extends FormApplication{
 
     get title(){
         const actor = game.actors.get(this.actorId)
-        return `${actor.name} - ${game.i18n.localize(this.fieldname)}`
+		return `${actor.name} - ${game.i18n.localize(this.fieldname)}`;
     }
 
     async _updateObject(event, formData) {
@@ -40,18 +40,18 @@ export default class ForeignNotesEditor extends FormApplication{
     }
 
     async getData(options){
-        const data = super.getData(options)
-        foundry.utils.mergeObject(data, {
-            fieldContent: this.object.fieldContent
-        })
-        return data
+		const data = super.getData(options);
+		foundry.utils.mergeObject(data, {
+			fieldContent: this.object.fieldContent
+		});
+		return data;
     }
 
     get template(){
-        return "systems/space1889/templates/dialog/foreignNotesEditor.html"
+		return "systems/space1889/templates/dialog/foreignNotesEditor.html";
     }
 
     activateListeners(html){
-        super.activateListeners(html)
+		super.activateListeners(html);
     }
 }

@@ -3,9 +3,9 @@ import TurnMarker from "./helpers/turnMarker.mjs";
 
 export const registerSystemSettings = function ()
 {
-	const styles = duplicate(CONFIG.SPACE1889.styles)
+	const styles = foundry.utils.duplicate(CONFIG.SPACE1889.styles);
     for(let key of Object.keys(styles)){
-        styles[key] = game.i18n.localize(styles[key])
+		styles[key] = game.i18n.localize(styles[key]);
     }
     game.settings.register("space1889", "globalStyle",
         {
@@ -18,11 +18,11 @@ export const registerSystemSettings = function ()
             choices:
             {
                 "space1889-immersive": game.i18n.localize("SPACE1889.ConfigGlobalStyleImmersive"),
-                "space1889-naked": game.i18n.localize("SPACE1889.ConfigGlobalStyleNaked"),
+                "space1889-naked": game.i18n.localize("SPACE1889.ConfigGlobalStyleNaked")
 			},
 			onChange: async (val) =>
 			{
-				$('body').removeClass(Object.keys(styles).join(" ")).addClass(val)
+				$('body').removeClass(Object.keys(styles).join(" ")).addClass(val);
 			}
         }
     );
@@ -39,7 +39,7 @@ export const registerSystemSettings = function ()
             {
                 "dc": game.i18n.localize("SPACE1889.ConfigDiceCoin"),
                 "d6even": game.i18n.localize("SPACE1889.ConfigDiceD6even"),
-                "d6odd": game.i18n.localize("SPACE1889.ConfigDiceD6odd"),
+                "d6odd": game.i18n.localize("SPACE1889.ConfigDiceD6odd")
             }
         }
     );
@@ -59,7 +59,7 @@ export const registerSystemSettings = function ()
                 "2": game.i18n.localize("SPACE1889.HeroLevelVielversprechend"),
                 "3": game.i18n.localize("SPACE1889.HeroLevelVeteran"),
                 "4": game.i18n.localize("SPACE1889.HeroLevelWeltspitze"),
-                "5": game.i18n.localize("SPACE1889.HeroLevelUebermensch"),
+                "5": game.i18n.localize("SPACE1889.HeroLevelUebermensch")
             }
         }
     );
@@ -203,7 +203,7 @@ export const registerSystemSettings = function ()
 		range: {
 			min: 0.1,
 			max: 1,
-			step: 0.1,
+			step: 0.1
 		},
 		default: 1,
 		onChange: function ()
@@ -247,7 +247,7 @@ export const registerSystemSettings = function ()
 		range: {
 			min: 2,
 			max: 16,
-			step: 1,
+			step: 1
 		},
 		default: 8,
 		onChange: function (newValue)

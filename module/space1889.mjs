@@ -278,7 +278,7 @@ Hooks.on("renderChatMessage", (app, html, msg) =>
 		SPACE1889Helper.showPopOutImage(ev);
 	})
 
-	removeButton([".autoDefence", ".applyFirstAid", ".applyStylePointDamageReduction"], html, getProperty(msg.message, `flags.space1889.userHidden`));
+	removeButton([".autoDefence", ".applyFirstAid", ".applyStylePointDamageReduction"], html, foundry.utils.getProperty(msg.message, `flags.space1889.userHidden`));
 
 	function removeButton(names, html, isUserHidden)
 	{
