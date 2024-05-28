@@ -95,12 +95,12 @@ export default class SPACE1889Combat
 		if (targets.size <= 1)
 			return 0;
 
-		const decuctionReduction = this.#getTalentDeductionReduction2_4_8(SPACE1889Helper.getTalentLevel(actor, "rundumschlag"));
+		let decuctionReduction = this._getTalentDeductionReduction2_4_8(SPACE1889Helper.getTalentLevel(actor, "rundumschlag"));
 		if (actor.system.secondaries.size.total > 0)
 			decuctionReduction += actor.system.secondaries.size.total;
 
 		let deduction = targets.size * (-2);
-		const distanceList = this.#getMinSumDistance(targets).distanceList;
+		const distanceList = this._getMinSumDistance(targets).distanceList;
 
 		// relevant ist hier der "leere Abstand" zwischen zwei Gegnern und da die Gegner eine Räumliche Ausdehnung haben
 		// kann der Abstand der Mittelpunkte (bei grossen Kreaturen der naechsten zueinander liegenden Gridfelder) nicht 
@@ -124,7 +124,7 @@ export default class SPACE1889Combat
 		return (weapon.system.skillId == "geschuetze" || weapon.system.skillId == "schusswaffen") && (weapon.system.rateOfFire == "V" || weapon.system.rateOfFire == "H/V");
 	}
 
-	static #canDoBaseAfMethod(weapon, requiredAmmo)
+	static _canDoBaseAfMethod(weapon, requiredAmmo)
 	{
 		if (weapon == undefined)
 			return { canDo: false, weaponCanAutoFire: false, validAmmunition: false, remainingRounds: 0 }
@@ -137,7 +137,7 @@ export default class SPACE1889Combat
 
 	static canDoBurstFire(weapon)
 	{
-		return this.#canDoBaseAfMethod(weapon, 3);
+		return this._canDoBaseAfMethod(weapon, 3);
 	}
 
 	static getBurstFireModificator()
@@ -148,7 +148,7 @@ export default class SPACE1889Combat
 
 	static canDoFullAutofire(weapon)
 	{
-		return this.#canDoBaseAfMethod(weapon, 20);
+		return this._canDoBaseAfMethod(weapon, 20);
 	}
 
 	static getFullAutofireModificator()
@@ -158,7 +158,7 @@ export default class SPACE1889Combat
 
 	static canDoStrafing(weapon)
 	{
-		return this.#canDoBaseAfMethod(weapon, 20);
+		return this._canDoBaseAfMethod(weapon, 20);
 	}
 
 	static getStrafingModificator(actor)
@@ -168,7 +168,7 @@ export default class SPACE1889Combat
 		if (targets.size <= 1)
 			return baseMod;
 
-		const distance = this.#getMinSumDistance(targets).sum;
+		const distance = this._getMinSumDistance(targets).sum;
 		const decuctionReduction = (2 * SPACE1889Helper.getTalentLevel(actor, "streufeuer"));
 
 		return baseMod + Math.min(0, decuctionReduction - (Math.floor(distance / 1.5) * 2));
@@ -221,7 +221,7 @@ export default class SPACE1889Combat
 		return undefined;
 	}
 
-	static #getNearest(origin, tokens, ignorIds)
+	static _getNearest(origin, tokens, ignorIds)
 	{
 		if (origin == undefined || tokens == undefined || ignorIds == undefined)
 			return { token: undefined, distance: 0 };
@@ -244,7 +244,7 @@ export default class SPACE1889Combat
 		return { token: nearestToken, distance: (nearestToken == undefined ? 0 : distance) };
 	}
 	
-	static #getNearestDistance(origin, tokens)
+	static _getNearestDistance(origin, tokens)
 	{
 		let ignoreIds = [];
 		let distanceList = [];
@@ -259,7 +259,7 @@ export default class SPACE1889Combat
 
 		for (let i = 0; i < size; ++i)
 		{
-			const info = this.#getNearest(start, tokens, ignoreIds);
+			const info = this._getNearest(start, tokens, ignoreIds);
 			const distInfo = { from: origin, to: info.token, distance: info.distance };
 			if (info.token == undefined)
 				break;
@@ -277,20 +277,20 @@ export default class SPACE1889Combat
 		return { sum: sum, distanceList: distanceList };
 	}
 
-	static #getMinSumDistance(tokens)
+	static _getMinSumDistance(tokens)
 	{
 		let distance = { sum: Infinity, distanceList: [] };
 		
 		for (const token of tokens)
 		{
-			const theDistance = this.#getNearestDistance(token, tokens);
+			const theDistance = this._getNearestDistance(token, tokens);
 			if (theDistance.sum < distance.sum)
 				distance = theDistance;
 		}
 		return distance;
 	}
 
-	static #getTalentDeductionReduction2_4_8(level)
+	static _getTalentDeductionReduction2_4_8(level)
 	{
 		if (level == 1)
 			return 2;
@@ -366,7 +366,7 @@ export default class SPACE1889Combat
 
 	}
 
-	static #getHtmlRollOptions()
+	static _getHtmlRollOptions()
 	{
 		let options = '<option value="selfAndGm" selected="selected">' + game.i18n.localize("CHAT.RollPrivate") + '</option>';
 		options += '<option value="self" selected="selected">' + game.i18n.localize("CHAT.RollSelf") + '</option>';
@@ -472,7 +472,7 @@ export default class SPACE1889Combat
 		if (targetNames.length > 0)
 			targetNamesInBrackets = "(" + (targetNames.length > 45 ? targetNames.slice(0, 42) + "..." : targetNames) + ")";
 
-		let optionen = this.#getHtmlRollOptions();
+		let optionen = this._getHtmlRollOptions();
 		const modifierLabel = game.i18n.localize("SPACE1889.Modifier");
 		const labelWurf = game.i18n.localize("SPACE1889.AttackValue") + ": ";
 
@@ -797,7 +797,7 @@ export default class SPACE1889Combat
 
 		const modifierLabel = game.i18n.localize("SPACE1889.Modifier");
 		const labelWurf = game.i18n.localize("SPACE1889.DefenseDice") + ": ";
-		const options = this.#getHtmlRollOptions();
+		const options = this._getHtmlRollOptions();
 
 		const lossOfAA = "(" + game.i18n.localize("SPACE1889.LossOfAttackAction") + ")";
 
