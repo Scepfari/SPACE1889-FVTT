@@ -102,7 +102,12 @@ static measureDistances(segments, options = {})
 
 		const tileDistance = targetTile.distance / this.getGridPixelSize();
 		let distance = tileDistance * this.getGridWorldSize();
-		const isCloseCombatRange = this.isCloseCombatRange(distance, deltaXinGridTiles, deltaYinGridTiles, isCloseCombatCheck);
+		const elevationDifference = Math.abs(sourceToken.elevation - target.elevation);
+
+		const isCloseCombatRange = this.isCloseCombatRange(distance, elevationDifference, deltaXinGridTiles, deltaYinGridTiles, isCloseCombatCheck);
+
+		if (elevationDifference !== 0 && !isCloseCombatRange)
+			distance = Math.sqrt(Math.pow(elevationDifference, 2) + Math.pow(distance, 2));
 
 		if (isCloseCombatRange && distance > this.getCloseCombatRange())
 			distance = this.getCloseCombatRange();
@@ -110,14 +115,15 @@ static measureDistances(segments, options = {})
 		return { distance: distance, unit: canvas.scene.grid.units, xGridDistance: Math.abs(deltaXinGridTiles), yGridDistance: Math.abs(deltaYinGridTiles), isCloseCombatRange: isCloseCombatRange }
 	}
 
-	static isCloseCombatRange(distance, xGridTileDistance, yGridTileDistance, isCloseCombat)
+	static isCloseCombatRange(distance, elevationDifference, xGridTileDistance, yGridTileDistance, isCloseCombat)
 	{
 		const closeCombatRange = this.getCloseCombatRange();
-		let isCloseCombatRange = distance <= closeCombatRange;
+		let isCloseCombatRange = distance <= closeCombatRange && elevationDifference <= closeCombatRange;
 		
 		if (!isCloseCombatRange)
 		{
-			if (isCloseCombat || this.getGridWorldSize() <= closeCombatRange)
+			if ((isCloseCombat && elevationDifference <= this.getGridWorldSize()) || //nahkampfcheck
+				(this.getGridWorldSize() <= closeCombatRange && elevationDifference <= closeCombatRange)) //fernkampfcheck
 				isCloseCombatRange = this.isNeighborTile(xGridTileDistance, yGridTileDistance);
 		}
 
