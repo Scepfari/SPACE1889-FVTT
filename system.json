@@ -660,6 +660,10 @@
 	"socket": true,
 	"gridDistance": 1.5,
 	"gridUnits": "m",
+	"grid" : {
+		"distance": 1.5,
+		"units": "m" 
+	}, 
 	"primaryTokenAttribute": "health",
 	"url": "https://github.com/Scepfari/SPACE1889-FVTT",
 	"manifest": "https://github.com/Scepfari/SPACE1889-FVTT/releases/latest/download/system.json",

@@ -310,7 +310,8 @@ Hooks.on("renderChatMessage", (app, html, msg) =>
 
 Hooks.on("canvasInit", function ()
 {
-	SquareGrid.prototype.measureDistances = DistanceMeasuring.measureDistances;
+	if (game.release.generation < 12)
+		SquareGrid.prototype.measureDistances = DistanceMeasuring.measureDistances;
 });
 
 Hooks.on("canvasReady", function ()

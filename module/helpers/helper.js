@@ -2161,7 +2161,7 @@ export default class SPACE1889Helper
 
 	static isFoundryV10Running()
 	{
-		return Number(game.version.substring(0, game.version.indexOf("."))) < 11;
+		return game.release.generation === 10;
 	}
 
 	static getCombatTurnsInSeconds(combatTurns)
