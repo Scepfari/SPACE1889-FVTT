@@ -834,8 +834,8 @@ export default class SPACE1889RollHelper
 		let damageLabel = game.i18n.localize("SPACE1889.Damage");
 		let nameLabel = game.i18n.localize("SPACE1889.Name");
 		let damageType = game.i18n.localize("SPACE1889.DamageTypeAbbr");
-		let submit = game.i18n.localize("SPACE1889.Submit")
-		let cancel = game.i18n.localize("SPACE1889.Cancel")
+		let submit = game.i18n.localize("SPACE1889.Submit");
+		let cancel = game.i18n.localize("SPACE1889.Cancel");
 		let selectedOption;
 		let userInputName;
 		let damageAmount = 1;
@@ -875,16 +875,16 @@ export default class SPACE1889RollHelper
 				yes: {
 					icon: '<i class="fas fa-check"></i>',
 					label: `${submit}`,
-					callback: () =>
+					callback: (html) =>
 					{
-						selectedOption = document.getElementById('damageType').value;
-						userInputName = document.getElementById('damageName').value;
-						damageAmount = document.getElementById('damage').value;
-					},
+						selectedOption = html.find('#damageType').val();
+						userInputName = html.find('#damageName').val();
+						damageAmount = html.find('#damage').val();
+					}
 				},
 				no: {
 					icon: '<i class="fas fa-times"></i>',
-					label: `${cancel}`,
+					label: `${cancel}`
 				}
 			},
 			default: "yes",
@@ -1692,6 +1692,7 @@ export default class SPACE1889RollHelper
 				resultantDefenseType = (activeOnly ? 'onlyActive' : '') + (actor.system.parry.riposte ? 'ParryRiposte' : 'Parry');
 				riposteDamageType = actor.system.parry.riposteDamageType;
 			}
+			// ToDo: Was ist mit Ausweichen!?
 		}
 		diceCount = Math.max(0, diceCount + multiDefenseMalus);
 

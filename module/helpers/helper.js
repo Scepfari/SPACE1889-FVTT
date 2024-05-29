@@ -276,9 +276,9 @@ export default class SPACE1889Helper
 				yes: {
 					icon: '<i class="fas fa-check"></i>',
 					label: `${submit}`,
-					callback: () =>
+					callback: (html) =>
 					{
-						selectedOption = document.getElementById('position').value;
+						selectedOption = html.find('#position').val();
 					},
 				},
 				no: {

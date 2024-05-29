@@ -997,7 +997,7 @@ export class Space1889ActorSheet extends ActorSheet {
 			optionen += '<option value="' + item.system.id + '" selected="selected">' + item.system.label + '</option>';
 		}
 
-		let talentName = game.i18n.localize(item.system.nameLangId);;
+		let talentName = item.name;
 		let text = game.i18n.localize("SPACE1889.ChooseSkill") + " " + talentName;
 		let choices = game.i18n.localize("SPACE1889.Choices");
 		let selectedOption;
@@ -1018,9 +1018,9 @@ export class Space1889ActorSheet extends ActorSheet {
 				yes: {
 					icon: '<i class="fas fa-check"></i>',
 					label: "Submit",
-					callback: () =>
+					callback: (html) =>
 					{
-						selectedOption = document.getElementById('choices').value;
+						selectedOption = html.find('#choices').val();
 					},
 				},
 				no: {
@@ -1076,14 +1076,14 @@ export class Space1889ActorSheet extends ActorSheet {
 				yes: {
 					icon: '<i class="fas fa-check"></i>',
 					label: "Submit",
-					callback: () =>
+					callback: (html) =>
 					{
-						selectedOption = document.getElementById('choices').value;
-					},
+						selectedOption = html.find('#choices').val();
+					}
 				},
 				no: {
 					icon: '<i class="fas fa-times"></i>',
-					label: "Cancel",
+					label: "Cancel"
 				}
 			},
 			default: "yes",
@@ -1091,7 +1091,7 @@ export class Space1889ActorSheet extends ActorSheet {
 			{
 				if (selectedOption) 
 				{
-					let newTalent = actor.system.talents.find(e => e.system.id == "geschaerfterSinn" && e.system.bonusTarget == "");
+					let newTalent = actor.system.talents.find(e => e.system.id === "geschaerfterSinn" && e.system.bonusTarget === "");
 					if (newTalent != undefined)
 						this.actor.updateEmbeddedDocuments("Item", [{ _id: newTalent._id, "system.bonusTarget": selectedOption, "system.bonusTargetType": "sense" }]);
 

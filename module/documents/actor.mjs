@@ -1285,7 +1285,7 @@ export class Space1889Actor extends Actor
 			if (weapon.system.skillId == id && weapon.system.skillRating > skillRating)
 			{
 				skillRating = weapon.system.skillRating;
-				riposteDamageType = weapon.system.ammunition?.damageType ? weapon.system.ammunition.damageType : weapon.system.damageType
+				riposteDamageType = weapon.system.ammunition?.damageType ? weapon.system.ammunition.damageType : weapon.system.damageType;
 			}
 		}
 
