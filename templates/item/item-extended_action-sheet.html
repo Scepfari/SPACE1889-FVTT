@@ -1,0 +1,105 @@
+<form class="{{cssClass}}" autocomplete="off">
+	<header class="sheet-header">
+		<img class="profile-img artwork" src="{{item.img}}" data-edit="img" data-tooltip="{{item.name}}" />
+		<div class="header-fields">
+			<h2 class="resource-label">{{ localize "ITEM.TypeExtended_action" }}</h2>
+			<h1 class="charname"><input name="name" type="text" value="{{item.name}}" placeholder="Name" /></h1>
+		</div>
+	</header>
+
+
+	<div style="display: grid; grid-template-columns: 40% 60%; margin: 10px 0;">
+		<div class="resource">
+			<label class="resource-label">{{ localize "SPACE1889.DifficultyRating" }}</label>
+			<input type="text" name="system.difficultyRating" value="{{system.difficultyRating}}" data-dtype="Number" />
+		</div>
+		<div class="resource">
+			<label class="resource-label">{{ localize "SPACE1889.TotalNumberOfSuccesses" }}</label>
+			<input type="text" name="system.totalNumberOfSuccesses" value="{{system.totalNumberOfSuccesses}}" data-dtype="Number" />
+		</div>
+	</div>
+	<div style="display: grid; grid-template-columns: 40% 60%; margin: 10px 0;">
+		<div class="resource">
+			<label class="resource-label">{{ localize "SPACE1889.Property" }}</label>
+			<div>
+				<select name="system.typeKey" data-dtype="String">
+					{{selectOptions system.propertyKeys selected=system.typeKey localize=true}}
+				</select>
+			</div>
+		</div>
+		{{#if (eq system.typeKey 'primary')}}
+		<div class="resource">
+			<label class="resource-label">{{ localize "SPACE1889.Ability" }}</label>
+			<div>
+				<select name="system.skillOrAttributeId" data-dtype="String">
+					{{selectOptions system.abilities selected=system.skillOrAttributeId localize=true}}
+				</select>
+			</div>
+		</div>
+		{{/if}}
+		{{#if (eq system.typeKey 'secondary')}}
+		<div class="resource">
+			<label class="resource-label">{{ localize "SPACE1889.Ability" }}</label>
+			<div>
+				<select name="system.skillOrAttributeId" data-dtype="String">
+					{{selectOptions system.secondaries selected=system.skillOrAttributeId localize=true}}
+				</select>
+			</div>
+		</div>
+		{{/if}}
+		{{#if (eq system.typeKey 'skill')}}
+		<div class="resource">
+			<label class="resource-label">{{ localize "SPACE1889.Skill" }}</label>
+			<div>
+				<select name="system.skillOrAttributeId" data-dtype="String">
+					{{selectOptions system.skills selected=system.skillOrAttributeId nameAttr="key" labelAttr="label"}}
+				</select>
+			</div>
+		</div>
+		{{/if}}
+		{{#if (eq system.typeKey 'specialization')}}
+		<div class="resource">
+			<label class="resource-label">{{ localize "SPACE1889.SpecializationKey" }}</label>
+			<input type="text" name="system.skillOrAttributeId" value="{{system.skillOrAttributeId}}" data-dtype="String" />
+		</div>
+		{{/if}}
+	</div>
+	<div style="display: grid; grid-template-columns: 40% 60%; margin: 10px 0;">
+		<div class="resource">
+			<label class="resource-label">{{ localize "SPACE1889.TimeInterval" }}</label>
+			<input type="text" name="system.timeInterval" value="{{system.timeInterval}}" data-dtype="String" />
+		</div>
+		<div class="resource">
+			<label class="resource-label">{{ localize "SPACE1889.Timestamp" }} {{ localize "SPACE1889.LastTry" }}</label>
+			<input type="text" name="system.timestampLastTry" value="{{system.timestampLastTry}}" data-dtype="Number" />
+		</div>
+	</div>
+	<div style="display: grid; grid-template-columns: 40% 60%; margin: 10px 0; ">
+		<div class="resource">
+			<label class="resource-label">{{ localize "SPACE1889.AttemptsMade" }}</label>
+			<input type="text" name="system.attemptsMade" value="{{system.attemptsMade}}" data-dtype="Number" />
+		</div>
+		<div class="resource">
+			<label class="resource-label">{{ localize "SPACE1889.CurrentSuccesses" }}</label>
+			<input type="text" name="system.successes" value="{{system.successes}}" data-dtype="Number" />
+		</div>
+	</div>
+	
+
+
+	{{!-- Sheet Tab Navigation --}}
+	<nav class="sheet-tabs tabs" data-group="primary">
+		<a class="item" data-tab="description">{{localize "SPACE1889.Description"}}</a>
+	</nav>
+
+	{{!-- Sheet Body --}}
+	<section class="sheet-body">
+
+		{{!-- Attributes Tab --}}
+		<div class="tab description" data-group="primary" data-tab="description">
+			{{editor enrichedDescription target="system.description" button=true editable=editable}}
+		</div>
+
+	</section>
+</form>
+

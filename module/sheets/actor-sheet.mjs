@@ -339,11 +339,25 @@ export class Space1889ActorSheet extends ActorSheet {
 				const newValue = this.incrementValue(ev, item.system.damage, 1, undefined);
 				this.actor.updateEmbeddedDocuments("Item", [{ _id: itemId, "system.damage": newValue }]);
 			}
+			else if (item.type === "extended_action")
+			{
+				const newValue = this.incrementValue(ev, item.system.successes, 0, item.system.totalNumberOfSuccesses);
+				this.actor.updateEmbeddedDocuments("Item", [{ _id: itemId, "system.successes": newValue }]);
+			}
+		});
+
+		html.find('.doExtendedRoll').mousedown(ev =>
+		{
+			const itemId = this._getItemId(ev);
+			const item = this.actor.items.get(itemId);
+			const showDialog = ev?.shiftKey || ev?.ctrlKey;
+
+			this._rollAndUpdateExtendedRolls(item, showDialog);
 		});
 
 		html.find('.effectBonus-click').mousedown(ev =>
 		{
-			this.#addRemoveTempTalentImprovement(ev)
+			this._addRemoveTempTalentImprovement(ev);
 		});
 
 		html.find('.healingFactor-click').mousedown(ev =>
@@ -689,7 +703,7 @@ export class Space1889ActorSheet extends ActorSheet {
         editor.render(true)
     }
 
-	#addRemoveTempTalentImprovement(ev)
+	_addRemoveTempTalentImprovement(ev)
 	{
 		if (SPACE1889Helper.isFoundryV10Running())
 		{
@@ -737,6 +751,122 @@ export class Space1889ActorSheet extends ActorSheet {
 				content: "für zwei Stilpunkte wurde das Talent " + item.name + " um eine Stufe verstärkt"
 			};
 			ChatMessage.create(chatData, {});
+		}
+	}
+
+	_rollAndUpdateExtendedRolls(item, showDialog)
+	{
+		if (item.type !== "extended_action")
+			return;
+
+		if (item.system.successes >= item.system.totalNumberOfSuccesses)
+		{
+			ui.notifications.info(game.i18n.localize("SPACE1889.ExtendedRollsIsFinished"));
+			return;
+		}
+
+		let diceCount = 0;
+		if (item.system.typeKey === "primary")
+			diceCount = 2 * this.actor.system.abilities[item.system.skillOrAttributeId].total;
+		else if (item.system.typeKey === "secondary")
+			diceCount = this.actor.system.secondaries[item.system.skillOrAttributeId].total;
+		else if (item.system.typeKey === "skill")
+			diceCount = this.actor.GetSkillRating(this.actor, item.system.skillOrAttributeId, "");
+		else if (item.system.typeKey === "specialization")
+		{
+			const spez = this.actor.system.speciSkills?.find(t => t.system.id === item.system.skillOrAttributeId);
+			diceCount = spez ? spez.system.rating : 0;
+		}
+		diceCount = Math.max(diceCount, 0);
+		
+		if (showDialog)
+		{
+			const titelPartOne = game.i18n.localize("ITEM.TypeExtended_action");
+			const inputDesc = game.i18n.localize("SPACE1889.NumberOfModificationDice");
+			const diceDesc = game.i18n.localize("SPACE1889.ConfigDice");
+			const titel = item.system.label;
+			const actor = this.actor;
+
+			new Dialog(
+				{ 
+					title: `${titelPartOne}: ${titel} (${diceCount} ${diceDesc})`,
+					content: `<p>${inputDesc}: <input type="number" id="anzahlDerWuerfel" value = "0"></p>`,
+					buttons:
+					{
+						ok:
+						{
+							icon: '',
+							label: game.i18n.localize("SPACE1889.Go"),
+							callback: (html) => myCallback(html)
+						},
+						abbruch:
+						{
+							label: game.i18n.localize("SPACE1889.Cancel"),
+							callback: () => { ui.notifications.info(game.i18n.localize("SPACE1889.CancelRoll")) },
+							icon: `<i class="fas fa-times"></i>`
+						}
+					},
+					default: "ok"
+				}).render(true);
+
+			function myCallback(html)
+			{
+				const input = html.find('#anzahlDerWuerfel').val();
+				let anzahl = input ? parseInt(input) : 0;
+				const modToolTip = anzahl == 0 ? "" : game.i18n.format("SPACE1889.ChatModifier", { mod: SPACE1889Helper.getSignedStringFromNumber(anzahl) });
+				anzahl = Math.max(0, anzahl + diceCount);
+				doRoll(actor, anzahl, modToolTip);
+			}
+		}
+		else
+		{
+			doRoll(this.actor, diceCount);
+		}
+
+		function doRoll(actor, count, rollToolTipMod = "")
+		{
+			const rollWithHtmlProm = SPACE1889RollHelper.createInlineRollWithHtml(count, "", rollToolTipMod);
+
+			rollWithHtmlProm.then((rollWithHtml) =>
+			{
+				let newSuccess = Number(item.system.successes);
+				const delta = rollWithHtml.roll.total - item.system.difficultyRating;
+
+				
+				if (delta > 0)
+					newSuccess = Math.min(newSuccess + delta, item.system.totalNumberOfSuccesses);
+				else if (delta < 0 && !game.settings.get("space1889", "noDeductionsInExtendedActions"))
+					newSuccess = Math.max(newSuccess + delta, 0);
+
+				const resDelta = newSuccess - item.system.successes;
+
+				const timestamp = SPACE1889Time.getCurrentTimestamp();
+				let desc = item.getTextLineFrom2Ids("SPACE1889.Probe", item.system.skillOrAttributeLabel, false);
+				desc += item.getTextLine("SPACE1889.DifficultyRating", item.system.difficultyRating);
+				desc += item.getTextLine("SPACE1889.AttemptsMade", item.system.attemptsMade + 1);
+				desc += item.getTextLine("SPACE1889.DataOfTheEventAbbr", SPACE1889Time.formatTimeDate(SPACE1889Time.getTimeAndDate(timestamp)));
+				desc += `<br>${rollWithHtml.html}`;
+				desc += resDelta === 0
+					? `<br>${game.i18n.format("SPACE1889.NoChange")}`
+					: item.getTextLine("SPACE1889.Change", SPACE1889Helper.getSignedStringFromNumber(resDelta));
+				desc += item.getTextLine("SPACE1889.CurrentSuccesses", `${newSuccess}/${item.system.totalNumberOfSuccesses}` );
+				desc += newSuccess >= item.system.totalNumberOfSuccesses
+					? `<br>${game.i18n.format("SPACE1889.Finalised")}`
+					: item.getTextLine("SPACE1889.TimeInterval", item.system.timeInterval);
+
+				if (item.system.description !== "")
+					desc += item.system.description;
+
+				item.update({ 'system.attemptsMade': item.system.attemptsMade + 1, 'system.successes': newSuccess, "system.timestampLastTry": timestamp });
+				let messageContent = `<h3><strong>${item.name}</strong> <small>[${game.i18n.localize("ITEM.TypeExtended_action")}]</small></h3><div>${desc}</div>`;
+				const speaker = ChatMessage.getSpeaker({ actor: actor });
+
+				ChatMessage.create({
+					user: game.user.id,
+					speaker: speaker,
+					content: messageContent
+				});
+			});
 		}
 	}
 

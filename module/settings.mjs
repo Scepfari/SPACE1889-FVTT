@@ -276,6 +276,16 @@ export const registerSystemSettings = function ()
 		    type: Boolean
 		});
 
+    game.settings.register("space1889", "noDeductionsInExtendedActions",
+	    {
+		    name: "SPACE1889.ConfigNoDeductionsInExtendedActions",
+		    hint: "SPACE1889.ConfigNoDeductionsInExtendedActionsInfo",
+		    scope: "world",
+		    config: true,
+		    default: false,
+		    type: Boolean
+	    });
+
     game.settings.register("space1889", "menuPosition",
 	    {
 		    name: "space menu position",

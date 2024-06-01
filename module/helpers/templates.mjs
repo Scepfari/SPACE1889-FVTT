@@ -23,6 +23,7 @@
 		"systems/space1889/templates/actor/parts/actor-currency.html",
 		"systems/space1889/templates/actor/parts/actor-load.html",
 		"systems/space1889/templates/actor/parts/actor-defenseblock.html",
+		"systems/space1889/templates/actor/parts/actor-sub-extended_actions.html",
 		"systems/space1889/templates/actor/parts/actor-sub-items.html",
 		"systems/space1889/templates/actor/parts/actor-sub-items-body.html",
 		"systems/space1889/templates/actor/parts/actor-creature-skills.html",

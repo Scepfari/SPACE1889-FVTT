@@ -2295,4 +2295,28 @@ export default class SPACE1889Helper
 			}
 		}
 	}
+
+	static async getSortedSkillIdsWithLocalizedName()
+	{
+		let pack = game.packs.get("space1889.fertigkeiten");
+		let packDocs = await pack.getDocuments();
+		packDocs.sort((a, b) =>
+		{
+			if (a.system.skillGroupName !== b.system.skillGroupName)
+				return a.system.skillGroupName.localeCompare(b.system.skillGroupName);
+			return a.system.label.localeCompare(b.system.label);
+		});
+
+		let skillList = [];
+		for (const item of packDocs)
+		{
+			const groupId = item.system.isSkillGroup ? game.space1889.config.skillGroups[item.system.skillGroupName] : "";
+			let name = item.system.label;
+			if (item.system.isSkillGroup)
+				name += ` (${game.i18n.localize(groupId)})`;
+
+			skillList.push({key: item.system.id, label: name});
+		}
+		return skillList;
+	}
 }

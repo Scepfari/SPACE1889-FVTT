@@ -807,6 +807,8 @@ export default class SPACE1889RollHelper
 				return item.img != "icons/svg/sound.svg";
 			case "currency":
 				return item.img != "icons/svg/coins.svg";
+			case "extended_action":
+				return item.img !== "icons/tools/navigation/hourglass-yellow.webp";
 		}
 
 		return true;

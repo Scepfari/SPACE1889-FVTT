@@ -1,5 +1,6 @@
 import SPACE1889RollHelper from "../helpers/roll-helper.js";
 import SPACE1889Helper from "../helpers/helper.js";
+import SPACE1889Time from "../helpers/time.js";
 
 /**
  * Extend the basic Item with some very simple modifications.
@@ -114,6 +115,29 @@ export class Space1889Item extends Item {
 			else if (item.type == "container")
 			{
 				this.setLangIdAndLabel(item, "Item", true);
+			}
+			else if (item.type === "extended_action")
+			{
+				item.system.label = item.name;
+				item.system.skillOrAttributeLabel = item.system.skillOrAttributeId;
+				if (item.system.typeKey === "primary" && CONFIG.SPACE1889.abilities.hasOwnProperty(item.system.skillOrAttributeId))
+					item.system.skillOrAttributeLabel = game.i18n.localize(CONFIG.SPACE1889.abilities[item.system.skillOrAttributeId]);
+				else if (item.system.typeKey === "secondary" && CONFIG.SPACE1889.secondaries.hasOwnProperty(item.system.skillOrAttributeId))
+					item.system.skillOrAttributeLabel = game.i18n.localize(CONFIG.SPACE1889.secondaries[item.system.skillOrAttributeId]);
+				else if (item.system.typeKey === "skill")
+				{
+					const upperCaseId = item.system.skillOrAttributeId.replace(/^(.)/, function(b){return b.toUpperCase();});
+					item.system.skillOrAttributeLabel = game.i18n.localize('SPACE1889.' + "Skill" + upperCaseId);
+				}
+				else if (item.system.typeKey === "specialization")
+				{
+					const upperCaseId = item.system.skillOrAttributeId.replace(/^(.)/, function(b){return b.toUpperCase();});
+					item.system.skillOrAttributeLabel = game.i18n.localize('SPACE1889.' + "SpeciSkill" + upperCaseId);
+				}
+
+
+				if (item.img === "icons/svg/item-bag.svg")
+					item.img = "icons/tools/navigation/hourglass-yellow.webp";
 			}
 
 			if (item.type == "weapon" )
@@ -246,7 +270,7 @@ export class Space1889Item extends Item {
 		return str.replace(/([\u00fc|\u00e4|\u00f6|\u00df])/g, function(a){
 			return CONFIG.SPACE1889.umlautMap[a];
 		});
-	};
+	}
 
 
 	_getItemId(ev) {
@@ -455,6 +479,27 @@ export class Space1889Item extends Item {
 				const fullDesc = this._ComposeHtmlTextInfo("", this.system.label, type, desc, forChat);
 				return fullDesc;
 			}
+			if (this.type === "extended_action")
+			{
+				const titel = this.system.successes >= this.system.totalNumberOfSuccesses
+					? `${game.i18n.localize("SPACE1889.Finalised")}<br>${this.name}`
+					: this.name; 
+
+				let desc = this._addLineFromToIds("SPACE1889.Probe", this.system.skillOrAttributeLabel, false);
+				desc += this._addLine("SPACE1889.DifficultyRating", this.system.difficultyRating);
+				desc += this._addLine("SPACE1889.TotalNumberOfSuccesses", this.system.totalNumberOfSuccesses);
+				desc += this._addLine("SPACE1889.CurrentSuccesses", this.system.successes);
+				desc += this.getTextLine("SPACE1889.AttemptsMade", this.system.attemptsMade);
+				desc += this._addLine("SPACE1889.TimeInterval", this.system.timeInterval);
+				desc += this._addLine("letzter Versuch", SPACE1889Time.formatTimeDate(SPACE1889Time.getTimeAndDate(this.system.timestampLastTry)));
+
+				if (this.system.description !== "")
+					desc += this.system.description;
+
+				const image = this._getImageIfNotDefault(forChat);
+				const fullDesc = this._ComposeHtmlTextInfo(image, titel, type, desc, forChat);
+				return fullDesc;
+			}
 
 			// fall back for all other types
 			const image = this._getImageIfNotDefault(forChat);
@@ -546,10 +591,20 @@ export class Space1889Item extends Item {
 		return line;
 	}
 
+	getTextLineFrom2Ids(langId, secLangId, addLineBreak = true)
+	{
+		return this._addLineFromToIds(langId, secLangId, addLineBreak);
+	}
+
 	_addLine(langId, value, unit="", addLineBreak = true)
 	{
-		const line = (addLineBreak ? "<br>" : "") + game.i18n.localize(langId) + ": " + (value ? value : "") + unit;
+		const line = (addLineBreak ? "<br>" : "") + game.i18n.localize(langId) + ": " + (value === null || value === undefined ? "" : value) + unit;
 		return line;
+	}
+
+	getTextLine(langId, value, unit = "", addLineBreak = true)
+	{
+		return this._addLine(langId, value, unit, addLineBreak);
 	}
 
 	_ComposeHtmlTextInfo(image, name, type, desc, forChat)

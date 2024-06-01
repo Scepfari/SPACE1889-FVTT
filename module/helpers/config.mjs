@@ -36,6 +36,7 @@ SPACE1889.itemTypes = {
 	"armor": "ITEM.TypeArmor",
 	"container": "ITEM.TypeContainer",
 	"currency": "ITEM.TypeCurrency",
+	"extended_action": "ITEM.TypeExtended_action",
 	"damage": "ITEM.TypeDamage",
 	"item": "ITEM.TypeItem",
 	"language": "ITEM.TypeLanguage",
@@ -928,6 +929,13 @@ SPACE1889.gravityZone = {
 	"luna": { zone: 0.2, value: 0.16},
 	"venus": { zone: 1.0, value: 1.0},
 	"zeroGravity": { zone: 0.0, value: 0.001}
+}
+
+SPACE1889.propertyKeys = {
+	"primary": "SPACE1889.Abilities",
+	"secondary": "SPACE1889.SecondaryAttributes",
+	"skill": "SPACE1889.Skill",
+	"specialization": "SPACE1889.Specialization"
 }
 
 SPACE1889.umlautMap = {

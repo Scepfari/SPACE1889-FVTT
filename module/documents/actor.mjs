@@ -385,6 +385,7 @@ export class Space1889Actor extends Actor
 		const injuries = [];
 		const money = [];
 		const containers = [];
+		const extendedRolls = [];
 
 		for (let item of items)
 		{
@@ -421,6 +422,8 @@ export class Space1889Actor extends Actor
 				language.push(item);
 			else if (item.type === 'currency')
 				money.push(item);
+			else if (item.type === 'extended_action')
+				extendedRolls.push(item);
 		}
 
 		SPACE1889Helper.sortByName(skills);
@@ -448,6 +451,7 @@ export class Space1889Actor extends Actor
 		actor.system.ammunitions = ammunitions;
 		actor.system.containers = containers;
 		actor.system.weapons = weapons;
+		actor.system.extendedRolls = extendedRolls;
 
 		this.CalcAndSetHealth(actor);
 		this.CalcContainerLoad(actor);
@@ -2159,7 +2163,7 @@ export class Space1889Actor extends Actor
 		const langId = this.getLangId(key);
 		const name = game.i18n.localize(langId) ?? "unbekannt";
 
-		const titleName = game.i18n.localize("SPACE1889.PrimaryAttributeRoll")
+		const titleName = isAbility ? game.i18n.localize("SPACE1889.PrimaryAttributeRoll") : game.i18n.localize("SPACE1889.SecondaryAttributeRoll"); 
 		const modifierText = game.i18n.localize("SPACE1889.Modifier");
 		const attributeName = name;
 		const modifierLabel = modifierText;

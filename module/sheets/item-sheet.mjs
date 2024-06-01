@@ -113,6 +113,13 @@ export class Space1889ItemSheet extends ItemSheet {
 			context.system['storageLocationsAbbr'] = CONFIG.SPACE1889.storageLocationAbbreviations;
 		}
 
+		else if (item.type ==="extended_action")
+		{
+			context.system['propertyKeys'] = CONFIG.SPACE1889.propertyKeys;
+			context.system['secondaries'] = CONFIG.SPACE1889.secondaries;
+			context.system['skills'] = await SPACE1889Helper.getSortedSkillIdsWithLocalizedName();
+		}
+
 		//TextEditor
 		context.enrichedDescription = await TextEditor.enrichHTML(this.object.system.description, { async: true });
 
