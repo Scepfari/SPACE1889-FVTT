@@ -1525,7 +1525,10 @@ export class Space1889ActorSheet extends ActorSheet {
 		// Grab any data associated with this control.
 		const data = duplicate(header.dataset);
 		// Initialize a default name.
-		const name = `New ${type.capitalize()}`;
+		const name = CONFIG.SPACE1889.itemTypes.hasOwnProperty(type)
+			? `${game.i18n.localize(CONFIG.SPACE1889.itemTypes[type])} (${this.actor.items.size})`
+			: `New ${type.capitalize()} (${this.actor.items.size})`;
+
 		// Prepare the item object.
 		const itemData = {
 			name: name,
