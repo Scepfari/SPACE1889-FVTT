@@ -2838,6 +2838,7 @@
 	"SPACE1889.Property": "Property",
 	"SPACE1889.SkillKey": "Space ID of the skill",
 	"SPACE1889.SpecializationKey": "Space ID of the specialization",
+	"SPACE1889.UseSpecialization": "Use specialization",
 	"SPACE1889.Progress": "Progress",
 	"SPACE1889.ExtendedRollsChangeProgress": "Click to change the progress manually",
 	"SPACE1889.TimeInterval": "Time interval",

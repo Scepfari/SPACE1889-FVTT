@@ -120,27 +120,57 @@ export class Space1889Item extends Item {
 			{
 				item.system.label = item.name;
 				item.system.skillOrAttributeLabel = item.system.skillOrAttributeId;
-				if (item.system.typeKey === "primary" && CONFIG.SPACE1889.abilities.hasOwnProperty(item.system.skillOrAttributeId))
+				item.system.saveData = {};
+
+				if (item.system.typeKey === "primary")
+				{ 
+					if (!CONFIG.SPACE1889.abilities.hasOwnProperty(item.system.skillOrAttributeId))
+					{
+						item.system.skillOrAttributeId = "con";
+						item.system.saveData["system.skillOrAttributeId"] = item.system.skillOrAttributeId;
+					}
 					item.system.skillOrAttributeLabel = game.i18n.localize(CONFIG.SPACE1889.abilities[item.system.skillOrAttributeId]);
-				else if (item.system.typeKey === "secondary" && CONFIG.SPACE1889.secondaries.hasOwnProperty(item.system.skillOrAttributeId))
+					if (item.system.useSpezialisation)
+					{
+						item.system.useSpezialisation = false;
+						item.system.saveData["system.useSpezialisation"] = false;
+					}
+				}
+				else if (item.system.typeKey === "secondary")
+				{
+					if (!CONFIG.SPACE1889.secondaries.hasOwnProperty(item.system.skillOrAttributeId))
+					{
+						item.system.skillOrAttributeId = "perception";
+						item.system.saveData["skillOrAttributeId"] = item.system.skillOrAttributeId;
+					}
 					item.system.skillOrAttributeLabel = game.i18n.localize(CONFIG.SPACE1889.secondaries[item.system.skillOrAttributeId]);
+					if (item.system.useSpezialisation)
+					{
+						item.system.useSpezialisation = false;
+						item.system.saveData["system.useSpezialisation"] = false;
+					}
+				}
 				else if (item.system.typeKey === "skill")
 				{
-					const upperCaseId = item.system.skillOrAttributeId.replace(/^(.)/, function(b){return b.toUpperCase();});
-					item.system.skillOrAttributeLabel = game.i18n.localize('SPACE1889.' + "Skill" + upperCaseId);
-				}
-				else if (item.system.typeKey === "specialization")
-				{
-					const upperCaseId = item.system.skillOrAttributeId.replace(/^(.)/, function(b){return b.toUpperCase();});
-					item.system.skillOrAttributeLabel = game.i18n.localize('SPACE1889.' + "SpeciSkill" + upperCaseId);
-				}
+					if (CONFIG.SPACE1889.abilities.hasOwnProperty(item.system.skillOrAttributeId)
+						|| CONFIG.SPACE1889.secondaries.hasOwnProperty(item.system.skillOrAttributeId))
+					{
+						item.system.skillOrAttributeId = "akrobatik";
+						item.system.saveData["system.skillOrAttributeId"] = item.system.skillOrAttributeId;
+					}
 
+					const upperCaseId = item.system.skillOrAttributeId.replace(/^(.)/, function(b){return b.toUpperCase();});
+					const langId = 'SPACE1889.' + "Skill" + upperCaseId;
+					item.system.skillOrAttributeLabel = game.i18n.localize(langId);
+					if (item.system.skillOrAttributeLabel === langId)
+						item.system.skillOrAttributeLabel = upperCaseId;
+				}
 
 				if (item.img === "icons/svg/item-bag.svg")
 					item.img = "icons/tools/navigation/hourglass-yellow.webp";
 			}
 
-			if (item.type == "weapon" )
+			if (item.type === "weapon" )
 			{
 				item.system.effectDuration = SPACE1889Helper.formatTime(SPACE1889Helper.getCombatTurnsInSeconds(item.system.effectDurationCombatTurns));
 			}
@@ -485,7 +515,20 @@ export class Space1889Item extends Item {
 					? `${game.i18n.localize("SPACE1889.Finalised")}<br>${this.name}`
 					: this.name; 
 
-				let desc = this._addLineFromToIds("SPACE1889.Probe", this.system.skillOrAttributeLabel, false);
+				let desc = "";
+				if (this.system.typeKey === "skill" && this.system.useSpezialisation)
+				{
+					const fullName = `${this.system.spezialisationLabel} (${this.system.skillOrAttributeLabel})`;
+					desc += this._addLine("SPACE1889.Probe", fullName, "", false);
+				}
+				else if (this.system.typeKey === "skill" && this.system.skillGroupId !== "" && CONFIG.SPACE1889.skillGroups.hasOwnProperty(this.system.skillGroupId))
+				{
+					const fullName = `${this.system.skillOrAttributeLabel} (${game.i18n.localize(CONFIG.SPACE1889.skillGroups[this.system.skillGroupId])})`;
+					desc += this._addLine("SPACE1889.Probe", fullName, "", false);
+				}
+				else
+					desc += this._addLine("SPACE1889.Probe", this.system.skillOrAttributeLabel, "", false);
+
 				desc += this._addLine("SPACE1889.DifficultyRating", this.system.difficultyRating);
 				desc += this._addLine("SPACE1889.TotalNumberOfSuccesses", this.system.totalNumberOfSuccesses);
 				desc += this._addLine("SPACE1889.CurrentSuccesses", this.system.successes);
@@ -589,11 +632,6 @@ export class Space1889Item extends Item {
 	{
 		const line = (addLineBreak ? "<br>" : "") + game.i18n.localize(langId) + ": " + game.i18n.localize(secLangId);
 		return line;
-	}
-
-	getTextLineFrom2Ids(langId, secLangId, addLineBreak = true)
-	{
-		return this._addLineFromToIds(langId, secLangId, addLineBreak);
 	}
 
 	_addLine(langId, value, unit="", addLineBreak = true)

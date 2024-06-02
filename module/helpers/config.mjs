@@ -934,8 +934,7 @@ SPACE1889.gravityZone = {
 SPACE1889.propertyKeys = {
 	"primary": "SPACE1889.Abilities",
 	"secondary": "SPACE1889.SecondaryAttributes",
-	"skill": "SPACE1889.Skill",
-	"specialization": "SPACE1889.Specialization"
+	"skill": "SPACE1889.Skill"
 }
 
 SPACE1889.umlautMap = {

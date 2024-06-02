@@ -118,6 +118,52 @@ export class Space1889ItemSheet extends ItemSheet {
 			context.system['propertyKeys'] = CONFIG.SPACE1889.propertyKeys;
 			context.system['secondaries'] = CONFIG.SPACE1889.secondaries;
 			context.system['skills'] = await SPACE1889Helper.getSortedSkillIdsWithLocalizedName();
+
+			context.system['specializations'] = context.system.typeKey === "skill"
+				? await SPACE1889Helper.getSortedSpecializationsFromSkill(context.system.skillOrAttributeId)
+				: [];
+
+			let updateData = context.system.saveData;
+
+			if (context.system.typeKey === "skill")
+			{
+				let spezialisationId = context.system.spezialisationId;
+				if (context.system.specializations.length > 0
+					&& !context.system.specializations.find(e => e.key === context.system.spezialisationId))
+				{
+					updateData["system.spezialisationId"] = context.system.specializations[0].key;
+					spezialisationId = "";
+					updateData["system.spezialisationLabel"] = context.system.specializations[0].label;
+				}
+				else if (context.system.specializations.length === 0)
+				{
+					updateData["system.spezialisationId"] = "";
+					spezialisationId = "";
+					updateData["system.spezialisationLabel"] = "";
+					updateData["system.useSpezialisation"] = false;
+				}
+
+				let skill = context.system.skills.find(e => e.key === context.system.skillOrAttributeId);
+				if (skill && skill.groupId !== context.system.skillGroupId)
+					updateData["system.skillGroupId"] = skill.groupId;
+
+				if (spezialisationId)
+				{
+					const upperCaseId = context.system.spezialisationId.replace(/^(.)/, function (b) { return b.toUpperCase(); });
+					const langId = 'SPACE1889.' + "SpeciSkill" + upperCaseId;
+					let spezName = game.i18n.localize(langId);
+					if (spezName === langId)
+						spezName = item.system.specializations.find( e => e.key === item.system.spezialisationId)?.label;
+					if (spezName !== item.system.spezialisationLabel)
+						updateData["system.spezialisationLabel"] = spezName;
+				}
+			}
+
+			if (Object.keys(updateData).length > 0)
+			{
+				await item.update(updateData);
+				context.system.saveData = {};
+			}
 		}
 
 		//TextEditor
@@ -173,6 +219,15 @@ export class Space1889ItemSheet extends ItemSheet {
 			{
 				const newId = this.item.createId(this.item.name);
 				this.item.update({ 'system.id': newId });
+			}
+		});
+
+		html.find('.extendedRollUseSpezialisation-toggle').mousedown(ev =>
+		{
+			if (this.item.type === "extended_action")
+			{
+				const toggledValue = !this.item.system.useSpezialisation;
+				this.item.update({ "system.useSpezialisation": toggledValue });
 			}
 		});
 

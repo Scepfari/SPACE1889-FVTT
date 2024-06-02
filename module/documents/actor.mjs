@@ -212,24 +212,24 @@ export class Space1889Actor extends Actor
 		{
 			// toDo: Spezialisierung beachten
 			if (vehicle.system.pilotSkill == "fahren" || vehicle.system.pilotSkill == "reiten")
-				return this._GetSkillLevel(actorOnPosition, vehicle.system.pilotSkill, "");
+				return this.getSkillLevel(actorOnPosition, vehicle.system.pilotSkill, "");
 
-			return this._GetSkillLevel(actorOnPosition, vehicle.system.pilotSkill, "", "spezielleFahrzeuge");
+			return this.getSkillLevel(actorOnPosition, vehicle.system.pilotSkill, "", "spezielleFahrzeuge");
 		}
 
 		if (position == "captain")
 		{
-			const first = this._GetSkillLevel(actorOnPosition, "diplomatie", "fuehrungsstaerke");
-			const second = this._GetSkillLevel(actorOnPosition, "einschuechtern", "befehle");
+			const first = this.getSkillLevel(actorOnPosition, "diplomatie", "fuehrungsstaerke");
+			const second = this.getSkillLevel(actorOnPosition, "einschuechtern", "befehle");
 			return Math.max(first, second);
 		}
 		if (position == "gunner")
 		{
-			return this._GetSkillLevel(actorOnPosition, "geschuetze", "");
+			return this.getSkillLevel(actorOnPosition, "geschuetze", "");
 		}
 		if (position == "signaler")
 		{
-			return this._GetSkillLevel(actorOnPosition, "linguistik", "codes");
+			return this.getSkillLevel(actorOnPosition, "linguistik", "codes");
 		}
 		if (position == "lookout")
 		{
@@ -237,12 +237,12 @@ export class Space1889Actor extends Actor
 		}
 		if (position == "mechanic")
 		{
-			return this._GetSkillLevel(actorOnPosition, "mechaniker", "", "handwerk");
+			return this.getSkillLevel(actorOnPosition, "mechaniker", "", "handwerk");
 			// alternativ andere Handwerk-Fertigkeiten
 		}
 		if (position == "medic")
 		{
-			return this._GetSkillLevel(actorOnPosition, "medizin", "ersteHilfe");
+			return this.getSkillLevel(actorOnPosition, "medizin", "ersteHilfe");
 		}
 		return 0;
 	}
@@ -768,7 +768,7 @@ export class Space1889Actor extends Actor
 			else
 			{
 				weapon.system.sizeMod = sizeMod;
-				weapon.system.skillRating = this._GetSkillLevel(actor, weapon.system.skillId, weapon.system.specializationId);
+				weapon.system.skillRating = this.getSkillLevel(actor, weapon.system.skillId, weapon.system.specializationId);
 				const attackBonusFromDamage = (weapon.system.isAreaDamage && actor.type != 'vehicle') ? 0 : weapon.system.damage;
 				const ammoBonus = weapon.system.ammunition?.damageMod ? weapon.system.ammunition.damageMod : 0;
 				let offhandMod = ((actor.type == "character" || actor.type == "npc") && weapon.system.usedHands == "offHand" && SPACE1889Helper.getTalentLevel(this, "beidhaendig") == 0) ? -2 : 0;
@@ -854,7 +854,7 @@ export class Space1889Actor extends Actor
 			else
 			{
 				weapon.system.sizeMod = 0;
-				weapon.system.skillRating = useGunner ? this._GetSkillLevel(gunner, weapon.system.skillId, weapon.system.specializationId) : actor.system.positions.gunner.total;
+				weapon.system.skillRating = useGunner ? this.getSkillLevel(gunner, weapon.system.skillId, weapon.system.specializationId) : actor.system.positions.gunner.total;
 				weapon.system.attack = Math.max(0, weapon.system.damage + weapon.system.skillRating);
 				weapon.system.attackAverage = (Math.floor(weapon.system.attack / 2)).toString() + (weapon.system.attack % 2 == 0 ? "" : "+");
 			}
@@ -1092,10 +1092,10 @@ export class Space1889Actor extends Actor
 	 * @param {Object} actor 
 	 * @param {string} skillId 
 	 * @param {string} specializationId
-		 * @param {string} skillGroupId
+	 * @param {string} skillGroupId
 	 * @returns {number}
 	 */
-	_GetSkillLevel(actor, skillId, specializationId, skillGroupId = "")
+	getSkillLevel(actor, skillId, specializationId, skillGroupId = "")
 	{
 		if (actor.system.speciSkills)
 		{

@@ -771,11 +771,14 @@ export class Space1889ActorSheet extends ActorSheet {
 		else if (item.system.typeKey === "secondary")
 			diceCount = this.actor.system.secondaries[item.system.skillOrAttributeId].total;
 		else if (item.system.typeKey === "skill")
-			diceCount = this.actor.GetSkillRating(this.actor, item.system.skillOrAttributeId, "");
-		else if (item.system.typeKey === "specialization")
 		{
-			const spez = this.actor.system.speciSkills?.find(t => t.system.id === item.system.skillOrAttributeId);
-			diceCount = spez ? spez.system.rating : 0;
+			diceCount = this.actor.getSkillLevel(this.actor, item.system.skillOrAttributeId, "", item.system.skillGroupId);
+			if (item.system.useSpezialisation)
+			{
+				const spez = this.actor.system.speciSkills?.find(t => t.system.id === item.system.spezialisationId);
+				if (spez && spez.system.underlyingSkillId === item.system.skillOrAttributeId)
+					diceCount = spez.system.rating;
+			}
 		}
 		diceCount = Math.max(diceCount, 0);
 		
@@ -841,7 +844,21 @@ export class Space1889ActorSheet extends ActorSheet {
 				const resDelta = newSuccess - item.system.successes;
 
 				const timestamp = SPACE1889Time.getCurrentTimestamp();
-				let desc = item.getTextLineFrom2Ids("SPACE1889.Probe", item.system.skillOrAttributeLabel, false);
+
+				let desc = "";
+				if (item.system.typeKey === "skill" && item.system.useSpezialisation)
+				{
+					const fullName = `${item.system.spezialisationLabel} (${item.system.skillOrAttributeLabel})`;
+					desc += item.getTextLine("SPACE1889.Probe", fullName, "", false);
+				}
+				else if (item.system.typeKey === "skill" && item.system.skillGroupId !== "" && CONFIG.SPACE1889.skillGroups.hasOwnProperty(item.system.skillGroupId))
+				{
+					const fullName = `${item.system.skillOrAttributeLabel} (${game.i18n.localize(CONFIG.SPACE1889.skillGroups[item.system.skillGroupId])})`;
+					desc += item._addLine("SPACE1889.Probe", fullName, "", false);
+				}
+				else
+					desc += item.getTextLine("SPACE1889.Probe", item.system.skillOrAttributeLabel, "", false);
+
 				desc += item.getTextLine("SPACE1889.DifficultyRating", item.system.difficultyRating);
 				desc += item.getTextLine("SPACE1889.AttemptsMade", item.system.attemptsMade + 1);
 				desc += item.getTextLine("SPACE1889.DataOfTheEventAbbr", SPACE1889Time.formatTimeDate(SPACE1889Time.getTimeAndDate(timestamp)));

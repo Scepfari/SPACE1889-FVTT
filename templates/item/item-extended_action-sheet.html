@@ -57,11 +57,31 @@
 			</div>
 		</div>
 		{{/if}}
-		{{#if (eq system.typeKey 'specialization')}}
+	</div>
+	<div style="display: grid; grid-template-columns: 40% 60%; margin: 10px 0;">
 		<div class="resource">
-			<label class="resource-label">{{ localize "SPACE1889.SpecializationKey" }}</label>
-			<input type="text" name="system.skillOrAttributeId" value="{{system.skillOrAttributeId}}" data-dtype="String" />
+			<label class="resource-label">{{ localize "SPACE1889.UseSpecialization" }}</label>
+			{{#if system.useSpezialisation}}
+			<div class="resource-content flex-group-center item-margintb2px">
+				<a class="extendedRollUseSpezialisation-toggle"><i class="fas fa-toggle-on"></i></a>
+			</div>
+			{{else}}
+			<div class="resource-content flex-group-center item-margintb2px">
+				<a class="extendedRollUseSpezialisation-toggle"><i class="fa fa-toggle-off"></i></a>
+			</div>
+			{{/if}}
 		</div>
+		{{#if (eq system.typeKey 'skill')}}
+		{{#if system.useSpezialisation}}
+		<div class="resource">
+			<label class="resource-label">{{ localize "SPACE1889.Specialization" }}</label>
+			<div>
+				<select name="system.spezialisationId" data-dtype="String">
+					{{selectOptions system.specializations selected=system.spezialisationId nameAttr="key" labelAttr="label"}}
+				</select>
+			</div>
+		</div>
+		{{/if}}
 		{{/if}}
 	</div>
 	<div style="display: grid; grid-template-columns: 40% 60%; margin: 10px 0;">

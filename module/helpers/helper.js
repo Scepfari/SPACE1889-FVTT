@@ -2300,6 +2300,15 @@ export default class SPACE1889Helper
 	{
 		let pack = game.packs.get("space1889.fertigkeiten");
 		let packDocs = await pack.getDocuments();
+
+		// um lokale Fertigkeiten erweitern
+		let local = game.items.filter((x) => x.type === "skill");
+		for (const item of local)
+		{
+			if (!packDocs.find((x) => x.system.id === item.system.id))
+				packDocs.push(item);
+		}
+
 		packDocs.sort((a, b) =>
 		{
 			if (a.system.skillGroupName !== b.system.skillGroupName)
@@ -2310,13 +2319,41 @@ export default class SPACE1889Helper
 		let skillList = [];
 		for (const item of packDocs)
 		{
-			const groupId = item.system.isSkillGroup ? game.space1889.config.skillGroups[item.system.skillGroupName] : "";
+			const groupLangId = item.system.isSkillGroup ? game.space1889.config.skillGroups[item.system.skillGroupName] : "";
 			let name = item.system.label;
 			if (item.system.isSkillGroup)
-				name += ` (${game.i18n.localize(groupId)})`;
+				name += ` (${game.i18n.localize(groupLangId)})`;
 
-			skillList.push({key: item.system.id, label: name});
+			skillList.push({ key: item.system.id, label: name, groupId: item.system.skillGroupName });
 		}
 		return skillList;
+	}
+
+	static async getSortedSpecializationsFromSkill(skillSpaceId)
+	{
+		if (!skillSpaceId)
+			return [];
+
+		let pack = game.packs.get("space1889.spezialisierungen");
+		let packDocs = await pack.getDocuments();
+		let selection = packDocs.filter((x) => x.system.underlyingSkillId === skillSpaceId);
+
+		// um lokale Spezialisierungen erweitern
+		let local = game.items.filter((x) => x.type === "specialization" && x.system?.underlyingSkillId === skillSpaceId);
+
+		for (const item of local)
+		{
+			if (!selection.find((x) => x.system.id === item.system.id))
+				selection.push(item);
+		}
+
+		selection.sort((a, b) => { return a.system.label.localeCompare(b.system.label); });
+
+		let list = [];
+		for (const item of selection)
+		{
+			list.push({key: item.system.id, label: item.system.label});
+		}
+		return list;
 	}
 }
