@@ -657,6 +657,8 @@
 
 	"SPACE1889.Add": "Add",
 	"SPACE1889.CreateItem": "Create Item",
+	"SPACE1889.EditItem": "Edit Item",
+	"SPACE1889.DeleteItem": "Delete Item",
 
 	"SPACE1889.SpeciSkillAbrollen": "Breakfall",
 	"SPACE1889.SpeciSkillAbsuchen": "Search",
