@@ -2,6 +2,14 @@
 
 ## Niedergang der Errungenschaften
 
+### v2.2.3
+- Systemunterstützung für Langfristige Proben => Einzelheiten in der Hilfe
+- Abstandsmessung zur Entfernungsbestimmung für Fernangriffe beachten nun den Höhenunterschied der beteiligten Figuren.
+- lokalisierte Standardnamen für Items die über den Charakterbogen erzeugt werden. Z.B. erhält ein neu erstellter Gegenstand den Namen "Gegenstand (42)" anstelle von "new item"
+- fix Rundumschlag: Exception wenn die Charakter Größe > 0 war
+- fix: Spezialisierung "Bomben" im Kompendium hat nun die korrekte Basisfertigkeit eingetragen
+- weitere V12 Vorarbeiten
+
 ### v2.2.2
 - Space Menü Überarbeitung:
   - Ein Klick auf den Knopf wechselt nicht mehr in eine spezielle Foundry Ebene, sondern lässt die aktuelle Foundry Ebene unangetastet und öffnet ein schwebendes Fenster in dem die bekannten Menüunterfunktionen enthalten sind.
