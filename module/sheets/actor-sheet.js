@@ -838,7 +838,7 @@ export class Space1889ActorSheet extends ActorSheet {
 				
 				if (delta > 0)
 					newSuccess = Math.min(newSuccess + delta, item.system.totalNumberOfSuccesses);
-				else if (delta < 0 && !game.settings.get("space1889", "noDeductionsInExtendedActions"))
+				else if (delta < 0 && item.system.useDeductions)
 					newSuccess = Math.max(newSuccess + delta, 0);
 
 				const resDelta = newSuccess - item.system.successes;

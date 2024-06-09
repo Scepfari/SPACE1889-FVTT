@@ -475,6 +475,16 @@ Handlebars.registerHelper('isGm', function (str)
 	return game.user.isGM;
 });
 
+Handlebars.registerHelper('isTrusted', function (str)
+{
+	return game.user.isTrusted;
+});
+
+Handlebars.registerHelper('isNotTrusted', function (str)
+{
+	return !game.user.isTrusted;
+});
+
 Handlebars.registerHelper('isFvttV10', function (str)
 {
 	return SPACE1889Helper.isFoundryV10Running();

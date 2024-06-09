@@ -2916,7 +2916,7 @@
 	"SPACE1889.ConfigHideInitiativeRollsInChat": "Hide initiative rolls in chat",
 	"SPACE1889.ConfigHideInitiativeRollsInChatInfo": "Prevents the display of initiative rolls in the chat, for all players as well as the GM",
 	"SPACE1889.ConfigNoDeductionsInExtendedActions": "No deductions in Extended Actions",
-	"SPACE1889.ConfigNoDeductionsInExtendedActionsInfo": "If the Difficulty Rating is not reached on a roll for a Extended Action, the difference is not subtracted from the number of already accumulated successes.",
+	"SPACE1889.ConfigNoDeductionsInExtendedActionsInfo": "If the Difficulty Rating is not reached on a roll for a Extended Action, the difference is not subtracted from the number of already accumulated successes. The option only sets the default, GM and trusted players can set the behavior for each extended action separately",
 
 	"SPACE1889.HeroLevelPechvogel": "Unlucky Fellow",
 	"SPACE1889.HeroLevelDurchschnittsbuerger": "Everyman",
@@ -3505,6 +3505,9 @@
 	"SPACE1889.ParryMelee": "By forgoing the attack action in the round, all melee and brawl attacks can be parried",
 	"SPACE1889.EvasionMeleeInstinctively": "Distant attacks can be instinctively dodged",
 	"SPACE1889.EvasionMelee": "By forgoing the attack action in the round, all ranged attacks can be dodged",
+	"SPACE1889.Deductions": "Deductions",
+	"SPACE1889.ExtendedActionDeductions": "If the Difficulty Rating is not reached on a roll, the difference is subtracted from the number of already accumulated successes, in accordance with the core rules.",
+	"SPACE1889.ExtendedActionNoDeductions": "When rolling below the Difficulty Rating, the accumulated successes remain untouched, contrary to the core rules.",
 
 	"SPACE1889.NotSupportedInFoundryV10": "Unfortunately, this function is not supported by Foundry VTT V10.To be able to use it, Foundry VTT must be updated to version 11.",
 	"SPACE1889.TalentEffectBoostNotPossible": "The talent has already reached its maximum value and cannot be increased any further, even by temporarily increasing it.",

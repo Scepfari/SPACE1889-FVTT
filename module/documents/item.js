@@ -7,6 +7,17 @@ import SPACE1889Time from "../helpers/time.js";
  * @extends {Item}
  */
 export class Space1889Item extends Item {
+
+	async _preCreate(data, options, user)
+	{
+		if (this.type === "extended_action")
+		{
+			await super._preCreate(data, options, user);
+			return this.updateSource( { "system.useDeductions" : !game.settings.get("space1889", "noDeductionsInExtendedActions") } );
+		}
+		return super._preCreate(data, options, user);
+	}
+
 	/**
 	 * Augment the basic Item data model with additional dynamic data.
 	 */

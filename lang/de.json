@@ -2916,7 +2916,7 @@
 	"SPACE1889.ConfigHideInitiativeRollsInChat": "Initiativewürfe im Chat verbergen",
 	"SPACE1889.ConfigHideInitiativeRollsInChatInfo": "Unterbindet die Anzeige der Initiativewürfe im Chat, sowohl für Spieler als auch die SL",
 	"SPACE1889.ConfigNoDeductionsInExtendedActions": "Keine Abzüge in Langfristigen Aktionen",
-	"SPACE1889.ConfigNoDeductionsInExtendedActionsInfo": "Falls bei einem Wurf für eine Langfristige Probe die Erfolgsschwelle nicht erreicht wird, wird die Differenz nicht von den bis dahin angesammelten Erfolgen abgezogen.",
+	"SPACE1889.ConfigNoDeductionsInExtendedActionsInfo": "Falls bei einem Wurf für eine Langfristige Probe die Erfolgsschwelle nicht erreicht wird, wird die Differenz nicht von den bis dahin angesammelten Erfolgen abgezogen. Die Option legt nur den Standard fest, SL und Seriöse Spieler können das verhalten für jede Langfristige Aktion separat einstellen",
 
 	"SPACE1889.HeroLevelPechvogel": "Pechvogel",
 	"SPACE1889.HeroLevelDurchschnittsbuerger": "Durchschnittsbürger",
@@ -3505,6 +3505,9 @@
 	"SPACE1889.ParryMelee": "Mit dem Verzicht auf die Angriffsaktion in der Runde können alle Nahkampf und Waffenlos Angriffe pariert werden",
 	"SPACE1889.EvasionMeleeInstinctively": "Fernangriffen kann instinktiv ausgewichen werden",
 	"SPACE1889.EvasionMelee": "Mit dem Verzicht auf die Angriffsaktion in der Runde kann allen Fernangriffen ausgewichen werden",
+	"SPACE1889.Deductions": "Abzüge",
+	"SPACE1889.ExtendedActionDeductions": "Beim Unterwürfeln der Erfolgsschwelle, wird die Differenz, entsprechend dem Grundregelwerk, von den bis dahin angesammelten Erfolgen abgezogen.",
+	"SPACE1889.ExtendedActionNoDeductions": "Beim Unterwürfeln der Erfolgsschwelle, bleiben, entgegen den Regeln im Grundregelwerk, die angesammelten Erfolgen unangetastet.",
 
 	"SPACE1889.NotSupportedInFoundryV10": "Die Funktion wird leider von Foundry VTT V10 nicht unterstützt. Um sie nutzen zu können muss auf Foundry VTT auf Version 11 aktualisiert werden.",
 	"SPACE1889.TalentEffectBoostNotPossible": "Das Talent hat schon den maximalen Wert erreicht und kann auch durch temporäre Erhöhung nicht weiter gesteigert werden.",

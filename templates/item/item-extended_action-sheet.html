@@ -94,7 +94,7 @@
 			<input type="text" name="system.timestampLastTry" value="{{system.timestampLastTry}}" data-dtype="Number" />
 		</div>
 	</div>
-	<div style="display: grid; grid-template-columns: 40% 60%; margin: 10px 0; ">
+	<div style="display: grid; grid-template-columns: 40% 40% 20%; margin: 10px 0; ">
 		<div class="resource">
 			<label class="resource-label">{{ localize "SPACE1889.AttemptsMade" }}</label>
 			<input type="text" name="system.attemptsMade" value="{{system.attemptsMade}}" data-dtype="Number" />
@@ -102,6 +102,12 @@
 		<div class="resource">
 			<label class="resource-label">{{ localize "SPACE1889.CurrentSuccesses" }}</label>
 			<input type="text" name="system.successes" value="{{system.successes}}" data-dtype="Number" />
+		</div>
+		<div class="resource flex-group-center">
+			<label class="resource-label item-margintb2px">{{ localize "SPACE1889.Deductions"}}</label>
+			<div class="resource-content" data-tooltip="{{#if system.useDeductions}}{{ localize 'SPACE1889.ExtendedActionDeductions'}}{{else}}{{ localize 'SPACE1889.ExtendedActionNoDeductions'}}{{/if}}">
+				<input type="checkbox" {{#if (isNotTrusted)}} disabled="true" {{/if}} name="system.useDeductions" {{checked system.useDeductions}} />
+			</div>
 		</div>
 	</div>
 	

@@ -409,6 +409,7 @@
 			"spezialisationLabel": "",
 			"useSpezialisation": false,
 			"noSelection": false,
+			"useDeductions": true, 
 			"difficultyRating": 2,
 			"totalNumberOfSuccesses": 10,
 			"timeInterval": "1h",
