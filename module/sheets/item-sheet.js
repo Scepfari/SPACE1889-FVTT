@@ -1,4 +1,4 @@
-import {onManageActiveEffect} from "../helpers/effects.mjs";
+import {onManageActiveEffect} from "../helpers/effects.js";
 import SPACE1889Helper from "../helpers/helper.js";
 
 /**

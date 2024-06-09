@@ -1,9 +1,9 @@
-import TurnMarker from "../helpers/turnMarker.mjs";
+import TurnMarker from "../helpers/turnMarker.js";
 import SPACE1889RollHelper from "./roll-helper.js";
 import SPACE1889Time from "./time.js";
 import SPACE1889Healing from "../helpers/healing.js";
 import { Space1889Menu } from "../ui/spaceMenu.js";
-import { Space1889ActorSheet } from "../sheets/actor-sheet.mjs";
+import { Space1889ActorSheet } from "../sheets/actor-sheet.js";
 
 export default class SPACE1889Helper
 {

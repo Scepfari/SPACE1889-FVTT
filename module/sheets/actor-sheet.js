@@ -1,7 +1,7 @@
-import {onManageActiveEffect} from "../helpers/effects.mjs";
+import {onManageActiveEffect} from "../helpers/effects.js";
 import SPACE1889Helper from "../helpers/helper.js";
 import SPACE1889RollHelper from "../helpers/roll-helper.js";
-import ForeignNotesEditor from "../helpers/foreignNotesEditor.mjs"
+import ForeignNotesEditor from "../helpers/foreignNotesEditor.js"
 import SPACE1889Healing from "../helpers/healing.js";
 import SPACE1889Time from "../helpers/time.js";
 

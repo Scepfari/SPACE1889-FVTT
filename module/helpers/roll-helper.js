@@ -3,7 +3,7 @@ import SPACE1889Combat from "../helpers/combat.js";
 import DistanceMeasuring from "../helpers/distanceMeasuring.js"
 import SPACE1889Time from "../helpers/time.js"
 import SPACE1889Healing from "./healing.js";
-import { SPACE1889 } from "./config.mjs";
+import { SPACE1889 } from "./config.js";
 
 export default class SPACE1889RollHelper
 {

@@ -903,12 +903,14 @@ export class Space1889Actor extends Actor
 		{
 			case "amphibious":
 			case "flying":
-				const second = Math.floor(system.secondaries.move.total / 2);
-				movement = system.secondaries.move.total.toString() + " (" + second.toString() + ")";
-				siUnits = game.i18n.localize(CONFIG.SPACE1889.creatureMovementType[system.movementType]) + ": ";
-				siUnits += siMoveDistance.toString() + meterWithSeparator;
-				siUnits += ((system.movementType == "flying") ? game.i18n.localize("SPACE1889.OnTheGround") : game.i18n.localize("SPACE1889.OnLand")) + ": ";
-				siUnits += (siMoveDistance / 2).toString() + meter;
+				{
+					const second = Math.floor(system.secondaries.move.total / 2);
+					movement = system.secondaries.move.total.toString() + " (" + second.toString() + ")";
+					siUnits = game.i18n.localize(CONFIG.SPACE1889.creatureMovementType[system.movementType]) + ": ";
+					siUnits += siMoveDistance.toString() + meterWithSeparator;
+					siUnits += ((system.movementType == "flying") ? game.i18n.localize("SPACE1889.OnTheGround") : game.i18n.localize("SPACE1889.OnLand")) + ": ";
+					siUnits += (siMoveDistance / 2).toString() + meter;
+				}
 				break;
 			case "fossorial":
 				movement = system.secondaries.move.total.toString() + " (" + (system.secondaries.move.total * 2).toString() + ")";
@@ -1080,10 +1082,10 @@ export class Space1889Actor extends Actor
 	{
 		for (let talent of actor.system.talents)
 		{
-			if (talent.system.changedSkill == skill.system.id && talent.system.newBase != "") //besser prüfen obs eine der 6 primären Attribute ist
+			if (talent.system.changedSkill === skill.system.id && talent.system.newBase !== "") //besser prüfen obs eine der 6 primären Attribute ist
 				return talent.system.newBase;
 		}
-		return skill.system.underlyingAttribute
+		return skill.system.underlyingAttribute;
 	}
 
 
@@ -1101,7 +1103,7 @@ export class Space1889Actor extends Actor
 		{
 			for (let speci of actor.system.speciSkills)
 			{
-				if (specializationId == speci.system.id)
+				if (specializationId === speci.system.id)
 					return speci.system.rating;
 			}
 		}
@@ -1111,21 +1113,21 @@ export class Space1889Actor extends Actor
 		{
 			for (let skill of actor.system.skills)
 			{
-				if (skillId == skill.system.id)
+				if (skillId === skill.system.id)
 					return skill.system.rating;
-				if (skill.system.isSkillGroup && skillGroupId == skill.system.skillGroupName)
+				if (skill.system.isSkillGroup && skillGroupId === skill.system.skillGroupName)
 					skillGroups.push(skill);
 			}
 		}
 
-		if (skillGroupId != "")
+		if (skillGroupId !== "")
 		{
 			let rating = 0;
 
-			if (skillGroups.length == 0)
+			if (skillGroups.length === 0)
 			{
 				// kein Fachbereich aus der Fertigkeitsgruppe gelernt
-				const uni = actor.system.talents?.find(v => v.system.id == "universalist");
+				const uni = actor.system.talents?.find(v => v.system.id === "universalist");
 				if (uni != undefined && uni != null)
 				{
 					rating = this.GetSkillRating(actor, skillId, "");  // Funktion behandelt fertigkeitsgruppen wie fertigkeiten
