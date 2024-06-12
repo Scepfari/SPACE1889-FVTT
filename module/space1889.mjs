@@ -490,6 +490,20 @@ Handlebars.registerHelper('isFvttV10', function (str)
 	return SPACE1889Helper.isFoundryV10Running();
 });
 
+Handlebars.registerHelper('getFvttGeneration', function ()
+{
+	return game.release.generation;
+});
+
+Handlebars.registerHelper('getEffectImagePath', function (effect)
+{
+	if (effect)
+	{
+		return game.release.generation >= 12 ? effect.img : effect.icon;
+	}
+	return "";
+});
+
 Handlebars.registerHelper('fullItemToolTipDescription', function (item) 
 {
 	if (!item)
