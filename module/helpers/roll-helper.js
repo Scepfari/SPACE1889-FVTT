@@ -1704,7 +1704,7 @@ export default class SPACE1889RollHelper
 	static async createInlineRollWithHtml(diceCount, probeName = "", tooltipInfo = "")
 	{
 		let r = new Roll(diceCount.toString() + game.settings.get("space1889", "dice"));
-		await r.evaluate({ async: true });
+		await r.evaluate();
 		const htmlAn = await r.toAnchor();
 		let outerHtml = htmlAn.outerHTML;
 		const index = outerHtml.indexOf('class=""');
@@ -1799,7 +1799,7 @@ export default class SPACE1889RollHelper
 			if (extraDice > 0)
 			{
 				let r = new Roll("1" + game.settings.get("space1889", "dice"));
-				await r.evaluate({ async: true });
+				await r.evaluate();
 				sizeMod += factor * r.total;
 			}
 			const damageAmount = Math.max(0, data.areaDamage + sizeMod);
