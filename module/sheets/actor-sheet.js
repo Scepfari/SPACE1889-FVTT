@@ -781,6 +781,9 @@ export class Space1889ActorSheet extends ActorSheet {
 			}
 		}
 		diceCount = Math.max(diceCount, 0);
+
+		const autoDelta = Math.floor(diceCount / 2) - item.system.difficultyRating;
+		const canDoAutoSuccess = autoDelta > 0; 
 		
 		if (showDialog)
 		{
@@ -790,10 +793,14 @@ export class Space1889ActorSheet extends ActorSheet {
 			const titel = item.system.label;
 			const actor = this.actor;
 
+			let check = canDoAutoSuccess ? "<hr></hr>" : "";
+			check += `<li class="flexrow"><div class="item flexrow flex-group-left"><input type="${canDoAutoSuccess ? "checkbox" : "hidden"}" id="selected" class="einfachCheckbox" text-align="left">`;
+			check += canDoAutoSuccess ? `<div class="item-name"> ${game.i18n.localize("SPACE1889.ExtendedRollUseTakingTheAverage")}</div ></div></li><br>` : "</div></li>";
+
 			new Dialog(
 				{ 
 					title: `${titelPartOne}: ${titel} (${diceCount} ${diceDesc})`,
-					content: `<p>${inputDesc}: <input type="number" id="anzahlDerWuerfel" value = "0"></p>`,
+					content: `<p>${inputDesc}: <input type="number" id="anzahlDerWuerfel" value = "0"></p>${check}`,
 					buttons:
 					{
 						ok:
@@ -814,11 +821,12 @@ export class Space1889ActorSheet extends ActorSheet {
 
 			function myCallback(html)
 			{
+				const useAutoSuccess = html.find('#selected').is(":checked");
 				const input = html.find('#anzahlDerWuerfel').val();
 				let anzahl = input ? parseInt(input) : 0;
 				const modToolTip = anzahl == 0 ? "" : game.i18n.format("SPACE1889.ChatModifier", { mod: SPACE1889Helper.getSignedStringFromNumber(anzahl) });
 				anzahl = Math.max(0, anzahl + diceCount);
-				doRoll(actor, anzahl, modToolTip);
+				doRoll(actor, anzahl, modToolTip, useAutoSuccess);
 			}
 		}
 		else
@@ -826,14 +834,14 @@ export class Space1889ActorSheet extends ActorSheet {
 			doRoll(this.actor, diceCount);
 		}
 
-		function doRoll(actor, count, rollToolTipMod = "")
+		function doRoll(actor, count, rollToolTipMod = "", useAutoSuccess)
 		{
 			const rollWithHtmlProm = SPACE1889RollHelper.createInlineRollWithHtml(count, "", rollToolTipMod);
 
 			rollWithHtmlProm.then((rollWithHtml) =>
 			{
 				let newSuccess = Number(item.system.successes);
-				const delta = rollWithHtml.roll.total - item.system.difficultyRating;
+				const delta = useAutoSuccess ? autoDelta : rollWithHtml.roll.total - item.system.difficultyRating;
 
 				
 				if (delta > 0)
@@ -862,11 +870,11 @@ export class Space1889ActorSheet extends ActorSheet {
 				desc += item.getTextLine("SPACE1889.DifficultyRating", item.system.difficultyRating);
 				desc += item.getTextLine("SPACE1889.AttemptsMade", item.system.attemptsMade + 1);
 				desc += item.getTextLine("SPACE1889.DataOfTheEventAbbr", SPACE1889Time.formatTimeDate(SPACE1889Time.getTimeAndDate(timestamp)));
-				desc += `<br>${rollWithHtml.html}`;
+				desc += useAutoSuccess ? `<br>${game.i18n.localize("SPACE1889.ProbeTakingTheAverage")}` : `<br>${rollWithHtml.html}`;
 				desc += resDelta === 0
 					? `<br>${game.i18n.format("SPACE1889.NoChange")}`
-					: item.getTextLine("SPACE1889.Change", SPACE1889Helper.getSignedStringFromNumber(resDelta));
-				desc += item.getTextLine("SPACE1889.CurrentSuccesses", `${newSuccess}/${item.system.totalNumberOfSuccesses}` );
+					: item.getTextLine("SPACE1889.Change", `<strong>${SPACE1889Helper.getSignedStringFromNumber(resDelta)}</strong>`);
+				desc += item.getTextLine("SPACE1889.CurrentSuccesses", `<strong>${newSuccess}/${item.system.totalNumberOfSuccesses}</strong>` );
 				desc += newSuccess >= item.system.totalNumberOfSuccesses
 					? `<br>${game.i18n.format("SPACE1889.Finalised")}`
 					: item.getTextLine("SPACE1889.TimeInterval", item.system.timeInterval);

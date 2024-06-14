@@ -2850,6 +2850,8 @@
 	"SPACE1889.NoChange": "keine Änderung",
 	"SPACE1889.Change": "Änderung",
 	"SPACE1889.ExtendedRollsIsFinished": "Die langfristige Probe wurde schon erfolgreich abgeschossen, da gibt es nichts mehr zu würfeln",
+	"SPACE1889.ProbeTakingTheAverage": "Probe: <strong>Automatischer Erfolg</strong>",
+	"SPACE1889.ExtendedRollUseTakingTheAverage": "Automatischen Erfolg verwenden, anstelle zu würfeln",
 
 	"SPACE1889.canNotBeAdded": "{item} kann nicht hinzugefügt werden, da die Vorbedingung(en) nicht erfüllt sind.",
 	"SPACE1889.CanNotAddTalentTwoPreCons": "Talent {talentName} kann nicht gewählt werden, da dafür keine der zwei möglichen Voraussetzungen: {preConType} {preConName} die Stufe {preConLevel}, bzw {preCon2Type} {preCon2Name} die Stufe {preCon2Level} erfüllt.",

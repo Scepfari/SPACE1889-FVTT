@@ -2850,6 +2850,8 @@
 	"SPACE1889.NoChange": "no change",
 	"SPACE1889.Change": "Change",
 	"SPACE1889.ExtendedRollsIsFinished": "The extended action roll has already been successfully completed, so there's no more dice to roll",
+	"SPACE1889.ProbeTakingTheAverage": "Probe: Taking the Average",
+	"SPACE1889.ExtendedRollUseTakingTheAverage": "Use Taking the Average, instead of rolling the dice",
 
 	"SPACE1889.canNotBeAdded": "{item} cannot be added because the precondition(s) are not met.",
 	"SPACE1889.CanNotAddTalentTwoPreCons": "Talent {talentName} cannot be choosen, because none of the two possible prerequisites for it: {preConType} {preConName} the level {preConLevel}, or {preCon2Type} {preCon2Name} meets the level {preCon2Level}.",

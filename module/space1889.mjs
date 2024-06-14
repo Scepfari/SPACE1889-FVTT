@@ -231,7 +231,6 @@ Hooks.on("chatMessage", (html, content, msg) =>
 	{
 		case "/space1889":
 			ui.notifications.info("Gl&uuml;ckwunsch, du hast ein nicht dokumentiertes Testkommando gefunden");
-			//console.log(SPACE1889Helper.getEffectData("paralysis"));
 			return false;
 		case "/help":
 			SPACE1889Helper.showHelpJournal();
@@ -457,7 +456,7 @@ Handlebars.registerHelper('doubleCheck', function (firstLeft, fistRight, secondL
 
 Handlebars.registerHelper('formatTime', function (gameTime)
 {
-	return SPACE1889Time.formatTimeDate(SPACE1889Helper.getTimeAndDate(gameTime));
+	return SPACE1889Time.formatTimeDate(SPACE1889Time.getTimeAndDate(gameTime));
 });
 
 Handlebars.registerHelper('formatEffectDuration', function (effectDuration)

@@ -89,7 +89,7 @@
 			<label class="resource-label">{{ localize "SPACE1889.TimeInterval" }}</label>
 			<input type="text" name="system.timeInterval" value="{{system.timeInterval}}" data-dtype="String" />
 		</div>
-		<div class="resource">
+		<div class="resource" data-tooltip="{{formatTime system.timestampLastTry}}">
 			<label class="resource-label">{{ localize "SPACE1889.Timestamp" }} {{ localize "SPACE1889.LastTry" }}</label>
 			<input type="text" name="system.timestampLastTry" value="{{system.timestampLastTry}}" data-dtype="Number" />
 		</div>
