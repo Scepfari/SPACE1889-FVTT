@@ -1704,7 +1704,7 @@ export default class SPACE1889RollHelper
 	static async createInlineRollWithHtml(diceCount, probeName = "", tooltipInfo = "")
 	{
 		let r = new Roll(diceCount.toString() + game.settings.get("space1889", "dice"));
-		await r.evaluate();
+		await (game.release.generation < 12 ? r.evaluate({ async: true }) : r.evaluate());
 		const htmlAn = await r.toAnchor();
 		let outerHtml = htmlAn.outerHTML;
 		const index = outerHtml.indexOf('class=""');
@@ -1751,6 +1751,8 @@ export default class SPACE1889RollHelper
 	static async rollDefenseAndAddDamageSub(data, diceCount, modifierToolTipInfo)
 	{
 		let target = game.scenes.viewed.tokens.get(data.targetId);
+		const actorToken = game.scenes.viewed.tokens.get(data.actorTokenId);
+
 		if (!target)
 			return;
 
@@ -1790,16 +1792,22 @@ export default class SPACE1889RollHelper
 		const combatSkill = game.i18n.localize(CONFIG.SPACE1889.combatSkills[data.combatSkillId]);
 		let doWeaponEffect = data.effect != "none";
 
-		if (delta > 0 && data.reducedDefense != "" && data.areaDamage > 0 && target.type != 'vehicle')
+		if (delta > 0 && data.reducedDefense !== "" && data.areaDamage > 0 && target.actor.type !== 'vehicle')
 		{
 			const factor = target.actor.system.secondaries.size.total > 0 ? -1 : 1;
 			let sizeMod = factor * Math.floor(Math.abs(target.actor.system.secondaries.size.total) / 2);
-			const extraDice = Math.abs(target.actor.system.secondaries.size.total % 2);
+			let extraDice = Math.abs(target.actor.system.secondaries.size.total % 2);
+
+			if (target.actor.isSwarm())
+			{
+				extraDice = 0;
+				sizeMod = 0;
+			}
 
 			if (extraDice > 0)
 			{
 				let r = new Roll("1" + game.settings.get("space1889", "dice"));
-				await r.evaluate();
+				await (game.release.generation < 12 ? r.evaluate({ async: true }) : r.evaluate());
 				sizeMod += factor * r.total;
 			}
 			const damageAmount = Math.max(0, data.areaDamage + sizeMod);
@@ -1826,6 +1834,9 @@ export default class SPACE1889RollHelper
 		else if (data.attackValue > rollWithHtml.roll.total)
 		{
 			let damageAmount = data.attackValue - rollWithHtml.roll.total;
+			if (target.actor.isSwarm())
+				damageAmount = 1;
+
 			if (data.damageType == 'paralyse')
 				await SPACE1889RollHelper.doParalysisChatMessage(target.actor, data.actorName, damageAmount, target.actor.system.abilities.str.total);
 			else
@@ -1839,36 +1850,48 @@ export default class SPACE1889RollHelper
 		}
 		else if (delta < 0 && data.reducedDefense.indexOf('BlockRiposte') >= 0)
 		{
+			let damage = (-1) * delta;
+			if (actorToken && actorToken.actor?.isSwarm())
+				damage = 1;
+
 			const chatData =
 			{
 				user: game.user.id,
 				speaker: ChatMessage.getSpeaker({ actor: target.actor }),
-				content: game.i18n.format("SPACE1889.AutoDefenseAttackBlockRiposte", { attackerName: data.actorName, skill: combatSkill, damage: (delta * (-1)) })
+				content: game.i18n.format("SPACE1889.AutoDefenseAttackBlockRiposte", { attackerName: data.actorName, skill: combatSkill, damage: damage })
 			};
 			ChatMessage.create(chatData, {});
-			await SPACE1889RollHelper.addActorDamageAndNotify(data.actorTokenId, SPACE1889Helper.getTokenName(target.actor._id), game.i18n.localize("SPACE1889.TalentGegenschlag") + "(" + data.attackName + ")", (delta * (-1)), data.riposteDamageType);
+			await SPACE1889RollHelper.addActorDamageAndNotify(data.actorTokenId, SPACE1889Helper.getTokenName(target.actor._id), game.i18n.localize("SPACE1889.TalentGegenschlag") + "(" + data.attackName + ")", damage, data.riposteDamageType);
 		}
 		else if (delta < 0 && data.reducedDefense.indexOf('ParryRiposte') >= 0 )
 		{
+			let damage = (-1) * delta;
+			if (actorToken && actorToken.actor?.isSwarm())
+				damage = 1;
+
 			const chatData =
 			{
 				user: game.user.id,
 				speaker: ChatMessage.getSpeaker({ actor: target.actor }),
-				content: game.i18n.format("SPACE1889.AutoDefenseAttackParryRiposte", { attackerName: data.actorName, skill: combatSkill, damage: (delta * (-1)), type: SPACE1889Helper.getDamageTypeAbbr(data.riposteDamageType) })
+				content: game.i18n.format("SPACE1889.AutoDefenseAttackParryRiposte", { attackerName: data.actorName, skill: combatSkill, damage: damage, type: SPACE1889Helper.getDamageTypeAbbr(data.riposteDamageType) })
 			};
 			ChatMessage.create(chatData, {});
-			await SPACE1889RollHelper.addActorDamageAndNotify(data.actorTokenId, SPACE1889Helper.getTokenName(target.actor._id), game.i18n.localize("SPACE1889.TalentRiposte") + "(" + data.attackName + ")", (delta * (-1)), data.riposteDamageType);
+			await SPACE1889RollHelper.addActorDamageAndNotify(data.actorTokenId, SPACE1889Helper.getTokenName(target.actor._id), game.i18n.localize("SPACE1889.TalentRiposte") + "(" + data.attackName + ")", damage, data.riposteDamageType);
 		}
 		else if (delta < 0 && data.reducedDefense.indexOf('Parry') >= 0 && data.combatSkillId == 'waffenlos')
 		{
+			let damage = (-1) * delta;
+			if (actorToken && actorToken.actor?.isSwarm())
+				damage = 1;
+
 			const chatData =
 			{
 				user: game.user.id,
 				speaker: ChatMessage.getSpeaker({ actor: target.actor }),
-				content: game.i18n.format("SPACE1889.AutoDefenseAttackParryBrawl", { attackerName: data.actorName, skill: combatSkill, damage: (delta * (-1)), type: SPACE1889Helper.getDamageTypeAbbr(data.riposteDamageType) })
+				content: game.i18n.format("SPACE1889.AutoDefenseAttackParryBrawl", { attackerName: data.actorName, skill: combatSkill, damage: damage, type: SPACE1889Helper.getDamageTypeAbbr(data.riposteDamageType) })
 			};
 			ChatMessage.create(chatData, {});
-			await SPACE1889RollHelper.addActorDamageAndNotify(data.actorTokenId, SPACE1889Helper.getTokenName(target.actor._id), game.i18n.localize("SPACE1889.Parry") + "(" + data.attackName + ")", (delta * (-1)), data.riposteDamageType);
+			await SPACE1889RollHelper.addActorDamageAndNotify(data.actorTokenId, SPACE1889Helper.getTokenName(target.actor._id), game.i18n.localize("SPACE1889.Parry") + "(" + data.attackName + ")", damage, data.riposteDamageType);
 		}
 		else
 		{

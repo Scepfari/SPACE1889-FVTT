@@ -1623,6 +1623,14 @@ export class Space1889Actor extends Actor
 	}
 
 	/**
+	 * @returns {boolean} 
+	 */
+	isSwarm()
+	{
+		return undefined !== this.system.talents?.find(t => t.system.id == "schwarm");
+	}
+
+	/**
 	 * 
 	 * @param actor
 	 */
