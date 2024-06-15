@@ -64,12 +64,22 @@ export class Space1889ItemSheet extends ItemSheet {
 		else if (item.type == "weapon")
 		{
 			context.system['combatSkills'] = CONFIG.SPACE1889.combatSkills;
-			context.system['combatSpecializations'] = CONFIG.SPACE1889.combatSpecializations;
 			context.system['damageTypes'] = CONFIG.SPACE1889.damageTypes;
 			context.system['damageTypeAbbr'] = CONFIG.SPACE1889.damageTypeAbbreviations;
 			context.system['capacityTypes'] = CONFIG.SPACE1889.weaponCapacityTypes;
 			context.system['ammunitionTypes'] = CONFIG.SPACE1889.weaponAmmunitionTypes;
 			context.system['effectTypes'] = CONFIG.SPACE1889.effects;
+			context.system['specializations'] = await SPACE1889Helper.getSortedSpecializationsFromSkill(context.system.skillId);
+
+			if (context.system.specializations.length > 0
+				&& !context.system.specializations.find(e => e.key === context.system.specializationId))
+			{
+				await item.update({ "system.specializationId": context.system.specializations[0].key });
+			}
+			else if (context.system.specializations.length === 0 && context.system.specializationId !== "")
+			{
+				await item.update({ "system.specializationId": "" });
+			}
 		}
 		else if (item.type == "ammunition")
 		{

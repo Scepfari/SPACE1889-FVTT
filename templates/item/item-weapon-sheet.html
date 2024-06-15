@@ -17,7 +17,7 @@
 		<div class="resource">
 			<label class="resource-label">{{ localize "SPACE1889.CombatSpecialization" }}</label>
 			<select name="system.specializationId" data-dtype="String">
-				{{selectOptions system.combatSpecializations selected=system.specializationId localize=true}}
+				{{selectOptions system.specializations selected=system.specializationId nameAttr="key" labelAttr="label"}}
 			</select>
 		</div>
 
