@@ -1914,6 +1914,19 @@ export class Space1889Actor extends Actor
 		return composition;
 	}
 
+	getOtherInfoText(key, forChat = false)
+	{
+		const headerClass = forChat ? "" : "class=\"itemTooltipH3\"";
+		const textClass = forChat ? "" : "itemTooltip";
+		const langId = "SPACE1889." + key + "Desc";
+		const desc = game.i18n.localize(langId) ?? langId;
+		const name = game.i18n.localize("SPACE1889." + key);
+
+		const composition =
+			`<h3 ${headerClass}><strong>${name}</strong></h3><div class="${textClass}">${desc}</div>`;
+		return composition;
+	}
+
 	showAttributeInfo(name, key, whisper)
 	{
 		const speaker = ChatMessage.getSpeaker({ actor: this.actor });

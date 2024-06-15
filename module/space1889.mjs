@@ -525,6 +525,12 @@ Handlebars.registerHelper('secondaryToolTipDescription', function (actor, key)
 	return actor.getSecondaryInfoText(key);
 });
 
+Handlebars.registerHelper('otherToolTipDescription', function (actor, key)
+{
+	if (!actor)
+		return "";
+	return actor.getOtherInfoText(key);
+});
 
 /* -------------------------------------------- */
 /*  Ready Hook                                  */
