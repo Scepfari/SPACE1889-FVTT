@@ -583,7 +583,7 @@ export class Space1889Actor extends Actor
 		system.secondaries.defense.activeTotal = Math.max(0, this.getActiveDefense(actor) - system.secondaries.size.total - system.healthDeduction);
 		const total = system.secondaries.defense.value + system.secondaries.defense.bonus;
 		system.secondaries.defense.total = Math.max(0, total);
-		system.secondaries.defense.totalDefense = total + this.getTotalDefenseBonus(actor);
+		system.secondaries.defense.totalDefense = Math.max(0, total + this.getTotalDefenseBonus(actor));
 	}
 
 	getAsNumber(value)

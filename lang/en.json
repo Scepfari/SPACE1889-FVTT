@@ -3480,6 +3480,7 @@
 	"SPACE1889.AttackTypeFullAutofire": "Full Autofire",
 	"SPACE1889.AttackTypeStrafing": "Strafing",
 	"SPACE1889.AttackCountInCombatRound": "{count}. attack action in combat round {round}",
+	"SPACE1889.DefenseCountInCombatRound": "{count}. defense action in combat round {round} => penalty: {malus}",
 
 	"SPACE1889.DefenseDialogDefenceProbe": "Defence probe",
 	"SPACE1889.DefenseDialogDefenseType": "defense type",

@@ -569,26 +569,35 @@ Hooks.once("ready", async function() {
 			switch (data.type)
 			{
 				case "updateMessage":
-					const message = game.messages.get(data.payload.id);
-					message.update(data.payload.updateData);
+					{
+						const message = game.messages.get(data.payload.id);
+						message.update(data.payload.updateData);
+					}
 					break;
 				case "createActorDamage":
-					const token = game.scenes.viewed.tokens.get(data.tokenId);
-					if (token)
-						SPACE1889RollHelper.addActorDamageFromSocket(data.tokenId, data.damageData);
+					{
+						const token = SPACE1889Helper.getTokenFromId(data.tokenId);
+						if (token)
+							SPACE1889RollHelper.addActorDamageFromSocket(data.tokenId, data.damageData);
+					}
 					break;
 				case "updateNotes":
-					const actor = game.actors.get(data.payload.actorId);
-					if (actor)
-						actor.update({ "system.notes.value": data.payload.updateData });
+					{
+						const actor = game.actors.get(data.payload.actorId);
+						if (actor)
+							actor.update({ "system.notes.value": data.payload.updateData });
+					}
 					break;
 				case "removeDyingEffect":
-					const dyingToken = game.scenes.get(data.payload.sceneId)?.tokens?.get(data.payload.tokenId);
-					if (dyingToken)
-						SPACE1889Healing.removeDyingEffect(dyingToken.actor);
+					{
+						const dyingToken = game.scenes.get(data.payload.sceneId)?.tokens?.get(data.payload.tokenId);
+						if (dyingToken)
+							SPACE1889Healing.removeDyingEffect(dyingToken.actor);
+					}
+					break;
 
 				default:
-					console.warn(`Unhandled socket data type ${data.type}`)
+					console.warn(`Unhandled socket data type ${data.type}`);
 			}
 		});
 	}

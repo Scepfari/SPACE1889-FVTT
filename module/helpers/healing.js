@@ -32,11 +32,11 @@ export default class SPACE1889Healing
 		if (targetId == "")
 			return;
 
-		const token = game.scenes.viewed.tokens.get(targetId);
+		const token = SPACE1889Helper.getTokenFromId(targetId);
 		if (!token)
 			return;
 
-		const combatant = game.combat?.combatants.find((e) => e.tokenId == targetId);
+		const combatant = game.combat?.combatants.find((e) => e.tokenId === targetId);
 		if (combatant)
 		{
 			ui.notifications.info(game.i18n.localize("SPACE1889.FistAidBlockedInCombat"));
@@ -224,9 +224,9 @@ export default class SPACE1889Healing
 		if (speakerTokenId == "" && actorId == "")
 			return;
 
-		let actor = game.scenes.viewed.tokens.get(speakerTokenId)?.actor;
+		let actor = SPACE1889Helper.getTokenFromId(speakerTokenId)?.actor;
 		if (!actor)
-			actor = game.actors.get(actorId)
+			actor = game.actors.get(actorId);
 
 		if (!actor)
 			return;
@@ -837,7 +837,7 @@ export default class SPACE1889Healing
 		if (speakerTokenId === "" && actorId === "")
 			return;
 
-		let actor = game.scenes.viewed.tokens.get(speakerTokenId)?.actor;
+		let actor = SPACE1889Helper.getTokenFromId(speakerTokenId)?.actor;
 		if (!actor)
 			actor = game.actors.get(actorId);
 

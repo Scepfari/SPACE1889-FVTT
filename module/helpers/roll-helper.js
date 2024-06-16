@@ -1241,7 +1241,7 @@ export default class SPACE1889RollHelper
 		const labelSkill = game.i18n.localize(CONFIG.SPACE1889.vehicleManoeuvresToSkill[key]);
 		let skillWithSpezAndValue = labelSkill;
 
-		const isTotalDefense = key == "totalDefense"
+		const isTotalDefense = key === "totalDefense";
 		const isDefense = key == "defense" || isTotalDefense;
 
 		if (isDefense && actorSystem.health.value > 0 && actorSystem.positions.pilot.staffed)
@@ -1560,11 +1560,11 @@ export default class SPACE1889RollHelper
 		if (targetId == "")
 			return;
 
-		const token = game.scenes.viewed.tokens.get(targetId);
+		const token = SPACE1889Helper.getTokenFromId(targetId);
 		if (!token)
 			return;
 
-		const attackerToken = game.scenes.viewed.tokens.get(actorTokenId);
+		const attackerToken = SPACE1889Helper.getTokenFromId(actorTokenId);
 		const actorName = !attackerToken ? 'unbekannt' : attackerToken.name;
 		const permissions = token.actor.ownership;
 		if (game.user.isGM || (permissions["default"] && permissions["default"] == 3) || (permissions[game.userId] && permissions[game.userId] == 3))
@@ -1620,22 +1620,21 @@ export default class SPACE1889RollHelper
  */
 	static async rollDefenseAndAddDamage(data)
 	{
-		let target = game.scenes.viewed.tokens.get(data.targetId);
+		let target = SPACE1889Helper.getTokenFromId(data.targetId);
 		if (!target)
 			return;
 
-		const rollAndDefense = SPACE1889RollHelper.getModifiedDefense(data.targetId, target.actor, data.reducedDefense, data.combatSkillId)
-		data.reducedDefense = rollAndDefense.defenseType;
-		data.riposteDamageType = rollAndDefense.riposteDamageType;
-		const modifierToolTipInfo = rollAndDefense.multiDefenseMod == 0 ? "" : game.i18n.format("SPACE1889.ChatMultiAttackDefenseModifier", { mod: rollAndDefense.multiDefenseMod });
-
 		if (this.getEventEvaluation(data.event).showDialog)
 		{
-			this.rollDefenseAndAddDamageWithDialog(data, rollAndDefense.diceCount, modifierToolTipInfo);
+			SPACE1889Combat.defenseDialog(data);
 			return;
 		}
 
-		this.rollDefenseAndAddDamageSub(data, rollAndDefense.diceCount, modifierToolTipInfo);
+		const options = SPACE1889Combat.getDefenseOptions(data);
+		data.reducedDefense = options.defenseType;
+		data.riposteDamageType = options.riposteDamageType;
+		const modifierToolTipInfo = options.multiDefenseMalus === 0 ? "" : game.i18n.format("SPACE1889.ChatMultiAttackDefenseModifier", { mod: options.multiDefenseMalus });
+		this.rollDefenseAndAddDamageSub(data, Math.max(0, options.diceCount), modifierToolTipInfo);
 	}
 
 	static getModifiedDefense(tokenId, actor, defenseType, combatSkillId)
@@ -1750,8 +1749,8 @@ export default class SPACE1889RollHelper
 
 	static async rollDefenseAndAddDamageSub(data, diceCount, modifierToolTipInfo)
 	{
-		let target = game.scenes.viewed.tokens.get(data.targetId);
-		const actorToken = game.scenes.viewed.tokens.get(data.actorTokenId);
+		let target = SPACE1889Helper.getTokenFromId(data.targetId);
+		const actorToken = SPACE1889Helper.getTokenFromId(data.actorTokenId);
 
 		if (!target)
 			return;
@@ -1764,17 +1763,24 @@ export default class SPACE1889RollHelper
 		if (data.reducedDefense.substring(0, 10) == 'onlyActive')
 		{
 			title = game.i18n.localize("SPACE1889.ActiveDefense");
-			if (data.reducedDefense.indexOf('Block') >= 0)
-				title += " (" + game.i18n.localize("SPACE1889.Block") + ")";
-			if (data.reducedDefense.indexOf('Parry') >= 0)
-				title += " (" + game.i18n.localize("SPACE1889.Parry") + ")";
+			title += _getDefenceName(data.reducedDefense, true);
+		}
+		else if (data.reducedDefense.indexOf('UseActionForDefense') >= 0)
+		{
+			title = game.i18n.localize("SPACE1889.TotalDefense");
+			title += _getDefenceName(data.reducedDefense, true, true);
 		}
 		else if (data.reducedDefense == 'onlyPassive')
 			title = game.i18n.localize("SPACE1889.PassiveDefense");
-		else if (data.reducedDefense.indexOf('Block') >= 0)
-			title = game.i18n.localize("SPACE1889.Block");
-		else if (data.reducedDefense.indexOf('Parry') >= 0)
-			title = game.i18n.localize("SPACE1889.Parry");
+		else
+			title = _getDefenceName(data.reducedDefense, false, true);
+
+		if (data.reducedDefense.indexOf("UseActionForDefense") >= 0)
+		{
+			const statusIds = this.getActiveEffectStates(target.actor);
+			if (statusIds.find(element => element === "totalDefense") == undefined)
+				SPACE1889Helper.addEffect(target.actor, { name: "totalDefense", rounds: 1 });
+		}
 
 		let content = `<div><h2>${title}</h2></div>` + rollWithHtml.html;
 		const chatData =
@@ -1931,6 +1937,24 @@ export default class SPACE1889RollHelper
 				message.update({ "content": newContent, "flags.space1889.userHidden" : true });
 			}
 		}
+
+		function _getDefenceName(defenseType, useBrackets, ignoreTotal = false)
+		{
+			let name = "";
+			const risingBrackets = useBrackets ? " (" : "";
+			const closingBrackets = useBrackets ? ")" : "";
+
+			if (!ignoreTotal && defenseType.indexOf('UseActionForDefense') >= 0)
+				name += risingBrackets + game.i18n.localize("SPACE1889.TotalDefense") + closingBrackets;
+			if (defenseType.indexOf('Block') >= 0)
+				name += risingBrackets + game.i18n.localize("SPACE1889.Block") + closingBrackets;
+			else if (defenseType.indexOf('Parry') >= 0)
+				name += risingBrackets + game.i18n.localize("SPACE1889.Parry") + closingBrackets;
+			else if (defenseType.indexOf('Evasion') >= 0)
+				name += risingBrackets + game.i18n.localize("SPACE1889.Evasion") + closingBrackets;
+
+			return name;
+		}
 	}
 
 	static async addActorDamageFromSocket(tokenId, damageData)
@@ -1940,7 +1964,7 @@ export default class SPACE1889RollHelper
 
 	static async addActorDamageAndNotify(tokenId, causerName, attackName, damageAmount, damageType, useSocket = true )
 	{
-		const actorToken = game.scenes.viewed.tokens.get(tokenId);
+		const actorToken = SPACE1889Helper.getTokenFromId(tokenId);
 		if (!actorToken || !actorToken.actor)
 			return;
 		
@@ -1961,50 +1985,6 @@ export default class SPACE1889RollHelper
 						damageType: damageType
 				}
 			});
-		}
-	}
-
-
-	static async rollDefenseAndAddDamageWithDialog(data, diceCount, modifierToolTipInfo)
-	{
-		const titelPartOne = game.i18n.localize("SPACE1889.ModifiedRoll");
-		const inputDesc = game.i18n.localize("SPACE1889.NumberOfModificationDice");
-		const diceDesc = game.i18n.localize("SPACE1889.ConfigDice");
-		const titel = game.i18n.localize("SPACE1889.SecondaryAttributeDef");
-
-		new Dialog(
-			{ 
-				title: `${titelPartOne}: ${titel} (${diceCount} ${diceDesc})`,
-				content: `<p>${inputDesc}: <input type="number" id="anzahlDerWuerfel" value = "0"></p>`,
-				buttons:
-				{
-					ok:
-					{
-						icon: '',
-						label: game.i18n.localize("SPACE1889.Go"),
-						callback: (html) => myCallback(html)
-					},
-					abbruch:
-					{
-						label: game.i18n.localize("SPACE1889.Cancel"),
-						callback: () => { ui.notifications.info(game.i18n.localize("SPACE1889.NoAutoDefenseCancel")) },
-						icon: `<i class="fas fa-times"></i>`
-					}
-				},
-				default: "ok"
-			}).render(true);
-
-		function myCallback(html)
-		{
-			const input = html.find('#anzahlDerWuerfel').val();
-			let anzahl = input ? parseInt(input) : 0;
-			const modToolTip = anzahl == 0 ? "" : game.i18n.format("SPACE1889.ChatModifier", { mod: SPACE1889Helper.getSignedStringFromNumber(anzahl) });
-			if (modifierToolTipInfo.length == 0)
-				modifierToolTipInfo = modToolTip;
-			else
-				modifierToolTipInfo += "\n" + modToolTip;
-			anzahl += diceCount;
-			SPACE1889RollHelper.rollDefenseAndAddDamageSub(data, anzahl, modifierToolTipInfo);
 		}
 	}
 

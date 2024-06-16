@@ -3480,6 +3480,7 @@
 	"SPACE1889.AttackTypeFullAutofire": "Dauerfeuer",
 	"SPACE1889.AttackTypeStrafing": "Streufeuer",
 	"SPACE1889.AttackCountInCombatRound": "{count}. Angriffsaktion in Kampfrunde {round}",
+	"SPACE1889.DefenseCountInCombatRound": "{count}. Abwehr in Kampfrunde {round} => Malus: {malus}",
 
 	"SPACE1889.DefenseDialogDefenceProbe": "Abwehrprobe",
 	"SPACE1889.DefenseDialogDefenseType": "Abwehrart",

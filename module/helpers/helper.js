@@ -1346,7 +1346,7 @@ export default class SPACE1889Helper
 		if (tokenId == "")
 			return false;
 
-		const token = game.scenes.viewed.tokens.get(tokenId);
+		const token = SPACE1889Helper.getTokenFromId(tokenId);
 		if (!token)
 			return false;
 
@@ -2355,5 +2355,20 @@ export default class SPACE1889Helper
 			list.push({key: item.system.id, label: item.system.label});
 		}
 		return list;
+	}
+
+	static getTokenFromId(tokenId, currentViewOnly = true)
+	{
+		const token = game.scenes.viewed.tokens.get(tokenId);
+		if (token || currentViewOnly) 
+			return token;
+
+		for (const scene of game.scenes._sources)
+		{
+			const foundToken = scene.tokens.find(e => e._id === tokenId);
+			if (foundToken)
+				return foundToken;
+		}
+		return undefined;
 	}
 }
