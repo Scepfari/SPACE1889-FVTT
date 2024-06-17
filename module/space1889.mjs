@@ -23,6 +23,7 @@ import TurnMarker from "./helpers/turnMarker.js";
 import * as CleanHeader from "./ui/cleanHeader.js";
 import * as sideBar from "./ui/sidebar.js";
 import { Space1889Menu } from "./ui/spaceMenu.js";
+import { getEffectInfoText } from "./helpers/effects.js";
 
 
 
@@ -509,6 +510,14 @@ Handlebars.registerHelper('fullItemToolTipDescription', function (item)
 		return "";
 
 	return item.getInfoText();
+});
+
+Handlebars.registerHelper('fullEffectToolTipDescription', function (effect) 
+{
+	if (!effect)
+		return "";
+
+	return getEffectInfoText(effect);
 });
 
 Handlebars.registerHelper('abilityToolTipDescription', function (actor, key)

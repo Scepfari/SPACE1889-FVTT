@@ -244,7 +244,7 @@ export class Space1889ItemSheet extends ItemSheet {
 		// Active Effect management
 		html.find(".effect-control").click(ev =>
 		{
-			onManageActiveEffect(ev, this.item)
+			onManageActiveEffect(ev, this.item);
 		});
 
 	}
