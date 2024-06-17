@@ -798,8 +798,6 @@ export default class SPACE1889Combat
 
 		const defenseCount = SPACE1889RollHelper.getDefenseCount(data.targetId);
 		const combatRound = game.combat ? game.combat.round : 0;
-
-		const hasAttacked = token && SPACE1889RollHelper.getAttackCount(token.id) > 0;
 		const name = token ? token.name : actor.name;
 
 		const hasActiveDefense = !actor.HasNoActiveDefense(actor) && defenseType.indexOf("onlyPassive") < 0;
@@ -1069,6 +1067,8 @@ export default class SPACE1889Combat
 			return { defenseType: data.reducedDefense, riposteDamageType: "lethal", diceCount: 0, multiDefenseMalus: 0, blockInfo: null, parryInfo: null, dodgeInfo: null, totalInfo: null };			
 
 		const hasAttacked = token && SPACE1889RollHelper.getAttackCount(token.id) > 0;
+		const hasAttackActionForDefense = !hasAttacked && !actor.isStunned();
+
 		const defenseType = data.reducedDefense;
 		const defenseCount = SPACE1889RollHelper.getDefenseCount(data.targetId);
 		const multiDefenseMalus = actor ? actor.getDefenseMalus(defenseCount + 1) : 0;
@@ -1082,10 +1082,10 @@ export default class SPACE1889Combat
 			return { defenseType: resultantDefenseType, riposteDamageType: resultRiposteDamageType, diceCount: dice, multiDefenseMalus: multiDefenseMalus, blockInfo: null, parryInfo: null, dodgeInfo: null, totalInfo: null  };
 		}
 
-		const blockInfo = this.getBlockData(actor, defenseType, data.combatSkillId, hasAttacked, multiDefenseMalus);
-		const parryInfo = this.getParryData(actor, defenseType, data.combatSkillId, hasAttacked, multiDefenseMalus);
-		const dodgeInfo = this.getEvasionData(actor, defenseType, data.combatSkillId, hasAttacked, multiDefenseMalus);
-		const totalInfo = this.getTotalData(actor, defenseType, hasAttacked, multiDefenseMalus, blockInfo, parryInfo, dodgeInfo);
+		const blockInfo = this.getBlockData(actor, defenseType, data.combatSkillId, hasAttackActionForDefense, multiDefenseMalus);
+		const parryInfo = this.getParryData(actor, defenseType, data.combatSkillId, hasAttackActionForDefense, multiDefenseMalus);
+		const dodgeInfo = this.getEvasionData(actor, defenseType, data.combatSkillId, hasAttackActionForDefense, multiDefenseMalus);
+		const totalInfo = this.getTotalData(actor, defenseType, hasAttackActionForDefense, multiDefenseMalus, blockInfo, parryInfo, dodgeInfo);
 
 		const statusIds = SPACE1889RollHelper.getActiveEffectStates(actor);
 		const isTotalDefense = statusIds.find(element => element === "totalDefense") !== undefined;
@@ -1128,14 +1128,14 @@ export default class SPACE1889Combat
 		return { defenseType: resultantDefenseType, riposteDamageType: resultRiposteDamageType, diceCount: diceCount, multiDefenseMalus: multiDefenseMalus, blockInfo: blockInfo, parryInfo: parryInfo, dodgeInfo: dodgeInfo, totalInfo: totalInfo };
 	}
 
-	static getBlockData(actor, defenseType, attackCombatSkillId, hasAttacked, multiDefenseMalus)
+	static getBlockData(actor, defenseType, attackCombatSkillId, hasAttackActionForDefense, multiDefenseMalus)
 	{
 		let isInstinctive = actor.system.block ? actor.system.block.instinctive : false;
 
 		if (defenseType === 'onlyPassive' || actor.HasNoActiveDefense(actor) || !this.isActorTypeValidForBlockParryDodge(actor.type))
 			return { canDo: false, diceCount: 0, instinctive: isInstinctive, defenseType: defenseType, info: game.i18n.localize("SPACE1889.CanNotBlockNoActiveDefence") };
 
-		if (hasAttacked && !isInstinctive)
+		if (!hasAttackActionForDefense && !isInstinctive)
 			return { canDo: false, diceCount: 0, instinctive: isInstinctive, defenseType: defenseType, info: game.i18n.localize("SPACE1889.CanNotBlockNoAction") };
 
 		let activeOnly = false;
@@ -1213,7 +1213,7 @@ export default class SPACE1889Combat
 		return { canDo: canDoBlock, diceCount: Math.max(0, blockValue + multiDefenseMalus), instinctive: isInstinctive, defenseType: resultantDefenseType, riposteDamageType: "nonLethal", info: info };
 	}
 
-	static getParryData(actor, defenseType, attackCombatSkillId, hasAttacked, multiDefenseMalus)
+	static getParryData(actor, defenseType, attackCombatSkillId, hasAttackActionForDefense, multiDefenseMalus)
 	{
 		let isInstinctive = actor.system.parry ? actor.system.parry.instinctive : false;
 		const talentName = game.i18n.localize("SPACE1889.Parry");
@@ -1221,7 +1221,7 @@ export default class SPACE1889Combat
 		if (defenseType === 'onlyPassive' || actor.HasNoActiveDefense(actor) || !this.isActorTypeValidForBlockParryDodge(actor.type))
 			return { canDo: false, diceCount: 0, instinctive: isInstinctive, defenseType: defenseType, info: game.i18n.format("SPACE1889.ConNotBlockParryEvasionNoActiveDefence", { talentName: talentName }) };
 
-		if (hasAttacked && !isInstinctive)
+		if (!hasAttackActionForDefense && !isInstinctive)
 			return { canDo: false, diceCount: 0, instinctive: isInstinctive, defenseType: defenseType, info: game.i18n.format("SPACE1889.ConNotBlockParryEvasionNoAction", { talentName: talentName }) };
 
 		let activeOnly = false;
@@ -1251,7 +1251,7 @@ export default class SPACE1889Combat
 		return { canDo: canDoParry, diceCount: Math.max(0, parryValue + multiDefenseMalus), instinctive: isInstinctive, defenseType: resultantDefenseType, riposteDamageType: actor.system.parry.riposteDamageType, info: info };
 	}
 
-	static getEvasionData(actor, defenseType, attackCombatSkillId, hasAttacked, multiDefenseMalus)
+	static getEvasionData(actor, defenseType, attackCombatSkillId, hasAttackActionForDefense, multiDefenseMalus)
 	{
 		let isInstinctive = actor.system.evasion ? actor.system.evasion.instinctive : false;
 		const talentName = game.i18n.localize("SPACE1889.Evasion");
@@ -1259,7 +1259,7 @@ export default class SPACE1889Combat
 		if (defenseType === 'onlyPassive' || actor.HasNoActiveDefense(actor) || !this.isActorTypeValidForBlockParryDodge(actor.type))
 			return { canDo: false, diceCount: 0, instinctive: isInstinctive, defenseType: defenseType, info: game.i18n.format("SPACE1889.ConNotBlockParryEvasionNoActiveDefence", { talentName: talentName }) };
 
-		if (hasAttacked && !isInstinctive)
+		if (!hasAttackActionForDefense && !isInstinctive)
 			return { canDo: false, diceCount: 0, instinctive: isInstinctive, defenseType: defenseType, info: game.i18n.format("SPACE1889.ConNotBlockParryEvasionNoAction", { talentName: talentName }) };
 
 		let activeOnly = false;
@@ -1287,9 +1287,9 @@ export default class SPACE1889Combat
 		return { canDo: canDoDodge, diceCount: Math.max(0, dodgeValue + multiDefenseMalus), instinctive: isInstinctive, defenseType: resultantDefenseType, info: info };
 	}
 
-	static getTotalData(actor, defenseType, hasAttacked, multiDefenseMalus, blockInfo, parryInfo, dodgeInfo)
+	static getTotalData(actor, defenseType, hasAttackActionForDefense, multiDefenseMalus, blockInfo, parryInfo, dodgeInfo)
 	{
-		if (defenseType === 'onlyPassive' || actor.HasNoActiveDefense(actor) || hasAttacked)
+		if (defenseType === 'onlyPassive' || actor.HasNoActiveDefense(actor) || !hasAttackActionForDefense)
 			return { canDo: false, diceCount: 0, defenseType: defenseType, riposteDamageType : "" };
 
 		const totalDefenseBonus = actor.getTotalDefenseBonus(actor);

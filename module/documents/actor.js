@@ -1206,6 +1206,12 @@ export class Space1889Actor extends Actor
 		return statusIds.includes("paralysis") || statusIds.includes("noActiveDefense") || statusIds.includes("unconscious");
 	}
 
+	isStunned()
+	{
+		const statusIds = SPACE1889RollHelper.getActiveEffectStates(this);
+		return statusIds.includes("stun");
+	}
+
 	CalcAndSetBlockData(actor)
 	{
 		if (this.HasNoActiveDefense(actor))
