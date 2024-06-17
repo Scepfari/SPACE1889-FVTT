@@ -807,7 +807,7 @@ export default class SPACE1889Combat
 
 		let defOpt = this.getDefenseOptions(data);
 		const normalSelected = defOpt.defenseType === "" ? " checked" : "";
-		const activeSelected = defOpt.defenseType === "onlyActive" ? " checked" : "";
+		const activeSelected = defOpt.defenseType.indexOf("onlyActive") === 0 ? " checked" : "";
 		const passiveSelected = defOpt.defenseType === "onlyPassive" ? " checked" : "";
 		const totalSelected = defOpt.defenseType.indexOf("Total") >= 0 ? " checked" : "";
 		const blockSelected = defOpt.defenseType.indexOf("Block") >= 0 && !totalSelected ? " checked" : "";
@@ -819,33 +819,33 @@ export default class SPACE1889Combat
 		const totalInfo = defOpt.totalInfo;
 		const multiDefenseMalus = defOpt.multiDefenseMalus;
 
-		let baseBlock = defBlockInfo.diceCount;
-		let blockToolTip = defBlockInfo.info;
-		const instinctiveBlock = actor.system.block.instinctive;
-		const canDoBlock = defBlockInfo.canDo;
+		let baseBlock = defBlockInfo ? defBlockInfo.diceCount : 0;
+		let blockToolTip = defBlockInfo ? defBlockInfo.info : ""; 
+		const instinctiveBlock = defBlockInfo ? actor.system.block.instinctive : false;
+		const canDoBlock = defBlockInfo ? defBlockInfo.canDo : false;
 
-		let baseDodge = defDodgeInfo.diceCount;
-		const instinctiveDodge = defDodgeInfo.instinctive;
-		const canDoDodge = defDodgeInfo.canDo;
-		let dodgeToolTip = defDodgeInfo.info;
+		let baseDodge = defDodgeInfo ? defDodgeInfo.diceCount : 0;
+		const instinctiveDodge = defDodgeInfo ? defDodgeInfo.instinctive : false;
+		const canDoDodge = defDodgeInfo ? defDodgeInfo.canDo : false;
+		let dodgeToolTip = defDodgeInfo ? defDodgeInfo.info : "";
 
-		let baseParry = defParryInfo.diceCount;
-		const instinctiveParry = defParryInfo.instinctive;
-		const canDoParry = defParryInfo.canDo;
-		let parryToolTip = defParryInfo.info;
+		let baseParry = defParryInfo ? defParryInfo.diceCount : 0;
+		const instinctiveParry = defParryInfo ? defParryInfo.instinctive : false;
+		const canDoParry = defParryInfo ? defParryInfo.canDo : false;
+		let parryToolTip = defParryInfo ? defParryInfo.info : "";
 
 		let base = Math.max(0, actor.system.secondaries.defense.total + multiDefenseMalus);
 
 		const activeDefense = Math.max(0, multiDefenseMalus + actor.system.secondaries.defense.activeTotal);
 		const passiveDefense = Math.max(0, multiDefenseMalus + actor.system.secondaries.defense.passiveTotal);
-		let totalDefense = totalInfo.canDo ? totalInfo.diceCount : 0;
+		let totalDefense = totalInfo?.canDo ? totalInfo.diceCount : 0;
 
 		const disableBlockInHtlmText = canDoBlock ? "" : `disabled="true"`;
 
 		const hideParryInHtml = "";
 		const disableParryInHtlmText = canDoParry ? "" : `disabled="true"`;
 		const disableDodgeInHtlmText = canDoDodge ? "" : `disabled="true"`;
-		const disableTotalDefenseInHtlmText = totalInfo.canDo ? "" : `disabled="true" data-tooltip="${game.i18n.format("SPACE1889.NoBlockParryEvasion", { talentName: game.i18n.localize("SPACE1889.DefenseDialogTotalDefense") } )}"`;
+		const disableTotalDefenseInHtlmText = totalInfo?.canDo ? "" : `disabled="true" data-tooltip="${game.i18n.format("SPACE1889.NoBlockParryEvasion", { talentName: game.i18n.localize("SPACE1889.DefenseDialogTotalDefense") } )}"`;
 
 		const disableActiveDefenseInHtlmText = hasActiveDefense ? "" : `disabled="true"`;
 		const disablePassiveDefenseInHtlmText = hasPassiveDefense ? "" : `disabled="true"`;
