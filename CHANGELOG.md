@@ -2,6 +2,14 @@
 
 ## Niedergang der Errungenschaften
 
+### v2.2.4
+- Verbesserungen an der Langfristigen Probe
+- Unterstützung der Schwarm Kampfregeln, falls die Kampfunterstützung in den Einstellungen aktiv ist. Ob eine Kreatur ein Schwarm ist oder nicht wird an dem Vorhandensein des Talentes "Schwarm" festgemacht, welches jetzt neu im Kompendium enthalten ist. Die im Kompendium enthaltenen Schwarmkreaturen wurden mit dem Talent ausgestattet.
+- Neuer Dialog für Automatische Verteidigung, erreichbar über [STRG] und oder [SHIFT] und Klick auf den "Automatische Verteidigung" Knopf im Chat. Der Dialog zeigt die möglichen Abwehrkampfmanöver an, die bei diesem Angriff gewählt werden können. Damit sind auch Volle Verteidigung und nicht instinktives Blocken, Parieren oder Ausweichen möglich. 
+- Neuer Zustand (Effekt) Volle Verteidigung. Charakter mit diesem Zustand können in dieser Kampfrunde nicht angreifen
+- Im Waffenbogen enthält die Auswahlbox für die Kampfspezialisierung nur noch die Spezialisierungen an die zur ausgewählten Kampffertigkeit gehören
+- Tooltip für Effekte im Charakterbogen 
+
 ### v2.2.3
 - Systemunterstützung für Langfristige Proben => Einzelheiten in der Hilfe
 - Abstandsmessung zur Entfernungsbestimmung für Fernangriffe beachten nun den Höhenunterschied der beteiligten Figuren.
