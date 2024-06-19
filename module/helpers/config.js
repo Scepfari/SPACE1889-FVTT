@@ -806,6 +806,21 @@ SPACE1889.effects = {
 	"dying": "SPACE1889.EffectDying"
 }
 
+SPACE1889.effectsDescription = {
+	"none": "",
+	"stun": "SPACE1889.EffectStunInfo",
+	"prone": "SPACE1889.EffectProneInfo",
+	"unconscious": "SPACE1889.EffectUnconsicousInfo",
+	"paralysis": "SPACE1889.EffectParalysisInfo",
+	"fear": "SPACE1889.EffectFearInfo",
+	"burning": "SPACE1889.EffectBurningInfo",
+	"frozen": "SPACE1889.EffectFrozenInfo",
+	"dead": "SPACE1889.EffectDeadInfo",
+	"noActiveDefense": "SPACE1889.EffectNoActiveDefenseInfo",
+	"totalDefense": "SPACE1889.EffectTotalDefenseInfo",
+	"dying": "SPACE1889.EffectDyingInfo"
+}
+
 SPACE1889.effectIcons = {
 	"stun": "icons/svg/daze.svg",
 	"prone": "icons/svg/falling.svg",

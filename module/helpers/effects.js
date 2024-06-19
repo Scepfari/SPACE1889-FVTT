@@ -56,7 +56,24 @@ export function getEffectInfoText(effect, forChat = false)
 	const textClass = forChat ? "" : "itemTooltip";
 	const name = isV10 ? effect.label : effect.name;;
 	const type = game.i18n.localize("SPACE1889.Effect");
-	let desc = forChat ? SPACE1889Helper.getItemChatImageHtml(effect.icon, true) : SPACE1889Helper.getItemChatImageHtml(effect.icon, true, 150);
+	let desc = "";
+
+	if (isV10)
+	{
+		const statusId = effect.flags?.core?.statusId;
+		if (SPACE1889.effectsDescription.hasOwnProperty(statusId))
+			desc += `<p>${game.i18n.localize(SPACE1889.effectsDescription[statusId])}</p>`;
+	}
+	else
+	{
+		for (let id of effect.statuses)
+		{
+			if (SPACE1889.effectsDescription.hasOwnProperty(id))
+				desc += `<p>${game.i18n.localize(SPACE1889.effectsDescription[id])}</p>`;
+		}
+	}
+
+	desc += forChat ? SPACE1889Helper.getItemChatImageHtml(effect.icon, true) : SPACE1889Helper.getItemChatImageHtml(effect.icon, true, 150);
 
 	if (effect.disabled)
 		desc += `<p><strong>${game.i18n.localize("SPACE1889.EffectDeactivated")}</strong></p>`;
