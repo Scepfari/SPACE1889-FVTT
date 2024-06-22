@@ -1130,8 +1130,11 @@ export class Space1889Actor extends Actor
 				const uni = actor.system.talents?.find(v => v.system.id === "universalist");
 				if (uni != undefined && uni != null)
 				{
-					rating = this.GetSkillRating(actor, skillId, "");  // Funktion behandelt fertigkeitsgruppen wie fertigkeiten
-					rating += (uni.system.level - 1);
+					let underlyingAttribute = "";
+					if (CONFIG.SPACE1889.skillGroupUnderlyingAttribute.hasOwnProperty(skillGroupId))
+						underlyingAttribute = CONFIG.SPACE1889.skillGroupUnderlyingAttribute[skillGroupId];
+
+					rating = this.GetSkillRating(actor, skillId, underlyingAttribute, true);
 				}
 				return rating;
 			}
@@ -1142,9 +1145,10 @@ export class Space1889Actor extends Actor
 					rating = skill.system.rating;
 			}
 
+			const universalistLevel = SPACE1889Helper.getTalentLevel(actor, "universalist");
 			const vielseitigId = "vielseitig" + skillGroupId.replace(/^(.)/, function (b) { return b.toUpperCase(); });
 			const talent = actor.system.talents.find(v => v.system.id == vielseitigId);
-			let malus = 2;
+			let malus = 2 - Math.max(0, universalistLevel - 1);
 			if (talent != undefined && talent != null)
 				malus = 0;
 
@@ -1173,9 +1177,7 @@ export class Space1889Actor extends Actor
 
 	GetForeignLanguageLimit(actor)
 	{
-		let linguistikId = "linguistik";
-		let underlyingAbility = "int";
-		let rating = this.GetSkillRating(actor, linguistikId, underlyingAbility);
+		let rating = this.GetSkillRating(actor, "linguistik", "int");
 
 		var isHausregel = game.settings.get("space1889", "improvedForeignLanguageCountCalculation");
 
@@ -1223,9 +1225,7 @@ export class Space1889Actor extends Actor
 			return;
 		}
 
-		const id = "waffenlos";
-		let underlyingAbility = "str";
-		let rating = this.GetSkillRating(actor, id, underlyingAbility);
+		let rating = this.GetSkillRating(actor, "waffenlos", "str");
 		let instinctive = false;
 		let riposte = false;
 		rating += actor.system.armorTotal.bonus;
@@ -1368,13 +1368,9 @@ export class Space1889Actor extends Actor
 			return;
 		}
 
-		const id1 = "sportlichkeit";
-		const id2 = "akrobatik";
-		let underlyingAbility1 = "str";
-		let underlyingAbility2 = "dex";
 		let instinctive = false;
-		let rating = this.GetSkillRating(actor, id1, underlyingAbility1);
-		rating = Math.max(rating, this.GetSkillRating(actor, id2, underlyingAbility2));
+		let rating = this.GetSkillRating(actor, "sportlichkeit", "str");
+		rating = Math.max(rating, this.GetSkillRating(actor, "akrobatik", "dex"));
 		rating += actor.system.armorTotal.bonus;
 
 		for (let item of actor.items)
@@ -1578,22 +1574,28 @@ export class Space1889Actor extends Actor
 	* @param {object} actor
 	* @param {string} skillId  
 	* @param {string} underlyingAbility
+	* @param {boolean} isSkillGroup
 	* @returns {number}
 	*/
-	GetSkillRating(actor, skillId, underlyingAbility)
+	GetSkillRating(actor, skillId, underlyingAbility, isSkillGroup = false)
 	{
 		let rating = 0;
 
-		let skill = actor.system.skills?.find(entry => entry.system.id == skillId);
-		if (skill != null && skill != undefined)
+		let skill = actor.system.skills?.find(entry => entry.system.id === skillId);
+		if (skill)
 			return skill.system.rating;
 
-		if (underlyingAbility != "" && actor.system.primaereAttribute?.indexOf(underlyingAbility) >= 0)
-			return Math.max(0, actor.system.abilities[underlyingAbility].total - 2);
+		const universalistLevel = SPACE1889Helper.getTalentLevel(actor, "universalist");
+		let bonus = 0;
+		if (universalistLevel > 0)
+			bonus = isSkillGroup ? Math.max(0, universalistLevel - 1) : Math.max(0, universalistLevel + 1);
+
+		if (underlyingAbility !== "" && actor.system.primaereAttribute?.indexOf(underlyingAbility) >= 0)
+			return Math.max(0, bonus + actor.system.abilities[underlyingAbility].total - 2);
 
 		let underlying = this.FindUnderlyingAbility(actor, skillId);
-		if (underlying != "")
-			return Math.max(0, actor.system.abilities[underlying].total - 2);
+		if (underlying !== "")
+			return Math.max(0, bonus + actor.system.abilities[underlying].total - 2);
 		return 0;
 	}
 

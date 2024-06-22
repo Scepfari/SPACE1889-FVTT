@@ -136,6 +136,14 @@ SPACE1889.skillGroupDescriptions = {
 	spezielleFahrzeuge: "SPACE1889.SkillGroupDescSpezFahrzeuge"
 };
 
+SPACE1889.skillGroupUnderlyingAttribute = {
+	akademischesWissen: "int",
+	handwerk: "int",
+	kunst: "int",
+	naturwissenschaft: "int",
+	spezielleFahrzeuge: "dex"
+}
+
 SPACE1889.nonGroupSkills = {
 	"akrobatik": "SPACE1889.SkillAkrobatik",
 	"buehnenkunst": "SPACE1889.SkillBuehnenkunst",
