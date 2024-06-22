@@ -366,14 +366,6 @@ export default class SPACE1889Combat
 
 	}
 
-	static _getHtmlRollOptions()
-	{
-		let options = '<option value="selfAndGm" selected="selected">' + game.i18n.localize("CHAT.RollPrivate") + '</option>';
-		options += '<option value="self" selected="selected">' + game.i18n.localize("CHAT.RollSelf") + '</option>';
-		options += '<option value="public" selected="selected">' + game.i18n.localize("CHAT.RollPublic") + '</option>';
-		return options;
-	}
-
 	static AttackDialog(actor, wantedWeapon = undefined)
 	{
 		const token = this.getCombatToken(actor) || this.getToken(actor);
@@ -472,7 +464,7 @@ export default class SPACE1889Combat
 		if (targetNames.length > 0)
 			targetNamesInBrackets = "(" + (targetNames.length > 45 ? targetNames.slice(0, 42) + "..." : targetNames) + ")";
 
-		let optionen = this._getHtmlRollOptions();
+		let optionen = SPACE1889Helper.getHtmlChatOptions();
 		const modifierLabel = game.i18n.localize("SPACE1889.Modifier");
 		const labelWurf = game.i18n.localize("SPACE1889.AttackValue") + ": ";
 
@@ -851,7 +843,7 @@ export default class SPACE1889Combat
 
 		const modifierLabel = game.i18n.localize("SPACE1889.Modifier");
 		const labelWurf = game.i18n.localize("SPACE1889.DefenseDice") + ": ";
-		const options = this._getHtmlRollOptions();
+		const options = SPACE1889Helper.getHtmlChatOptions();
 
 		const lossOfAA = "(" + game.i18n.localize("SPACE1889.LossOfAttackAction") + ")";
 

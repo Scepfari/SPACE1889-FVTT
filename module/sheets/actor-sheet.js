@@ -355,6 +355,11 @@ export class Space1889ActorSheet extends ActorSheet {
 			this._rollAndUpdateExtendedRolls(item, showDialog);
 		});
 
+		html.find('.doAnySkillRoll').mousedown(ev =>
+		{
+			SPACE1889Helper.rollAnySkill(undefined, this.actor);
+		});
+
 		html.find('.effectBonus-click').mousedown(ev =>
 		{
 			this._addRemoveTempTalentImprovement(ev);

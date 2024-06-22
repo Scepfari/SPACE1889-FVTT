@@ -435,9 +435,7 @@ export default class SPACE1889RollHelper
 		
 		if (showDialog)
 		{
-			let chatOptions = '<option value="selfAndGm">' + game.i18n.localize("CHAT.RollPrivate") + '</option>';
-			chatOptions += '<option value="self">' + game.i18n.localize("CHAT.RollSelf") + '</option>';
-			chatOptions += '<option value="public" selected="selected">' + game.i18n.localize("CHAT.RollPublic") + '</option>';
+			let chatOptions = SPACE1889Helper.getHtmlChatOptions();
 
 			const diceCount = dieCount - defaultMod;
 			let dialogue = new Dialog(
@@ -1443,7 +1441,7 @@ export default class SPACE1889RollHelper
 			});
 			if (weaponChoiceHtml != '')
 			{
-				html.on('input', '.choices', () =>
+				html.on('change', '.choices', () =>
 				{
 					Recalc();
 				});
@@ -2086,5 +2084,4 @@ export default class SPACE1889RollHelper
 		}
 		return attackInfo;
 	}
-
 }

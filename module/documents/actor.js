@@ -1605,6 +1605,9 @@ export class Space1889Actor extends Actor
 	 */
 	FindUnderlyingAbility(actor, skillId)
 	{
+		if (skillId === "")
+			return "";
+
 		//Talente überprüfen ob ein rerouting auf ein anderes Attribut aktiv ist
 		const talent = actor.system.talents?.find(t => t.system.changedSkill == skillId && t.system.newBase != "");
 		if (talent != undefined)
@@ -1614,18 +1617,17 @@ export class Space1889Actor extends Actor
 		if (element != undefined)
 			return element[1];
 
-		ui.notifications?.info("Fertigkeit " + skillId.toString() + " ist nicht im Compendium, darauf basierende Berechnungen der Waffenstärke können falsch sein.");
+		if (game?.items)
+		{
+			//local suchen
+			let localSkill = game.items.find(x => x.system?.id === skillId);
+			if (localSkill)
+				return localSkill.system.underlyingAttribute;
+
+			ui.notifications.warn(game.i18n.format("SPACE1889.UnknownSkillWarning", { skillId: skillId.toString() }));
+		}
 
 		return "";
-
-		//ToDo: für neue Benutzerfertigkeiten funktioniert das nicht, da die nicht in der Liste enthalten sind
-		// über die Game Items kann man zu dem Zeitpunkt noch nicht suchen, da die noch nicht angelegt sind
-		// dafür müsste die funktion zu einem späteren Zeitpunkt noch aufgerufen werden
-		/*
-				skill = game.items.find(entry => entry.system.id == skillId);
-				if (skill != null && skill != undefined)
-					return skill.system.underlyingAttribute;
-				return "";*/
 	}
 
 	/**
@@ -2220,9 +2222,7 @@ export class Space1889Actor extends Actor
 				checkbox += '<div class="item-name">  ' + game.i18n.localize("SPACE1889.SingleValueOnly") + '</div > ';
 			checkbox += '</div></li>'
 
-			let chatOptions = '<option value="selfAndGm">' + game.i18n.localize("CHAT.RollPrivate") + '</option>';
-			chatOptions += '<option value="self">' + game.i18n.localize("CHAT.RollSelf") + '</option>';
-			chatOptions += '<option value="public" selected="selected">' + game.i18n.localize("CHAT.RollPublic") + '</option>';
+			let chatOptions = SPACE1889Helper.getHtmlChatOptions();
 
 			function Recalc()
 			{

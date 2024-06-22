@@ -2998,6 +2998,8 @@
 	"SPACE1889.KeyInfoCloseSingleWindow": "The key combination entered here has priority over those from the system, i.e. if the default is left at ESC, only the active window and not all open windows (sheets, notes, etc.) will be closed when ESC is pressed.",
 	"SPACE1889.ConfigUseGmTokenMovementLimiter": "GM token movement restriction",
 	"SPACE1889.ConfigUseGmTokenMovementLimiterInfo": "activates the token movement restriction for the SL as well. Can be toggled via the key combination [Ctrl + B].",
+	"SPACE1889.KeyRollAnySkill": "Roll skill",
+	"SPACE1889.KeyInfoRollAnySkill": "Opens a dialogue for the current token or player, which can be used to roll for any skill or specialisation.",
 
 	"SPACE1889.Recoil": "Recoil",
 	"SPACE1889.Knockdown": "Knockdown",
@@ -3528,6 +3530,7 @@
 	"SPACE1889.TemporaryImprovement": "temporary improvement {name}",
 	"SPACE1889.EffectNotFound": "The talent has no effect with the name \"{name}\". Other talent effects can be deleted in the talent sheet.",
 	"SPACE1889.ErrorInFunction": "Error in function <em>{name}</em>",
+	"SPACE1889.UnknownSkillWarning": "The skill with the space id <em>{skillId}</em> is neither in the compendium nor in the world items. Calculations based on this are probably incorrect.",
 
 	"SPACE1889.Warning": "Warning",
 	"SPACE1889.UnableToLoadImage": " Unable to Load Image",

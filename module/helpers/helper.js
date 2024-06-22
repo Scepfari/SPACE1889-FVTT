@@ -4,6 +4,7 @@ import SPACE1889Time from "./time.js";
 import SPACE1889Healing from "../helpers/healing.js";
 import { Space1889Menu } from "../ui/spaceMenu.js";
 import { Space1889ActorSheet } from "../sheets/actor-sheet.js";
+import { SPACE1889 } from "./config.js";
 
 export default class SPACE1889Helper
 {
@@ -2370,5 +2371,187 @@ export default class SPACE1889Helper
 				return foundToken;
 		}
 		return undefined;
+	}
+
+	static async rollAnySkill(tokenDocument = undefined, actor = undefined)
+	{
+		if (tokenDocument && tokenDocument.actor)
+		{
+			actor = tokenDocument.actor;
+		}
+		else if (!actor)
+		{
+			tokenDocument = this.getControlledTokenDocument();
+			if (tokenDocument && tokenDocument.actor)
+				actor = tokenDocument.actor;
+			else if (!tokenDocument && game.user.character)
+				actor = game.user.character
+		}
+
+		if (!actor)
+			return;
+
+		const titelPartOne = tokenDocument ? tokenDocument.name : actor.name;
+		let skillId = "akrobatik";
+		let spezId = "";
+		let skills = await SPACE1889Helper.getSortedSkillIdsWithLocalizedName();
+		let specializations = {};
+		
+		let skillGroupId = "";
+
+		let options = "";
+		for (const element of skills)
+		{
+			options += `<option value="${element.key}" ${element.key === skillId ? 'selected="selected"' : ""}> ${element.label}</option>`;
+		}
+
+		let specializationOptions = "";
+		await RefreshSpecialization(skillId);
+		let counter = 1;
+
+		async function RefreshSpecialization(theSkillId)
+		{
+			specializations = await SPACE1889Helper.getSortedSpecializationsFromSkill(theSkillId);
+			specializationOptions = `<option value="" ${"" === spezId ? 'selected="selected"' : ""}> - </option>`;
+			for (const element of specializations)
+			{
+				specializationOptions += `<option value="${element.key}" ${element.key === spezId ? 'selected="selected"' : ""}> ${element.label}</option>`;
+			}
+		}
+
+		function getRating()
+		{
+			let diceCount = actor.getSkillLevel(actor, skillId, spezId, skillGroupId);
+			return diceCount;
+		}
+
+		async function recalc()
+		{
+			skillId = $("#choices")[0].value;
+			await RefreshSpecialization(skillId);
+			$("#speciChoice")[0].innerHTML = specializationOptions;
+			refreshSpeziId();
+			const element = skills.find(e => e.key === skillId);
+			skillGroupId = element ? element.groupId : "";
+			recalcDiceCount();
+		}
+
+		function refreshSpeziId()
+		{
+			spezId = $("#speciChoice")[0].value;
+			recalcDiceCount();
+		}
+
+		function recalcDiceCount()
+		{
+			let diceCount = getRating();
+			let mod = Number($("#modifier")[0].value);
+			$("#anzahlDerWuerfel")[0].value = (diceCount + mod).toString();
+		}
+
+		function handleRender(html)
+		{
+			html.on('input', '.choices', () =>
+			{
+				recalc();
+			});
+			html.on('change', '.speciChoice', () =>
+			{
+				refreshSpeziId();
+			});
+			html.on('change', '.modInput', () =>
+			{
+				recalc();
+			});
+
+			recalc();
+		}
+
+		let dialogue = new Dialog(
+		{
+			title: `${titelPartOne}: ${game.i18n.localize("SPACE1889.Probe")}`,
+				content: `
+				<div style="display: grid; grid-template-columns: 30%  70%; grid-template-rows: 100%;">
+					<label style="margin-top:4px; margin-left: 5px">${game.i18n.localize("SPACE1889.Skill")}:</label>
+					<div>
+						<select id="choices" class="choices" name="choices">${options}</select>
+					</div>
+				</div>
+				<div style="display: grid; grid-template-columns: 30%  70%; grid-template-rows: 100%;">
+					<label style="margin-top:4px; margin-left: 5px">${game.i18n.localize("SPACE1889.Specialization")}:</label>
+					<div>
+						<select id="speciChoice" class="speciChoice" name="speciChoice">${specializationOptions}</select>
+					</div>
+				</div>
+				<div style="display: grid; grid-template-columns: 30%  70%; grid-template-rows: 100%;">
+					<div style="margin-top:4px; margin-left: 5px">${game.i18n.localize("SPACE1889.Modifier")}:</div> 
+					<div>
+						<input type="number" class="modInput" id="modifier" value = "0">
+					</div>
+				</div>
+				<hr>
+				<div class="space1889 sheet actor">
+					<h2 class="item flexrow flex-group-left ">
+						<label for="zusammensetzung">${game.i18n.localize("SPACE1889.NumberOfDice")}</label>
+						<input class="h2input" id="anzahlDerWuerfel" value="10" disabled="true" visible="false">
+					</h2>
+				</div>
+				<hr>
+				<p><select id="chatChoices" name="chatChoices">${SPACE1889Helper.getHtmlChatOptions()}</select></p>
+				`,
+			buttons:
+			{
+				ok:
+				{
+					icon: '',
+					label: game.i18n.localize("SPACE1889.Go"),
+					callback: (html) => theCallback(html)
+				},
+				abbruch:
+				{
+					label: game.i18n.localize("SPACE1889.Cancel"),
+					callback: () => { ui.notifications.info(game.i18n.localize("SPACE1889.CancelRoll")) },
+					icon: `<i class="fas fa-times"></i>`
+				}
+			},
+			default: "ok",
+			render: handleRender
+		});
+		dialogue.render(true);
+
+		async function theCallback(html)
+		{
+			const skillName = skills.find(e => e.key === skillId)?.label;
+			let titelName = "";
+			const spezElement = specializations.find(e => e.key === spezId);
+			if (spezId != "" && spezElement)
+				titelName = `${spezElement.label} (${skillName})`
+			else
+				titelName = skillName;
+
+			const mod = Number($("#modifier")[0].value);
+			const toolTipInfo = mod == 0 ? "" : game.i18n.format("SPACE1889.ChatModifier", { mod: SPACE1889Helper.getSignedStringFromNumber(mod) });
+			const input = html.find('#anzahlDerWuerfel').val();
+			const diceSum = input ? parseInt(input) : 0;
+			const rollWithHtml = await SPACE1889RollHelper.createInlineRollWithHtml(Math.max(0, diceSum), "", toolTipInfo);
+
+			await ChatMessage.create(
+				{
+					user: game.user.id,
+					speaker: ChatMessage.getSpeaker({ actor: actor }),
+					whisper: SPACE1889RollHelper.getChatIds(html.find('#chatChoices').val()),
+					content: `<h2>${titelName}</h2>${rollWithHtml.html}`
+				},
+				{}
+			);
+		}
+	}
+
+	static getHtmlChatOptions()
+	{
+		let options = '<option value="selfAndGm">' + game.i18n.localize("CHAT.RollPrivate") + '</option>';
+		options += '<option value="self">' + game.i18n.localize("CHAT.RollSelf") + '</option>';
+		options += '<option value="public" selected="selected">' + game.i18n.localize("CHAT.RollPublic") + '</option>';
+		return options;
 	}
 }

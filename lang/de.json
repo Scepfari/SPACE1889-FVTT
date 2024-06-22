@@ -2998,6 +2998,10 @@
 	"SPACE1889.KeyInfoCloseSingleWindow": "Die hier eingetragene Tastenkombination hat Vorrang vor denen vom System, d.h. wenn der Standard bei ESC gelassen wird, wird nur noch das aktive Fenster und nicht mehr alle offenen Fenster (Bögen, Notizen, usw.) beim Drücken von ESC geschlossen.",
 	"SPACE1889.ConfigUseGmTokenMovementLimiter": "SL Figuren-Bewegungseinschränkung",
 	"SPACE1889.ConfigUseGmTokenMovementLimiterInfo": "aktiviert die Figuren Bewegungseinschränkung auch für den SL. Kann über die Tastenkombination [Strg + B] umgeschaltet werden.",
+	"SPACE1889.KeyRollAnySkill": "Fertigkeitsprobe",
+	"SPACE1889.KeyInfoRollAnySkill": "Öffnet für den aktuellen Token oder Spieler einen Dialog, mit dem auf eine beliebige Fertigkeit oder Spezialisierung gewürfelt werden kann.",
+	"SPACE1889.InfoRollAnySkill": "Auf eine beliebige Fertigkeit/Fertigkeitsgruppe oder Spezialisierung würfeln",
+
 
 	"SPACE1889.Recoil": "Rückstoß",
 	"SPACE1889.Knockdown": "Niederschlag",
@@ -3528,6 +3532,7 @@
 	"SPACE1889.TemporaryImprovement": "temporäre Verbesserung {name}",
 	"SPACE1889.EffectNotFound": "Das Talent hat keinen Effect mit dem Namen \"{name}\". Andere Talenteffekte können im Talentbogen gelöscht werden.",
 	"SPACE1889.ErrorInFunction": "Fehler in der Funktion <em>{name}</em>",
+	"SPACE1889.UnknownSkillWarning": "Die Fertigkeit mit der Space-Id <em>{skillId}</em> ist werder im Compendium noch in den Welt-Items vorhanden. Darauf basierende Berechnungen sind vermutlich falsch.",
 
 	"SPACE1889.Warning": "Warnung",
 	"SPACE1889.UnableToLoadImage": " Bild konnte nicht geladen werden",

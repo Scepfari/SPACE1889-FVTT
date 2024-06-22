@@ -170,6 +170,15 @@ Hooks.once("setup", () =>
 			}
 		}
 	});
+	game.keybindings.register("space1889", "rollAnySkill", {
+		name: "SPACE1889.KeyRollAnySkill",
+		hint: game.i18n.localize("SPACE1889.KeyInfoRollAnySkill"),
+		editable: [{ key: "KeyF" }],
+		onDown: () =>
+		{
+			SPACE1889Helper.rollAnySkill();
+		}
+	});
 
 	game.keybindings.register('space1889', 'closeSingleWindowKey', {
 		name: "SPACE1889.KeyCloseSingleWindow",
