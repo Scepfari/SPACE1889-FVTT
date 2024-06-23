@@ -2474,7 +2474,7 @@ export default class SPACE1889Helper
 				<div style="display: grid; grid-template-columns: 30%  70%; grid-template-rows: 100%;">
 					<label style="margin-top:4px; margin-left: 5px">${game.i18n.localize("SPACE1889.Skill")}:</label>
 					<div>
-						<select id="choices" class="choices" name="choices">${options}</select>
+						<select id="choices" class="choices" name="choices" autofocus>${options}</select>
 					</div>
 				</div>
 				<div style="display: grid; grid-template-columns: 30%  70%; grid-template-rows: 100%;">

@@ -441,7 +441,7 @@ export default class SPACE1889RollHelper
 			let dialogue = new Dialog(
 				{
 					title: `${titelPartOne}: ${item.system.label} (${diceCount} ${diceDesc})`,
-					content: `<p>${inputDesc}: <input type="number" id="anzahlDerWuerfel" value = "${defaultMod}"></p><hr><p><select id="choices" name="choices">${chatOptions}</select></p>`,
+					content: `<p>${inputDesc}: <input type="number" id="anzahlDerWuerfel" value = "${defaultMod}" autofocus></p><hr><p><select id="choices" name="choices">${chatOptions}</select></p>`,
 					buttons:
 					{
 						ok:

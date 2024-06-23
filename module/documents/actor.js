@@ -2260,7 +2260,7 @@ export class Space1889Actor extends Actor
 				${checkbox}
 				<li class="flexrow">
 					<div class="item flexrow flex-group-left">
-						<div>${modifierLabel}:</div> <input type="number" class="modInput" id="modifier" value = "0">
+						<div>${modifierLabel}:</div> <input type="number" class="modInput" id="modifier" value = "0" autofocus />
 					</div>
 				</li>
 				<hr>

@@ -805,7 +805,7 @@ export class Space1889ActorSheet extends ActorSheet {
 			new Dialog(
 				{ 
 					title: `${titelPartOne}: ${titel} (${diceCount} ${diceDesc})`,
-					content: `<p>${inputDesc}: <input type="number" id="anzahlDerWuerfel" value = "0"></p>${check}`,
+					content: `<p>${inputDesc}: <input type="number" id="anzahlDerWuerfel" value = "0" autofocus ></p>${check}`,
 					buttons:
 					{
 						ok:
