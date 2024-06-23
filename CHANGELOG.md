@@ -2,6 +2,13 @@
 
 ## Niedergang der Errungenschaften
 
+### v2.2.5
+- Neuer Dialog um auf beliebige Fertigkeiten, Fertigkeitsgruppen oder Spezialisierungen zu würfeln 
+  - Ungelernte Fertigkeiten/Spezialisierungen erhalten die von den Regeln vorgesehenen Abzüge, einschließlich Beachtung der Talente Vielseitig und Universalist
+  - Der Dialog lässt sich auch per konfigurierbarer Tastenkombination (Standard: [F]) öffnen. Als Basis dient dann die aktuelle ausgewählte Figur oder der zugeordnete Spieler
+- Verbesserte Effekt Tooltips
+- Veränderung des aktiven Elements in einigen Würfelwurfmodifikationsdialogen 
+
 ### v2.2.4
 - Verbesserungen an der Langfristigen Probe
 - Unterstützung der Schwarm Kampfregeln, falls die Kampfunterstützung in den Einstellungen aktiv ist. Ob eine Kreatur ein Schwarm ist oder nicht wird an dem Vorhandensein des Talentes "Schwarm" festgemacht, welches jetzt neu im Kompendium enthalten ist. Die im Kompendium enthaltenen Schwarmkreaturen wurden mit dem Talent ausgestattet.
