@@ -70,7 +70,7 @@
 					</li>
 					{{#each system.abilities as |ability key|}}
 					<li class="flexrow">
-						<label for="system.abilities.{{key}}.value" class="rollable flexlarge align-left" data-roll-key="{{key}}" data-roll-type="actor" data-roll-diecount="{{ability.total}}" data-label="{{ability.label}}" data-tooltip="{{abilityToolTipDescription ../actor key}}" data-tooltip-direction="LEFT">{{ability.label}}</label>
+						<label for="system.abilities.{{key}}.value" class="rollable flexlarge align-left" data-roll-key="{{key}}" data-roll-type="actor" data-roll-diecount="{{ability.total}}" data-label="{{ability.label}}" data-tooltip="{{abilityToolTipDescription ../actor key}}" data-tooltip-direction="RIGHT">{{ability.label}}</label>
 						<div class="item-max-with40px">
 							<a class="increment-{{key}}-click">{{ability.value}}</a>
 						</div>

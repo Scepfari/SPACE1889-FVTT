@@ -14,9 +14,9 @@
 	</li>
 	{{#each system.injuries as |item id|}}
 	<li class="item row-section flexrow" data-item-id="{{item._id}}">
-		<div data-tooltip='{{item.system.tooltipInfo}}' data-tooltip-direction="LEFT" class="item-name">{{item.name}}</div>
+		<div data-tooltip='{{item.system.tooltipInfo}}' data-tooltip-direction="RIGHT" class="item-name">{{item.name}}</div>
 		<label data-tooltip='{{item.system.tooltipInfo}}' data-tooltip-direction="LEFT" class="items-list item-max-with75px">{{item.system.dataOfTheEvent}}</label>
-		<div data-tooltip='{{item.system.tooltipInfo}}' class="resource-label items-list item-max-with60px">
+		<div class="resource-label items-list item-max-with60px">
 			<a class="increment-click items-list item-max-with60px">{{item.system.remainingDamage}} {{item.system.damageTypeDisplay}}</a>
 		</div>
 		<div class="items-list item-max-with40px">

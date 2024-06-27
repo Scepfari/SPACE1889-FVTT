@@ -14,7 +14,7 @@
 
 	{{#each document.effects as |effect|}}
 	<li class="item row-section flexrow" data-effect-id="{{effect.id}}">
-		<div class="item-name" data-tooltip="{{fullEffectToolTipDescription effect}}" data-tooltip-direction="LEFT">
+		<div class="item-name" data-tooltip="{{fullEffectToolTipDescription effect}}" data-tooltip-direction="RIGHT">
 			<img class="item-image-small" src="{{getEffectImagePath effect}}" />
 			{{#if (isFvttV10 " ")}}
 				<h4>{{effect.label}}</h4>
