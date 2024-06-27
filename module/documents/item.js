@@ -444,13 +444,32 @@ export class Space1889Item extends Item {
 				return fullDesc;
 			}
 
-			if (this.type === "item" || this.type === "container" || this.type === "armor")
+			if (this.type === "item" || this.type === "container")
 			{
 				let desc = game.i18n.localize(this.system.descriptionLangId);
 				if (desc === this.system.descriptionLangId)
 					desc = "";
 				if (this.system.description !== "")
 					desc += (desc === "" ? "" : "<br>") + this.system.description;
+
+				const image = this._getImageIfNotDefault(forChat);
+				const fullDesc = this._ComposeHtmlTextInfo(image, this.name, type, desc, forChat);
+				return fullDesc;
+			}
+
+			if (this.type === "armor")
+			{
+				let desc = game.i18n.localize(this.system.descriptionLangId);
+				if (desc === this.system.descriptionLangId)
+					desc = "";
+				if (this.system.description !== "")
+					desc += (desc === "" ? "" : "<br>") + this.system.description;
+
+				desc += this._addLine("SPACE1889.DefenseBonus", this.system.defenseBonus, "", desc !== "");
+				desc += this._addLine("SPACE1889.DexPenalty", this.system.dexPenalty);
+				desc += this._addLine("SPACE1889.StrengthThreshold", this.system.strengthThreshold);
+				desc += this._addLine("SPACE1889.Weight", this.system.weight, "kg");
+				desc += this._addLine("SPACE1889.Price", this.system.price);
 
 				const image = this._getImageIfNotDefault(forChat);
 				const fullDesc = this._ComposeHtmlTextInfo(image, this.name, type, desc, forChat);
