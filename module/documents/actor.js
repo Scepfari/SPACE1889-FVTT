@@ -1594,7 +1594,7 @@ export class Space1889Actor extends Actor
 			return Math.max(0, bonus + actor.system.abilities[underlyingAbility].total - 2);
 
 		let underlying = this.FindUnderlyingAbility(actor, skillId);
-		if (underlying !== "" && actor.system.abilities?.indexOf(underlyingAbility) >= 0)
+		if (underlying !== "" && actor.system.abilities?.hasOwnProperty(underlying) >= 0)
 			return Math.max(0, bonus + actor.system.abilities[underlying].total - 2);
 		return 0;
 	}
