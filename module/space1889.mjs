@@ -22,6 +22,7 @@ import { Space1889Combat, Space1889Combatant } from "./helpers/combatTracker.js"
 import TurnMarker from "./helpers/turnMarker.js";
 import * as CleanHeader from "./ui/cleanHeader.js";
 import * as sideBar from "./ui/sidebar.js";
+import * as tokenHud from "./ui/tokenHud.js";
 import { Space1889Menu } from "./ui/spaceMenu.js";
 import { getEffectInfoText } from "./helpers/effects.js";
 
@@ -82,6 +83,7 @@ Hooks.once('init', async function() {
 	$('body').addClass(game.settings.get("space1889", "globalStyle"));
 
 	sideBar.default();
+	tokenHud.default();
 
 	CleanHeader.default();
 	CleanHeader.handlePopout();
@@ -285,7 +287,7 @@ Hooks.on("renderChatMessage", (app, html, msg) =>
 	html.on('click', '.space1889-image', ev =>
 	{
 		SPACE1889Helper.showPopOutImage(ev);
-	})
+	});
 
 	removeButton([".autoDefence", ".applyFirstAid", ".applyStylePointDamageReduction"], html, foundry.utils.getProperty(msg.message, `flags.space1889.userHidden`));
 
@@ -613,7 +615,15 @@ Hooks.once("ready", async function() {
 							SPACE1889Healing.removeDyingEffect(dyingToken.actor);
 					}
 					break;
+				case "copyActorItem":
+					{
+						const actorToken = SPACE1889Helper.getTokenFromId(data.payload.tokenId);
+						const sourceToken = SPACE1889Helper.getTokenFromId(data.payload.sourceTokenId);
 
+						if (actorToken && sourceToken)
+							SPACE1889RollHelper.copyActorItem(actorToken, sourceToken, data.payload.itemId);
+					}
+					break;
 				default:
 					console.warn(`Unhandled socket data type ${data.type}`);
 			}
