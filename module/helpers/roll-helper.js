@@ -321,6 +321,11 @@ export default class SPACE1889RollHelper
 			ui.notifications.info(game.i18n.localize("SPACE1889.EffectTotalDefenseInfo"));
 			return true;
 		}
+		else if (statusIds.findIndex(element => element === "grappled") >= 0)
+		{
+			ui.notifications.info(game.i18n.localize("SPACE1889.EffectGrappledInfo"));
+			return true;
+		}
 
 		return false;
 	}
@@ -593,14 +598,14 @@ export default class SPACE1889RollHelper
 		}
 	}
 
-	static async getChatDataRollSubSpecial(actor, item, wurfelAnzahl, targetIds, useWeaponChatInfo, titelInfo, toolTipInfo, extraInfo="", isAttackTalent, firstAid="", chatOption="public")
+	static async getChatDataRollSubSpecial(actor, item, wurfelAnzahl, targetIds, useWeaponChatInfo, titelInfo, toolTipInfo, extraInfo="", isAttackTalent, firstAid="", chatOption="public", specialAttack="")
 	{
 		const rollWithHtml = await SPACE1889RollHelper.createInlineRollWithHtml(Math.max(0, wurfelAnzahl), titelInfo, toolTipInfo);
 		let messageContent = "";
 		const speaker = ChatMessage.getSpeaker({ actor: actor });
 
-		if (item.type == 'weapon' || isAttackTalent)
-			messageContent = this.getAttackChatContent(actor, item, rollWithHtml, targetIds, useWeaponChatInfo, extraInfo, isAttackTalent);
+		if (item?.type === 'weapon' || isAttackTalent || specialAttack !== "")
+			messageContent = this.getAttackChatContent(actor, item, rollWithHtml, targetIds, useWeaponChatInfo, extraInfo, isAttackTalent, specialAttack);
 		else
 		{
 			const titel = firstAid === "stabilizing" ? game.i18n.localize("SPACE1889.ChatStabilizing") : `<h2>${item.system.label}</h2>`
@@ -611,7 +616,9 @@ export default class SPACE1889RollHelper
 				messageContent += `${useWeaponChatInfo} <br>`;
 			messageContent += `${rollWithHtml.html} <br>`;
 			if (firstAid === "firstAid")
+			{
 				messageContent += this.#AddFirsAidButton(actor, speaker, targetIds[0], rollWithHtml);
+			}
 			else if (firstAid === "stabilizing")
 			{
 				const target = game.user.targets.find(e => e.id == targetIds[0]);
@@ -659,16 +666,16 @@ export default class SPACE1889RollHelper
 		return `<button class="applyFirstAid chatButton" ${buttonToolTip} data-action="firstAid" data-actor-id="${actor._id}" data-actor-token-id="${speaker.token}" data-target-id="${targetId}" data-first-aid-successes="${rollWithHtml.roll.total}" data-lifesaver="${isLivesaver}" data-timestamp="${currentTimeDate}">${buttonText}</button>`;
 	}
 
-	static getAttackChatContent(actor, item, rollWithHtml, targetIds, useWeaponChatInfo, extraInfo="", isAttackTalent)
+	static getAttackChatContent(actor, item, rollWithHtml, targetIds, useWeaponChatInfo, extraInfo="", isAttackTalent, specialAttack="")
 	{
-		const addAutoDefense = game.settings.get("space1889", "combatSupport") && (item.type == 'weapon' || isAttackTalent);
+		const addAutoDefense = game.settings.get("space1889", "combatSupport") && (item?.type === 'weapon' || isAttackTalent || specialAttack !== "");
 		let weapon = undefined;
 		let weaponSkill = "";
 		let weaponDamageType = "";
 		let effect = "none";
 		let effectDurationCT = 0;
 		let effectOnly = false;
-		if (item.type == "weapon")
+		if (item?.type === "weapon")
 		{
 			weapon = item;
 			weaponSkill = weapon.system.skillId;
@@ -678,16 +685,26 @@ export default class SPACE1889RollHelper
 			effectOnly = weapon.system.effectOnly;
 		}
 
-		let abbrDamageType = item.system.damageTypeDisplay ? "(" + item.system.damageTypeDisplay + ")" : "";
+		let abbrDamageType = item?.system?.damageTypeDisplay ? "(" + item.system.damageTypeDisplay + ")" : "";
 
-		let messageContent = `<div><h2>${item.system.label} ${abbrDamageType}</h2></div>`;
+		let specialAttackName = "";
+		if (specialAttack === "grapple")
+			specialAttackName = game.i18n.localize("SPACE1889.CombatManoeuversGrapple");
+		else if (specialAttack === "disarm" || specialAttack === "disarmWithWeapon")
+			specialAttackName = game.i18n.localize("SPACE1889.CombatManoeuversDisarm");
+		else if (specialAttack === "trip")
+			specialAttackName = game.i18n.localize("SPACE1889.CombatManoeuversTrip");
 
-		if (item.system.ammunition?.name)
+		let messageContent = "<div><h2>";
+		messageContent += specialAttackName !== "" ? specialAttackName : `${item.system.label} ${abbrDamageType}`;
+		messageContent += "</h2></div>";
+
+		if (item?.system?.ammunition?.name)
 			messageContent += `<small>${item.system.ammunition.name}</small><br>`;
 
 		let reducedDefense = "";
 		let areaDamage = "0";
-		if (item.system.isAreaDamage && actor.type != 'vehicle')
+		if (item?.system?.isAreaDamage && actor.type != 'vehicle')
 		{
 			messageContent += `${game.i18n.localize("SPACE1889.AreaDamageWeaponUse")} <br>`;
 			reducedDefense = "onlyActive";
@@ -709,6 +726,43 @@ export default class SPACE1889RollHelper
 			if (reducedDefense == "onlyActiveParalyse")
 			{
 				weaponDamageType = "paralyse";
+			}
+		}
+		if (specialAttack !== "")
+		{
+			if (specialAttack === "disarm")
+			{
+				weaponSkill = "waffenlos";
+				reducedDefense = "onlyActiveComparative";
+				weaponDamageType = specialAttack;
+				messageContent += `<small>${game.i18n.localize("SPACE1889.SkillWaffenlos")}</small><br>`;
+			}
+			else if (specialAttack === "disarmWithWeapon")
+			{
+				let skillLangId = "SPACE1889.SkillNahkampf";
+				if (weapon)
+				{
+					effect = "none";
+					effectDurationCT = 0;
+					effectOnly = false;
+					if (CONFIG.SPACE1889.combatSkills.hasOwnProperty(weaponSkill))
+						skillLangId = CONFIG.SPACE1889.combatSkills[weaponSkill];
+				}
+				else
+				{
+					weaponSkill = "nahkampf";
+				}
+				
+				reducedDefense = "onlyActiveComparative";
+				weaponDamageType = specialAttack;
+				messageContent += `<small>${game.i18n.localize(skillLangId)}</small><br>`;
+			}
+			else
+			{
+				weaponSkill = "waffenlos";
+				reducedDefense = "onlyActive";
+				weaponDamageType = specialAttack;
+				messageContent += `<small>${game.i18n.localize("SPACE1889.SkillWaffenlos")}</small><br>`;
 			}
 		}
 
@@ -734,7 +788,7 @@ export default class SPACE1889RollHelper
 				buttonText += buttonText.length > 0 ? ": " : "";
 				buttonText += game.i18n.localize("SPACE1889.AutoDefense");
 
-				messageContent += `<button class="autoDefence chatButton" ${buttonToolTip} data-action="defence" data-actor-id="${actor._id}" data-actor-token-id="${speaker.token}" data-target-id="${targetId}" data-attack-name="${item.name}" data-attack-successes="${rollWithHtml.roll.total}" data-damage-type="${weaponDamageType}" data-skill-id="${weaponSkill}" data-reduced-defense="${reducedDefense}" data-area-damage="${areaDamage}" data-effect="${effect}" data-effect-duration-combat-turns="${effectDurationCT}" data-effect-only="${effectOnly}">${buttonText}</button>`;
+				messageContent += `<button class="autoDefence chatButton" ${buttonToolTip} data-action="defence" data-actor-id="${actor._id}" data-actor-token-id="${speaker.token}" data-target-id="${targetId}" data-attack-name="${item ? item.name: specialAttackName}" data-attack-successes="${rollWithHtml.roll.total}" data-damage-type="${weaponDamageType}" data-skill-id="${weaponSkill}" data-reduced-defense="${reducedDefense}" data-area-damage="${areaDamage}" data-effect="${effect}" data-effect-duration-combat-turns="${effectDurationCT}" data-effect-only="${effectOnly}">${buttonText}</button>`;
 			}
 		}
 
@@ -1556,6 +1610,7 @@ export default class SPACE1889RollHelper
 		const effectOnly = (button[0].dataset.effectOnly === "true");
 
 		if (targetId == "")
+		if (targetId == "")
 			return;
 
 		const token = SPACE1889Helper.getTokenFromId(targetId);
@@ -1758,7 +1813,13 @@ export default class SPACE1889RollHelper
 		const rollWithHtml = await this.createInlineRollWithHtml(diceCount, "", modifierToolTipInfo);
 
 		let title = game.i18n.localize("SPACE1889.SecondaryAttributeDef");
-		if (data.reducedDefense.substring(0, 10) == 'onlyActive')
+
+		if (data.reducedDefense.indexOf("Comparative") >= 0)
+		{
+			title = game.i18n.localize("SPACE1889.ChatOpposedRoll");
+			title += _getDefenceName(data.reducedDefense, false);
+		}
+		else if (data.reducedDefense.substring(0, 10) == 'onlyActive')
 		{
 			title = game.i18n.localize("SPACE1889.ActiveDefense");
 			title += _getDefenceName(data.reducedDefense, true);
@@ -1835,6 +1896,11 @@ export default class SPACE1889RollHelper
 				ChatMessage.create(chatData, {});
 			}
 		}
+		else if (data.damageType === "disarm" || data.damageType === "disarmWithWeapon")
+		{
+			const damageAmount = data.attackValue - rollWithHtml.roll.total;
+			await SPACE1889RollHelper.doDisarmChatMessage(target, data.actorName, actorToken, damageAmount, data.damageType, data.attackName);
+		}
 		else if (data.attackValue > rollWithHtml.roll.total)
 		{
 			let damageAmount = data.attackValue - rollWithHtml.roll.total;
@@ -1843,6 +1909,10 @@ export default class SPACE1889RollHelper
 
 			if (data.damageType == 'paralyse')
 				await SPACE1889RollHelper.doParalysisChatMessage(target.actor, data.actorName, damageAmount, target.actor.system.abilities.str.total);
+			else if (data.damageType === "grapple")
+				await SPACE1889RollHelper.doGrappleChatMessage(target.actor, data.actorName, damageAmount, target.actor.system.abilities.str.total);
+			else if (data.damageType === "trip")
+				await SPACE1889RollHelper.doTripChatMessage(target.actor, data.actorName, damageAmount, target.actor.system.abilities.str.total);
 			else
 			{
 				const itemId = await this.addDamageToActor(target.actor, data.actorName, data.attackName, ((doWeaponEffect && data.effectOnly) ? 0 : damageAmount), data.damageType);
@@ -1950,6 +2020,8 @@ export default class SPACE1889RollHelper
 				name += risingBrackets + game.i18n.localize("SPACE1889.Parry") + closingBrackets;
 			else if (defenseType.indexOf('Evasion') >= 0)
 				name += risingBrackets + game.i18n.localize("SPACE1889.Evasion") + closingBrackets;
+
+			//ToDo: disarm && disarmWithWeapon, dabei auch total, Block und Parry beachten
 
 			return name;
 		}
@@ -2083,5 +2155,341 @@ export default class SPACE1889RollHelper
 			}
 		}
 		return attackInfo;
+	}
+
+	static rollHudAction(event, tokenId, actorId, type, itemId)
+	{
+		const tokenDocument = game.scenes.viewed.tokens.get(tokenId);
+		const actor = tokenDocument ? tokenDocument.actor : game.actors.get(actorId);
+
+		if (type === "skill")
+		{
+			SPACE1889Helper.rollAnySkill(tokenDocument, actor);
+			return;
+		}
+
+		if (type === "grapple")
+		{
+			SPACE1889RollHelper.rollGrapple(tokenDocument, actor, event);
+		}
+
+		if (type === "trip")
+		{
+			SPACE1889RollHelper.rollTrip(tokenDocument, actor, event);
+		}
+
+		if (type === "disarm")
+		{
+			const usedWeapon = itemId === "" ? undefined : actor.items.get(itemId);
+			SPACE1889RollHelper.rollDisarm(tokenDocument, actor, usedWeapon, event);
+		}
+
+		if (type !== "attack" && type !== "talentAttack")
+			return;
+
+		const item = actor.items.get(itemId);
+		if (!item)
+			return;
+
+		SPACE1889RollHelper.rollItemFromEvent(item, actor, event);
+	}
+
+	static async rollGrapple(tokenDocument, actor, event)
+	{
+		if (!actor || !event)
+			return;
+
+		const target = game.user.targets.first();
+		if (!target || !SPACE1889Combat.isInCloseCombatRange(actor, target))
+			return;
+
+		const sizeMalus = target.actor.system.secondaries.size.total;
+
+		const rating = actor.getSkillLevel(actor, "waffenlos", "griffe") - sizeMalus;
+		if (rating === 0)
+		{
+			ui.notifications.info(game.i18n.format("SPACE1889.CanNotGrapple", { name: actor.name }));
+			return;
+		}
+
+		const titelInfo = game.i18n.localize("SPACE1889.CombatManoeuversGrapple");
+		const toolTipInfo = sizeMalus !== 0 ? game.i18n.format("SPACE1889.ChatGrappleSizePenalty", { penalty: sizeMalus }) : "";
+		const anzahl = Math.max(0, rating);
+
+		const chatInfo = "";
+		const theTitelInfo = await SPACE1889RollHelper.logAttack(actor, titelInfo, tokenDocument);
+		const chatData = await SPACE1889RollHelper.getChatDataRollSubSpecial(actor, null, anzahl, game.user.targets.ids, chatInfo, theTitelInfo, toolTipInfo, "", false, "", "public", "grapple");
+		await ChatMessage.create(chatData, {});
+	}
+
+	static async rollTrip(tokenDocument, actor, event)
+	{
+		if (!actor || !event)
+			return;
+
+		const target = game.user.targets.first();
+		if (!target || !SPACE1889Combat.isInCloseCombatRange(actor, target))
+			return;
+
+		if (actor.type === "vehicle" || target.actor.type === "vehicle")
+			return;
+
+		let isVielbeinig = SPACE1889Helper.getTalentLevel(target.actor, "vielbeiner") > 0;
+		if (target.actor.type === "creature" && target.actor.system.movementType === "manylegged")
+			isVielbeinig = true;
+
+
+		const hasFreeHands = SPACE1889Combat.hasFreeHands(actor);
+		const malus = isVielbeinig ? 2 : 0;
+
+		const rating = actor.getSkillLevel(actor, "waffenlos", hasFreeHands ? "wuerfe" : "") - malus;
+
+		if (rating === 0)
+		{
+			ui.notifications.info(game.i18n.format("SPACE1889.CanNotGrapple", { name: actor.name }));
+			return;
+		}
+
+		const titelInfo = game.i18n.localize("SPACE1889.CombatManoeuversTrip");
+		const toolTipInfo = malus !== 0 ? game.i18n.format("SPACE1889.ChatTripSizePenalty", { penalty: malus }) : "";
+		const anzahl = Math.max(0, rating);
+
+		const chatInfo = "";
+		const theTitelInfo = await SPACE1889RollHelper.logAttack(actor, titelInfo, tokenDocument);
+		const chatData = await SPACE1889RollHelper.getChatDataRollSubSpecial(actor, null, anzahl, game.user.targets.ids, chatInfo, theTitelInfo, toolTipInfo, "", false, "", "public", "trip");
+		await ChatMessage.create(chatData, {});
+	}
+
+	static async doGrappleChatMessage(actor, attackerName, virtualDamage, comparativeAttributeValue)
+	{
+		if (!actor)
+			return;
+
+		let effects = [];
+		let trefferInfo = "";
+		let grappled = "<b>" + game.i18n.localize("SPACE1889.EffectGrappled") + ":</b> ";
+
+		const actorName = actor.token ? actor.token.name : actor.name;
+
+		if (virtualDamage > comparativeAttributeValue * 2)
+		{
+			effects.push({ name: "grappled", rounds: this.getMaxRounds() });
+			effects.push({ name: "noActiveDefense", rounds: this.getMaxRounds() });
+			trefferInfo += grappled + game.i18n.format("SPACE1889.ChatGrappleGreatSuccess", { actorName: attackerName, targetName: actorName });
+			trefferInfo += `<br>${game.i18n.localize("SPACE1889.EffectGrappledInfo")}`;
+		}
+		else if (virtualDamage > comparativeAttributeValue)
+		{
+			effects.push({ name: "grappled", rounds: this.getMaxRounds() });
+			trefferInfo += grappled + game.i18n.format("SPACE1889.ChatGrappleSuccess", { actorName: attackerName, targetName: actorName });
+			trefferInfo += `<br>${game.i18n.localize("SPACE1889.EffectGrappledInfo")}`;
+		}
+		else
+		{
+			trefferInfo += game.i18n.format("SPACE1889.ChatGrappleFail", { actorName: attackerName });
+		}
+
+		let info = "<small>" + game.i18n.format("SPACE1889.ChatInfoVirtualDamageVsStrength", { str: comparativeAttributeValue }) + "</small><br>";
+		info += `<b>${game.i18n.localize("SPACE1889.StrikeEffect")}:</b>`;
+		if (virtualDamage > comparativeAttributeValue)
+			info += " <br>" + trefferInfo;
+		else
+			info += ` <b>${game.i18n.localize("SPACE1889.None")}</b><br>${trefferInfo}`;
+
+		const titel = game.i18n.format("SPACE1889.ChatInfoVirtualDamage", { damage: virtualDamage.toString() });
+		let messageContent = `<div><h2>${titel}</h2></div>`;
+		messageContent += `${info}`;
+		let chatData =
+		{
+			user: game.user.id,
+			speaker: ChatMessage.getSpeaker({ actor: actor }),
+			content: messageContent
+		};
+
+		ChatMessage.create(chatData, {});
+		if (effects.length > 0)
+			await SPACE1889Helper.addEffects(actor, effects);
+	}
+
+	static async doTripChatMessage(actor, attackerName, virtualDamage, comparativeAttributeValue)
+	{
+		if (!actor)
+			return;
+
+		let effects = [];
+		let trefferInfo = "";
+		const actorName = actor.token ? actor.token.name : actor.name;
+
+		if (virtualDamage > comparativeAttributeValue)
+		{
+			effects.push({ name: "prone", rounds: this.getMaxRounds() });
+			trefferInfo += "<b>" + game.i18n.localize("EFFECT.StatusProne") + ":</b> ";
+			trefferInfo += game.i18n.format("SPACE1889.ChatInfoKnockdown", { actorName: actorName });
+		}
+		else
+		{
+			trefferInfo += game.i18n.format("SPACE1889.ChatTripFail", { actorName: actorName });
+		}
+
+		let info = "<small>" + game.i18n.format("SPACE1889.ChatInfoVirtualDamageVsStrength", { str: comparativeAttributeValue }) + "</small><br>";
+		info += `<b>${game.i18n.localize("SPACE1889.StrikeEffect")}:</b>`;
+		if (virtualDamage > comparativeAttributeValue)
+			info += " <br>" + trefferInfo;
+		else
+			info += ` <b>${game.i18n.localize("SPACE1889.None")}</b> ${trefferInfo}`;
+
+		const titel = game.i18n.format("SPACE1889.ChatInfoVirtualDamage", { damage: virtualDamage.toString() });
+		let messageContent = `<div><h2>${titel}</h2></div>`;
+		messageContent += `${info}`;
+		let chatData =
+		{
+			user: game.user.id,
+			speaker: ChatMessage.getSpeaker({ actor: actor }),
+			content: messageContent
+		};
+
+		ChatMessage.create(chatData, {});
+		if (effects.length > 0)
+			await SPACE1889Helper.addEffects(actor, effects);
+	}
+
+
+	static async rollDisarm(tokenDocument, actor, usedWeapon, event)
+	{
+		if (!actor || !event)
+			return;
+
+		const target = game.user.targets.first();
+		if (!target || !SPACE1889Combat.isInCloseCombatRange(actor, target))
+			return;
+
+		if (actor.type === "vehicle" || target.actor.type === "vehicle" || target.actor.type === "creature")
+			return;
+
+		if (SPACE1889Combat.hasFreeHands(target.actor))
+		{
+			ui.notifications.info(game.i18n.localize("SPACE1889.DisarmNoWeaponOnTarget", { name: actor.name }));
+			return;
+		}
+
+		let twoHandWeapon = false;
+		const targetWeapons = SPACE1889Combat.getWeaponInHands(target.actor);
+		if (targetWeapons?.primaryWeapon?.id === targetWeapons?.offHandWeapon?.id)
+			twoHandWeapon = true;
+
+		let chatInfo = "";
+		const malus = twoHandWeapon ? 2 : 0;
+		let specialAttack = "disarm";
+		let weapon = null; 
+
+		let rating = actor.GetSkillRating(actor, "waffenlos", "str") - malus;
+		if (SPACE1889Combat.isCloseCombatWeapon(usedWeapon, false))
+		{
+			specialAttack = "disarmWithWeapon";
+			rating = actor.getSkillLevel(actor, usedWeapon.system.skillId, usedWeapon.system.specializationId) - malus;
+			chatInfo = game.i18n.format("SPACE1889.DisarmWithWeapon", { weapon: usedWeapon.system.label });
+			weapon = usedWeapon;
+		}
+
+		if (rating === 0)
+		{
+			ui.notifications.info(game.i18n.format("SPACE1889.CanNotDisarm", { name: actor.name }));
+			return;
+		}
+
+		const titelInfo = game.i18n.localize("SPACE1889.CombatManoeuversDisarm");
+		const toolTipInfo = malus !== 0 ? game.i18n.format("SPACE1889.ChatDisarmTwoHandPenalty", { penalty: malus }) : "";
+		const anzahl = Math.max(0, rating);
+
+		const theTitelInfo = await SPACE1889RollHelper.logAttack(actor, titelInfo, tokenDocument);
+		const chatData = await SPACE1889RollHelper.getChatDataRollSubSpecial(actor, weapon, anzahl, game.user.targets.ids, chatInfo, theTitelInfo, toolTipInfo, "", false, "", "public", specialAttack);
+		await ChatMessage.create(chatData, {});
+	}
+
+	static async doDisarmChatMessage(actorToken, attackerName, attackerToken, virtualDamage, type, attackWeaponName)
+	{
+		let actor = actorToken?.actor;
+		if (!actorToken || !actor)
+			return;
+
+		let trefferInfo = "";
+		const actorName = actorToken.name;
+
+		const throwAway = type === "disarmWithWeapon";
+		const weapons = SPACE1889Combat.getWeaponInHands(actor);
+		const weapon = weapons.primaryWeapon ? weapons.primaryWeapon : weapons.offHandWeapon;
+		let transferWeapon = undefined;
+
+		if (virtualDamage <= 0)
+		{
+			trefferInfo += game.i18n.format("SPACE1889.DisarmFailText", { attackerName: attackerName });
+		}
+		else if (throwAway)
+		{
+			trefferInfo += game.i18n.format("SPACE1889.DisarmFlingAway", {attackerName: attackerName,  targetName: actorName, weaponName: weapon?.system?.label, distance: 1.5*virtualDamage });
+		}
+		else
+		{
+			trefferInfo += game.i18n.format("SPACE1889.DisarmStealTheWeapon", { attackerName: attackerName, targetName: actorName, weaponName: weapon?.system?.label });
+			transferWeapon = weapon;
+		}
+
+		let info = "<small>" + game.i18n.format("SPACE1889.Delta", { delta: virtualDamage.toString() }) + "</small><br>";
+		info += `<b>${game.i18n.localize("SPACE1889.StrikeEffect")}:</b>`;
+		if (virtualDamage > 0)
+			info += " <br>" + trefferInfo;
+		else
+			info += ` <b>${game.i18n.localize("SPACE1889.None")}</b><br> ${trefferInfo}`;
+
+		const titel = virtualDamage > 0
+			? game.i18n.localize("SPACE1889.DisarmSuccess")
+			: game.i18n.localize("SPACE1889.DisarmFail");
+		let messageContent = `<div><h2>${titel}</h2></div>`;
+		messageContent += `${info}`;
+		let chatData =
+		{
+			user: game.user.id,
+			speaker: ChatMessage.getSpeaker({ actor: actor }),
+			content: messageContent
+		};
+
+		ChatMessage.create(chatData, {});
+
+		if (weapon && virtualDamage > 0)
+		{
+			const attacker = attackerToken?.actor;
+			if (attacker && transferWeapon)
+			{
+				if (SPACE1889Helper.hasOwnership(attacker))
+				{
+					await SPACE1889RollHelper.copyActorItem(attackerToken, actorToken, weapon.id);
+				}
+				else
+				{
+					game.socket.emit("system.space1889", {
+						type: "copyActorItem",
+						payload: {
+							tokenId: attackerToken.id,
+							sourceTokenId: actorToken?.id,
+							itemId: weapon.id
+						}
+					});
+				}
+			}
+			actor.updateEmbeddedDocuments("Item", [{ _id: weapon._id, "system.usedHands": "none" }]);
+		}
+	}
+
+	static async copyActorItem(actorToken, sourceToken, itemId)
+	{
+		if (actorToken && sourceToken)
+		{
+			const item = sourceToken.actor.items.get(itemId);
+			if (item)
+			{
+				const copyItem = foundry.utils.duplicate(item);
+				await actorToken.actor.createEmbeddedDocuments( "Item", [copyItem] );
+			}
+		}
 	}
 }

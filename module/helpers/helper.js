@@ -751,14 +751,14 @@ export default class SPACE1889Helper
 		let offHand = [];
 		for (const weapon of actor.system.weapons)
 		{
-			if (weapon.system.usedHands == "bothHands")
+			if (weapon.system.usedHands === "bothHands")
 			{
 				primaryHand.push(weapon._id);
-				offHand.push(weapon._id)
+				offHand.push(weapon._id);
 			}
-			else if (weapon.system.usedHands == "primaryHand")
+			else if (weapon.system.usedHands === "primaryHand")
 				primaryHand.push(weapon._id);
-			else if (weapon.system.usedHands == "offHand")
+			else if (weapon.system.usedHands === "offHand")
 				offHand.push(weapon._id);
 		}
 		return { primary: primaryHand, off: offHand };
@@ -2385,7 +2385,7 @@ export default class SPACE1889Helper
 			if (tokenDocument && tokenDocument.actor)
 				actor = tokenDocument.actor;
 			else if (!tokenDocument && game.user.character)
-				actor = game.user.character
+				actor = game.user.character;
 		}
 
 		if (!actor)

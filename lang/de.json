@@ -67,6 +67,7 @@
 
 	"SPACE1889.EffectNoActiveDefence": "Keine aktive Verteidigung",
 	"SPACE1889.EffectDying": "Lebensgefahr",
+	"SPACE1889.EffectGrappled": "Festgehalten",
 
 	"SPACE1889.AbilityCon": "Konstitution",
 	"SPACE1889.AbilityDex": "Geschicklichkeit",
@@ -659,6 +660,7 @@
 	"SPACE1889.EffectFearInfo": "Der Charakter ist verängstigt und ergreift panisch die Flucht ",
 	"SPACE1889.EffectBurningInfo": "Der Charakter brennt und erleidet, bis das Feuer gelöscht ist jede Kampfrunde den Feuerschaden.",
 	"SPACE1889.EffectFrozenInfo": "Der Charakter ist eingefroren und bewegungsunfähig.",
+	"SPACE1889.EffectGrappledInfo": "Der Charakter wird festgehalten und kann nicht angreifen. Er kann statt dessen versuchen sich mit einer vergleichenden Stärkeprobe aus dem Haltegriff zu befreien.",
 	"SPACE1889.EffectDyingInfo": "Der Charakter ist in Lebensgefahr! Wir er nicht stabilisiert, erleidet er pro Kampfrunde 1T Schaden",
 	"SPACE1889.EffectDeadInfo": "Der Charakter ist Tot",
 	"SPACE1889.EffectRoundTurnInfo": "Runde: {round}, Zug: {turn}",
@@ -2705,6 +2707,30 @@
 	"SPACE1889.WeaponZerdruecken": "Zerdrücken",
 	"SPACE1889.WeaponZinnstrahl": "Zinnstrahl",
 
+	"SPACE1889.CombatManoeuversGrapple": "Festhalten",
+	"SPACE1889.CombatManoeuversDisarm": "Entwaffnen",
+	"SPACE1889.CombatManoeuversTrip": "Bein stellen",
+
+	"SPACE1889.ChatOpposedRoll": "Vergleichende Probe",
+	"SPACE1889.CanNotGrapple": "{name} ist zu schwach, um jemanden festzuhalten (Waffenlos = 0)",
+	"SPACE1889.ChatGrapple": "<h2>Festhalten</h2>",
+	"SPACE1889.ChatGrappleSizePenalty": "{penalty} Erschwernis durch Größe des Ziels",
+	"SPACE1889.ChatGrappleGreatSuccess": "{actorName} umklammert seinen Gegner ({targetName}) so stark, dass dieser nur noch über seine passive Abwehr verfügt.",
+	"SPACE1889.ChatGrappleSuccess": "{actorName} hält {targetName} fest.",
+	"SPACE1889.ChatGrappleFail": "{actorName} scheitert beim Festhalten.",
+	"SPACE1889.ChatTripFail": "{actorName} bleibt auf den Beinen.",
+	"SPACE1889.ChatTripSizePenalty": "{penalty} Erschwernis durch Vielbeinigkeit des Ziels",
+	"SPACE1889.DisarmNoWeaponOnTarget": "Mach die Augen auf! Du kannst das Ziel nicht entwaffnen, wenn es keine Waffe in der Hand hat",
+	"SPACE1889.CanNotDisarm": "{name} ist zu schwach, um jemanden die Waffe zu entreißen",
+	"SPACE1889.DisarmWithWeapon": "Versucht mit der Waffe <i>{weapon}</i>, dem Gegner die Waffe aus der Hand zu schlagen.",
+	"SPACE1889.DisarmFailText": "{attackerName} scheitert beim Entwaffnen",
+	"SPACE1889.DisarmFlingAway": "{attackerName} schlägt {targetName} die Waffe <i>{weaponName}</i> aus der Hand, sie fliegt {distance}m weit weg",
+	"SPACE1889.DisarmStealTheWeapon": "{attackerName} entreißt {targetName} die Waffe <i>{weaponName}</i> und hält sie jetzt selber in der Hand",
+	"SPACE1889.DisarmSuccess": "Erfolg beim Entwaffnen",
+	"SPACE1889.DisarmFail": "Das Entwaffnen scheitert",
+	"SPACE1889.Delta": "Delta: {delta}",
+	"SPACE1889.ChatDisarmTwoHandPenalty": "{penalty} Erschwernis zweihändige Waffe des Ziels",
+
 	"SPACE1889.AmmunitionType": "Typ",
 	"SPACE1889.AmmunitionTypeArrows": "Pfeile",
 	"SPACE1889.AmmunitionTypeBolts": "Bolzen",
@@ -3001,7 +3027,6 @@
 	"SPACE1889.KeyRollAnySkill": "Fertigkeitsprobe",
 	"SPACE1889.KeyInfoRollAnySkill": "Öffnet für den aktuellen Token oder Spieler einen Dialog, mit dem auf eine beliebige Fertigkeit oder Spezialisierung gewürfelt werden kann.",
 	"SPACE1889.InfoRollAnySkill": "Auf eine beliebige Fertigkeit/Fertigkeitsgruppe oder Spezialisierung würfeln",
-
 
 	"SPACE1889.Recoil": "Rückstoß",
 	"SPACE1889.Knockdown": "Niederschlag",
@@ -3516,8 +3541,8 @@
 	"SPACE1889.CanNotBlockThisAttackType": "Der Angriffstyp kann nicht geblockt werden",
 	"SPACE1889.CanNotBlockNoActiveDefence": "Blocken benötigt eine Aktive Verteidigung",
 	"SPACE1889.CanNotBlockNoAction": "Blocken benötigt eine Aktion und diese ist in der Kampfrunde schon verbraucht",
-	"SPACE1889.ConNotBlockParryEvasionNoActiveDefence": "{talentName} ist nicht möglich, da der Akteur keine aktive Abwehr besitzt, oder diese bei diesem Angriff nicht nutzen kann.",
-	"SPACE1889.ConNotBlockParryEvasionNoAction": "{talentName} benötigt eine Aktion und diese ist in der Kampfrunde schon verbraucht",
+	"SPACE1889.CanNotBlockParryEvasionNoActiveDefence": "{talentName} ist nicht möglich, da der Akteur keine aktive Abwehr besitzt, oder diese bei diesem Angriff nicht nutzen kann.",
+	"SPACE1889.CanNotBlockParryEvasionNoAction": "{talentName} benötigt eine Aktion und diese ist in der Kampfrunde schon verbraucht",
 	"SPACE1889.ParryMeleeInstinctively": "Nahkampf und Waffenlos Angriffe können instinktiv pariert werden",
 	"SPACE1889.ParryMelee": "Mit dem Verzicht auf die Angriffsaktion in der Runde können alle Nahkampf und Waffenlos Angriffe pariert werden",
 	"SPACE1889.EvasionMeleeInstinctively": "Fernangriffen kann instinktiv ausgewichen werden",
@@ -3525,6 +3550,9 @@
 	"SPACE1889.Deductions": "Abzüge",
 	"SPACE1889.ExtendedActionDeductions": "Beim Unterwürfeln der Erfolgsschwelle, wird die Differenz, entsprechend dem Grundregelwerk, von den bis dahin angesammelten Erfolgen abgezogen.",
 	"SPACE1889.ExtendedActionNoDeductions": "Beim Unterwürfeln der Erfolgsschwelle, bleiben, entgegen den Regeln im Grundregelwerk, die angesammelten Erfolgen unangetastet.",
+	"SPACE1889.OpposedMeleeRoll": "Vergleichende Nahkampf Probe (Waffe: {name})",
+	"SPACE1889.OpposedBrawlRoll": "Vergleichende Waffenlos Probe",
+	"SPACE1889.NoComparativeDefence": "Der Charakter ist bewusstlos oder paralysiert und kann sich nicht wehren",
 
 	"SPACE1889.NotSupportedInFoundryV10": "Die Funktion wird leider von Foundry VTT V10 nicht unterstützt. Um sie nutzen zu können muss auf Foundry VTT auf Version 11 aktualisiert werden.",
 	"SPACE1889.TalentEffectBoostNotPossible": "Das Talent hat schon den maximalen Wert erreicht und kann auch durch temporäre Erhöhung nicht weiter gesteigert werden.",
@@ -3534,6 +3562,7 @@
 	"SPACE1889.ErrorInFunction": "Fehler in der Funktion <em>{name}</em>",
 	"SPACE1889.UnknownSkillWarning": "Die Fertigkeit mit der Space-Id <em>{skillId}</em> ist werder im Compendium noch in den Welt-Items vorhanden. Darauf basierende Berechnungen sind vermutlich falsch.",
 
+	"SPACE1889.None": "keine",
 	"SPACE1889.Warning": "Warnung",
 	"SPACE1889.UnableToLoadImage": " Bild konnte nicht geladen werden",
 	"SPACE1889.FoundryBug8180": "<h1>Stopp und aufgepasst!&nbsp;</h1><p><br />Du hast diese V9 Welt gerade auf Foundry 10.285 migriert. Dabei sind alle nicht mit dem Akteur verlinkten Tokens, die sich in ihren Items vom Original Akteur unterscheiden (Schaden ist auch ein Item) leider irreperabel besch&auml;digt wurden, indem alle Item Werte auf ihren Standardwert zur&uuml;ckgesetzt wurden. Siehe Bug <a data-tooltip=\"Foundry Bug 8180\" href=\"https://github.com/foundryvtt/foundryvtt/issues/8180\" target=\"_blank\" rel=\"noopener\">https://github.com/foundryvtt/foundryvtt/issues/8180</a><br /><br /></p><h3>Du hast zwei M&ouml;glichkeiten den Migrationsfehler zu vermeiden:</h3><ol style=\"list-style-type: decimal;\"><li>Zur&uuml;ck zu Foundry 9.280 wechseln, Backup einspielen und auf das n&auml;chste Foundry Release warten, in dem der Bug 8180 gefixed wurde<br /><br /></li><li><ol style=\"list-style-type: lower-latin;\"><li><span style=\"font-family: var(--font-primary); font-size: var(--font-size-14);\">Foundry Version 10.284 installieren und Backup einspielen</span></li><li>alle Space Welten von V9 auf 10.284 migrieren (das Space 1889 System fasst die Tokens dabei automatisch an, um den bug-bedingten Datenverlust bei einem sp&auml;teren Update auf 10.285 zu vermeiden)</li><li>Foundry Version 10.285 installieren und damit die Welten von 10.284 auf 10.285migrieren</li><li>Spa&szlig; an Foundry 10 haben</li></ol></li></ol><p>&nbsp;</p>",

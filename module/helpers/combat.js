@@ -17,12 +17,40 @@ export default class SPACE1889Combat
 		return { primaryWeapon: primaryWeapon, offHandWeapon: offHandWeapon };
 	}
 
-	static isCloseCombatWeapon(weapon)
+	static hasFreeHands(actor)
+	{
+		if (!actor)
+			return false;
+
+		if (actor.system.attributes.species.value === "selenit") 
+			return true; 
+
+		const weapons = SPACE1889Combat.getWeaponInHands(actor);
+		const primaryIsFree = !weapons.primaryWeapon || SPACE1889Combat.canUseHandWhileHoldingTheWeapon(weapons.primaryWeapon);
+		const offHandIsFree = !weapons.offHandWeapon || SPACE1889Combat.canUseHandWhileHoldingTheWeapon(weapons.offHandWeapon);
+
+		return (primaryIsFree && offHandIsFree);
+	}
+
+	static canUseHandWhileHoldingTheWeapon(weapon)
 	{
 		if (!weapon)
 			return true;
 
-		return (weapon.system.skillId == "waffenlos" || weapon.system.skillId == "nahkampf");
+		return weapon.system.id === "schlag" || weapon.system.id === "schlagring";
+	}
+
+	static isCloseCombatWeapon(weapon, returnValueForUndefinedWeapons = true)
+	{
+		if (!weapon)
+			return returnValueForUndefinedWeapons;
+
+		return this.isCloseCombatSkill(weapon.system.skillId);
+	}
+
+	static isCloseCombatSkill(skillId)
+	{
+		return (skillId === "waffenlos" || skillId === "nahkampf");
 	}
 
 	static canDoDualWield(actor)
@@ -57,10 +85,7 @@ export default class SPACE1889Combat
 
 	static canDoFlurry(weapon)
 	{
-		if (weapon == undefined)
-			return false;
-
-		return weapon.system.skillId == "nahkampf" || weapon.system.skillId == "waffenlos";
+		this.isCloseCombatWeapon(weapon, false);
 	}
 
 	static getFlurryModificator(actor)
@@ -74,7 +99,7 @@ export default class SPACE1889Combat
 		if (weapon == undefined || actor == undefined)
 			return false;
 
-		return weapon.system.skillId == "nahkampf" || weapon.system.skillId == "waffenlos";
+		this.isCloseCombatWeapon(weapon, false);
 	}
 
 	static canDoSweepingBlow(weapon, actorToken)
@@ -327,6 +352,22 @@ export default class SPACE1889Combat
 			return false;
 		}
 		return true;
+	}
+
+	static isInCloseCombatRange(actor, targetToken)
+	{
+		const actorToken = this.getCombatToken(actor) || this.getToken(actor);
+		if (actorToken && targetToken)
+		{
+			let distanceInfo = DistanceMeasuring.getDistanceInfo(actorToken, targetToken.document, true);
+			if (!distanceInfo.isCloseCombatRange)
+			{
+				ui.notifications.info(game.i18n.localize("SPACE1889.NotInRange"));
+				return false;
+			}
+			return true;
+		}
+		return false;
 	}
 
 	static IsActorParticipantOfTheActiveEncounter(actor, notify)
@@ -1077,7 +1118,8 @@ export default class SPACE1889Combat
 		const blockInfo = this.getBlockData(actor, defenseType, data.combatSkillId, hasAttackActionForDefense, multiDefenseMalus);
 		const parryInfo = this.getParryData(actor, defenseType, data.combatSkillId, hasAttackActionForDefense, multiDefenseMalus);
 		const dodgeInfo = this.getEvasionData(actor, defenseType, data.combatSkillId, hasAttackActionForDefense, multiDefenseMalus);
-		const totalInfo = this.getTotalData(actor, defenseType, hasAttackActionForDefense, multiDefenseMalus, blockInfo, parryInfo, dodgeInfo);
+		const compaInfo = this.getComparativeData(actor, defenseType, data.combatSkillId, multiDefenseMalus);
+		const totalInfo = this.getTotalData(actor, defenseType, hasAttackActionForDefense, multiDefenseMalus, blockInfo, parryInfo, dodgeInfo, compaInfo);
 
 		const statusIds = SPACE1889RollHelper.getActiveEffectStates(actor);
 		const isTotalDefense = statusIds.find(element => element === "totalDefense") !== undefined;
@@ -1088,6 +1130,8 @@ export default class SPACE1889Combat
 		{
 			diceCount = Math.max(0, actor.system.secondaries.defense.activeTotal + multiDefenseMalus);
 		}
+		if (compaInfo.canDo)
+			diceCount = compaInfo.diceCount;
 
 		if (isTotalDefense && totalInfo.canDo && totalInfo.diceCount > diceCount)
 		{
@@ -1117,7 +1161,7 @@ export default class SPACE1889Combat
 			diceCount = parryInfo.diceCount;
 		}
 
-		return { defenseType: resultantDefenseType, riposteDamageType: resultRiposteDamageType, diceCount: diceCount, multiDefenseMalus: multiDefenseMalus, blockInfo: blockInfo, parryInfo: parryInfo, dodgeInfo: dodgeInfo, totalInfo: totalInfo };
+		return { defenseType: resultantDefenseType, riposteDamageType: resultRiposteDamageType, diceCount: diceCount, multiDefenseMalus: multiDefenseMalus, blockInfo: blockInfo, parryInfo: parryInfo, dodgeInfo: dodgeInfo, totalInfo: totalInfo, comparativeInfo: compaInfo };
 	}
 
 	static getBlockData(actor, defenseType, attackCombatSkillId, hasAttackActionForDefense, multiDefenseMalus)
@@ -1211,10 +1255,10 @@ export default class SPACE1889Combat
 		const talentName = game.i18n.localize("SPACE1889.Parry");
 
 		if (defenseType === 'onlyPassive' || actor.HasNoActiveDefense(actor) || !this.isActorTypeValidForBlockParryDodge(actor.type))
-			return { canDo: false, diceCount: 0, instinctive: isInstinctive, defenseType: defenseType, info: game.i18n.format("SPACE1889.ConNotBlockParryEvasionNoActiveDefence", { talentName: talentName }) };
+			return { canDo: false, diceCount: 0, instinctive: isInstinctive, defenseType: defenseType, info: game.i18n.format("SPACE1889.CanNotBlockParryEvasionNoActiveDefence", { talentName: talentName }) };
 
 		if (!hasAttackActionForDefense && !isInstinctive)
-			return { canDo: false, diceCount: 0, instinctive: isInstinctive, defenseType: defenseType, info: game.i18n.format("SPACE1889.ConNotBlockParryEvasionNoAction", { talentName: talentName }) };
+			return { canDo: false, diceCount: 0, instinctive: isInstinctive, defenseType: defenseType, info: game.i18n.format("SPACE1889.CanNotBlockParryEvasionNoAction", { talentName: talentName }) };
 
 		let activeOnly = false;
 		if (defenseType.substring(0, 10) === 'onlyActive')
@@ -1249,10 +1293,10 @@ export default class SPACE1889Combat
 		const talentName = game.i18n.localize("SPACE1889.Evasion");
 
 		if (defenseType === 'onlyPassive' || actor.HasNoActiveDefense(actor) || !this.isActorTypeValidForBlockParryDodge(actor.type))
-			return { canDo: false, diceCount: 0, instinctive: isInstinctive, defenseType: defenseType, info: game.i18n.format("SPACE1889.ConNotBlockParryEvasionNoActiveDefence", { talentName: talentName }) };
+			return { canDo: false, diceCount: 0, instinctive: isInstinctive, defenseType: defenseType, info: game.i18n.format("SPACE1889.CanNotBlockParryEvasionNoActiveDefence", { talentName: talentName }) };
 
 		if (!hasAttackActionForDefense && !isInstinctive)
-			return { canDo: false, diceCount: 0, instinctive: isInstinctive, defenseType: defenseType, info: game.i18n.format("SPACE1889.ConNotBlockParryEvasionNoAction", { talentName: talentName }) };
+			return { canDo: false, diceCount: 0, instinctive: isInstinctive, defenseType: defenseType, info: game.i18n.format("SPACE1889.CanNotBlockParryEvasionNoAction", { talentName: talentName }) };
 
 		let activeOnly = false;
 		if (defenseType.substring(0, 10) === 'onlyActive')
@@ -1279,7 +1323,65 @@ export default class SPACE1889Combat
 		return { canDo: canDoDodge, diceCount: Math.max(0, dodgeValue + multiDefenseMalus), instinctive: isInstinctive, defenseType: resultantDefenseType, info: info };
 	}
 
-	static getTotalData(actor, defenseType, hasAttackActionForDefense, multiDefenseMalus, blockInfo, parryInfo, dodgeInfo)
+	static getComparativeData(actor, defenseType, attackCombatSkillId, multiDefenseMalus)
+	{
+		// ToDo: wie soll der Verlust der aktiven Verteidigung in die Berechnung eingehen?
+		//|| actor.HasNoActiveDefense(actor)
+		if (defenseType.indexOf("Comparative") < 0 || !this.isCloseCombatSkill(attackCombatSkillId))
+			return { canDo: false, diceCount: 0, defenseType: defenseType, info: "" };
+
+		let noActiveDefenseMalus = 0;
+		if (actor.HasNoActiveDefense(actor))
+		{
+			const statusIds = SPACE1889RollHelper.getActiveEffectStates(actor);
+			if (statusIds.includes("paralysis") || statusIds.includes("unconscious"))
+				return { canDo: true, diceCount: 0, defenseType: defenseType, info: game.i18n.localize("SPACE1889.NoComparativeDefence") };
+
+			noActiveDefenseMalus = actor.getActiveDefense(actor, true);
+		}
+
+
+		const weapons = SPACE1889Combat.getWeaponInHands(actor);
+		let melee = 0;
+		let meleeWeapon = undefined;
+		if (weapons.primaryWeapon?.system?.skillId === "nahkampf")
+		{
+			melee = actor.getSkillLevel(actor, weapons.primaryWeapon.system.skillId, weapons.primaryWeapon.system.specializationId);
+			meleeWeapon = weapons.primaryWeapon;
+		}
+		if (weapons.offHandWeapon?.system?.skillId === "nahkampf" && weapons.primaryWeapon?.id !== weapons.offHandWeapon?.id)
+		{
+			const offhandMalus = SPACE1889Helper.getTalentLevel(actor, "beidhaendig") < 1 ? 2 : 0;
+			const offHandMelee = actor.getSkillLevel(actor, weapons.primaryWeapon.system.skillId, weapons.primaryWeapon.system.specializationId) - offhandMalus;
+			if (offHandMelee > melee)
+			{
+				melee = offHandMelee;
+				meleeWeapon = weapons.offHandWeapon;
+			}
+			melee = Math.max(0, melee + offhandMalus);
+		}
+
+		const brawl = actor.GetSkillRating(actor, "waffenlos", "str");
+		let diceCount = 0;
+		let info = "";
+		if (melee > brawl)
+		{
+			diceCount = melee; 
+			const name = meleeWeapon ? meleeWeapon.system.label : "";
+			info = game.i18n.format("SPACE1889.OpposedMeleeRoll", { name: name } );
+		}
+		else
+		{
+			diceCount = brawl;
+			info = game.i18n.localize("SPACE1889.OpposedBrawlRoll");
+		}
+
+		diceCount = Math.max(0, diceCount + multiDefenseMalus - noActiveDefenseMalus);
+
+		return { canDo: true, diceCount: diceCount, defenseType: defenseType, info: info };
+	}
+
+	static getTotalData(actor, defenseType, hasAttackActionForDefense, multiDefenseMalus, blockInfo, parryInfo, dodgeInfo, compaInfo)
 	{
 		if (defenseType === 'onlyPassive' || actor.HasNoActiveDefense(actor) || !hasAttackActionForDefense)
 			return { canDo: false, diceCount: 0, defenseType: defenseType, riposteDamageType : "" };
@@ -1288,6 +1390,9 @@ export default class SPACE1889Combat
 		let diceCount = defenseType.indexOf("onlyActive") < 0 ?
 			Math.max(0, multiDefenseMalus + actor.system.secondaries.defense.totalDefense) :
 			Math.max(0, multiDefenseMalus + actor.system.secondaries.defense.activeTotal + totalDefenseBonus);
+
+		if (compaInfo.canDo)
+			diceCount = compaInfo.diceCount + totalDefenseBonus;
 
 		let resultantDefenseType = defenseType;
 		let resultRiposteDamageType = "";

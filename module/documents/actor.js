@@ -994,11 +994,11 @@ export class Space1889Actor extends Actor
 		return info;
 	}
 
-	getActiveDefense(actor)
+	getActiveDefense(actor, ignoreActiveDefenseState = false)
 	{
 		let active = actor.system.abilities.dex.total;
 
-		if (this.HasNoActiveDefense(actor))
+		if (this.HasNoActiveDefense(actor) && !ignoreActiveDefenseState)
 			active = 0;
 		else
 		{
@@ -2024,6 +2024,17 @@ export class Space1889Actor extends Actor
 		if (attackInCombatRound <= noMalusDefenses)
 			return 0;
 		return (attackInCombatRound - noMalusDefenses) * (-2);
+	}
+
+	getTalentAttacks()
+	{
+		let talents = [];
+		for (const talent of this.system.talents)
+		{
+			if (talent.isAttackTalent())
+				talents.push(talent);
+		}
+		return talents;
 	}
 
 	async addDamage(key)
