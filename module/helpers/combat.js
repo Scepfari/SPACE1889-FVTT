@@ -840,6 +840,7 @@ export default class SPACE1889Combat
 		const normalSelected = defOpt.defenseType === "" ? " checked" : "";
 		const activeSelected = defOpt.defenseType.indexOf("onlyActive") === 0 ? " checked" : "";
 		const passiveSelected = defOpt.defenseType === "onlyPassive" ? " checked" : "";
+		const opposedSelected = defOpt.defenseType.indexOf("Comparative") >= 0 ? " checked" : "";
 		const totalSelected = defOpt.defenseType.indexOf("Total") >= 0 ? " checked" : "";
 		const blockSelected = defOpt.defenseType.indexOf("Block") >= 0 && !totalSelected ? " checked" : "";
 		const parrySelected = defOpt.defenseType.indexOf("Parry") >= 0 && !totalSelected ? " checked" : "";
@@ -847,6 +848,7 @@ export default class SPACE1889Combat
 		const defBlockInfo = defOpt.blockInfo;
 		const defParryInfo = defOpt.parryInfo;
 		const defDodgeInfo = defOpt.dodgeInfo;
+		const defOpposedInfo = defOpt.comparativeInfo;
 		const totalInfo = defOpt.totalInfo;
 		const multiDefenseMalus = defOpt.multiDefenseMalus;
 
@@ -865,6 +867,11 @@ export default class SPACE1889Combat
 		const canDoParry = defParryInfo ? defParryInfo.canDo : false;
 		let parryToolTip = defParryInfo ? defParryInfo.info : "";
 
+		let baseOpposed = defOpposedInfo ? defOpposedInfo.diceCount : 0;
+		const isOpposed = defOpposedInfo ? defOpposedInfo.canDo : false;
+		let opposedToolTip = defOpposedInfo ? defOpposedInfo.info : "";
+		const hideText = ' hidden="true" ';
+
 		let base = Math.max(0, actor.system.secondaries.defense.total + multiDefenseMalus);
 
 		const activeDefense = Math.max(0, multiDefenseMalus + actor.system.secondaries.defense.activeTotal);
@@ -872,8 +879,6 @@ export default class SPACE1889Combat
 		let totalDefense = totalInfo?.canDo ? totalInfo.diceCount : 0;
 
 		const disableBlockInHtlmText = canDoBlock ? "" : `disabled="true"`;
-
-		const hideParryInHtml = "";
 		const disableParryInHtlmText = canDoParry ? "" : `disabled="true"`;
 		const disableDodgeInHtlmText = canDoDodge ? "" : `disabled="true"`;
 		const disableTotalDefenseInHtlmText = totalInfo?.canDo ? "" : `disabled="true" data-tooltip="${game.i18n.format("SPACE1889.NoBlockParryEvasion", { talentName: game.i18n.localize("SPACE1889.DefenseDialogTotalDefense") } )}"`;
@@ -898,8 +903,9 @@ export default class SPACE1889Combat
 			const evasionValue = $('#evasion')[0].checked ? baseDodge : 0;
 			const passiveDefenseValue = $('#passiveDefense')[0].checked ? passiveDefense : 0;
 			const activeDefenseValue = $('#activeDefense')[0].checked ? activeDefense : 0;
+			const opposedRollValue = $('#opposed')[0].checked ? baseOpposed : 0;
 
-			let attributValue = mod + value + totalDefenseValue + blockValue + parryValue + evasionValue + passiveDefenseValue + activeDefenseValue;
+			let attributValue = mod + value + totalDefenseValue + blockValue + parryValue + evasionValue + passiveDefenseValue + activeDefenseValue + opposedRollValue;
 
 			$("#anzahlDerWuerfel")[0].value = attributValue;
 		}
@@ -941,6 +947,11 @@ export default class SPACE1889Combat
 				Recalc();
 			});
 
+			html.on('change', '.opposed', () =>
+			{
+				Recalc();
+			});
+
 			html.on('change', '.modInput', () =>
 			{
 				Recalc();
@@ -959,9 +970,9 @@ export default class SPACE1889Combat
 				<form >
 					<fieldset>
 						<legend>${game.i18n.localize("SPACE1889.DefenseDialogDefenseType")}</legend>
-						<p>${game.i18n.format("SPACE1889.DefenseDialogAttackType", { type: attackTypeName })}<p>
+						<p>${game.i18n.format("SPACE1889.DefenseDialogAttackType", { type: attackTypeName })}</p>
 						<p>${game.i18n.format("SPACE1889.DefenseCountInCombatRound", { count: defenseCount + 1, round: combatRound, malus: multiDefenseMalus}) }</p>
-						<fieldset>
+						<fieldset ${isOpposed ? hideText : ""}>
 							<legend>${game.i18n.localize("SPACE1889.DefenseDialogNomalDefense")}</legend>
 							<input ${disableNormalDefenseInHtlmText} type="radio" id="normal" name="type" class="normal" value="N" ${normalSelected}>
 							<label ${disableNormalDefenseInHtlmText} for="normal">${game.i18n.localize("SPACE1889.SecondaryAttributeDef")} ${base}</label><br>
@@ -974,6 +985,12 @@ export default class SPACE1889Combat
 			
 						</fieldset>
 
+						<fieldset ${isOpposed ? "" : hideText}>
+							<legend>${game.i18n.localize("SPACE1889.ChatOpposedRoll")}</legend>
+							<input type="radio" id="opposed" class="opposed" name="type" value="OP" data-tooltip="${opposedToolTip}" ${opposedSelected}>
+							<label for="opposed" data-tooltip="${opposedToolTip}">${defOpposedInfo.skillName} ${baseOpposed}</label><br>
+						</fieldset>
+
 						<fieldset>
 							<legend>${game.i18n.localize("SPACE1889.DefenseDialogSpecialDefense")}</legend>
 							<input  ${disableTotalDefenseInHtlmText} type="radio" id="totalDefense" name="type" class="totalDefense" value="V" ${totalSelected}>
@@ -981,10 +998,10 @@ export default class SPACE1889Combat
 			
 							<input ${disableBlockInHtlmText} type="radio" id="block" class="block" name="type" value="B" ${blockSelected} data-tooltip="${blockToolTip}">
 							<label ${disableBlockInHtlmText} for="block" data-tooltip="${blockToolTip}">${game.i18n.localize("SPACE1889.Block")} ${baseBlock} ${instinctiveBlock ? "" : lossOfAA}</label><br>
-							<div ${hideParryInHtml}>
-								<input ${disableParryInHtlmText} type="radio" id="parry" class="parry" name="type" value="P" ${parrySelected} data-tooltip="${parryToolTip}">
-								<label ${disableParryInHtlmText} for="parry" data-tooltip="${parryToolTip}">${game.i18n.localize("SPACE1889.Parry")} ${baseParry} ${instinctiveParry ? "" : lossOfAA}</label><br>
-							</div>
+
+							<input ${disableParryInHtlmText} type="radio" id="parry" class="parry" name="type" value="P" ${parrySelected} data-tooltip="${parryToolTip}">
+							<label ${disableParryInHtlmText} for="parry" data-tooltip="${parryToolTip}">${game.i18n.localize("SPACE1889.Parry")} ${baseParry} ${instinctiveParry ? "" : lossOfAA}</label><br>
+
 							<input ${disableDodgeInHtlmText} type="radio" id="evasion" class="evasion" name="type" value="D" ${dodgeSelected} data-tooltip="${dodgeToolTip}">
 							<label ${disableDodgeInHtlmText} for="evasion" data-tooltip="${dodgeToolTip}">${game.i18n.localize("SPACE1889.Evasion")} ${baseDodge} ${instinctiveDodge ? "" : lossOfAA}</label><br>
 						</fieldset>
@@ -1061,6 +1078,11 @@ export default class SPACE1889Combat
 			{
 				useActionForDefense = !instinctiveDodge;
 				selectedDefenseType = defDodgeInfo.defenseType;
+			}
+			else if (html.find('#opposed'))
+			{
+				useActionForDefense = false;
+				selectedDefenseType = defOpposedInfo.defenseType;
 			}
 
 			const input = html.find('#anzahlDerWuerfel').val();
@@ -1325,21 +1347,19 @@ export default class SPACE1889Combat
 
 	static getComparativeData(actor, defenseType, attackCombatSkillId, multiDefenseMalus)
 	{
-		// ToDo: wie soll der Verlust der aktiven Verteidigung in die Berechnung eingehen?
-		//|| actor.HasNoActiveDefense(actor)
+		let opposedSkillName = game.i18n.localize("SPACE1889.SkillWaffenlos");
 		if (defenseType.indexOf("Comparative") < 0 || !this.isCloseCombatSkill(attackCombatSkillId))
-			return { canDo: false, diceCount: 0, defenseType: defenseType, info: "" };
+			return { canDo: false, diceCount: 0, defenseType: defenseType, info: "", skillName : opposedSkillName };
 
 		let noActiveDefenseMalus = 0;
 		if (actor.HasNoActiveDefense(actor))
 		{
 			const statusIds = SPACE1889RollHelper.getActiveEffectStates(actor);
 			if (statusIds.includes("paralysis") || statusIds.includes("unconscious"))
-				return { canDo: true, diceCount: 0, defenseType: defenseType, info: game.i18n.localize("SPACE1889.NoComparativeDefence") };
+				return { canDo: true, diceCount: 0, defenseType: defenseType, info: game.i18n.localize("SPACE1889.NoComparativeDefence"), skillName : opposedSkillName };
 
 			noActiveDefenseMalus = actor.getActiveDefense(actor, true);
 		}
-
 
 		const weapons = SPACE1889Combat.getWeaponInHands(actor);
 		let melee = 0;
@@ -1352,13 +1372,12 @@ export default class SPACE1889Combat
 		if (weapons.offHandWeapon?.system?.skillId === "nahkampf" && weapons.primaryWeapon?.id !== weapons.offHandWeapon?.id)
 		{
 			const offhandMalus = SPACE1889Helper.getTalentLevel(actor, "beidhaendig") < 1 ? 2 : 0;
-			const offHandMelee = actor.getSkillLevel(actor, weapons.primaryWeapon.system.skillId, weapons.primaryWeapon.system.specializationId) - offhandMalus;
+			const offHandMelee = actor.getSkillLevel(actor, weapons.offHandWeapon.system.skillId, weapons.offHandWeapon.system.specializationId) - offhandMalus;
 			if (offHandMelee > melee)
 			{
-				melee = offHandMelee;
+				melee = Math.max(0, offHandMelee);
 				meleeWeapon = weapons.offHandWeapon;
 			}
-			melee = Math.max(0, melee + offhandMalus);
 		}
 
 		const brawl = actor.GetSkillRating(actor, "waffenlos", "str");
@@ -1368,17 +1387,22 @@ export default class SPACE1889Combat
 		{
 			diceCount = melee; 
 			const name = meleeWeapon ? meleeWeapon.system.label : "";
-			info = game.i18n.format("SPACE1889.OpposedMeleeRoll", { name: name } );
+			info = game.i18n.format("SPACE1889.OpposedMeleeRoll", { name: name });
+			opposedSkillName = game.i18n.localize("SPACE1889.SkillNahkampf");
+			const speci = actor.system.speciSkills.find(e => e.system.id === meleeWeapon?.system?.specializationId);
+			if (speci)
+				opposedSkillName += ` (${speci.system.label})`;
 		}
 		else
 		{
 			diceCount = brawl;
 			info = game.i18n.localize("SPACE1889.OpposedBrawlRoll");
+			opposedSkillName = game.i18n.localize("SPACE1889.SkillWaffenlos");
 		}
 
 		diceCount = Math.max(0, diceCount + multiDefenseMalus - noActiveDefenseMalus);
 
-		return { canDo: true, diceCount: diceCount, defenseType: defenseType, info: info };
+		return { canDo: true, diceCount: diceCount, defenseType: defenseType, info: info, skillName : opposedSkillName };
 	}
 
 	static getTotalData(actor, defenseType, hasAttackActionForDefense, multiDefenseMalus, blockInfo, parryInfo, dodgeInfo, compaInfo)
