@@ -52,7 +52,7 @@ export default function ()
 			if (disarmWeaponId === "")
 				disarmWeaponId = SPACE1889Combat.isCloseCombatWeapon(weapons.offHandWeapon, false) ? weapons.offHandWeapon.id : "";
 
-			if (hasFreeHands || disarmWeaponId)
+			if (hasFreeHands || disarmWeaponId !== "")
 			{
 				const disarmName = game.i18n.localize("SPACE1889.CombatManoeuversDisarm");
 				const disarmAction = { name: disarmName, itemId: disarmWeaponId, image: "systems/space1889/icons/svg/drop-weapon.svg", type: "disarm", tooltip: disarmName };

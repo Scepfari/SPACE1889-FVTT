@@ -1469,6 +1469,8 @@ export default class SPACE1889Combat
 		let weapon = null;
 		let chatInfo = "";
 		let normalOptName = game.i18n.localize("SPACE1889.AttackDialogRegular");
+		let totalAttackName = game.i18n.localize("SPACE1889.AttackDialogTotalAttack");
+		let totalAttackSecOptName = "";
 		let showNormalOpt = true;
 		let normalSecondOptName = "";
 		let secondOptDeltaValue = 0;
@@ -1499,13 +1501,16 @@ export default class SPACE1889Combat
 				manoeuverName = data.name;
 				baseValue = data.noWeaponRating;
 				normalOptName = `${game.i18n.localize("SPACE1889.DisarmByStealing")} (${data.noWeaponRating})`;
+				totalAttackName = `${game.i18n.localize("SPACE1889.DisarmByStealing")} ${game.i18n.localize("SPACE1889.AttackDialogTotalAttack")}`;
+		
 				showNormalOpt = data.noWeaponRating > 0;
 				showNormalSecondOpt = data.weapon && data.weaponRating > 0;
-				if (showNormalOpt)
+				if (showNormalSecondOpt)
 				{
 					weapon = data.weapon;
 					secondOptDeltaValue = data.weaponRating - data.noWeaponRating;
 					normalSecondOptName = `${game.i18n.localize("SPACE1889.DisarmByKnocking")} (${data.weaponRating})`;
+					totalAttackSecOptName = `${game.i18n.localize("SPACE1889.DisarmByKnocking")} ${game.i18n.localize("SPACE1889.AttackDialogTotalAttack")}`;
 					if (data.weaponRating > data.noWeaponRating)
 					{
 						normalSelected = "";
@@ -1538,8 +1543,8 @@ export default class SPACE1889Combat
 		{
 			let mod = Number($("#modifier")[0].value);
 
-			const normalDelta = $('#secondNormal')[0].checked ? secondOptDeltaValue : 0;
-			const vollerAngriffBonus = $('#vollerAngriff')[0].checked ? baseVollerAngriff : 0;
+			const normalDelta = $('#secondNormal')[0].checked || $('#totalAttackSecOpt')[0].checked ? secondOptDeltaValue : 0;
+			const vollerAngriffBonus = $('#vollerAngriff')[0].checked  || $('#totalAttackSecOpt')[0].checked ? baseVollerAngriff : 0;
 			let attributValue = baseValue + mod + vollerAngriffBonus + normalDelta;
 			$("#anzahlDerWuerfel")[0].value = attributValue.toString();
 		}
@@ -1557,6 +1562,11 @@ export default class SPACE1889Combat
 			});
 
 			html.on('change', '.vollerAngriff', () =>
+			{
+				Recalc();
+			});
+
+			html.on('change', '.totalAttackSecOpt', () =>
 			{
 				Recalc();
 			});
@@ -1593,8 +1603,14 @@ export default class SPACE1889Combat
 
 						<fieldset>
 							<legend>${game.i18n.localize("SPACE1889.AttackDialogTotalAttackHeadline")}</legend>
-							<input ${disableTotalAttackInHtlmText} type="radio" id="vollerAngriff" name="type" class="vollerAngriff" value="V">
-							<label ${disableTotalAttackInHtlmText} for="vollerAngriff">${game.i18n.localize("SPACE1889.AttackDialogTotalAttack")}</label><br>
+							<div ${showNormalOpt ? "" : hideText}>
+								<input ${disableTotalAttackInHtlmText} type="radio" id="vollerAngriff" name="type" class="vollerAngriff" value="V">
+								<label ${disableTotalAttackInHtlmText} for="vollerAngriff">${totalAttackName}</label><br>
+							</div>
+							<div ${showNormalSecondOpt ? "" : hideText}>
+								<input ${disableTotalAttackInHtlmText} type="radio" id="totalAttackSecOpt" name="type" class="totalAttackSecOpt" value="TS">
+								<label ${disableTotalAttackInHtlmText} for="totalAttackSecOpt">${totalAttackSecOptName}</label><br>
+							</div>
 						</fieldset>
 					</fieldset>
 					<ul>
@@ -1642,13 +1658,13 @@ export default class SPACE1889Combat
 			let attackName = "";
 			let toolTipInfo = data.toolTipInfo;
 			let isFullAttack = false;
-			if (html.find('#vollerAngriff')[0].checked)
+			if (html.find('#vollerAngriff')[0].checked || $('#totalAttackSecOpt')[0].checked)
 			{
 				attackName = game.i18n.localize("SPACE1889.AttackTypeTotalAttack");
 				toolTipInfo += attackName + ": " + SPACE1889Helper.getSignedStringFromNumber(baseVollerAngriff);
 				isFullAttack = true;
 			}
-			if (html.find('#secondNormal')[0].checked)
+			if (html.find('#secondNormal')[0].checked || $('#totalAttackSecOpt')[0].checked)
 			{
 				manoeuver = "disarmWithWeapon";
 				chatInfo = game.i18n.format("SPACE1889.DisarmWithWeapon", { weapon: weapon.system.label });

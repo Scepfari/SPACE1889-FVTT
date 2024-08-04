@@ -2434,7 +2434,7 @@ export default class SPACE1889RollHelper
 
 	static getDisarmAttackValues(actor, target, usedWeapon)
 	{
-		const invalidActorType = actor.type === "vehicle" || target.actor.type === "vehicle" || target.actor.type === "creature";
+		const invalidActorType = actor.type === "vehicle" || target?.actor?.type === "vehicle" || target?.actor?.type === "creature";
 		const isInCloseCombatRange = SPACE1889Combat.isInCloseCombatRange(actor, target);
 		const noWeaponToDisarm = SPACE1889Combat.hasFreeHands(target?.actor);
 		const manoeuverName = game.i18n.localize("SPACE1889.CombatManoeuversDisarm");
@@ -2447,7 +2447,8 @@ export default class SPACE1889RollHelper
 		const malus = 0;
 		const toolTipInfo = "";
 
-		const noWeaponsRating = actor.GetSkillRating(actor, "waffenlos", "str") - malus;
+		const canDoNoWeaponAttack = SPACE1889Combat.hasFreeHands(actor);
+		const noWeaponsRating = canDoNoWeaponAttack ? (actor.GetSkillRating(actor, "waffenlos", "str") - malus) : 0;
 		let weaponRating = 0;
 
 		const knockMalus = 2;
@@ -2455,8 +2456,9 @@ export default class SPACE1889RollHelper
 		const primaryRating = SPACE1889Combat.isCloseCombatWeapon(weapons.primaryWeapon, false)
 			? actor.getSkillLevel(actor, weapons.primaryWeapon.system.skillId, weapons.primaryWeapon.system.specializationId) - malus - knockMalus
 			: 0;
+		const offHandMalus = SPACE1889Helper.getTalentLevel(actor, "beidhaendig") === 0 ? 2 : 0;
 		const offHandRating = SPACE1889Combat.isCloseCombatWeapon(weapons.offHandWeapon, false)
-			? actor.getSkillLevel(actor, weapons.offHandWeapon.system.skillId, weapons.offHandWeapon.system.specializationId) - malus - knockMalus
+			? actor.getSkillLevel(actor, weapons.offHandWeapon.system.skillId, weapons.offHandWeapon.system.specializationId) - malus - knockMalus - offHandMalus
 			: 0;
 		if (weapons.primaryWeapon && primaryRating > 0 && primaryRating >= offHandRating)
 		{
@@ -2472,7 +2474,7 @@ export default class SPACE1889RollHelper
 		const rating = Math.max(Math.max(weaponRating, noWeaponsRating), 0);
 
 		return {
-			canDo: true,
+			canDo: canDoNoWeaponAttack || weapon != undefined,
 			name: manoeuverName,
 			dice: rating,
 			noWeaponRating: noWeaponsRating,
