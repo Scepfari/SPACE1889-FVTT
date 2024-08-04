@@ -138,6 +138,7 @@
 	"SPACE1889.BonusTarget": "Bonus Ziel",
 	"SPACE1889.TalentBonus": "Talentbonus",
 	"SPACE1889.TargetType": "Zieltyp",
+	"SPACE1889.Target": "Ziel",
 	"SPACE1889.BonusStartLevel": "Bonus-Start-Stufe",
 	"SPACE1889.BonusStartLevelAbbr": "ab Stufe",
 	"SPACE1889.Sense": "Sinn",
@@ -2729,7 +2730,9 @@
 	"SPACE1889.DisarmSuccess": "Erfolg beim Entwaffnen",
 	"SPACE1889.DisarmFail": "Das Entwaffnen scheitert",
 	"SPACE1889.Delta": "Delta: {delta}",
-	"SPACE1889.ChatDisarmTwoHandPenalty": "{penalty} Erschwernis zweihändige Waffe des Ziels",
+	"SPACE1889.ChatDisarmTwoHandBonus": "{bonus} Bonus für zweihändige Waffe",
+	"SPACE1889.DisarmByKnocking": "Waffe aus der Hand schlagen",
+	"SPACE1889.DisarmByStealing": "Waffe entringen",
 
 	"SPACE1889.AmmunitionType": "Typ",
 	"SPACE1889.AmmunitionTypeArrows": "Pfeile",
@@ -3520,6 +3523,7 @@
 	"SPACE1889.AttackTypeStrafing": "Streufeuer",
 	"SPACE1889.AttackCountInCombatRound": "{count}. Angriffsaktion in Kampfrunde {round}",
 	"SPACE1889.DefenseCountInCombatRound": "{count}. Abwehr in Kampfrunde {round} => Malus: {malus}",
+	"SPACE1889.CanNotGiveUpActiveDefense": "Die aktive Verteidigung kann nicht aufgeben, da sie schon in dieser Runde verwendet wurde",
 
 	"SPACE1889.DefenseDialogDefenceProbe": "Abwehrprobe",
 	"SPACE1889.DefenseDialogDefenseType": "Abwehrart",

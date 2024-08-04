@@ -749,7 +749,7 @@ export default class SPACE1889Helper
 	{
 		let primaryHand = [];
 		let offHand = [];
-		for (const weapon of actor.system.weapons)
+		for (const weapon of actor?.system?.weapons)
 		{
 			if (weapon.system.usedHands === "bothHands")
 			{

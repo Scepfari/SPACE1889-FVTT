@@ -138,6 +138,7 @@
 	"SPACE1889.BonusTarget": "Bonus Target",
 	"SPACE1889.TalentBonus": "Talent Bonus",
 	"SPACE1889.TargetType": "Target Typ",
+	"SPACE1889.Target": "Target",
 	"SPACE1889.BonusStartLevel": "Bonus start level",
 	"SPACE1889.BonusStartLevelAbbr": "From level",
 	"SPACE1889.Sense": "Sense",
@@ -2729,7 +2730,9 @@
 	"SPACE1889.DisarmSuccess": "Success in disarming",
 	"SPACE1889.DisarmFail": "Disarming fails",
 	"SPACE1889.Delta": "Delta: {delta}",
-	"SPACE1889.ChatDisarmTwoHandPenalty": "{penalty} penalty due to holding with two hands",
+	"SPACE1889.ChatDisarmTwoHandPenalty": "{bonus} Bonus for two-handed weapon",
+	"SPACE1889.DisarmByKnocking": "Knock weapon out of hand",
+	"SPACE1889.DisarmByStealing": "Stealing the weapon",
 
 	"SPACE1889.AmmunitionType": "Type",
 	"SPACE1889.AmmunitionTypeArrows": "Arrows",
@@ -3520,6 +3523,7 @@
 	"SPACE1889.AttackTypeStrafing": "Strafing",
 	"SPACE1889.AttackCountInCombatRound": "{count}. attack action in combat round {round}",
 	"SPACE1889.DefenseCountInCombatRound": "{count}. defense action in combat round {round} => penalty: {malus}",
+	"SPACE1889.CanNotGiveUpActiveDefense": "The active defence cannot be given up as it has already been used in this round",
 
 	"SPACE1889.DefenseDialogDefenceProbe": "Defence probe",
 	"SPACE1889.DefenseDialogDefenseType": "defense type",

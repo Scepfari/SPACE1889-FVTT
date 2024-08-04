@@ -1091,7 +1091,12 @@ export default class SPACE1889Combat
 				selectedDefenseType += "UseActionForDefense";
 
 			data.reducedDefense = selectedDefenseType;
-			const modifierToolTipInfo = (multiDefenseMalus === 0 ? "" : game.i18n.format("SPACE1889.ChatMultiAttackDefenseModifier", { mod: multiDefenseMalus }));
+			let modifierToolTipInfo = (multiDefenseMalus === 0 ? "" : game.i18n.format("SPACE1889.ChatMultiAttackDefenseModifier", { mod: multiDefenseMalus }));
+			if (defOpposedInfo.canDo && defOpposedInfo.twoHandBonus != 0)
+			{
+				modifierToolTipInfo += ` game.i18n.format("SPACE1889.ChatDisarmTwoHandBonus", { bonus: defOpposedInfo.twoHandBonus }) : ""`;
+			}
+
 			SPACE1889RollHelper.rollDefenseAndAddDamageSub(data, diceCount, modifierToolTipInfo);
 		}
 	}
@@ -1356,7 +1361,7 @@ export default class SPACE1889Combat
 		{
 			const statusIds = SPACE1889RollHelper.getActiveEffectStates(actor);
 			if (statusIds.includes("paralysis") || statusIds.includes("unconscious"))
-				return { canDo: true, diceCount: 0, defenseType: defenseType, info: game.i18n.localize("SPACE1889.NoComparativeDefence"), skillName : opposedSkillName };
+				return { canDo: true, diceCount: 0, defenseType: defenseType, info: game.i18n.localize("SPACE1889.NoComparativeDefence"), skillName : opposedSkillName, twoHandBonus: false };
 
 			noActiveDefenseMalus = actor.getActiveDefense(actor, true);
 		}
@@ -1364,10 +1369,16 @@ export default class SPACE1889Combat
 		const weapons = SPACE1889Combat.getWeaponInHands(actor);
 		let melee = 0;
 		let meleeWeapon = undefined;
+		let twoHandBonus = 0;
 		if (weapons.primaryWeapon?.system?.skillId === "nahkampf")
 		{
 			melee = actor.getSkillLevel(actor, weapons.primaryWeapon.system.skillId, weapons.primaryWeapon.system.specializationId);
 			meleeWeapon = weapons.primaryWeapon;
+			if (weapons.primaryWeapon.system.isTwoHanded)
+			{
+				twoHandBonus = 2;
+				melee += twoHandBonus;
+			}
 		}
 		if (weapons.offHandWeapon?.system?.skillId === "nahkampf" && weapons.primaryWeapon?.id !== weapons.offHandWeapon?.id)
 		{
@@ -1402,7 +1413,7 @@ export default class SPACE1889Combat
 
 		diceCount = Math.max(0, diceCount + multiDefenseMalus - noActiveDefenseMalus);
 
-		return { canDo: true, diceCount: diceCount, defenseType: defenseType, info: info, skillName : opposedSkillName };
+		return { canDo: true, diceCount: diceCount, defenseType: defenseType, info: info, skillName: opposedSkillName, twoHandBonus: twoHandBonus };
 	}
 
 	static getTotalData(actor, defenseType, hasAttackActionForDefense, multiDefenseMalus, blockInfo, parryInfo, dodgeInfo, compaInfo)
@@ -1447,5 +1458,226 @@ export default class SPACE1889Combat
 	{
 		return (actorType === "character" || actorType === "npc");
 	}
+
+	static CombatManoeuverDialog(actorToken, actor, manoeuver)
+	{
+		let manoeuverName = "";
+		let data;
+		const token = actorToken ? actorToken : this.getCombatToken(actor) || this.getToken(actor);
+		const target = game.user.targets.first();
+		let baseValue = 0;
+		let weapon = null;
+		let chatInfo = "";
+		let normalOptName = game.i18n.localize("SPACE1889.AttackDialogRegular");
+		let showNormalOpt = true;
+		let normalSecondOptName = "";
+		let secondOptDeltaValue = 0;
+		let showNormalSecondOpt = false;
+		let normalSelected = " checked";
+		let secondNormalSelected = "";
+
+		switch (manoeuver)
+		{
+			case "grapple":
+				data = SPACE1889RollHelper.getGrappleAttackValues(actor, target);
+				manoeuverName = data.name;
+				baseValue = data.dice;
+				break;
+			case "trip":
+				data = SPACE1889RollHelper.getTripAttackValues(actor, target);
+				manoeuverName = game.i18n.localize("SPACE1889.CombatManoeuversTrip");
+				baseValue = data.dice;
+				break;
+			case "disarm":
+				data = SPACE1889RollHelper.getDisarmAttackValues(actor, target, undefined);
+				if (!data.canDo && data.noWeaponToDisarm)
+				{
+					ui.notifications.info(game.i18n.localize("SPACE1889.DisarmNoWeaponOnTarget"));
+					return;
+				}
+
+				manoeuverName = data.name;
+				baseValue = data.noWeaponRating;
+				normalOptName = `${game.i18n.localize("SPACE1889.DisarmByStealing")} (${data.noWeaponRating})`;
+				showNormalOpt = data.noWeaponRating > 0;
+				showNormalSecondOpt = data.weapon && data.weaponRating > 0;
+				if (showNormalOpt)
+				{
+					weapon = data.weapon;
+					secondOptDeltaValue = data.weaponRating - data.noWeaponRating;
+					normalSecondOptName = `${game.i18n.localize("SPACE1889.DisarmByKnocking")} (${data.weaponRating})`;
+					if (data.weaponRating > data.noWeaponRating)
+					{
+						normalSelected = "";
+						secondNormalSelected = " checked";
+					}
+				}
+				break;
+		}
+		
+		const baseVollerAngriff = 2;
+		const targetTokenDoc = game.user.targets.first()?.document;
+		const targetName = targetTokenDoc ? targetTokenDoc.name : "";
+		let distanceInfo = DistanceMeasuring.getDistanceInfo(token, targetTokenDoc, true);
+		let targetDistance = distanceInfo.distance;
+		let distanceString = targetDistance.toFixed(2).toString() + distanceInfo.unit;
+		if (!distanceInfo.isCloseCombatRange)
+			distanceString = game.i18n.localize("SPACE1889.OutOfRange") + " " + distanceString;
+		const targetToolTip = targetName + " (" + distanceString + ")" + "\n";
+
+		const hideText = ' hidden="true" ';
+		const defenseCount = SPACE1889RollHelper.getDefenseCount(token.id);
+		const disableTotalAttackInHtlmText = (!data.canDo || defenseCount > 0) ? `disabled="true" data-tooltip="${game.i18n.localize("SPACE1889.CanNotGiveUpActiveDefense")}"` : "";
+
+		let optionen = SPACE1889Helper.getHtmlChatOptions();
+		const modifierLabel = game.i18n.localize("SPACE1889.Modifier");
+		const labelWurf = game.i18n.localize("SPACE1889.AttackValue") + ": ";
+
+
+		function Recalc()
+		{
+			let mod = Number($("#modifier")[0].value);
+
+			const normalDelta = $('#secondNormal')[0].checked ? secondOptDeltaValue : 0;
+			const vollerAngriffBonus = $('#vollerAngriff')[0].checked ? baseVollerAngriff : 0;
+			let attributValue = baseValue + mod + vollerAngriffBonus + normalDelta;
+			$("#anzahlDerWuerfel")[0].value = attributValue.toString();
+		}
+
+		function handleRender(html)
+		{
+			html.on('change', '.normal', () =>
+			{
+				Recalc();
+			});
+
+			html.on('change', '.secondNormal', () =>
+			{
+				Recalc();
+			});
+
+			html.on('change', '.vollerAngriff', () =>
+			{
+				Recalc();
+			});
+
+			html.on('change', '.modInput', () =>
+			{
+				Recalc();
+			});
+			Recalc();
+		}
+
+
+		let dialogue = new Dialog(
+		{
+			title: `${game.i18n.localize("SPACE1889.VehicleManoeuvre")} ${manoeuverName}`,
+			content: `
+				<form >
+					<h2>${manoeuverName}</h2>
+					<label data-tooltip="${targetToolTip}">${game.i18n.localize("SPACE1889.Target")}: ${targetName}</label><br>
+					<label>${game.i18n.localize("SPACE1889.Distance")} ${distanceInfo.distance.toFixed(2)}${distanceInfo.unit}</label>
+					<fieldset>
+						<legend>${game.i18n.localize("SPACE1889.AttackDialogAttackType")}</legend>
+						<fieldset>
+							<legend>${game.i18n.localize("SPACE1889.AttackDialogSimpleAttack")}</legend>
+							<div ${showNormalOpt ? "" : hideText}>
+								<input type="radio" id="normal" name="type" class="normal" value="N" ${normalSelected}>
+								<label for="normal">${normalOptName}</label><br>
+							</div>
+							<div ${showNormalSecondOpt ? "" : hideText}>
+								<input type="radio" id="secondNormal" name="type" class="secondNormal" value="S" ${secondNormalSelected}>
+								<label for="secondNormal" data-tooltip="${data?.weapon?.system?.label}">${normalSecondOptName}</label><br>
+							</div>
+						</fieldset>
+
+						<fieldset>
+							<legend>${game.i18n.localize("SPACE1889.AttackDialogTotalAttackHeadline")}</legend>
+							<input ${disableTotalAttackInHtlmText} type="radio" id="vollerAngriff" name="type" class="vollerAngriff" value="V">
+							<label ${disableTotalAttackInHtlmText} for="vollerAngriff">${game.i18n.localize("SPACE1889.AttackDialogTotalAttack")}</label><br>
+						</fieldset>
+					</fieldset>
+					<ul>
+					<li class="flexrow">
+						<div class="item flexrow flex-group-left">
+							<div>${modifierLabel}:</div> <input type="number" class="modInput" id="modifier" value = "0">
+						</div>
+					</li>
+					<hr>
+					<div class="space1889 sheet actor">
+						<li class="flexrow">
+							<h2 class="item flexrow flex-group-left ">
+								<label for="zusammensetzung">${labelWurf}</label>
+								<input class="h2input" id="anzahlDerWuerfel" value="10" disabled="true" visible="false">
+							</h2>
+						</li>
+					</div>
+					</ul>
+					<hr>
+					<p><select id="choices" name="choices">${optionen}</select></p>
+				</form>`,
+			buttons:
+			{
+				ok:
+				{
+					icon: '',
+					label: game.i18n.localize("SPACE1889.Go"),
+					callback: (html) => theCallback(html)
+				},
+				abbruch:
+				{
+					label: game.i18n.localize("SPACE1889.Cancel"),
+					callback: () => { ui.notifications.info(game.i18n.localize("SPACE1889.CancelRoll")) },
+					icon: `<i class="fas fa-times"></i>`
+				}
+			},
+			default: "ok",
+			render: handleRender
+		});
+	
+		dialogue.render(true);
+
+		async function theCallback(html)
+		{
+			let attackName = "";
+			let toolTipInfo = data.toolTipInfo;
+			let isFullAttack = false;
+			if (html.find('#vollerAngriff')[0].checked)
+			{
+				attackName = game.i18n.localize("SPACE1889.AttackTypeTotalAttack");
+				toolTipInfo += attackName + ": " + SPACE1889Helper.getSignedStringFromNumber(baseVollerAngriff);
+				isFullAttack = true;
+			}
+			if (html.find('#secondNormal')[0].checked)
+			{
+				manoeuver = "disarmWithWeapon";
+				chatInfo = game.i18n.format("SPACE1889.DisarmWithWeapon", { weapon: weapon.system.label });
+			}
+
+			let titelInfo = attackName.length > 0 ? attackName + " " : "";
+			if (target)
+				titelInfo += game.i18n.format("SPACE1889.AttackOn", { targetName: targetName });
+
+			const chatoption = html.find('#choices').val();
+			const input = html.find('#anzahlDerWuerfel').val();
+			const anzahl = input ? parseInt(input) : 0;
+
+			const mod = Number($("#modifier")[0].value);
+			if (mod != 0)
+				toolTipInfo += (toolTipInfo.length > 0 ? " " : "") + game.i18n.format("SPACE1889.ChatModifier", { mod: SPACE1889Helper.getSignedStringFromNumber(mod) });
+
+			if (titelInfo.length > 0)
+				titelInfo += "<br>";
+			let theTitelInfo = titelInfo + data.name;
+			theTitelInfo = await SPACE1889RollHelper.logAttack(actor, theTitelInfo, token);
+			const chatData = await SPACE1889RollHelper.getChatDataRollSubSpecial(actor, weapon, anzahl, game.user.targets.ids, chatInfo, theTitelInfo, toolTipInfo, "", false, "", chatoption, manoeuver);
+			await ChatMessage.create(chatData, {});
+
+			if (isFullAttack)
+				SPACE1889Helper.addEffect(actor, { name: "noActiveDefense", rounds: 1 });
+		}
+	}
+
+
 }
 

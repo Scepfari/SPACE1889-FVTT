@@ -2199,27 +2199,45 @@ export default class SPACE1889RollHelper
 		if (!actor || !event)
 			return;
 
+		if (this.getEventEvaluation(event).showDialog)
+		{
+			SPACE1889Combat.CombatManoeuverDialog(tokenDocument, actor, "grapple");
+			return;
+		}
+
 		const target = game.user.targets.first();
-		if (!target || !SPACE1889Combat.isInCloseCombatRange(actor, target))
+		const data = this.getGrappleAttackValues(actor, target);
+
+		if (!data.canDo)
 			return;
 
-		const sizeMalus = target.actor.system.secondaries.size.total;
-
-		const rating = actor.getSkillLevel(actor, "waffenlos", "griffe") - sizeMalus;
-		if (rating === 0)
+		if (data.dice <= 0)
 		{
 			ui.notifications.info(game.i18n.format("SPACE1889.CanNotGrapple", { name: actor.name }));
 			return;
 		}
 
-		const titelInfo = game.i18n.localize("SPACE1889.CombatManoeuversGrapple");
-		const toolTipInfo = sizeMalus !== 0 ? game.i18n.format("SPACE1889.ChatGrappleSizePenalty", { penalty: sizeMalus }) : "";
-		const anzahl = Math.max(0, rating);
-
+		const anzahl = Math.max(0, data.dice);
 		const chatInfo = "";
-		const theTitelInfo = await SPACE1889RollHelper.logAttack(actor, titelInfo, tokenDocument);
-		const chatData = await SPACE1889RollHelper.getChatDataRollSubSpecial(actor, null, anzahl, game.user.targets.ids, chatInfo, theTitelInfo, toolTipInfo, "", false, "", "public", "grapple");
+		const theTitelInfo = await SPACE1889RollHelper.logAttack(actor, data.name, tokenDocument);
+		const chatData = await SPACE1889RollHelper.getChatDataRollSubSpecial(actor, null, anzahl, game.user.targets.ids, chatInfo, theTitelInfo, data.toolTipInfo, "", false, "", "public", "grapple");
 		await ChatMessage.create(chatData, {});
+	}
+
+	static getGrappleAttackValues(actor, target)
+	{
+		const isInCloseCombatRange = SPACE1889Combat.isInCloseCombatRange(actor, target);
+		const hasFreeHands = SPACE1889Combat.hasFreeHands(actor);
+		const manoeuverName = game.i18n.localize("SPACE1889.CombatManoeuversGrapple");
+
+		if (!actor || !target || !isInCloseCombatRange || !hasFreeHands)
+			return { canDo: false, name: manoeuverName, dice: 0, isInRange: isInCloseCombatRange, sizeMalus: 0, toolTipInfo: ""};
+
+		const sizeMalus = target.actor.system.secondaries.size.total;
+		const rating = actor.getSkillLevel(actor, "waffenlos", "griffe") - sizeMalus;
+		const toolTipInfo = sizeMalus !== 0 ? game.i18n.format("SPACE1889.ChatGrappleSizePenalty", { penalty: sizeMalus }) : "";
+
+		return {canDo: true, name: manoeuverName, dice: rating, isInRange: isInCloseCombatRange, sizeMalus: sizeMalus, toolTipInfo: toolTipInfo};
 	}
 
 	static async rollTrip(tokenDocument, actor, event)
@@ -2227,38 +2245,52 @@ export default class SPACE1889RollHelper
 		if (!actor || !event)
 			return;
 
+		if (this.getEventEvaluation(event).showDialog)
+		{
+			SPACE1889Combat.CombatManoeuverDialog(tokenDocument, actor, "trip");
+			return;
+		}
+
 		const target = game.user.targets.first();
-		if (!target || !SPACE1889Combat.isInCloseCombatRange(actor, target))
+		const data = this.getTripAttackValues(actor, target);
+
+		if (!data.canDo)
 			return;
 
-		if (actor.type === "vehicle" || target.actor.type === "vehicle")
-			return;
-
-		let isVielbeinig = SPACE1889Helper.getTalentLevel(target.actor, "vielbeiner") > 0;
-		if (target.actor.type === "creature" && target.actor.system.movementType === "manylegged")
-			isVielbeinig = true;
-
-
-		const hasFreeHands = SPACE1889Combat.hasFreeHands(actor);
-		const malus = isVielbeinig ? 2 : 0;
-
-		const rating = actor.getSkillLevel(actor, "waffenlos", hasFreeHands ? "wuerfe" : "") - malus;
-
-		if (rating === 0)
+		if (data.dice <= 0)
 		{
 			ui.notifications.info(game.i18n.format("SPACE1889.CanNotGrapple", { name: actor.name }));
 			return;
 		}
 
-		const titelInfo = game.i18n.localize("SPACE1889.CombatManoeuversTrip");
-		const toolTipInfo = malus !== 0 ? game.i18n.format("SPACE1889.ChatTripSizePenalty", { penalty: malus }) : "";
-		const anzahl = Math.max(0, rating);
-
+		const anzahl = Math.max(0, data.dice);
 		const chatInfo = "";
-		const theTitelInfo = await SPACE1889RollHelper.logAttack(actor, titelInfo, tokenDocument);
-		const chatData = await SPACE1889RollHelper.getChatDataRollSubSpecial(actor, null, anzahl, game.user.targets.ids, chatInfo, theTitelInfo, toolTipInfo, "", false, "", "public", "trip");
+		const theTitelInfo = await SPACE1889RollHelper.logAttack(actor, data.name, tokenDocument);
+		const chatData = await SPACE1889RollHelper.getChatDataRollSubSpecial(actor, null, anzahl, game.user.targets.ids, chatInfo, theTitelInfo, data.toolTipInfo, "", false, "", "public", "trip");
 		await ChatMessage.create(chatData, {});
 	}
+
+	static getTripAttackValues(actor, target)
+	{
+		const invalidActorType = actor?.type === "vehicle" || target?.actor?.type === "vehicle";
+		const isInCloseCombatRange = SPACE1889Combat.isInCloseCombatRange(actor, target);
+		const hasFreeHands = SPACE1889Combat.hasFreeHands(actor);
+		const manoeuverName = game.i18n.localize("SPACE1889.CombatManoeuversTrip");
+
+		if (!actor || !target || !SPACE1889Combat.isInCloseCombatRange(actor, target) || invalidActorType)
+			return { canDo: false, name: manoeuverName, dice: 0, isInRange: isInCloseCombatRange, manyleggedMalus: 0, toolTipInfo: ""};
+
+		let isVielbeinig = SPACE1889Helper.getTalentLevel(target.actor, "vielbeiner") > 0;
+		if (target.actor.type === "creature" && target.actor.system.movementType === "manylegged")
+			isVielbeinig = true;
+
+		const malus = isVielbeinig ? 2 : 0;
+		const rating = actor.getSkillLevel(actor, "waffenlos", hasFreeHands ? "wuerfe" : "") - malus;
+		const toolTipInfo = malus !== 0 ? game.i18n.format("SPACE1889.ChatTripSizePenalty", { penalty: malus }) : "";
+
+		return {canDo: true, name: manoeuverName, dice: rating, isInRange: isInCloseCombatRange, manyleggedMalus: malus, toolTipInfo: toolTipInfo};
+	}
+
 
 	static async doGrappleChatMessage(actor, attackerName, virtualDamage, comparativeAttributeValue)
 	{
@@ -2353,58 +2385,106 @@ export default class SPACE1889RollHelper
 			await SPACE1889Helper.addEffects(actor, effects);
 	}
 
-
 	static async rollDisarm(tokenDocument, actor, usedWeapon, event)
 	{
 		if (!actor || !event)
 			return;
 
-		const target = game.user.targets.first();
-		if (!target || !SPACE1889Combat.isInCloseCombatRange(actor, target))
-			return;
-
-		if (actor.type === "vehicle" || target.actor.type === "vehicle" || target.actor.type === "creature")
-			return;
-
-		if (SPACE1889Combat.hasFreeHands(target.actor))
+		if (this.getEventEvaluation(event).showDialog)
 		{
-			ui.notifications.info(game.i18n.localize("SPACE1889.DisarmNoWeaponOnTarget", { name: actor.name }));
+			SPACE1889Combat.CombatManoeuverDialog(tokenDocument, actor, "disarm");
 			return;
 		}
 
-		let twoHandWeapon = false;
-		const targetWeapons = SPACE1889Combat.getWeaponInHands(target.actor);
-		if (targetWeapons?.primaryWeapon?.id === targetWeapons?.offHandWeapon?.id)
-			twoHandWeapon = true;
+		const target = game.user.targets.first();
+
+		const data = this.getDisarmAttackValues(actor, target);
+		if (data.noWeaponToDisarm)
+		{
+			ui.notifications.info(game.i18n.localize("SPACE1889.DisarmNoWeaponOnTarget"));
+			return;
+		}
+
+		if (!data.canDo)
+			return;
 
 		let chatInfo = "";
-		const malus = twoHandWeapon ? 2 : 0;
 		let specialAttack = "disarm";
 		let weapon = null; 
 
-		let rating = actor.GetSkillRating(actor, "waffenlos", "str") - malus;
-		if (SPACE1889Combat.isCloseCombatWeapon(usedWeapon, false))
+		if (data.weapon && data.weaponRating > data.noWeaponRating)
 		{
 			specialAttack = "disarmWithWeapon";
-			rating = actor.getSkillLevel(actor, usedWeapon.system.skillId, usedWeapon.system.specializationId) - malus;
 			chatInfo = game.i18n.format("SPACE1889.DisarmWithWeapon", { weapon: usedWeapon.system.label });
-			weapon = usedWeapon;
+			weapon = data.weapon;
 		}
 
-		if (rating === 0)
+		if (data.dice <= 0)
 		{
 			ui.notifications.info(game.i18n.format("SPACE1889.CanNotDisarm", { name: actor.name }));
 			return;
 		}
 
-		const titelInfo = game.i18n.localize("SPACE1889.CombatManoeuversDisarm");
-		const toolTipInfo = malus !== 0 ? game.i18n.format("SPACE1889.ChatDisarmTwoHandPenalty", { penalty: malus }) : "";
-		const anzahl = Math.max(0, rating);
+		const anzahl = Math.max(0, data.dice);
 
-		const theTitelInfo = await SPACE1889RollHelper.logAttack(actor, titelInfo, tokenDocument);
-		const chatData = await SPACE1889RollHelper.getChatDataRollSubSpecial(actor, weapon, anzahl, game.user.targets.ids, chatInfo, theTitelInfo, toolTipInfo, "", false, "", "public", specialAttack);
+		const theTitelInfo = await SPACE1889RollHelper.logAttack(actor, data.name, tokenDocument);
+		const chatData = await SPACE1889RollHelper.getChatDataRollSubSpecial(actor, weapon, anzahl, game.user.targets.ids, chatInfo, theTitelInfo, data.toolTipInfo, "", false, "", "public", specialAttack);
 		await ChatMessage.create(chatData, {});
 	}
+
+	static getDisarmAttackValues(actor, target, usedWeapon)
+	{
+		const invalidActorType = actor.type === "vehicle" || target.actor.type === "vehicle" || target.actor.type === "creature";
+		const isInCloseCombatRange = SPACE1889Combat.isInCloseCombatRange(actor, target);
+		const noWeaponToDisarm = SPACE1889Combat.hasFreeHands(target?.actor);
+		const manoeuverName = game.i18n.localize("SPACE1889.CombatManoeuversDisarm");
+		let weapon = undefined;
+
+		if (!actor || !target || !SPACE1889Combat.isInCloseCombatRange(actor, target) || invalidActorType || noWeaponToDisarm)
+			return { canDo: false, name: manoeuverName, dice: 0, noWeaponRating: 0, weaponRating: 0, weapon: weapon, 
+				isInRange: isInCloseCombatRange, noWeaponToDisarm: noWeaponToDisarm, toolTipInfo: ""};
+
+		const malus = 0;
+		const toolTipInfo = "";
+
+		const noWeaponsRating = actor.GetSkillRating(actor, "waffenlos", "str") - malus;
+		let weaponRating = 0;
+
+		const knockMalus = 2;
+		const weapons = SPACE1889Combat.getWeaponInHands(actor);
+		const primaryRating = SPACE1889Combat.isCloseCombatWeapon(weapons.primaryWeapon, false)
+			? actor.getSkillLevel(actor, weapons.primaryWeapon.system.skillId, weapons.primaryWeapon.system.specializationId) - malus - knockMalus
+			: 0;
+		const offHandRating = SPACE1889Combat.isCloseCombatWeapon(weapons.offHandWeapon, false)
+			? actor.getSkillLevel(actor, weapons.offHandWeapon.system.skillId, weapons.offHandWeapon.system.specializationId) - malus - knockMalus
+			: 0;
+		if (weapons.primaryWeapon && primaryRating > 0 && primaryRating >= offHandRating)
+		{
+			weaponRating = primaryRating;
+			weapon = weapons.primaryWeapon;
+		}
+		else if (weapons.offHandWeapon && offHandRating > 0)
+		{
+			weaponRating = offHandRating;
+			weapon = weapons.offHandWeapon;
+		}
+
+		const rating = Math.max(Math.max(weaponRating, noWeaponsRating), 0);
+
+		return {
+			canDo: true,
+			name: manoeuverName,
+			dice: rating,
+			noWeaponRating: noWeaponsRating,
+			weaponRating: weaponRating,
+			weapon: weapon,
+			isInRange: isInCloseCombatRange,
+			noWeaponToDisarm: noWeaponToDisarm,
+			twoHandsMalus: malus,
+			toolTipInfo: toolTipInfo
+		};
+	}
+
 
 	static async doDisarmChatMessage(actorToken, attackerName, attackerToken, virtualDamage, type, attackWeaponName)
 	{
