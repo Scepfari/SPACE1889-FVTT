@@ -4,7 +4,7 @@
 
 ### v2.3.0
 - Unterstützung für Foundry VTT V12. Die alten Versionen V10 und V11 werden weiterhin unterstützt.
-- Systemunterstützung für die Kampfmanöver Entwaffnen, Festahlten und Bein stellen
+- Systemunterstützung für die Kampfmanöver Entwaffnen, Festhalten und Bein stellen
 - Figur HUD Erweiterung: Beim Rechtsklick auf eine Figur werden nun zusätzliche Schaltflächen unter der Figur eingeblendet. Je nachdem ob die Aktion gerade möglich ist, sind das: 
   - Angriff mit der Primärhand Waffe
   - Angriff mit der Nebenhand Waffe
@@ -13,8 +13,8 @@
   - Entwaffnen
   - Talent Angriff, wie Paralysierender Schlag oder Assassine
   - beliebiger Fertigkeitswurf
-- [Shift] oder [STRG] + Linksklick auf eine dieser Schaltflächen öffnet den zugehörigen Dialag für spetzielle Optionen und Modifikatoren 
-- Anpassung der Tooltip Position in den Charakterbögen, damit der Tooltip weniger über den Knöfen zum auslösen von Würfen liegen, insbesondere wenn der Charakterbogen sich in der Nähe des linken Bildschirmrands befindet.
+- [Shift] oder [STRG] + Linksklick auf eine dieser Schaltflächen öffnet den zugehörigen Dialog für spezielle Optionen und Modifikatoren 
+- Anpassung der Tooltip Position in den Charakterbögen, damit der Tooltip weniger über den Knöpfen zum auslösen von Würfen liegen, insbesondere wenn der Charakterbogen sich in der Nähe des linken Bildschirmrands befindet.
 - Verbesserte Rüstung-Tooltips
 - kleiner Bugfixes
 
