@@ -39,7 +39,7 @@ export default class SPACE1889RollHelper
 			const targetInfo = SPACE1889Helper.getCombatSupportTargetInfo();
 			if (targetInfo.combatSupport && (targetInfo.targets == 0 || targetInfo.isDeadCount > 0))
 			{
-				this.reallyAttackDialog(item, actor, dieCount, showDialog, targetInfo);
+				this.reallyAttackDialog(item, "", undefined, actor, dieCount, showDialog, targetInfo, undefined);
 				return;
 			}
 
@@ -53,7 +53,7 @@ export default class SPACE1889RollHelper
 			this.rollSpecial(item, actor, dieCount, showDialog);
 	}
 
-	static reallyAttackDialog(item, actor, dieCount, showDialog, info)
+	static reallyAttackDialog(item, manoeuverType, actorTokenDocument, actor, dieCount, showDialog, info)
 	{
 		let text = info.targets == 0 ? game.i18n.localize("SPACE1889.NoTarget") : game.i18n.localize("SPACE1889.DeadTarget");
 		if (info.targets > 1 && info.isDeadCount >= 1)
@@ -83,10 +83,25 @@ export default class SPACE1889RollHelper
 
 		async function myCallback(html)
 		{
-			if (item.type == 'talent')
-				SPACE1889RollHelper.rollSpecialTalent(item, actor, dieCount, showDialog)
-			else
-				SPACE1889RollHelper.rollSpecial(item, actor, dieCount, showDialog);
+			if (manoeuverType === "grapple")
+			{
+				SPACE1889RollHelper.rollGrapple(actorTokenDocument, actor, showDialog);
+			}
+			else if (manoeuverType === "trip")
+			{
+				SPACE1889RollHelper.rollTrip(actorTokenDocument, actor, showDialog);
+			}
+			else if (manoeuverType === "disarm")
+			{
+				SPACE1889RollHelper.rollDisarm(actorTokenDocument, actor, item, showDialog);
+			}
+			else if (item)
+			{
+				if (item.type === 'talent')
+					SPACE1889RollHelper.rollSpecialTalent(item, actor, dieCount, showDialog);
+				else
+					SPACE1889RollHelper.rollSpecial(item, actor, dieCount, showDialog);
+			}
 		}
 	}
 
@@ -2161,6 +2176,7 @@ export default class SPACE1889RollHelper
 	{
 		const tokenDocument = game.scenes.viewed.tokens.get(tokenId);
 		const actor = tokenDocument ? tokenDocument.actor : game.actors.get(actorId);
+		const showDialog = this.getEventEvaluation(event).showDialog;
 
 		if (type === "skill")
 		{
@@ -2170,18 +2186,18 @@ export default class SPACE1889RollHelper
 
 		if (type === "grapple")
 		{
-			SPACE1889RollHelper.rollGrapple(tokenDocument, actor, event);
+			SPACE1889RollHelper.rollGrapple(tokenDocument, actor, showDialog);
 		}
 
 		if (type === "trip")
 		{
-			SPACE1889RollHelper.rollTrip(tokenDocument, actor, event);
+			SPACE1889RollHelper.rollTrip(tokenDocument, actor, showDialog);
 		}
 
 		if (type === "disarm")
 		{
 			const usedWeapon = itemId === "" ? undefined : actor.items.get(itemId);
-			SPACE1889RollHelper.rollDisarm(tokenDocument, actor, usedWeapon, event);
+			SPACE1889RollHelper.rollDisarm(tokenDocument, actor, usedWeapon, showDialog);
 		}
 
 		if (type !== "attack" && type !== "talentAttack")
@@ -2194,12 +2210,15 @@ export default class SPACE1889RollHelper
 		SPACE1889RollHelper.rollItemFromEvent(item, actor, event);
 	}
 
-	static async rollGrapple(tokenDocument, actor, event)
+	static async rollGrapple(tokenDocument, actor, showDialog)
 	{
-		if (!actor || !event)
+		if (!actor)
 			return;
 
-		if (this.getEventEvaluation(event).showDialog)
+		if (!SPACE1889Combat.CheckEncounterAndTarget(tokenDocument, actor, true, showDialog))
+			return;
+
+		if (showDialog)
 		{
 			SPACE1889Combat.CombatManoeuverDialog(tokenDocument, actor, "grapple");
 			return;
@@ -2240,12 +2259,15 @@ export default class SPACE1889RollHelper
 		return {canDo: true, name: manoeuverName, dice: rating, isInRange: isInCloseCombatRange, sizeMalus: sizeMalus, toolTipInfo: toolTipInfo};
 	}
 
-	static async rollTrip(tokenDocument, actor, event)
+	static async rollTrip(tokenDocument, actor, showDialog)
 	{
-		if (!actor || !event)
+		if (!actor)
 			return;
 
-		if (this.getEventEvaluation(event).showDialog)
+		if (!SPACE1889Combat.CheckEncounterAndTarget(tokenDocument, actor, true, showDialog))
+			return;
+
+		if (showDialog)
 		{
 			SPACE1889Combat.CombatManoeuverDialog(tokenDocument, actor, "trip");
 			return;
@@ -2385,12 +2407,15 @@ export default class SPACE1889RollHelper
 			await SPACE1889Helper.addEffects(actor, effects);
 	}
 
-	static async rollDisarm(tokenDocument, actor, usedWeapon, event)
+	static async rollDisarm(tokenDocument, actor, usedWeapon, showDialog)
 	{
-		if (!actor || !event)
+		if (!actor)
 			return;
 
-		if (this.getEventEvaluation(event).showDialog)
+		if (!SPACE1889Combat.CheckEncounterAndTarget(tokenDocument, actor, true, showDialog))
+			return;
+
+		if (showDialog)
 		{
 			SPACE1889Combat.CombatManoeuverDialog(tokenDocument, actor, "disarm");
 			return;

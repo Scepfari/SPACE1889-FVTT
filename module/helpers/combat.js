@@ -370,6 +370,25 @@ export default class SPACE1889Combat
 		return false;
 	}
 
+	static CheckEncounterAndTarget(tokenDocument, actor, usedweapon, manoeuverType, notify, showDialog)
+	{
+		if (!SPACE1889Combat.IsActorParticipantOfTheActiveEncounter(actor, notify))
+			return false;
+
+		const targetInfo = SPACE1889Helper.getCombatSupportTargetInfo();
+		if (targetInfo.targets == 0 || targetInfo.isDeadCount > 0)
+		{
+			SPACE1889RollHelper.reallyAttackDialog(usedweapon, manoeuverType, tokenDocument, actor, 0, showDialog, targetInfo);
+			return false;
+		}
+
+		if (!SPACE1889Combat.isTargetInRange(actor, undefined))
+			return false;
+
+		return true;
+	}
+
+
 	static IsActorParticipantOfTheActiveEncounter(actor, notify)
 	{
 		if (game.combat == null)
@@ -1369,16 +1388,11 @@ export default class SPACE1889Combat
 		const weapons = SPACE1889Combat.getWeaponInHands(actor);
 		let melee = 0;
 		let meleeWeapon = undefined;
-		let twoHandBonus = 0;
+		let twoHandBonus = weapons.primaryWeapon?.system?.isTwoHanded ? 2 : 0;
 		if (weapons.primaryWeapon?.system?.skillId === "nahkampf")
 		{
 			melee = actor.getSkillLevel(actor, weapons.primaryWeapon.system.skillId, weapons.primaryWeapon.system.specializationId);
 			meleeWeapon = weapons.primaryWeapon;
-			if (weapons.primaryWeapon.system.isTwoHanded)
-			{
-				twoHandBonus = 2;
-				melee += twoHandBonus;
-			}
 		}
 		if (weapons.offHandWeapon?.system?.skillId === "nahkampf" && weapons.primaryWeapon?.id !== weapons.offHandWeapon?.id)
 		{
@@ -1411,7 +1425,7 @@ export default class SPACE1889Combat
 			opposedSkillName = game.i18n.localize("SPACE1889.SkillWaffenlos");
 		}
 
-		diceCount = Math.max(0, diceCount + multiDefenseMalus - noActiveDefenseMalus);
+		diceCount = Math.max(0, diceCount + twoHandBonus + multiDefenseMalus - noActiveDefenseMalus);
 
 		return { canDo: true, diceCount: diceCount, defenseType: defenseType, info: info, skillName: opposedSkillName, twoHandBonus: twoHandBonus };
 	}
