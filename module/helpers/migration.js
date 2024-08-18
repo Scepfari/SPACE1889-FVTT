@@ -305,7 +305,7 @@ export class Space1889Migration
 		{
 			//let content = game.i18n.localize("SPACE1889.VersionInfo");
 			const isGerman = game.settings.get('core', 'language') == "de";
-			let content = await renderTemplate("systems/space1889/change/" + (isGerman ? "de" : "en") + "_changelog_2.2.html");
+			let content = await renderTemplate("systems/space1889/change/" + (isGerman ? "de" : "en") + "_changelog_2.3.html");
 			const understood = game.i18n.localize("SPACE1889.Understood");
 			const stayAway = game.i18n.localize("SPACE1889.StayAway");
 			const newVersion = game.i18n.localize("SPACE1889.NewVersion");
