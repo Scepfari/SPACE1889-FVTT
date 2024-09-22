@@ -224,7 +224,7 @@
 		}
 	},
 	"Item": {
-		"types": [ "item", "container", "talent", "weapon", "ammunition", "skill", "specialization", "weakness", "resource", "language", "armor", "damage", "currency", "extended_action" ],
+		"types": [ "item", "container", "talent", "weapon", "ammunition", "skill", "specialization", "species", "weakness", "resource", "language", "motivation", "archetype", "armor", "damage", "currency", "extended_action" ],
 		"templates": {
 			"description": {
 				"description": ""
@@ -400,6 +400,15 @@
 			"type": "money",
 			"exchangeRateForOnePound": 1.0
 		},
+		"species": {
+			"templates": [ "description", "id" ]
+		},
+		"archetype": {
+			"templates": [ "description", "id" ]
+		},
+		"motivation": {
+			"templates": [ "description", "id" ]
+		},
 		"extended_action": {
 			"templates": [ "description" ],
 			"typeKey": "primary",
@@ -409,7 +418,7 @@
 			"spezialisationLabel": "",
 			"useSpezialisation": false,
 			"noSelection": false,
-			"useDeductions": true, 
+			"useDeductions": true,
 			"difficultyRating": 2,
 			"totalNumberOfSuccesses": 10,
 			"timeInterval": "1h",

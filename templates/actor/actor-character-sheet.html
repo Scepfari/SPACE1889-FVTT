@@ -77,19 +77,19 @@
 				<div class="resource">
 					<label class="resource-label">{{ localize "SPACE1889.Species" }}</label>
 					<select name="system.attributes.species.value" data-dtype="String">
-						{{selectOptions system.species selected=system.attributes.species.value localize=true}}
+						{{selectOptions system.species selected=system.attributes.species.value nameAttr="key" labelAttr="label"}}
 					</select>
 				</div>
 				<div class="resource">
 					<label class="resource-label">{{ localize "SPACE1889.Archetype" }}</label>
 					<select name="system.attributes.archetype.value" data-dtype="String">
-						{{selectOptions system.archetypes selected=system.attributes.archetype.value localize=true}}
+						{{selectOptions system.archetypes selected=system.attributes.archetype.value nameAttr="key" labelAttr="label"}}
 					</select>
 				</div>
 				<div class="resource">
 					<label class="resource-label">{{ localize "SPACE1889.Motivation" }}</label>
 					<select name="system.attributes.motivation.value" data-dtype="String">
-						{{selectOptions system.motivations selected=system.attributes.motivation.value localize=true}}
+						{{selectOptions system.motivations selected=system.attributes.motivation.value nameAttr="key" labelAttr="label"}}
 					</select>
 				</div>
 			</li>

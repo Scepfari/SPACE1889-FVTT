@@ -17,6 +17,9 @@
 	"TYPES.Item.currency": "Währung",
 	"TYPES.Item.container": "Behälter/Aufbewahrungsort",
 	"TYPES.Item.extended_action": "Langfristige Probe",
+	"Types.Item.archetype": "Archetyp",
+	"Types.Item.motivation": "Motivation",
+	"Types.Item.species": "Spezies",
 
 	"ACTOR.TypeCharacter": "Charakter",
 	"ACTOR.TypeNpc": "Nichtspielercharakter",
@@ -36,6 +39,9 @@
 	"ITEM.TypeCurrency": "Währung",
 	"ITEM.TypeContainer": "Behälter/Aufbewahrungsort",
 	"ITEM.TypeExtended_action": "Langfristige Probe",
+	"ITEM.TypeArchetype": "Archetyp",
+	"ITEM.TypeMotivation": "Motivation",
+	"ITEM.TypeSpecies": "Spezies",
 
 	"CONTROLS.Space1889Menu": "SPACE 1889 Menü",
 	"CONTROLS.Space1889MenuGMScreen": "<h3>SL Schirm</h3><p>öffnet das Dokument mit den SL Schirm Inhalten</p>",

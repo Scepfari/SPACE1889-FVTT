@@ -13,12 +13,12 @@
 				<li class="item flexrow">
 					<div class="resource-content flexrow flex-center flex-between item-name item-marginlr5px item-small">
 						<select name="system.attributes.species.value" data-dtype="String">
-							{{selectOptions system.species selected=system.attributes.species.value localize=true}}
+							{{selectOptions system.species selected=system.attributes.species.value nameAttr="key" labelAttr="label"}}
 						</select>
 					</div>
 					<div class="resource-content flexrow flex-center flex-between item-name item-marginlr5px item-small">
 						<select name="system.attributes.archetype.value" data-dtype="String">
-							{{selectOptions system.archetypes selected=system.attributes.archetype.value localize=true}}
+							{{selectOptions system.archetypes selected=system.attributes.archetype.value nameAttr="key" labelAttr="label"}}
 						</select>
 					</div>
 				</li>
@@ -34,7 +34,7 @@
 				<li class="item flexrow">
 					<div class="resource-content flexrow flex-center flex-between item-name item-marginlr5px">
 						<select name="system.attributes.motivation.value" data-dtype="String">
-							{{selectOptions system.motivations selected=system.attributes.motivation.value localize=true}}
+							{{selectOptions system.motivations selected=system.attributes.motivation.value nameAttr="key" labelAttr="label"}}
 						</select>
 					</div>
 					<div class=" flexrow item-max-with75px">

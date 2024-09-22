@@ -2358,6 +2358,57 @@ export default class SPACE1889Helper
 		return list;
 	}
 
+	static getSortedItemIdsFromType(itemType, includeSpaceValues = true)
+	{
+		let docs = [];
+
+		// um lokale Fertigkeiten erweitern
+		let local = game.items.filter((x) => x.type === itemType);
+		for (const item of local)
+		{
+			if (!docs.find((x) => x.system.id === item.system.id))
+				docs.push(item);
+		}
+
+		docs.sort((a, b) =>
+		{
+			return a.name.localeCompare(b.name);
+		});
+
+		let list = [];
+
+		if (includeSpaceValues)
+		{
+			let spaceDefaults = undefined;
+			if (itemType === "species")
+				spaceDefaults = CONFIG.SPACE1889.species;
+			else if (itemType === "archetype")
+				spaceDefaults = CONFIG.SPACE1889.archetypes;
+			else if (itemType === "motivation")
+				spaceDefaults = CONFIG.SPACE1889.motivations;
+
+			if (spaceDefaults != undefined)
+			{
+				const keys = Object.keys(spaceDefaults);
+
+				for (const key of keys)
+				{
+					const name = game.i18n.localize(spaceDefaults[key]);
+					list.push({ key: key, label: name, desc: "" });
+				}
+			}
+		}
+		list.sort((a, b) => { return a.label.localeCompare(b.label); });
+
+		for (const item of docs)
+		{
+			list.push({ key: item.system.id, label: item.name, desc: item.system.description });
+		}
+
+		return list;
+	}
+
+
 	static getTokenFromId(tokenId, currentViewOnly = true)
 	{
 		const token = game.scenes.viewed.tokens.get(tokenId);

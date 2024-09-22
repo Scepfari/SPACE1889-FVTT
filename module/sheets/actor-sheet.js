@@ -97,9 +97,9 @@ export class Space1889ActorSheet extends ActorSheet {
 		// Handle ability scores.
 		this._prepareAttributes(context);
 
-		context.system['archetypes'] = CONFIG.SPACE1889.archetypes;
-		context.system['species'] = CONFIG.SPACE1889.species;
-		context.system['motivations'] = CONFIG.SPACE1889.motivations;
+		context.system['archetypes'] = SPACE1889Helper.getSortedItemIdsFromType("archetype", true);
+		context.system['species'] = SPACE1889Helper.getSortedItemIdsFromType("species", true);
+		context.system['motivations'] = SPACE1889Helper.getSortedItemIdsFromType("motivation", true);
 //		context.system['resources'] = CONFIG.SPACE1889.resources;
 		context.system['storageLocations'] = CONFIG.SPACE1889.storageLocation;
 	}

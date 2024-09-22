@@ -17,6 +17,9 @@
 	"TYPES.Item.currency": "Currency",
 	"TYPES.Item.container": "Container / Storage location",
 	"TYPES.Item.extended_action": "Extended rolls",
+	"Types.Item.archetype": "Archetype",
+	"Types.Item.motivation": "Motivation",
+	"Types.Item.species": "Species",
 
 	"ACTOR.TypeCharacter": "Character",
 	"ACTOR.TypeNpc": "NPC",
@@ -36,6 +39,9 @@
 	"ITEM.TypeCurrency": "Currency",
 	"ITEM.TypeContainer": "Container / Storage location",
 	"ITEM.TypeExtended_action": "Extended rolls",
+	"ITEM.TypeArchetype": "Archetype",
+	"ITEM.TypeMotivation": "Motivation",
+	"ITEM.TypeSpecies": "Species",
 
 	"CONTROLS.Space1889Menu": "SPACE 1889 Menu",
 	"CONTROLS.Space1889MenuGMScreen": "<h3>GM Screen</h3><p>opens the document with the SL screen content</p>",
