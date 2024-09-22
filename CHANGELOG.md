@@ -2,6 +2,10 @@
 
 ## Mondreich
 
+### v2.3.1
+- Neue Item Typen für Archetyp, Motivation und Spezies hinzugefügt. Mit diesen Typen erstellte Items erweitern die entsprechenden Auswahllisten im Charakter- und NSC- Bogen.
+- Bugfix: Fehlende englisch Übersetzung der Schwäche Arten
+
 ### v2.3.0
 - Unterstützung für Foundry VTT V12. Die alten Versionen V10 und V11 werden weiterhin unterstützt.
 - Systemunterstützung für die Kampfmanöver Entwaffnen, Festhalten und Bein stellen
