@@ -1426,11 +1426,11 @@
 	"SPACE1889.LanguageZulu": "Zulu",
 
 
-	"SPACE1889.WeaknessType": "Art der Schwäche",
-	"SPACE1889.WeaknessTypeKoerperlich": "Körperlich",
-	"SPACE1889.WeaknessTypeGeistig": "Geistig",
-	"SPACE1889.WeaknessTypeSozial": "Sozial",
-	"SPACE1889.WeaknessTypeSonstige": "Sonstige",
+	"SPACE1889.WeaknessType": "Type of flaw",
+	"SPACE1889.WeaknessTypeKoerperlich": "Physical",
+	"SPACE1889.WeaknessTypeGeistig": "Mental",
+	"SPACE1889.WeaknessTypeSozial": "Social",
+	"SPACE1889.WeaknessTypeSonstige": "Misc.",
 
 
 	"SPACE1889.WeaknessAberglaube": "Superstitious",
