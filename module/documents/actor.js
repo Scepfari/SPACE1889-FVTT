@@ -955,6 +955,40 @@ export class Space1889Actor extends Actor
 	getBonusFromTalents(whatId, type, items)
 	{
 		let bonus = 0;
+		let maxSkillGroupLevel = 0;
+
+		if (type === "skill")
+		{
+			let theItem = items.find(e => e.system.id === whatId);
+			if (theItem && theItem.system.isSkillGroup)
+			{
+				const skillGroupId = theItem.system.skillGroupName;
+				const vielseitigId = "vielseitig" + skillGroupId.replace(/^(.)/, function (b) { return b.toUpperCase(); });
+				const talent = items.find(v => v.system.id === vielseitigId);
+				if (talent)
+				{
+					let skillGroups = [];
+					for (let skill of items)
+					{
+						if (whatId === skill.system.id)
+							continue;
+							
+						if (skill.system.isSkillGroup && skillGroupId === skill.system.skillGroupName)
+							skillGroups.push(skill);
+					}
+
+					for (let skill of skillGroups)
+					{
+						if (skill.system.level > maxSkillGroupLevel)
+							maxSkillGroupLevel = skill.system.level;
+					}
+
+					if (maxSkillGroupLevel > theItem.system.level)
+						bonus = maxSkillGroupLevel - theItem.system.level;
+				}
+			}	
+		}
+
 		for (let item of items)
 		{
 			if (item.type != "talent")
