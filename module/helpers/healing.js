@@ -159,7 +159,7 @@ export default class SPACE1889Healing
 			await updateInjury(actor, info);
 		}
 
-		this.refreshTheInjuryToBeHealed(actor)
+		this.refreshTheInjuryToBeHealed(actor);
 		SPACE1889Time.changeDate(60); //Heildauer ist 60s
 		this.sendFirstAidHealingChatMessage(actor, timestamp, firstAidInfo);
 

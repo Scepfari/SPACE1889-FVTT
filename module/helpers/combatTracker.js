@@ -1,4 +1,5 @@
 import SPACE1889Helper from "./helper.js";
+import SPACE1889Time from "../helpers/time.js";
 
 export class Space1889Combatant extends Combatant 
 {
@@ -28,6 +29,26 @@ export class Space1889Combat extends Combat
 			await k.setFlag("space1889", "attackCount", 0);
 			await this.removeNoActiveDefence(k);
 		}
+
+		if (this.active && this.scene === null && game.user.isGM)
+		{
+			// wenn mit der Begegnung keine Szene verknüpft ist, stellt der simple calendar die Zeit nicht vor
+			SPACE1889Time.changeDate(6); 
+		}
+
+		return dummy;
+	}
+
+	async previousRound()
+	{
+		const dummy = await super.previousRound();
+
+		if (this.active && this.scene === null && game.user.isGM)
+		{
+			// wenn mit der Begegnung keine Szene verknüpft ist, stellt der simple calendar die Zeit nicht zurück
+			SPACE1889Time.changeDate(-6); 
+		}
+
 		return dummy;
 	}
 
