@@ -85,7 +85,7 @@
 						<div class="item-name ">{{localize "SPACE1889.VehiclePilotSkill"}}</div>
 						<div class="resource-content flexrow flex-center flex-between item-marginlr5px">
 							<select name="system.pilotSkill" data-dtype="String">
-								{{selectOptions system.pilotSkills selected=system.pilotSkill localize=true}}
+								{{selectOptions system.pilotSkills selected=system.pilotSkill nameAttr="key" labelAttr="label"}}
 							</select>
 						</div>
 					</li>

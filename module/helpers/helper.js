@@ -2408,6 +2408,34 @@ export default class SPACE1889Helper
 		return list;
 	}
 
+	static getPilotSkills()
+	{
+		let list = [];
+		const staticPilotSkills = CONFIG.SPACE1889.pilotSkills;
+		const keys = Object.keys(staticPilotSkills);
+
+		for (const key of keys)
+		{
+			const name = game.i18n.localize(staticPilotSkills[key]);
+			list.push({ key: key, label: name });
+		}
+
+		// um lokale Fertigkeiten erweitern
+		let docs = [];
+		let local = game.items.filter((x) => x.type === "skill" && x.system.isSkillGroup && x.system.skillGroupName === "spezielleFahrzeuge");
+		for (const item of local)
+		{
+			if (!docs.find((x) => x.system.id === item.system.id))
+				docs.push(item);
+		}
+		for (const item of docs)
+		{
+			list.push({ key: item.system.id, label: item.name });
+		}
+		list.sort((a, b) => { return a.label.localeCompare(b.label); });
+		return list;
+	}
+
 
 	static getTokenFromId(tokenId, currentViewOnly = true)
 	{

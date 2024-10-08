@@ -116,7 +116,7 @@ export class Space1889ActorSheet extends ActorSheet {
 	{
 		context.system['crewExperiences'] = CONFIG.SPACE1889.crewExperience;
 		context.system['crewTempers'] = CONFIG.SPACE1889.crewTemper;
-		context.system['pilotSkills'] = CONFIG.SPACE1889.pilotSkills;
+		context.system['pilotSkills'] = SPACE1889Helper.getPilotSkills();
 	}
 
 	_prepareAttributes(context)
