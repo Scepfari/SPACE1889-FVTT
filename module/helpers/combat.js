@@ -845,7 +845,7 @@ export default class SPACE1889Combat
 	static defenseDialog(data)
 	{
 		const defenseType = data.reducedDefense;
-		let token = SPACE1889Helper.getTokenFromId(data.targetId);
+		let token = SPACE1889Helper.getTokenFromId(data.targetId, false);
 		const actor = token.actor;
 
 		const defenseCount = SPACE1889RollHelper.getDefenseCount(data.targetId);
@@ -1139,7 +1139,7 @@ export default class SPACE1889Combat
 	{
 		// liefert das optimum im modifizierten defenseType zurück
 		
-		const token = SPACE1889Helper.getTokenFromId(data.targetId);
+		const token = SPACE1889Helper.getTokenFromId(data.targetId, false);
 		const actor = token?.actor;
 
 		if (!actor)

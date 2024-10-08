@@ -1347,7 +1347,7 @@ export default class SPACE1889Helper
 		if (tokenId == "")
 			return false;
 
-		const token = SPACE1889Helper.getTokenFromId(tokenId);
+		const token = SPACE1889Helper.getTokenFromId(tokenId, false);
 		if (!token)
 			return false;
 
@@ -2443,11 +2443,13 @@ export default class SPACE1889Helper
 		if (token || currentViewOnly) 
 			return token;
 
-		for (const scene of game.scenes._sources)
+		for (const scene of game.scenes._source)
 		{
-			const foundToken = scene.tokens.find(e => e._id === tokenId);
-			if (foundToken)
+			if (scene.tokens.find(e => e._id === tokenId))
+			{
+				const foundToken = game.scenes.get(scene._id).tokens.get(tokenId);
 				return foundToken;
+			}
 		}
 		return undefined;
 	}

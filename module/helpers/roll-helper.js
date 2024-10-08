@@ -1628,11 +1628,11 @@ export default class SPACE1889RollHelper
 		if (targetId == "")
 			return;
 
-		const token = SPACE1889Helper.getTokenFromId(targetId);
+		const token = SPACE1889Helper.getTokenFromId(targetId, false);
 		if (!token)
 			return;
 
-		const attackerToken = SPACE1889Helper.getTokenFromId(actorTokenId);
+		const attackerToken = SPACE1889Helper.getTokenFromId(actorTokenId, false);
 		const actorName = !attackerToken ? 'unbekannt' : attackerToken.name;
 		const permissions = token.actor.ownership;
 		if (game.user.isGM || (permissions["default"] && permissions["default"] == 3) || (permissions[game.userId] && permissions[game.userId] == 3))
@@ -1688,7 +1688,7 @@ export default class SPACE1889RollHelper
  */
 	static async rollDefenseAndAddDamage(data)
 	{
-		let target = SPACE1889Helper.getTokenFromId(data.targetId);
+		let target = SPACE1889Helper.getTokenFromId(data.targetId, false);
 		if (!target)
 			return;
 
@@ -1817,8 +1817,8 @@ export default class SPACE1889RollHelper
 
 	static async rollDefenseAndAddDamageSub(data, diceCount, modifierToolTipInfo)
 	{
-		let target = SPACE1889Helper.getTokenFromId(data.targetId);
-		const actorToken = SPACE1889Helper.getTokenFromId(data.actorTokenId);
+		let target = SPACE1889Helper.getTokenFromId(data.targetId, false);
+		const actorToken = SPACE1889Helper.getTokenFromId(data.actorTokenId, false);
 
 		if (!target)
 			return;
@@ -2049,7 +2049,7 @@ export default class SPACE1889RollHelper
 
 	static async addActorDamageAndNotify(tokenId, causerName, attackName, damageAmount, damageType, useSocket = true )
 	{
-		const actorToken = SPACE1889Helper.getTokenFromId(tokenId);
+		const actorToken = SPACE1889Helper.getTokenFromId(tokenId, false);
 		if (!actorToken || !actorToken.actor)
 			return;
 		
