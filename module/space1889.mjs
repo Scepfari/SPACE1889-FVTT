@@ -596,7 +596,7 @@ Hooks.once("ready", async function() {
 					break;
 				case "createActorDamage":
 					{
-						const token = SPACE1889Helper.getTokenFromId(data.tokenId, false);
+						const token = SPACE1889Helper.getTokenFromId(data.tokenId);
 						if (token)
 							SPACE1889RollHelper.addActorDamageFromSocket(data.tokenId, data.damageData);
 					}
@@ -617,8 +617,8 @@ Hooks.once("ready", async function() {
 					break;
 				case "copyActorItem":
 					{
-						const actorToken = SPACE1889Helper.getTokenFromId(data.payload.tokenId, false);
-						const sourceToken = SPACE1889Helper.getTokenFromId(data.payload.sourceTokenId, false);
+						const actorToken = SPACE1889Helper.getTokenFromId(data.payload.tokenId);
+						const sourceToken = SPACE1889Helper.getTokenFromId(data.payload.sourceTokenId);
 
 						if (actorToken && sourceToken)
 							SPACE1889RollHelper.copyActorItem(actorToken, sourceToken, data.payload.itemId);

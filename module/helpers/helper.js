@@ -1347,7 +1347,7 @@ export default class SPACE1889Helper
 		if (tokenId == "")
 			return false;
 
-		const token = SPACE1889Helper.getTokenFromId(tokenId, false);
+		const token = SPACE1889Helper.getTokenFromId(tokenId);
 		if (!token)
 			return false;
 
@@ -2437,7 +2437,7 @@ export default class SPACE1889Helper
 	}
 
 
-	static getTokenFromId(tokenId, currentViewOnly = true)
+	static getTokenFromId(tokenId, currentViewOnly = false)
 	{
 		const token = game.scenes.viewed.tokens.get(tokenId);
 		if (token || currentViewOnly) 

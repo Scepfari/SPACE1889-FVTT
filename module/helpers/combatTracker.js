@@ -87,7 +87,7 @@ export class Space1889Combat extends Combat
 
 			for (const combatant of this.combatants)
 			{
-				const token = SPACE1889Helper.getTokenFromId(combatant.tokenId, false);
+				const token = SPACE1889Helper.getTokenFromId(combatant.tokenId);
 				const actor = token?.actor;
 				if (actor)
 				{
