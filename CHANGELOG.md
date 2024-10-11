@@ -2,6 +2,14 @@
 
 ## Mondreich
 
+### v2.3.2
+- Bugfix: Fehlende Icons bei den Musiksteuerungsknöpfen ([#21](https://github.com/Scepfari/SPACE1889-FVTT/issues/21))
+- Bugfix: Fehlerhafte Fertigkeitswertberechnung ([#22](https://github.com/Scepfari/SPACE1889-FVTT/issues/22))
+- Bugfix: Im Fahrzeugbogen lassen sich keine selbst definierten Fertigkeiten als Pilotenfertigkeit auswählen ([#23](https://github.com/Scepfari/SPACE1889-FVTT/issues/23))
+- Bugfix: Die Zeit wird bei Begegnungsrundenwechsel nicht vorgesetzt ([#24](https://github.com/Scepfari/SPACE1889-FVTT/issues/24))
+- Bugfix: Automatische Verteidigung: Knopf fehlt bzw. funktioniert nicht ([#25](https://github.com/Scepfari/SPACE1889-FVTT/issues/25))
+- Bugfix: Anwendung der Ersten Hilfe funktioniert nicht immer ([#26](https://github.com/Scepfari/SPACE1889-FVTT/issues/26))
+
 ### v2.3.1
 - Neue Item Typen für Archetyp, Motivation und Spezies hinzugefügt. Mit diesen Typen erstellte Items erweitern die entsprechenden Auswahllisten im Charakter- und NSC- Bogen.
 - Bugfix: Fehlende englisch Übersetzung der Schwäche Arten
