@@ -153,4 +153,18 @@ export class Space1889Combat extends Combat
 		return effect.statuses.has(searchKey);
 	}
 
+	async selectToken()
+	{
+		if (game.user.isGM && game.settings.get("space1889", "combatAutoTokenSelect"))
+		{
+			const combatTokenId = game.combat?.combatant?.token?.id;
+			const token = canvas.tokens.get(combatTokenId);
+
+			if (!SPACE1889Helper.hasOneOrMorePlayerOwnership(token?.actor?.ownership) && token)
+			{
+				canvas.tokens.releaseAll();
+				token.control();
+			}				
+		}
+	}
 }

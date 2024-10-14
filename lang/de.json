@@ -2950,6 +2950,8 @@
 	"SPACE1889.ConfigUseCombatMarkerTransparencyInfo": "Durchsichtigkeit der Markierungsanzeige",
 	"SPACE1889.ConfigUseCombatMarkerImagePath": "Zug Markierung Bild",
 	"SPACE1889.ConfigUseCombatMarkerImagePathInfo": "Bild das als Zug Markierung verwendet wird",
+	"SPACE1889.ConfigUseCombatAutoTokenSelect": "Automatische Figurenauswahl",
+	"SPACE1889.ConfigUseCombatAutoTokenSelectInfo": "Für die SL wird in Begegnungen automatisch die (NSC-) Figur selektiert, die am Zug ist. Ausgenommen davon sind Figuren, die einem Spieler gehören (Zugriffsrecht Besitzer)",
 	"SPACE1889.ConfigHeroLevel": "Heldenstufe",
 	"SPACE1889.ConfigHeroLevelInfo": "Definiert die maximale Stufe für Attributs- und Fertigkeitswerte von Spielercharakteren(Pechvogel: A4/F3, Durchschnittsbürger: A5/F4, Vielversprechend: A6/F5,Veteran: A7/F6, Weltspitze: A8/F7, Übermensch: A9/F8)",
 	"SPACE1889.ConfigGlobalStyle": "Aussehen",

@@ -2950,6 +2950,8 @@
 	"SPACE1889.ConfigUseCombatMarkerTransparencyInfo": "Transparency of the turn marker",
 	"SPACE1889.ConfigUseCombatMarkerImagePath": "Turn marker image",
 	"SPACE1889.ConfigUseCombatMarkerImagePathInfo": "Image used as turn marker",
+	"SPACE1889.ConfigUseCombatAutoTokenSelect": "Automatic token selection",
+	"SPACE1889.ConfigUseCombatAutoTokenSelectInfo": "In encounters, the (NPC) token whose turn it is is automatically selected for the GM. This does not apply to tokens that belong to a player (access right owner)",
 	"SPACE1889.ConfigHeroLevel": "Hero Level",
 	"SPACE1889.ConfigHeroLevelInfo": "Defines the maximum level for player character attribute and skill levels(Unlucky Fellow: A4/S3, Everyman: A5/S4, Promising: A6/S5,Veteran: A7/S6, World leading: A8/S7, Herculean: A9/S8)",
 	"SPACE1889.ConfigGlobalStyle": "Appearance",

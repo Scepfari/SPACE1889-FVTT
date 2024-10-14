@@ -347,6 +347,7 @@ Hooks.on("updateCombat", function ()
 	{
 		game.combat.checkEffectLifeTime();
 		SPACE1889Healing.checkDying();
+		game.combat.selectToken();
 	}
 });
 

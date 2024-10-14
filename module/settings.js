@@ -228,6 +228,16 @@ export const registerSystemSettings = function ()
 		}
 	});
 
+	game.settings.register("space1889", "combatAutoTokenSelect",
+	{
+		name: "SPACE1889.ConfigUseCombatAutoTokenSelect",
+		hint: "SPACE1889.ConfigUseCombatAutoTokenSelectInfo",
+		scope: "world",
+		config: true,
+		default: true,
+		type: Boolean
+	});
+
     game.settings.register("space1889", "useTokenMovementLimiterForGM",
 	    {
             name: "SPACE1889.ConfigUseGmTokenMovementLimiter",
