@@ -1116,7 +1116,7 @@ export default class SPACE1889Combat
 				modifierToolTipInfo += ` game.i18n.format("SPACE1889.ChatDisarmTwoHandBonus", { bonus: defOpposedInfo.twoHandBonus }) : ""`;
 			}
 
-			SPACE1889RollHelper.rollDefenseAndAddDamageSub(data, diceCount, modifierToolTipInfo);
+			SPACE1889RollHelper.rollDefenseAndAddDamageSub(data, diceCount, modifierToolTipInfo, defOpt.additionalChatContent);
 		}
 	}
 
@@ -1143,7 +1143,7 @@ export default class SPACE1889Combat
 		const actor = token?.actor;
 
 		if (!actor)
-			return { defenseType: data.reducedDefense, riposteDamageType: "lethal", diceCount: 0, multiDefenseMalus: 0, blockInfo: null, parryInfo: null, dodgeInfo: null, totalInfo: null };			
+			return { defenseType: data.reducedDefense, riposteDamageType: "lethal", diceCount: 0, multiDefenseMalus: 0, blockInfo: null, parryInfo: null, dodgeInfo: null, totalInfo: null, additionalChatContent: "" };			
 
 		const hasAttacked = token && SPACE1889RollHelper.getAttackCount(token.id) > 0;
 		const hasAttackActionForDefense = !hasAttacked && !actor.isStunned();
@@ -1151,6 +1151,8 @@ export default class SPACE1889Combat
 		const defenseType = data.reducedDefense;
 		const defenseCount = SPACE1889RollHelper.getDefenseCount(data.targetId);
 		const multiDefenseMalus = actor ? actor.getDefenseMalus(defenseCount + 1) : 0;
+		const combatRound = game.combat ? game.combat.round : 0;
+		const chatContent = defenseCount > 0 ? `<p>${game.i18n.format("SPACE1889.DefenseCountInCombatRound", { count: defenseCount + 1, round: combatRound, malus: multiDefenseMalus })}</p>` : "";
 
 		let resultantDefenseType = defenseType;
 		let resultRiposteDamageType = "lethal";
@@ -1158,7 +1160,7 @@ export default class SPACE1889Combat
 		if (defenseType === 'onlyPassive')
 		{
 			const dice = Math.max(0, actor.system.secondaries.defense.passiveTotal + multiDefenseMalus);
-			return { defenseType: resultantDefenseType, riposteDamageType: resultRiposteDamageType, diceCount: dice, multiDefenseMalus: multiDefenseMalus, blockInfo: null, parryInfo: null, dodgeInfo: null, totalInfo: null  };
+			return { defenseType: resultantDefenseType, riposteDamageType: resultRiposteDamageType, diceCount: dice, multiDefenseMalus: multiDefenseMalus, blockInfo: null, parryInfo: null, dodgeInfo: null, totalInfo: null, additionalChatContent: chatContent };
 		}
 
 		const blockInfo = this.getBlockData(actor, defenseType, data.combatSkillId, hasAttackActionForDefense, multiDefenseMalus);
@@ -1207,7 +1209,7 @@ export default class SPACE1889Combat
 			diceCount = parryInfo.diceCount;
 		}
 
-		return { defenseType: resultantDefenseType, riposteDamageType: resultRiposteDamageType, diceCount: diceCount, multiDefenseMalus: multiDefenseMalus, blockInfo: blockInfo, parryInfo: parryInfo, dodgeInfo: dodgeInfo, totalInfo: totalInfo, comparativeInfo: compaInfo };
+		return { defenseType: resultantDefenseType, riposteDamageType: resultRiposteDamageType, diceCount: diceCount, multiDefenseMalus: multiDefenseMalus, blockInfo: blockInfo, parryInfo: parryInfo, dodgeInfo: dodgeInfo, totalInfo: totalInfo, comparativeInfo: compaInfo, additionalChatContent: chatContent };
 	}
 
 	static getBlockData(actor, defenseType, attackCombatSkillId, hasAttackActionForDefense, multiDefenseMalus)

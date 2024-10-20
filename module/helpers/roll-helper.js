@@ -1702,7 +1702,7 @@ export default class SPACE1889RollHelper
 		data.reducedDefense = options.defenseType;
 		data.riposteDamageType = options.riposteDamageType;
 		const modifierToolTipInfo = options.multiDefenseMalus === 0 ? "" : game.i18n.format("SPACE1889.ChatMultiAttackDefenseModifier", { mod: options.multiDefenseMalus });
-		this.rollDefenseAndAddDamageSub(data, Math.max(0, options.diceCount), modifierToolTipInfo);
+		this.rollDefenseAndAddDamageSub(data, Math.max(0, options.diceCount), modifierToolTipInfo, options.additionalChatContent);
 	}
 
 	static getModifiedDefense(tokenId, actor, defenseType, combatSkillId)
@@ -1815,7 +1815,7 @@ export default class SPACE1889RollHelper
 		return item._id;
 	}
 
-	static async rollDefenseAndAddDamageSub(data, diceCount, modifierToolTipInfo)
+	static async rollDefenseAndAddDamageSub(data, diceCount, modifierToolTipInfo, additionalChatContent)
 	{
 		let target = SPACE1889Helper.getTokenFromId(data.targetId);
 		const actorToken = SPACE1889Helper.getTokenFromId(data.actorTokenId);
@@ -1856,7 +1856,7 @@ export default class SPACE1889RollHelper
 				SPACE1889Helper.addEffect(target.actor, { name: "totalDefense", rounds: 1 });
 		}
 
-		let content = `<div><h2>${title}</h2></div>` + rollWithHtml.html;
+		let content = `<div><h2>${title}</h2></div>` + additionalChatContent + rollWithHtml.html;
 		const chatData =
 		{
 			user: game.user.id,
