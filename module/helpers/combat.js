@@ -1,6 +1,7 @@
 import SPACE1889Helper from "../helpers/helper.js";
 import SPACE1889RollHelper from "../helpers/roll-helper.js";
 import DistanceMeasuring from "../helpers/distanceMeasuring.js"
+import SPACE1889Light from "../helpers/light.js"
 
 export default class SPACE1889Combat
 {
@@ -25,9 +26,10 @@ export default class SPACE1889Combat
 		if (actor.system.attributes.species.value === "selenit") 
 			return true; 
 
+		const lsBlocked = SPACE1889Light.blockedHandsFromLightSources(actor);
 		const weapons = SPACE1889Combat.getWeaponInHands(actor);
-		const primaryIsFree = !weapons.primaryWeapon || SPACE1889Combat.canUseHandWhileHoldingTheWeapon(weapons.primaryWeapon);
-		const offHandIsFree = !weapons.offHandWeapon || SPACE1889Combat.canUseHandWhileHoldingTheWeapon(weapons.offHandWeapon);
+		const primaryIsFree = (!weapons.primaryWeapon || SPACE1889Combat.canUseHandWhileHoldingTheWeapon(weapons.primaryWeapon)) && !lsBlocked.primary;
+		const offHandIsFree = (!weapons.offHandWeapon || SPACE1889Combat.canUseHandWhileHoldingTheWeapon(weapons.offHandWeapon)) && !lsBlocked.off;
 
 		return (primaryIsFree && offHandIsFree);
 	}

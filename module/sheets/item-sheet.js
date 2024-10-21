@@ -12,7 +12,7 @@ export class Space1889ItemSheet extends ItemSheet {
 		return foundry.utils.mergeObject(super.defaultOptions, {
 			classes: ["space1889", "sheet", "item"],
 			width: 500,
-			height: 500,
+			height: 550,
 			tabs: [{ navSelector: ".sheet-tabs", contentSelector: ".sheet-body", initial: "description" }]
 		});
 	}
@@ -109,6 +109,18 @@ export class Space1889ItemSheet extends ItemSheet {
 			context.system['damageTypes'] = CONFIG.SPACE1889.vehicleDamageTypes;
 			context.system['damageTypeAbbr'] = CONFIG.SPACE1889.vehicleDamageTypeAbbreviations;
 		}
+		else if (item.type === "vision")
+		{
+			context.system['visionModes'] = CONFIG.SPACE1889.visionModes;
+			context.system['storageLocations'] = CONFIG.SPACE1889.allStorageLocations;
+			context.system['storageLocationsAbbr'] = CONFIG.SPACE1889.allStorageLocationsAbbreviations;
+		}
+		else if (item.type === "lightSource")
+		{
+			context.system['lightAnimations'] = CONFIG.SPACE1889.lightAnimations;
+			context.system['storageLocations'] = CONFIG.SPACE1889.allStorageLocations;
+			context.system['storageLocationsAbbr'] = CONFIG.SPACE1889.allStorageLocationsAbbreviations;
+		}
 
 		if (item.type == "weapon")
 		{
@@ -122,7 +134,6 @@ export class Space1889ItemSheet extends ItemSheet {
 			context.system['storageLocations'] = CONFIG.SPACE1889.storageLocations;
 			context.system['storageLocationsAbbr'] = CONFIG.SPACE1889.storageLocationAbbreviations;
 		}
-
 		else if (item.type ==="extended_action")
 		{
 			context.system['propertyKeys'] = CONFIG.SPACE1889.propertyKeys;

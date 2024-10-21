@@ -33,6 +33,7 @@ SPACE1889.secondaries = {
 
 SPACE1889.itemTypes = {
 	"ammunition": "ITEM.TypeAmmunition",
+	"archetype": "ITEM.TypeArchetype",
 	"armor": "ITEM.TypeArmor",
 	"container": "ITEM.TypeContainer",
 	"currency": "ITEM.TypeCurrency",
@@ -40,10 +41,14 @@ SPACE1889.itemTypes = {
 	"damage": "ITEM.TypeDamage",
 	"item": "ITEM.TypeItem",
 	"language": "ITEM.TypeLanguage",
+	"lightSource": "ITEM.TypeLightsource",
+	"motivation": "ITEM.TypeMotivation",
 	"resource": "ITEM.TypeResource",
 	"skill": "ITEM.TypeSkill",
 	"specialization": "ITEM.TypeSpecialization",
+	"species": "ITEM.TypeSpecies",
 	"talent": "ITEM.TypeTalent",
+	"vision": "ITEM.TypeVision",
 	"weakness": "ITEM.TypeWeakness",
 	"weapon": "ITEM.TypeWeapon"
 }
@@ -961,6 +966,40 @@ SPACE1889.propertyKeys = {
 	"primary": "SPACE1889.Abilities",
 	"secondary": "SPACE1889.SecondaryAttributes",
 	"skill": "SPACE1889.Skill"
+}
+
+SPACE1889.visionModes = {
+	"basic": "VISION.ModeBasicVision",
+	"darkvision": "VISION.ModeDarkvision",
+	"monochromatic": "VISION.ModeMonochromatic",
+	"tremorsense": "VISION.ModeTremorsense",
+	"lightAmplification": "VISION.ModeLightAmplification"
+}
+
+SPACE1889.lightAnimations = {
+	"none": "SETTINGS.None",
+	"chroma": "LIGHT.AnimationChroma",
+	"dome": "LIGHT.AnimationLightDome",
+	"emanation": "LIGHT.AnimationEmanation",
+	"energy": "LIGHT.AnimationEnergyField",
+	"fairy": "LIGHT.AnimationFairyLight",
+	"flame": "LIGHT.AnimationFlame",
+	"fog": "LIGHT.AnimationFog",
+	"ghost": "LIGHT.AnimationGhostLight",
+	"grid": "LIGHT.AnimationForceGrid",
+	"hexa": "LIGHT.AnimationHexaDome",
+	"hole": "LIGHT.AnimationBlackHole",
+	"pulse": "LIGHT.AnimationPulse",
+	"radialrainbow": "LIGHT.AnimationRadialRainbow",
+	"rainbowswirl": "LIGHT.AnimationSwirlingRainbow",
+	"roiling": "LIGHT.AnimationRoilingMass",
+	"smokepatch": "LIGHT.AnimationSmokePatch",
+	"starlight": "LIGHT.AnimationStarLight",
+	"sunburst": "LIGHT.AnimationSunburst",
+	"torch": "LIGHT.AnimationTorch",
+	"vortex": "LIGHT.AnimationVortex",
+	"wave": "LIGHT.AnimationWave",
+	"witchwave": "LIGHT.AnimationBewitchingWave"
 }
 
 SPACE1889.umlautMap = {

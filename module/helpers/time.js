@@ -1,5 +1,6 @@
 import SPACE1889Healing from "../helpers/healing.js";
 import SPACE1889Helper from "./helper.js";
+import SPACE1889Light from "./light.js";
 
 export default class SPACE1889Time
 {
@@ -15,7 +16,7 @@ export default class SPACE1889Time
 
 		Hooks.on(SimpleCalendar.Hooks.Ready, (data) => 
 		{
-			console.log("SimpleCalendar.Rady")
+			console.log("SimpleCalendar.Ready");
 		});
 	}
 
@@ -161,5 +162,6 @@ export default class SPACE1889Time
 			return;
 
 		SPACE1889Healing.healByTime();
+		SPACE1889Light.timePasses();
 	}
 }

@@ -1,7 +1,12 @@
 <ol class="items-list ">
 	<li class="item flexrow items-header">
 		<div class="item-name ">{{localize "SPACE1889.Ammunition"}}&#160;
-			<a class="open-compendium" data-tooltip="{{localize 'SPACE1889.OpenCompendium'}}" data-pack="space1889.munition"><i class="far fa-external-link-square"></i></a>
+			<a class="open-compendium" data-tooltip="{{localize 'SPACE1889.OpenCompendium'}}" data-pack="space1889.munition"><i class="far fa-external-link-square"></i></a>&ensp;
+			{{#if system.visualisation.compressedAmmunition}}
+			<a class="compressed-ammunition-toggle" data-tooltip="{{localize 'SPACE1889.ContainerExpand'}}" data-tooltip-direction="DOWN"><i class="fal fa-expand-arrows-alt"></i></a>
+			{{else}}
+			<a class="compressed-ammunition-toggle" data-tooltip="{{localize 'SPACE1889.ContainerCompress'}}" data-tooltip-direction="DOWN"><i class="fal fa-compress-arrows-alt" ></i></a>
+			{{/if}}
 		</div>
 		<div class="items-name item-max-with40px">{{localize "SPACE1889.Quantity"}}</div>
 		<div class="items-name item-max-with75px">{{localize "SPACE1889.AmmunitionType"}}</div>
@@ -11,6 +16,7 @@
 			<a class="item-control item-create item-max-with60px" data-tooltip='{{localize "SPACE1889.CreateItem"}}' data-type="ammunition"><i class="fas fa-plus"></i> Add</a>
 		</div>
 	</li>
+	{{#if (not system.visualisation.compressedAmmunition)}}
 	{{#each system.ammunitions as |item id|}}
 	<li class="item row-section flexrow" data-item-id="{{item._id}}">
 		<div class="item-name">
@@ -33,5 +39,6 @@
 		</div>
 	</li>
 	{{/each}}
+	{{/if}}
 </ol>
 

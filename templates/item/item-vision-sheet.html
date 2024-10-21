@@ -1,0 +1,105 @@
+<form class="{{cssClass}}" autocomplete="off">
+	<header class="sheet-header">
+		<img class="profile-img artwork" src="{{item.img}}" data-edit="img" data-tooltip="{{item.name}}"/>
+		<div class="header-fields">
+			<h1 class="charname"><input name="name" type="text" value="{{item.name}}" placeholder="Name" /></h1>
+			{{> "systems/space1889/templates/item/item-sub-id.html"}}
+		</div>
+	</header>
+
+	<li class="item flexrow items-header">
+		<label class="resource-label">{{localize "SPACE1889.Quantity"}}</label>
+		<label class="resource-label">{{localize "SPACE1889.Weight"}}[kg]</label>
+		<label class="resource-label">{{localize "SPACE1889.Price"}}</label>
+	</li>
+	<li class="item flex-group-center flexrow">
+		<div class="resource-content flex-center flex-between">
+			<input type="text" name="system.quantity" value="{{system.quantity}}" data-dtype="Number" />
+		</div>
+		<div class="resource-content flex-center flex-between">
+			<input type="number" min="0" step="0.001" name="system.weight" value="{{system.weight}}" data-dtype="Number"/>
+		</div>
+		<div class="resource-content flex-center flex-between">
+			<input type="text" name="system.price" value="{{system.price}}"/>
+		</div>
+	</li>
+	
+	<li class="item flexrow items-header">
+		<label class="resource-label">{{localize "TOKEN.VisionRange"}}[m]</label>
+		<label class="resource-label">{{localize "TOKEN.VisionMode"}}</label>
+		<label class="resource-label">{{localize "TOKEN.VisionAngle"}}[&deg;]</label>
+		<label class="resource-label">{{localize "TOKEN.VisionSaturation"}}</label>
+	</li>
+	<li class="item flex-group-center flexrow">
+		<div class="resource-content flex-center flex-between">
+			<input type="text" name="system.visionRange" value="{{system.visionRange}}" data-dtype="Number" />
+		</div>
+		<div class="resource-content flex-center flex-between">
+			<select name="system.visionMode" data-dtype="String">
+				{{selectOptions system.visionModes selected=system.visionMode localize=true}}
+			</select>
+		</div>
+		<div class="resource-content flex-center flex-between">
+			<input type="text" min="0" max="360" step="1" name="system.visionAngle" value="{{system.visionAngle}}"/>
+		</div>
+		<div class="resource-content flex-center flex-between">
+			<input type="text" min="-1" max="1" step="0.1" name="system.visionSaturation" value="{{system.visionSaturation}}"/>
+		</div>
+	</li>
+
+	<li class="item flexrow items-header">
+		<label class="resource-label">{{ localize "SPACE1889.Duration"}}[min]</label>
+		<label class="resource-label">{{ localize "SPACE1889.Rechargeable"}}</label>
+		<label class="resource-label">{{ localize "SPACE1889.Interruptible"}}</label>
+	</li>
+	<li class="item flex-group-center flexrow">
+		<div class="resource-content flex-center flex-between">
+			<input type="text" min="0" step="1" name="system.duration" value="{{system.duration}}"/>
+		</div>
+		<div class="resource-content flex-center flex-between">
+			<input type="checkbox" name="system.rechargeable" {{checked system.rechargeable}} />
+		</div>
+		<div class="resource-content flex-center flex-between">
+			<input type="checkbox" name="system.interruptible" {{checked system.interruptible}} />
+		</div>
+	</li>
+	
+	<li class="item flexrow items-header">
+		<label class="resource-label">{{localize "SPACE1889.IsActive"}}</label>
+		<label class="resource-label">{{ localize "SPACE1889.Timestamp"}}</label>
+		<label class="resource-label">{{localize "SPACE1889.OperatingTime"}}</label>
+	</li>
+	<li class="item flex-group-center flexrow">
+		<div class="resource-content flex-center flex-between">
+			<input type="checkbox" name="system.isActive" {{checked system.isActive}} />
+		</div>
+		<div class="resource" data-tooltip="{{formatTime system.emissionStartTimestamp}}">
+			<input type="text" name="system.emissionStartTimestamp" value="{{system.emissionStartTimestamp}}" data-dtype="Number" />
+		</div>		
+		<div class="resource-content flex-center flex-between">
+			<input type="text" name="system.usedDuration" value="{{system.usedDuration}}" />
+		</div>
+	</li>
+	
+
+	{{!-- Sheet Tab Navigation --}}
+	<nav class="sheet-tabs tabs" data-group="primary">
+		<a class="item" data-tab="description">{{localize "SPACE1889.Description"}}</a>
+	</nav>
+
+	{{!-- Sheet Body --}}
+	<section class="sheet-body">
+
+		{{!-- Attributes Tab --}}
+		<div class="tab" data-group="primary" data-tab="description">
+			<div class="edit-special">
+				{{editor enrichedDescription target="system.description" button=true editable=editable}}
+			</div>
+			{{#if (ne system.descriptionLangId (localize system.descriptionLangId))}}
+				<hr />
+				<p>{{{localize system.descriptionLangId}}}</p>
+			{{/if}}
+		</div>
+
+	</section>
+</form>

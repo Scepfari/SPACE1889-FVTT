@@ -1,5 +1,6 @@
+{{#if (not system.visualisation.compressedItems)}}
 {{#each system.gear as |item id|}}
-{{#if (eq item.system.containerId null)}}
+{{#if (and (eq item.system.containerId null) (ne item.type "lightSource"))}}
 
 	<li class="item row-section flexrow" data-item-id="{{item._id}}">
 		<div data-tooltip="{{fullItemToolTipDescription item}}" data-tooltip-direction="RIGHT" class="item-name">
@@ -20,5 +21,7 @@
 			<a class="item-control item-delete" data-tooltip="{{localize 'SPACE1889.DeleteItem'}}"><i class="fas fa-trash"></i></a>
 		</div>
 	</li>
+
 {{/if}}
 {{/each}}
+{{/if}}

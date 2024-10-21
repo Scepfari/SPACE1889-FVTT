@@ -386,6 +386,7 @@ export class Space1889Actor extends Actor
 		const money = [];
 		const containers = [];
 		const extendedRolls = [];
+		const lightSources = [];
 
 		for (let item of items)
 		{
@@ -410,6 +411,13 @@ export class Space1889Actor extends Actor
 				armors.push(item);
 			else if (item.type === 'item')
 				gear.push(item);
+			else if (item.type === 'vision')
+				gear.push(item);
+			else if (item.type === 'lightSource')
+			{
+				gear.push(item);
+				lightSources.push(item);
+			}
 			else if (item.type === 'container')
 				containers.push(item);
 			else if (item.type === 'damage')
@@ -452,6 +460,7 @@ export class Space1889Actor extends Actor
 		actor.system.containers = containers;
 		actor.system.weapons = weapons;
 		actor.system.extendedRolls = extendedRolls;
+		actor.system.lightSources = lightSources;
 
 		this.CalcAndSetHealth(actor);
 		this.CalcContainerLoad(actor);
@@ -1516,7 +1525,7 @@ export class Space1889Actor extends Actor
 		let itemWeight = 0;
 		for (let item of actor.items)
 		{
-			if (item.type == "item" || item.type == "ammunition")
+			if (item.type == "item" || item.type == "ammunition" || item.type === "lightSource" || item.type === "vision")
 				itemWeight = item.system.weight * item.system.quantity;
 			else if (item.type == "weapon" && item.system.skillId == "geschuetze" && item.system.location == 'mounted')
 				continue;

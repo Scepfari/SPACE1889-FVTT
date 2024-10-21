@@ -4,6 +4,7 @@ import SPACE1889RollHelper from "../helpers/roll-helper.js";
 import ForeignNotesEditor from "../helpers/foreignNotesEditor.js"
 import SPACE1889Healing from "../helpers/healing.js";
 import SPACE1889Time from "../helpers/time.js";
+import SPACE1889Light from "../helpers/light.js";
 
 /**
  * Extend the basic ActorSheet with some very simple modifications
@@ -169,6 +170,22 @@ export class Space1889ActorSheet extends ActorSheet {
 				languageRight.push(this.actor.system.language[i]);
 		}
 
+		for (let lightSource of this.actor.system.gear)
+		{
+			if (lightSource.type === "lightSource")
+			{
+				if (lightSource.system.requiresHands)
+				{
+					lightSource.system.usedHandsIcon = CONFIG.SPACE1889.weaponHandIcon[lightSource.system.usedHands];
+					lightSource.system.usedHandsInfo = game.i18n.localize(CONFIG.SPACE1889.weaponHand[lightSource.system.usedHands]);
+				}
+				else
+				{
+					lightSource.system.usedHandsIcon = "far fa-thumb-tack";
+					lightSource.system.usedHandsInfo = game.i18n.localize("SPACE1889.Ready");
+				}
+			}
+		}
 
 		// Assign and return
 		context.system.gear = this.actor.system.gear;
@@ -325,6 +342,12 @@ export class Space1889ActorSheet extends ActorSheet {
 				const newValue = this.incrementValue(ev, item.system.quantity, 0);
 				this.actor.updateEmbeddedDocuments("Item", [{ _id: itemId, "system.quantity": newValue }]);
 			}
+			else if (item.type == "lightSource" || item.type == "vision")
+			{
+				const newValue = this.incrementValue(ev, item.system.quantity, 0);
+				//ToDo: ?Nachricht in den Chat? 
+				this.actor.updateEmbeddedDocuments("Item", [{ _id: itemId, "system.quantity": newValue }]);
+			}
 			else if (item.type == "currency")
 			{
 				let newValue = this.incrementValue(ev, item.system.quantity, 0);
@@ -387,12 +410,38 @@ export class Space1889ActorSheet extends ActorSheet {
 			{
 				const newLocationAndSpot = this.incrementVehicleMountLocation(ev, item.system.location, item.system.vehicle.spot);
 				item.update({ 'system.location': newLocationAndSpot[0], 'system.vehicle.spot': newLocationAndSpot[1] });
+				return;
 			}
-			else
+			if (item.type === "lightSource" && item.system.isActive)
 			{
-				const newId = this.incrementLocation(ev, item.system.containerId, this.actor);
-				item.update({ 'system.containerId': newId });
+				ui.notifications.info(game.i18n.localize("SPACE1889.CanNotMoveActivateLightSource"));
+				return;
 			}
+			const newId = this.incrementLocation(ev, item.system.containerId, this.actor);
+			item.update({ 'system.containerId': newId });
+
+		});
+
+		html.find('.light-emit-toggle-click').mousedown(ev =>
+		{
+			const itemId = this._getItemId(ev);
+			const item = this.actor.items.get(itemId);
+			if (item.type === "lightSource")
+			{
+				let newState = !item.system.isActive;
+				if (newState)
+					SPACE1889Light.activateLightSource(item, this.actor);
+				else
+					SPACE1889Light.deactivateLightSource(item, this.actor);
+			}
+		});
+
+		html.find('.lighthand-click').mousedown(ev =>
+		{
+			const itemId = this._getItemId(ev);
+			const item = this.actor.items.get(itemId);
+			const backward = ev.button === 2;
+			SPACE1889Light.setLightSourceHand(item, this.actor, backward);
 		});
 
 		html.find('.weaponhand-click').mousedown(ev =>
@@ -672,6 +721,26 @@ export class Space1889ActorSheet extends ActorSheet {
 		{
 			let packName = $(ev.currentTarget).attr("data-pack");
 			game.packs.get(packName).render(true);
+		});
+		html.find('.compressed-lights-toggle').mousedown(ev =>
+		{
+			const newValue = !this.actor.system.visualisation.compressedLightSources;
+			this.actor.update({ 'system.visualisation.compressedLightSources': newValue });
+		});
+		html.find('.compressed-items-toggle').mousedown(ev =>
+		{
+			const newValue = !this.actor.system.visualisation.compressedItems;
+			this.actor.update({ 'system.visualisation.compressedItems': newValue });
+		});
+		html.find('.compressed-ammunition-toggle').mousedown(ev =>
+		{
+			const newValue = !this.actor.system.visualisation.compressedAmmunition;
+			this.actor.update({ 'system.visualisation.compressedAmmunition': newValue });
+		});
+		html.find('.compressed-weapons-toggle').mousedown(ev =>
+		{
+			const newValue = !this.actor.system.visualisation.compressedWeapons;
+			this.actor.update({ 'system.visualisation.compressedWeapons': newValue });
 		});
 
 
@@ -1072,6 +1141,12 @@ export class Space1889ActorSheet extends ActorSheet {
 
 		if (itemData.system.containerId != targetContainerId)
 		{
+			if (item.type === "lightSource" && item.system.isActive)
+			{
+				ui.notifications.info(game.i18n.localize("SPACE1889.CanNotMoveActivateLightSource"));
+				return;
+			}
+
 			if (isMoved)
 				await this.actor.updateEmbeddedDocuments("Item", [{ _id: itemData._id, "system.containerId": targetContainerId }]);
 			else

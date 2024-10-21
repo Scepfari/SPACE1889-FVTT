@@ -98,10 +98,24 @@
 					"dehydration": false,
 					"starvation": false
 				}
+			},
+			"visualisation": {
+				"visualisation": {
+					"compressedItems": false,
+					"compressedSkills": false,
+					"compressedTalents": false,
+					"compressedWeapons": false,
+					"compressedAmmunition": false,
+					"compressedArmors": false,
+					"compressedExtendedActions": false,
+					"compressedLightSources": false,
+					"compressedVisions": false,
+					"compressedDamage": false
+				}
 			}
 		},
 		"character": {
-			"templates": [ "health", "healing", "style", "primaries", "secondaries", "biography", "notes", "block", "parry", "evasion" ],
+			"templates": [ "health", "healing", "style", "primaries", "secondaries", "biography", "notes", "block", "parry", "evasion", "visualisation" ],
 			"attributes": {
 				"xp": {
 					"value": 0,
@@ -128,7 +142,7 @@
 			"origin": "merkur"
 		},
 		"npc": {
-			"templates": [ "health", "healing", "style", "primaries", "secondaries", "biography", "notes", "block", "parry", "evasion" ],
+			"templates": [ "health", "healing", "style", "primaries", "secondaries", "biography", "notes", "block", "parry", "evasion", "visualisation" ],
 			"attributes": {
 				"archetype": {
 					"value": "arbeiter"
@@ -224,7 +238,7 @@
 		}
 	},
 	"Item": {
-		"types": [ "item", "container", "talent", "weapon", "ammunition", "skill", "specialization", "species", "weakness", "resource", "language", "motivation", "archetype", "armor", "damage", "currency", "extended_action" ],
+		"types": [ "archetype", "container", "skill", "item", "extended_action", "lightSource", "motivation", "ammunition", "resource", "armor", "damage", "weakness", "vision", "specialization", "species", "language", "talent", "weapon", "currency" ],
 		"templates": {
 			"description": {
 				"description": ""
@@ -265,6 +279,41 @@
 			"portable": false,
 			"carried": false,
 			"compressed": false
+		},
+		"vision": {
+			"templates": [ "description", "weight", "location", "price", "id", "containerId" ],
+			"quantity": 1,
+			"isActive": false,
+			"duration": 60,
+			"rechargeable": false,
+			"interruptible": false,
+			"emissionStartTimestamp": 0,
+			"usedDuration": 0,
+			"visionRange": "15",
+			"visionMode": "monochromatic",
+			"visionAngle": 360,
+			"visionSaturation": -1
+		},
+		"lightSource": {
+			"templates": [ "description", "weight", "location", "price", "id", "containerId" ],
+			"quantity": 1,
+			"requiresHands": true,
+			"usedHands": "none",
+			"isActive": false,
+			"duration": 60,
+			"rechargeable": false,
+			"interruptible": false,
+			"emissionStartTimestamp": 0,
+			"usedDuration": 0,
+			"dimRadius": 12,
+			"brightRadius": "6",
+			"angle": 360,
+			"color": "#000000",
+			"colorIntensity": 0.5,
+			"animationType": "none",
+			"animationSpeed": 5,
+			"animationIntensity": 5,
+			"reverseDirection": false 
 		},
 		"talent": {
 			"templates": [ "description", "id", "source" ],

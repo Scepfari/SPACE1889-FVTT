@@ -2,7 +2,12 @@
 	<li class="item flexrow items-header">
 		<div class="item-name">
 			{{localize "SPACE1889.Name"}}&#160;
-			<a class="open-compendium" data-tooltip="{{localize 'SPACE1889.OpenCompendium'}}" data-pack="space1889.waffen"><i class="far fa-external-link-square"></i></a>
+			<a class="open-compendium" data-tooltip="{{localize 'SPACE1889.OpenCompendium'}}" data-pack="space1889.waffen"><i class="far fa-external-link-square"></i></a>&ensp;
+			{{#if system.visualisation.compressedWeapons}}
+			<a class="compressed-weapons-toggle" data-tooltip="{{localize 'SPACE1889.ContainerExpand'}}" data-tooltip-direction="DOWN"><i class="fal fa-expand-arrows-alt"></i></a>
+			{{else}}
+			<a class="compressed-weapons-toggle" data-tooltip="{{localize 'SPACE1889.ContainerCompress'}}" data-tooltip-direction="DOWN"><i class="fal fa-compress-arrows-alt" ></i></a>
+			{{/if}}
 		</div>
 		<div data-tooltip='{{localize "SPACE1889.Damage"}}' class="items-list item-max-with60px">{{localize "SPACE1889.Damage"}}</div>
 		<div data-tooltip='{{localize "SPACE1889.Modifier"}}' class="items-list item-max-with40px">{{localize "SPACE1889.Mod"}}</div>
@@ -15,6 +20,7 @@
 			<a class="item-control item-create item-max-with60px" data-tooltip='{{localize "SPACE1889.CreateItem"}}' data-type="weapon"><i class="fas fa-plus"></i> Add</a>
 		</div>
 	</li>
+	{{#if (not system.visualisation.compressedWeapons)}}
 	{{#each system.weapons as | item |}}
 	<li class="item row-section flexrow" data-item-id="{{item._id}}">
 		<div class="item-name">
@@ -63,5 +69,6 @@
 		</div>
 	</li>
 	{{/each}}
+	{{/if}}
 
 </ol>

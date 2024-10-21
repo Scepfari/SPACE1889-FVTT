@@ -2,6 +2,7 @@ import TurnMarker from "../helpers/turnMarker.js";
 import SPACE1889RollHelper from "./roll-helper.js";
 import SPACE1889Time from "./time.js";
 import SPACE1889Healing from "../helpers/healing.js";
+import SPACE1889Light from "./light.js";
 import { Space1889Menu } from "../ui/spaceMenu.js";
 import { Space1889ActorSheet } from "../sheets/actor-sheet.js";
 import { SPACE1889 } from "./config.js";
@@ -771,11 +772,11 @@ export default class SPACE1889Helper
 
 	static getNextValidHandPosition(weapon, actor, backwardDirection)
 	{
-		const currentHand = weapon.system.usedHands;
 		const weaponInHands = this.getWeaponIdsInHands(actor);
+		const lsBlocked = SPACE1889Light.blockedHandsFromLightSources(actor);
 
-		const isPrimaryPossible = weaponInHands.primary.length == 0;
-		const isOffPossible = weaponInHands.off.length == 0;
+		const isPrimaryPossible = weaponInHands.primary.length === 0 && !lsBlocked.primary;
+		const isOffPossible = weaponInHands.off.length === 0 && !lsBlocked.off;
 
 		let wanted = this.getNextWeaponHand(backwardDirection, weapon.system.usedHands, weapon.system.isTwoHanded);
 		if (this.isWeaponHandPossible(wanted, isPrimaryPossible, isOffPossible))
@@ -798,7 +799,7 @@ export default class SPACE1889Helper
 			ui.notifications.info(game.i18n.format("SPACE1889.WeaponCanNotReadyPrimaryHand", { weapon: weapon.name, item: itemName}));
 		}
 
-		let secondTry = this.getNextWeaponHand(backwardDirection, wanted, weapon.system.isTwoHanded)
+		let secondTry = this.getNextWeaponHand(backwardDirection, wanted, weapon.system.isTwoHanded);
 		if (this.isWeaponHandPossible(secondTry, isPrimaryPossible, isOffPossible))
 			return secondTry;
 		else
@@ -810,15 +811,15 @@ export default class SPACE1889Helper
 
 	}
 
-	static isWeaponHandPossible(wantedHand, isPrimaryPossible, isOffPossible)
+	static isWeaponHandPossible(wantedHand, isPrimaryPossible, isOffPossible, isNonePossible = true)
 	{
-		if (wantedHand == "none")
+		if (wantedHand === "none" && isNonePossible)
 			return true;
-		if (wantedHand == "primaryHand" && isPrimaryPossible)
+		if (wantedHand === "primaryHand" && isPrimaryPossible)
 			return true;
-		if (wantedHand == "offHand" && isOffPossible)
+		if (wantedHand === "offHand" && isOffPossible)
 			return true;
-		if (wantedHand == "bothHands" && isPrimaryPossible && isOffPossible)
+		if (wantedHand === "bothHands" && isPrimaryPossible && isOffPossible)
 			return true;
 
 		return false;
