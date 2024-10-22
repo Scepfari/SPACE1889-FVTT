@@ -1901,7 +1901,7 @@ export default class SPACE1889Helper
 		if (spaceMenu)
 			spaceMenu.render();
 
-		this.updateAllCharacterData()
+		this.updateAllCharacterData();
 		this.refreshAllOpenCharacterSheets();
 	}
 
@@ -1909,7 +1909,7 @@ export default class SPACE1889Helper
 	{
 		const isGM = game.user.isGM;
 
-		const actors = game.actors.filter(e => e.type === "character" || e.type === "npc")
+		const actors = game.actors.filter(e => e.type === "character" || e.type === "npc");
 		for (let actor of actors)
 		{
 			if (isGM || this.hasOwnership(actor))
@@ -1920,7 +1920,7 @@ export default class SPACE1889Helper
 		for (let token of tokens)
 		{
 			if (isGM || this.hasOwnership(token.actor))
-				token.actor.prepareDerivedData();
+				token.actor?.prepareDerivedData();
 		}
 	}
 
