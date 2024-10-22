@@ -1,5 +1,6 @@
 import SPACE1889Combat from "../helpers/combat.js";
 import SPACE1889RollHelper from "../helpers/roll-helper.js";
+import SPACE1889Light from "../helpers/light.js";
 
 export default function () 
 {
@@ -8,12 +9,28 @@ export default function ()
 		const tokenDocument = game.scenes.viewed.tokens.get(data._id);
 		const actor = tokenDocument ? tokenDocument.actor : game.actors.get(data.actorId);
 		const weapons = SPACE1889Combat.getWeaponInHands(actor);
+		const lightSources = SPACE1889Light.blockedHandsFromLightSources(actor);
 		let actions = [];
 		if (weapons.primaryWeapon)
 		{
 			const weapon = weapons.primaryWeapon;
 			const action = { name: weapon.name, itemId: weapon.id, image: weapon.img, type: "attack", tooltip: weapon.name };
 			actions.push(action);
+		}
+		else if (lightSources.primaryId)
+		{
+			const lightSource = actor.system.lightSources.find(e => e.id === lightSources.primaryId);
+			if (lightSource)
+			{
+				const action = {
+					name: lightSource.name,
+					itemId: lightSource.id,
+					image: lightSource.img,
+					type: "drop",
+					tooltip: game.i18n.format("SPACE1889.DropItem", { name: lightSource.name })
+				};
+				actions.push(action);
+			}
 		}
 		if (weapons.offHandWeapon && weapons.offHandWeapon.id !== weapons.primaryWeapon?.id)
 		{
@@ -23,6 +40,21 @@ export default function ()
 				tooltip: `${weapon.name} (${game.i18n.localize("SPACE1889.WeaponUseOffHand")})`
 			};
 			actions.push(action);
+		}
+		else if (lightSources.offId)
+		{
+			const lightSource = actor.system.lightSources.find(e => e.id === lightSources.offId);
+			if (lightSource)
+			{
+				const action = {
+					name: lightSource.name,
+					itemId: lightSource.id,
+					image: lightSource.img,
+					type: "drop",
+					tooltip: game.i18n.format("SPACE1889.DropItem", { name: lightSource.name })
+				};
+				actions.push(action);
+			}
 		}
 		if (actor.type === "creature" && actions.length === 0)
 		{

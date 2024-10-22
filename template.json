@@ -313,7 +313,9 @@
 			"animationType": "none",
 			"animationSpeed": 5,
 			"animationIntensity": 5,
-			"reverseDirection": false 
+			"reverseDirection": false,
+			"probabilityOfBreaking": 0,
+			"probabilityOfFailing": 0 
 		},
 		"talent": {
 			"templates": [ "description", "id", "source" ],

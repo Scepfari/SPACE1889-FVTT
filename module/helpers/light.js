@@ -72,11 +72,7 @@ export default class SPACE1889Light
 			return;
 		}
 
-		let timeDelta = 0.0;
-		if (SPACE1889Time.isSimpleCalendarEnabled() && lightSource.system.emissionStartTimestamp !== 0)
-			timeDelta = Number(SPACE1889Time.getTimeDifInSeconds(SPACE1889Time.getCurrentTimestamp(), lightSource.system.emissionStartTimestamp));
-
-		const usedDuration = Number(lightSource.system.usedDuration) + (timeDelta / 60.0);
+		const usedDuration = this._calcUsedDuration(lightSource);
 
 		await lightSource.update({
 			"system.isActive": false,
@@ -101,6 +97,18 @@ export default class SPACE1889Light
 		};
 
 		ChatMessage.create(chatData, {});
+	}
+
+	static _calcUsedDuration(lightSource)
+	{
+		if (!lightSource)
+			return 0;
+
+		let timeDelta = 0.0;
+		if (SPACE1889Time.isSimpleCalendarEnabled() && lightSource.system.emissionStartTimestamp !== 0)
+			timeDelta = Number(SPACE1889Time.getTimeDifInSeconds(SPACE1889Time.getCurrentTimestamp(), lightSource.system.emissionStartTimestamp));
+
+		return Number(lightSource.system.usedDuration) + (timeDelta / 60.0);
 	}
 
 	static async _resetTokenLight(token, prototypeToken)
@@ -200,19 +208,28 @@ export default class SPACE1889Light
 			return { primary: false, off: false };
 
 		let primaryUsed = false;
+		let primaryId = undefined;
 		let offUsed = false;
-		for (let ls of actor.system.gear)
+		let offId = undefined;
+
+		for (let ls of actor.system.lightSources)
 		{
 			if (ls.type === "lightSource" && ls.system.requiresHands)
 			{
 				if (ls.system.usedHands === "primaryHand" || ls.system.usedHands === "bothHands")
+				{
 					primaryUsed = true;
+					primaryId = ls.id;
+				}
 				if (ls.system.usedHands === "offHand" || ls.system.usedHands === "bothHands")
+				{
 					offUsed = true;
+					offId = ls.id;
+				}
 			}
 		}
 
-		return { primary: primaryUsed, off: offUsed };
+		return { primary: primaryUsed, primaryId: primaryId, off: offUsed, offId: offId };
 	}
 
 	static getNextLightSourceHand(backwardDirection, currentHand, isTwoHanded = false)
@@ -267,5 +284,112 @@ export default class SPACE1889Light
 			return secondTry;
 
 		return fallback;
+	}
+
+	static async rollDrop(tokenDocument, actor, item, showDialog)
+	{
+		if (!actor || !item || item.type !== "lightSource")
+			return;
+
+		const gravityFactor = SPACE1889Helper.getGravity().gravityFactor;
+
+		const breakingLimit = Math.min(Math.max(0, Math.round(gravityFactor * Number(item.system.probabilityOfBreaking))), 100);
+		const failingLimit = Math.min(Math.max(0, Math.round(gravityFactor * Number(item.system.probabilityOfFailing))), 100);
+
+		const titelInfo = game.i18n.localize("SPACE1889.DropEffect");
+		const tooltipInfo = game.i18n.format("SPACE1889.LightDropLimits", { break: breakingLimit, failing: failingLimit });
+
+		const rollWithHtml = await this.createFreeInlineRollWithHtml("1d100", titelInfo, tooltipInfo);
+
+		let messageContent = "";
+		const speaker = ChatMessage.getSpeaker({ actor: actor });
+
+		const titel = game.i18n.format("SPACE1889.DropItem", { name: item.name });
+		messageContent = `<h3>${titel}</h3>`;
+		messageContent += SPACE1889Time.isSimpleCalendarEnabled() ? `<p>${SPACE1889Time.getCurrentTimeDateString()}</p>` : "";
+		messageContent += `${rollWithHtml.html} <br>`;
+
+		const remainingTime = Math.max(0, item.system.duration - this._calcUsedDuration(item));
+		let addLightSource = false;
+
+		if (rollWithHtml.roll.total <= breakingLimit)
+		{
+			messageContent += game.i18n.format("SPACE1889.LightDropBreakingInfo", { name: item.name });
+		}
+		else if (rollWithHtml.roll.total <= failingLimit)
+		{
+			messageContent += game.i18n.format("SPACE1889.LightDropFailingInfo", { remainingTime: remainingTime });
+		}
+		else
+		{
+			messageContent += game.i18n.format("SPACE1889.LightDropSuccessInfo", { remainingTime: remainingTime });
+			addLightSource = true;
+		}
+
+		if (addLightSource && tokenDocument?.id)
+		{
+			// ToDo: Lichtquelle hinzufügen
+			//if (game.user.isGM)
+			//		Lichtquelle am Ort des Token erstellen!!
+			//	else if (tokenDocument?.id)
+			//	{
+			//		game.socket.emit("system.space1889", {
+			//			type: "addLightSource",
+			//			payload: {
+			//				tokenId: tokenDocument.id,
+			//				sceneId: game.scenes.viewed.id
+			//			}
+			//		});
+			//	}
+		}
+		await this._deactivateLightSourceFromDrop(item, actor);
+
+		let chatData =
+		{
+			user: game.user.id,
+			speaker: speaker,
+			whisper: [],
+			content: messageContent
+		};
+		await ChatMessage.create(chatData, {});
+	}
+
+	static async _deactivateLightSourceFromDrop(lightSource, actor)
+	{
+		const newQuantity = Math.max(0, lightSource.system.quantity - 1);
+		await lightSource.update({
+			"system.isActive": false,
+			"system.usedDuration": 0,
+			"system.emissionStartTimestamp": 0,
+			"system.usedHands": "none",
+			"system.quantity": newQuantity
+			
+		});
+
+		const tokens = game.scenes.viewed.tokens.filter(e => e.actorId === actor.id);
+		for (let token of tokens)
+		{
+			if (token)
+				this._resetTokenLight(token, game.actors.get(actor._id)?.prototypeToken);
+		}
+	}
+
+	static async createFreeInlineRollWithHtml(rollTerm, titel="", tooltipInfo = "")
+	{
+		let roll = new Roll(rollTerm);
+		await (game.release.generation < 12 ? roll.evaluate({ async: true }) : roll.evaluate());
+		const htmlAn = await roll.toAnchor();
+		let outerHtml = htmlAn.outerHTML;
+		const index = outerHtml.indexOf('class=""');
+		let pre = (tooltipInfo !== "") ? `<span data-tooltip="${tooltipInfo}">` : "<span>";
+		pre += (titel !== "" ? titel : game.i18n.localize("SPACE1889.Probe")) + ": </span><b>";
+		let post = "</b>";
+		let fullHtml = "";
+		if (index > -1)
+			fullHtml = pre + outerHtml.substring(0, index) + `class="inline-roll inline-result" ` + outerHtml.substring(index + 8) + post;
+		else
+			fullHtml = pre + outerHtml + post;
+
+		return { roll: roll, html: fullHtml };
 	}
 }

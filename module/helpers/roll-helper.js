@@ -3,6 +3,7 @@ import SPACE1889Combat from "../helpers/combat.js";
 import DistanceMeasuring from "../helpers/distanceMeasuring.js"
 import SPACE1889Time from "../helpers/time.js"
 import SPACE1889Healing from "./healing.js";
+import SPACE1889Light from "./light.js";
 import { SPACE1889 } from "./config.js";
 
 export default class SPACE1889RollHelper
@@ -2204,6 +2205,12 @@ export default class SPACE1889RollHelper
 		{
 			const usedWeapon = itemId === "" ? undefined : actor.items.get(itemId);
 			SPACE1889RollHelper.rollDisarm(tokenDocument, actor, usedWeapon, showDialog);
+		}
+
+		if (type === "drop")
+		{
+			const item = actor.items.get(itemId);
+			SPACE1889Light.rollDrop(tokenDocument, actor, item, showDialog);
 		}
 
 		if (type !== "attack" && type !== "talentAttack")
