@@ -90,6 +90,17 @@ export default class SPACE1889Light
 			if (token)
 				this._resetTokenLight(token, game.actors.get(actor._id)?.prototypeToken);
 		}
+
+		const timeAsString = SPACE1889Time.isSimpleCalendarEnabled() ? SPACE1889Time.getCurrentTimeDateString() : "";
+		const messageContent = game.i18n.format("SPACE1889.LightSwitchOff", { "lightSource": lightSource.system.label, "name": actor.name, "time": timeAsString });
+		let chatData =
+		{
+			user: game.user.id,
+			speaker: ChatMessage.getSpeaker({ actor: actor }),
+			content: messageContent
+		};
+
+		ChatMessage.create(chatData, {});
 	}
 
 	static async _resetTokenLight(token, prototypeToken)
@@ -169,7 +180,18 @@ export default class SPACE1889Light
 				});
 			}
 		}
-		// Token mit den neuen Werten überschreiben
+
+		const timeAsString = SPACE1889Time.isSimpleCalendarEnabled() ? SPACE1889Time.getCurrentTimeDateString() : "";
+		const messageContent = game.i18n.format("SPACE1889.LightGoesOn", { "lightSource": lightSource.system.label, "name": actor.name, "time": timeAsString });
+		let chatData =
+		{
+			user: game.user.id,
+			speaker: ChatMessage.getSpeaker({ actor: actor }),
+			content: messageContent
+		};
+
+		ChatMessage.create(chatData, {});
+
 	}
 
 	static blockedHandsFromLightSources(actor)

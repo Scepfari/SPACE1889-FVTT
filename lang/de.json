@@ -392,6 +392,8 @@
 	"SPACE1889.CanNotDeActivateLightSource": "Die Lichtquelle {name} kann nachdem sie einmal entzündet wurde, nicht wieder gelöscht werden. Da hilft nur warten bis sie ausgebrannt ist.",
 	"SPACE1889.CanNotMoveActivateLightSource": "Aktive Lichtquellen können nicht in Behälter oder Lagerorte verstaut werden",
 	"SPACE1889.LightGoesOut": "<p>{time}: Verdammt, mit einem letzten Flackern erlischt die Lichtquelle {lightSource} und {name} steht im Dunkeln.</p>",
+	"SPACE1889.LightGoesOn": "<p>{time}: Zögernd erwacht die Lichtquelle {lightSource} zum Leben und vertreibt die Dunkelheit um {name}.</p>",
+	"SPACE1889.LightSwitchOff": "<p>{time}: Schnell stoppt {name} die Emission der Lichtquelle {lightSource}.</p>",
 
 	"SPACE1889.VehicleTypeOrClass": "Typ / Klasse",
 	"SPACE1889.VehicleIsAirship": "Ist Luftschiff",

@@ -392,6 +392,8 @@
 	"SPACE1889.CanNotDeActivateLightSource": "The light source {name} cannot be extinguished once it has been lit. The only solution is to wait until it has burnt out.",
 	"SPACE1889.CanNotMoveActivateLightSource": "Active light sources cannot be stowed in containers or storage locations",
 	"SPACE1889.LightGoesOut": "<p>{time}: Damn, with one last flicker the light source {lightSource} goes out and {name} is left in the dark.</p>",
+	"SPACE1889.LightGoesOn": "<p>{time}: Hesitantly, the light source {lightSource} comes to life and dispels the darkness around {name}.</p>",
+	"SPACE1889.LightSwitchOff": "<p>{time}: Quickly {name} stops the emission of the light source {lightSource}.</p>",
 
 	"SPACE1889.VehicleTypeOrClass": "Type / Class",
 	"SPACE1889.VehicleIsAirship": "Is Airship",
