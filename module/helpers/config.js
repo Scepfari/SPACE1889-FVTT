@@ -946,19 +946,39 @@ SPACE1889.styles = {
 
 SPACE1889.gravity = {
 	"earth": "SPACE1889.GravityEarth",
-	"mars": "SPACE1889.GravityMars",
-	"mercury": "SPACE1889.GravityMercury",
-	"luna": "SPACE1889.GravityLuna",
 	"venus": "SPACE1889.GravityVenus",
+	"mars": "SPACE1889.GravityMars",
+	"0.8": "SPACE1889.Gravity08",
+	"0.7": "SPACE1889.Gravity07",
+	"0.6": "SPACE1889.Gravity06",
+	"0.5": "SPACE1889.Gravity05",
+	"mercury": "SPACE1889.GravityMercury",
+	"0.3": "SPACE1889.Gravity03",
+	"0.2": "SPACE1889.Gravity02",
+	"io":"SPACE1889.GravityIo",
+	"luna": "SPACE1889.GravityLuna",
+	"ganymed": "SPACE1889.GravityGanymed",
+	"titan": "SPACE1889.GravityTitan",
+	"0.1": "SPACE1889.Gravity01",
 	"zeroGravity": "SPACE1889.GravityZeroGravity"
 }
 
 SPACE1889.gravityZone = {
 	"earth": { zone: 1.0, value: 1.0},
-	"mars": { zone: 1.0, value: 0.9},
-	"mercury": { zone: 0.4, value: 0.4},
-	"luna": { zone: 0.2, value: 0.16},
 	"venus": { zone: 1.0, value: 1.0},
+	"mars": { zone: 1.0, value: 0.9 },
+	"0.8": { zone: 0.8, value: 0.8 },
+	"0.7": { zone: 0.8, value: 0.7 },
+	"0.6": { zone: 0.6, value: 0.6 },
+	"0.5": { zone: 0.6, value: 0.5 },
+	"mercury": { zone: 0.4, value: 0.4},
+	"0.3": { zone: 0.4, value: 0.3 },
+	"0.2": { zone: 0.2, value: 0.2 },
+	"io": { zone: 0.2, value: 0.18 },
+	"luna": { zone: 0.2, value: 0.16 },
+	"ganymed": { zone: 0.2, value: 0.15 },
+	"titan": { zone: 0.2, value: 0.14 },
+	"0.1": { zone: 0.2, value: 0.1 },
 	"zeroGravity": { zone: 0.0, value: 0.001}
 }
 
