@@ -11,7 +11,7 @@ export default class SPACE1889Helper
 {
 	static getTalentData(actor, talentId)
 	{
-		return actor.system.talents?.find(entry => entry.system.id == talentId);
+		return actor?.system?.talents?.find(entry => entry.system.id === talentId);
 	}
 
 	static getTalentLevel(actor, talentId)

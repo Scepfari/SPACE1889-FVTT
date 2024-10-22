@@ -3039,6 +3039,7 @@
 	"SPACE1889.NoPermissionGmOnly": "Du besitzt nicht die Rechte um die Aktion auszuführen, das darf nur die Spielleitung.",
 	"SPACE1889.NoTokensSelected": "Keine Figur ausgewählt",
 	"SPACE1889.NoPcOrNpcTokenSelected": "Die ausgewählte Figur ist weder Charakter noch NSC",
+	"SPACE1889.InvalidTokenActor": "Der Figur {name} fehlen die Akteur Daten! Möglicherweise ein Problem das durch den Import der Szene verursacht wurde.",
 	"SPACE1889.NotInRange": "Du musst neben dem Ziel stehen, um es ohne Fernkampfwaffe anzugreifen",
 	"SPACE1889.OutOfCloseCombatRange": "Mindestens eins der Ziele ist außerhalb der Nahkampfreichweite. Du musst neben den Zielen stehen, um sie ohne Fernkampfwaffe anzugreifen zu können",
 	"SPACE1889.OutOfRange": "außerhalb der Reichweite",

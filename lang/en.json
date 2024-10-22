@@ -3039,6 +3039,7 @@
 	"SPACE1889.NoPermissionGmOnly": "You do not have the rights to perform the action, only the game master may do so.",
 	"SPACE1889.NoTokensSelected": "No tokens selected",
 	"SPACE1889.NoPcOrNpcTokenSelected": "The selected figure is neither a character nor an NPC",
+	"SPACE1889.InvalidTokenActor": "The token {name} is missing the actor data! Possibly a problem caused by the import of the scene.",
 	"SPACE1889.NotInRange": "You must stand next to the target to attack it without a ranged weapon",
 	"SPACE1889.OutOfCloseCombatRange": "At least one of the targets is out of melee range. You must be standing next to the targets to be able to attack them without a ranged weapon",
 	"SPACE1889.OutOfRange": "out of range",

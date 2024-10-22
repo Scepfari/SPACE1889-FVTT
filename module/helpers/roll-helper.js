@@ -1632,6 +1632,12 @@ export default class SPACE1889RollHelper
 		if (!token)
 			return;
 
+		if (!token.actor)
+		{
+			ui.notifications.error(game.i18n.format("SPACE1889.InvalidTokenActor", { name: token.name }));
+			return;
+		}
+
 		const attackerToken = SPACE1889Helper.getTokenFromId(actorTokenId);
 		const actorName = !attackerToken ? 'unbekannt' : attackerToken.name;
 		const permissions = token.actor.ownership;
@@ -2303,7 +2309,7 @@ export default class SPACE1889RollHelper
 			return { canDo: false, name: manoeuverName, dice: 0, isInRange: isInCloseCombatRange, manyleggedMalus: 0, toolTipInfo: ""};
 
 		let isVielbeinig = SPACE1889Helper.getTalentLevel(target.actor, "vielbeiner") > 0;
-		if (target.actor.type === "creature" && target.actor.system.movementType === "manylegged")
+		if (target?.actor?.type === "creature" && target?.actor?.system?.movementType === "manylegged")
 			isVielbeinig = true;
 
 		const malus = isVielbeinig ? 2 : 0;
