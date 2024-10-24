@@ -55,6 +55,7 @@
 	"CONTROLS.Space1889MenuShowNameAndBar": "<h3>Change token display</h3><p>Sets the display mode for the name and life bar display for all tokens in the current scene</p>",
 	"CONTROLS.Space1889MenuNpcsDrawWeapon": "<h3>Combat readiness</h3><p>All NPCs make their weapons ready, without chat display for the players</p>",
 	"CONTROLS.Space1889MenuHideNameOfNonCharacters": "<h3>Disguise token names</h3><p>Replaces the names of all or the selected tokens of NPCs and creatures with generic names. Tokens to which the players have rights are not changed.</p>",
+	"CONTROLS.Space1889MenuRedoTokenLightAndVision": "<h3>Refresh the token light and vision properties</h3><p>Overwrites the light and vision properties of the tokens in the displayed scene with the values from the active light sources and vision enhancements for all tokens whose underlying character has active light sources and/or vision enhancements.</p><p><small>[CTRL]+[SHIFT]+[left mouse click]: In addition, the light and vision properties of tokens without active light sources/view enhancements are reset to the settings of the respective prototype token.</small></p>",
 
 	"SPACE1889.Gravity": "Gravity",
 	"SPACE1889.GravityEarth": "Earth",

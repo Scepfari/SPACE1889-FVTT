@@ -1,4 +1,5 @@
 import SPACE1889Helper from "../helpers/helper.js";
+import SPACE1889Light from "../helpers/light.js";
 
 export class Space1889Menu extends FormApplication {
 
@@ -14,8 +15,8 @@ export class Space1889Menu extends FormApplication {
 			template: `systems/space1889/templates/menu/menu.html`,
 			resizable: true,
 			minimizable: true,
-			width: 260,
-			height: 78
+			width: 275,
+			height: 82
 		});
 	}
 
@@ -88,6 +89,11 @@ export class Space1889Menu extends FormApplication {
 		html.on("click", ".setGravity", ev =>
 		{
 			SPACE1889Helper.showSetGravityDialog();
+		});
+
+		html.on("click", ".redoTokenLightAndVision", ev =>
+		{
+			SPACE1889Light.redoTokenLightAndVision(ev);
 		});
 	}
 };

@@ -498,6 +498,11 @@ Handlebars.registerHelper('isNotTrusted', function (str)
 	return !game.user.isTrusted;
 });
 
+Handlebars.registerHelper('hasTokenConfigurePermission', function ()
+{
+	return SPACE1889Helper.hasTokenConfigurePermission(false);
+});
+
 Handlebars.registerHelper('isFvttV10', function (str)
 {
 	return SPACE1889Helper.isFoundryV10Running();

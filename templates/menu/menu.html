@@ -11,6 +11,13 @@
 			<i class="fa fa-globe"></i>
 		</button>
 	</div>
+	{{#if (hasTokenConfigurePermission)}}
+	<div class="resource">
+		<button class="redoTokenLightAndVision {{#if (isGm ' ')}}menuButton{{else}}menuButtonNonGM{{/if}}" type="button" data-tooltip="{{localize "CONTROLS.Space1889MenuRedoTokenLightAndVision"}}">
+			<i class="far fa-lightbulb"></i>
+		</button>
+	</div>
+	{{/if}}
 	{{#if (isGm " ")}}
 	<div class="resource">
 		<button class="npcsDrawWeapon menuButton" type="button" data-tooltip="{{localize "CONTROLS.Space1889MenuNpcsDrawWeapon"}}">

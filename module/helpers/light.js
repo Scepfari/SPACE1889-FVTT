@@ -197,20 +197,7 @@ export default class SPACE1889Light
 		let tokens = game.scenes.viewed.tokens.filter(e => e.actorId === actor.id);
 		for (let token of tokens)
 		{
-			if (token)
-			{
-				await token.update({
-					"light.dim": lightSource.system.dimRadius,
-					"light.bright": lightSource.system.brightRadius,
-					"light.angle": lightSource.system.angle,
-					"light.color": lightSource.system.color,
-					"light.luminosity": lightSource.system.colorIntensity,
-					"light.animation.type": lightSource.system.animationType === "none" ? null : lightSource.system.animationType,
-					"light.animation.speed": lightSource.system.animationSpeed,
-					"light.animation.intensity": lightSource.system.animationIntensity,
-					"light.animation.reverse": lightSource.system.reverseDirection
-				});
-			}
+			await this._setTokenLight(lightSource, token);
 		}
 
 		const timeAsString = SPACE1889Time.isSimpleCalendarEnabled() ? SPACE1889Time.getCurrentTimeDateString() : "";
@@ -224,6 +211,24 @@ export default class SPACE1889Light
 
 		ChatMessage.create(chatData, {});
 
+	}
+
+	static async _setTokenLight(lightSource, token)
+	{
+		if (token && lightSource)
+		{
+			await token.update({
+				"light.dim": lightSource.system.dimRadius,
+				"light.bright": lightSource.system.brightRadius,
+				"light.angle": lightSource.system.angle,
+				"light.color": lightSource.system.color,
+				"light.luminosity": lightSource.system.colorIntensity,
+				"light.animation.type": lightSource.system.animationType === "none" ? null : lightSource.system.animationType,
+				"light.animation.speed": lightSource.system.animationSpeed,
+				"light.animation.intensity": lightSource.system.animationIntensity,
+				"light.animation.reverse": lightSource.system.reverseDirection
+			});
+		}
 	}
 
 	static blockedHandsFromLightSources(actor)
@@ -453,5 +458,38 @@ export default class SPACE1889Light
 			fullHtml = pre + outerHtml + post;
 
 		return { roll: roll, html: fullHtml };
+	}
+
+	static async redoTokenLightAndVision(event)
+	{
+		if (!SPACE1889Helper.hasTokenConfigurePermission())
+			return;
+
+		const resetLight = event?.shiftKey && event?.ctrlKey;
+
+		for (let token of game.scenes.viewed.tokens)
+		{
+			if (!SPACE1889Helper.hasTokenOwnership(token.id))
+				continue;
+
+			const lightSource = this._getActiveLightSource(token.actor);
+			if (lightSource)
+				await this._setTokenLight(lightSource, token);
+			else if (resetLight)
+				await this._resetTokenLight(token, token.actor?.prototypeToken);
+		}
+	}
+
+	static _getActiveLightSource(actor)
+	{
+		if (!actor)
+			return undefined;
+
+		for (const ls of actor.system?.lightSources)
+		{
+			if (ls.system.isActive)
+				return ls;
+		}
+		return undefined;
 	}
 }
