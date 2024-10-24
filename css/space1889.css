@@ -385,8 +385,8 @@
 }
 
 .space1889 .ammo-selector {
-	max-width: 25%;
-	width: calc(100% - 31px);
+	max-width: 65px;
+	/*width: calc(100%-45px);*/
 	padding: 0px;
 	margin: 0px 1px;
 }
@@ -564,6 +564,13 @@
 
 .space1889 .item-max-with100px {
 	max-width: 110px;
+	text-align: center;
+	vertical-align: center;
+}
+
+.space1889 .item-max-flex-with70px {
+	flex: content;
+	max-width: 70px;
 	text-align: center;
 	vertical-align: center;
 }

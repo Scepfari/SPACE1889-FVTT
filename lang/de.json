@@ -196,6 +196,7 @@
 	"SPACE1889.CombatSkill": "Kampffertigkeit",
 	"SPACE1889.CombatSpecialization": "Kampfspezialisierung",
 	"SPACE1889.Damage": "Schaden",
+	"SPACE1889.DamageAbbr": "Sch",
 	"SPACE1889.DamageType": "Schadenstyp",
 	"SPACE1889.DamageTypeAbbr": "Typ",
 	"SPACE1889.AddDamage": "Schaden hinzufügen",

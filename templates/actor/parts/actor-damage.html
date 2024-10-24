@@ -8,8 +8,8 @@
 		<div data-tooltip='{{localize "SPACE1889.HealingFactor"}}' class="items-list item-max-with40px">{{localize "SPACE1889.HealingFactorAbbr"}}</div>
 		<div data-tooltip='{{localize "SPACE1889.HealingDuration"}}' class="items-list item-max-with60px">{{localize "SPACE1889.HealingDurationAbbr"}}</div>
 		<div data-tooltip='{{localize "SPACE1889.TimeToNextCure"}}' class="items-list item-max-with60px">{{localize "SPACE1889.TimeToNextCureAbbr"}}</div>
-		<div class="item-controls item-max-with60px">
-			<a class="item-control item-create item-max-with60px damage-lethal" data-tooltip='{{localize "SPACE1889.CreateItem"}}' data-type="damage"><i class="fas fa-plus"></i> Add</a>
+		<div class="item-controls item-max-with50px">
+			<a class="item-control item-create item-max-with50px damage-lethal" data-tooltip='{{localize "SPACE1889.CreateItem"}}' data-type="damage"><i class="fas fa-plus"></i> Add</a>
 		</div>
 	</li>
 	{{#each system.injuries as |item id|}}
@@ -24,7 +24,7 @@
 		</div>
 		<label class="items-list item-max-with60px">{{item.system.healingDuration}}</label>
 		<label class="items-list resource-label item-max-with60px">{{item.system.timeToNextCure}}</label>
-		<div class="item-controls item-max-with60px">
+		<div class="item-controls item-max-with50px">
 			<a class="item-control item-edit" data-tooltip="{{localize 'SPACE1889.EditItem'}}"><i class="fas fa-edit"></i></a>
 			<a class="item-control item-delete" data-tooltip="{{localize 'SPACE1889.DeleteItem'}}"><i class="fas fa-trash"></i></a>
 		</div>

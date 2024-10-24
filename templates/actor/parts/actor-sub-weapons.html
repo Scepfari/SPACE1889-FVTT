@@ -9,15 +9,15 @@
 			<a class="compressed-weapons-toggle" data-tooltip="{{localize 'SPACE1889.ContainerCompress'}}" data-tooltip-direction="DOWN"><i class="fal fa-compress-arrows-alt" ></i></a>
 			{{/if}}
 		</div>
-		<div data-tooltip='{{localize "SPACE1889.Damage"}}' class="items-list item-max-with60px">{{localize "SPACE1889.Damage"}}</div>
-		<div data-tooltip='{{localize "SPACE1889.Modifier"}}' class="items-list item-max-with40px">{{localize "SPACE1889.Mod"}}</div>
-		<div data-tooltip='{{localize "SPACE1889.Ammunition"}}' class="items-list item-max-with75px">{{localize "SPACE1889.Ammunition"}}</div>
+		<div data-tooltip='{{localize "SPACE1889.Damage"}}' class="items-list item-max-with30px">{{localize "SPACE1889.DamageAbbr"}}</div>
+		<div data-tooltip='{{localize "SPACE1889.Modifier"}}' class="items-list item-max-with30px">{{localize "SPACE1889.Mod"}}</div>
+		<div data-tooltip='{{localize "SPACE1889.Ammunition"}}' class="items-list item-max-flex-with70px">{{localize "SPACE1889.Ammunition"}}</div>
 		<div data-tooltip='{{localize "SPACE1889.AmmunitionLoadingState"}}' class="items-list item-max-with40px">{{localize "SPACE1889.AmmunitionLoadingStateAbbr"}}</div>
 		<div data-tooltip='{{localize "SPACE1889.AttackValue"}}' class="items-list item-max-with40px">{{localize "SPACE1889.Rating"}}</div>
 		<div data-tooltip='{{localize "SPACE1889.WeaponReady"}}' class="items-list item-max-with30px">{{localize "SPACE1889.WeaponReadyAbbr"}} </div>
 		<div data-tooltip='{{localize "SPACE1889.StorageLocation"}}' class="items-list item-max-with30px">{{localize "SPACE1889.StorageLocation"}} </div>
-		<div class="item-controls item-max-with60px">
-			<a class="item-control item-create item-max-with60px" data-tooltip='{{localize "SPACE1889.CreateItem"}}' data-type="weapon"><i class="fas fa-plus"></i> Add</a>
+		<div class="item-controls item-max-with50px">
+			<a class="item-control item-create item-max-with50px" data-tooltip='{{localize "SPACE1889.CreateItem"}}' data-type="weapon"><i class="fas fa-plus"></i> Add</a>
 		</div>
 	</li>
 	{{#if (not system.visualisation.compressedWeapons)}}
@@ -31,10 +31,9 @@
 				<h4 for="" class="rollable" data-roll-type="item" data-label="{{item.system.label}}">{{item.system.label}}</h4>
 			</div>
 		</div>
-		<label class="items-list item-max-with60px">{{item.system.damage}} {{item.system.damageTypeDisplay}}</label>
-		<label class="items-list item-max-with40px">{{item.system.skillRating}}</label>
+		<label class="items-list item-max-with30px">{{item.system.damage}} {{item.system.damageTypeDisplay}}</label>
+		<label class="items-list item-max-with30px">{{item.system.skillRating}}</label>
 
-		<!--<label class="items-list item-max-with60px">{{item.system.sizeMod}}</label>-->
 		{{#if item.system.isRangeWeapon}}
 		<select data-tooltip="{{item.system.ammunition.display}} " name="currentAmmo-{{item._id}}" class="ammo-selector" data-item-id="{{item._id}}" data-dtype="String">
 			{{#oldSelect item.system.ammunition.currentItemId}}
@@ -46,13 +45,12 @@
 			{{/each}}
 			{{/oldSelect}}
 		</select>
-
 		<div data-tooltip="{{item.system.ammunition.loadStateDisplay}}" class="items-list resource-label item-max-with40px">
 			<a class="reload-click">{{item.system.ammunition.remainingRounds}}/{{item.system.capacity}}</a>
 		</div>
 		{{else}}
-		<label class="items-list item-max-with75px">-</label>
-		<label class="items-list item-max-with40px"></label>
+		<label class="ammo-selector">-</label>
+		<label class="items-list resource-label item-max-with40px">-|-</label>
 		{{/if}}
 
 		<label class="items-list resource-label item-max-with40px">{{item.system.attack}} {{item.system.damageTypeDisplay}}</label>
@@ -63,7 +61,7 @@
 			<a class="location-click">{{item.system.locationDisplay}}</a>
 		</div>
 
-		<div class="item-controls item-max-with60px">
+		<div class="item-controls item-max-with50px">
 			<a class="item-control item-edit" data-tooltip="{{localize 'SPACE1889.EditItem'}}"><i class="fas fa-edit"></i></a>
 			<a class="item-control item-delete" data-tooltip="{{localize 'SPACE1889.DeleteItem'}}"><i class="fas fa-trash"></i></a>
 		</div>

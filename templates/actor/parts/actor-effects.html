@@ -3,9 +3,9 @@
 		<div class="item-name">{{localize 'SPACE1889.EffectPl'}}</div>
 		<div class="items-list item-max-with100px">{{localize 'SPACE1889.EffectStartTime'}}</div>
 		<div class="items-list item-max-with100px">{{localize 'SPACE1889.EffectDuration'}}</div>
-		<div class="item-controls item-max-with60px">
+		<div class="item-controls item-max-with50px">
 			{{#if @root.editable}}
-			<a class="effect-control item-control item-create item-max-with60px" data-action="create" data-tooltip="{{localize 'SPACE1889.EffectCreate'}}">
+			<a class="effect-control item-control item-create item-max-with50px" data-action="create" data-tooltip="{{localize 'SPACE1889.EffectCreate'}}">
 				<i class="fas fa-plus"></i> Add
 			</a>
 			{{/if}}
@@ -24,7 +24,7 @@
 		</div>
 		<div class="items-list item-max-with100px">{{formatEffectDuration effect.duration}}</div>
 		<div class="items-list item-max-with100px">{{effect.duration.label}}</div>
-		<div class="item-controls item-max-with60px">
+		<div class="item-controls item-max-with50px">
 			<a class="effect-control" data-action="edit" data-tooltip="{{localize 'SPACE1889.EffectEdit'}}">
 				<i class="fas fa-edit"></i>
 			</a>
