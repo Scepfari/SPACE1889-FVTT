@@ -444,6 +444,13 @@ export class Space1889ActorSheet extends ActorSheet {
 			SPACE1889Light.setLightSourceHand(item, this.actor, backward);
 		});
 
+		html.find('.lightEnergy-click').mousedown(ev =>
+		{
+			const itemId = this._getItemId(ev);
+			const item = this.actor.items.get(itemId);
+			SPACE1889Light.refillLightSource(item, this.actor);
+		});
+
 		html.find('.weaponhand-click').mousedown(ev =>
 		{
 			const itemId = this._getItemId(ev);

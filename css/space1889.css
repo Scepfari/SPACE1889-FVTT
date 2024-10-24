@@ -536,6 +536,12 @@
 	vertical-align: center;
 }
 
+.space1889 .item-max-with50px {
+	max-width: 50px;
+	text-align: center;
+	vertical-align: center;
+}
+
 .space1889 .item-max-with60px{
 	max-width: 60px;
 	text-align: center;

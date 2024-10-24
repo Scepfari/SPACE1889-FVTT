@@ -99,6 +99,25 @@ export default class SPACE1889Light
 		ChatMessage.create(chatData, {});
 	}
 
+	static getEnergySymbol(lightSource)
+	{
+		const fillLevel = this.calcAndGetRemainingTime(lightSource) / lightSource.system.duration;
+		if (fillLevel <= 0)
+			return "fa fa-battery-empty";
+		if (fillLevel <=0.25)
+			return "fa fa-battery-quarter";
+		if (fillLevel <= 0.5)
+			return "fa fa-battery-half";
+		if (fillLevel <= 0.75)
+			return "fa fa-battery-three-quarters";
+		return "fa fa-battery-full";
+	}
+
+	static calcAndGetRemainingTime(lightSource)
+	{
+		return Math.max(0, lightSource.system.duration - this._calcUsedDuration(lightSource));
+	}
+
 	static _calcUsedDuration(lightSource)
 	{
 		if (!lightSource)
@@ -284,6 +303,41 @@ export default class SPACE1889Light
 			return secondTry;
 
 		return fallback;
+	}
+
+	static async refillLightSource(lightSource, actor)
+	{
+		if (!lightSource || !actor || lightSource.type !== "lightSource")
+			return;
+
+		if (!lightSource.system.rechargeable)
+		{
+			ui.notifications.info(game.i18n.format("SPACE1889.LightCanNotRecharge", { "name": lightSource.system.label }));
+			return;
+		}
+
+		if (lightSource.system.isActive)
+		{
+			ui.notifications.info(game.i18n.format("SPACE1889.LightCanNotRechargeDuringOperation", { "name": lightSource.system.label }));
+			return;
+		}
+
+		if (lightSource.system.usedDuration === 0)
+			return;
+
+		await lightSource.update({
+			"system.usedDuration": 0,
+			"system.emissionStartTimestamp": 0
+		});
+
+		let chatData =
+		{
+			user: game.user.id,
+			speaker: ChatMessage.getSpeaker({ actor: actor }),
+			whisper: [],
+			content: game.i18n.format("SPACE1889.LightRecharge", { "name": lightSource.system.label })
+		};
+		await ChatMessage.create(chatData, {});
 	}
 
 	static async rollDrop(tokenDocument, actor, item, showDialog)

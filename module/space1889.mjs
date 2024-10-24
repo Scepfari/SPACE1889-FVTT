@@ -17,6 +17,7 @@ import SPACE1889RollHelper from "./helpers/roll-helper.js";
 import SPACE1889Combat from "./helpers/combat.js";
 import SPACE1889Healing from "./helpers/healing.js";
 import SPACE1889Time from "./helpers/time.js";
+import SPACE1889Light from "./helpers/light.js";
 import DistanceMeasuring from "./helpers/distanceMeasuring.js";
 import { Space1889Combat, Space1889Combatant } from "./helpers/combatTracker.js";
 import TurnMarker from "./helpers/turnMarker.js";
@@ -551,6 +552,28 @@ Handlebars.registerHelper('otherToolTipDescription', function (actor, key)
 	if (!actor)
 		return "";
 	return actor.getOtherInfoText(key);
+});
+
+Handlebars.registerHelper('remainingEmissionTime', function (item, asText = true) 
+{
+	if (!item)
+		return "";
+
+	const time = SPACE1889Light.calcAndGetRemainingTime(item);
+	if (asText)
+	{
+		return game.i18n.format("SPACE1889.RemainingEmissionDurationWithTime", { remainingTime: time, duration: item.system?.duration });
+	}
+	return time;
+});
+
+Handlebars.registerHelper('remainingEmissionEnergySymbol', function (item) 
+{
+	if (!item)
+		return "fa fa-question-circle";
+
+	return SPACE1889Light.getEnergySymbol(item);
+
 });
 
 /* -------------------------------------------- */
