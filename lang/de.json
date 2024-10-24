@@ -248,6 +248,7 @@
 	"SPACE1889.RemainingEmissionDurationWithTime": "Restleuchtdauer: {remainingTime}min von {duration}min",
 	"SPACE1889.RemainingEmissionDuration": "Restleuchtdauer",
 	"SPACE1889.RemainingEmissionDurationAbbr": "R",
+	"SPACE1889.NoTokenConfigurePermission": "Du hast keine Rechte um die Licht und Sichtparameter von Figuren zu ändern. Die SL kann für dich das Licht ein-/ausschalten, oder sie kann dir in der Rechtekonfiguration für deine Rolle <em>\"{role}\"</em> die Option <em>\"Figuren-Konfiguration anpassen\"</em>, bzw. dir eine Rolle zuweisen die diese Rechte hat.",
 	"SPACE1889.NonLethal": "nicht tödlich",
 	"SPACE1889.Lethal": "tödlich",
 	"SPACE1889.Controls": "Steuerung",

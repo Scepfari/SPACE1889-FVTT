@@ -72,6 +72,9 @@ export default class SPACE1889Light
 			return;
 		}
 
+		if (!SPACE1889Helper.hasTokenConfigurePermission())
+			return;
+
 		const usedDuration = this._calcUsedDuration(lightSource);
 
 		await lightSource.update({
@@ -132,7 +135,7 @@ export default class SPACE1889Light
 
 	static async _resetTokenLight(token, prototypeToken)
 	{
-		if (token)
+		if (token && SPACE1889Helper.hasTokenConfigurePermission(false))
 		{
 			let light = prototypeToken?.light;
 			if (light)
@@ -183,6 +186,8 @@ export default class SPACE1889Light
 			ui.notifications.info(game.i18n.localize("SPACE1889.CanNotActivateLightNoEnergy"));
 			return;
 		}
+		if (!SPACE1889Helper.hasTokenConfigurePermission())
+			return;
 
 		if (SPACE1889Time.isSimpleCalendarEnabled())
 			await lightSource.update({ "system.isActive": true, "system.emissionStartTimestamp": SPACE1889Time.getCurrentTimestamp() });
@@ -343,6 +348,9 @@ export default class SPACE1889Light
 	static async rollDrop(tokenDocument, actor, item, showDialog)
 	{
 		if (!actor || !item || item.type !== "lightSource")
+			return;
+
+		if (!SPACE1889Helper.hasTokenConfigurePermission())
 			return;
 
 		const gravityFactor = SPACE1889Helper.getGravity().gravityFactor;

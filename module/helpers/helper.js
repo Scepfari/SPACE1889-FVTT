@@ -1340,6 +1340,38 @@ export default class SPACE1889Helper
 		}
 	}
 
+	static getUserRoleAsText()
+	{
+		let langId = "USER.RoleNone";
+		switch (game.user.role)
+		{
+			case 1:
+				langId = "USER.RolePlayer";
+				break;
+			case 2:
+				langId = "USER.RoleTrusted";
+				break;
+			case 3:
+				langId = "USER.RoleAssistant";
+				break;
+			case 4:
+				langId = "USER.RoleGamemaster";
+				break;
+		}
+		return game.i18n.localize(langId);
+	}
+
+	static hasTokenConfigurePermission(displayNotificationOnFail = true)
+	{
+		if (game.user.hasPermission("TOKEN_CONFIGURE"))
+			return true;
+
+		if (displayNotificationOnFail)
+			ui.notifications.info(game.i18n.format("SPACE1889.NoTokenConfigurePermission", { "role": SPACE1889Helper.getUserRoleAsText() }));
+
+		return false;
+	}
+
 	static hasTokenOwnership(tokenId)
 	{
 		if (game.user.isGM)

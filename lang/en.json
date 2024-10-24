@@ -248,6 +248,7 @@
 	"SPACE1889.RemainingEmissionDurationWithTime": "Remaining light duration: {remainingTime}min of {duration)min",
 	"SPACE1889.RemainingEmissionDuration": "Remaining light duration",
 	"SPACE1889.RemainingEmissionDurationAbbr": "R",
+	"SPACE1889.NoTokenConfigurePermission": "You have no rights to change the light and vision parameters of tokens. The GM can switch the light on/off for you, or he can adjust the option <em>\"Configure Token Settings\"</em> in the permission configuration for your role <em>\"{role}\"</em>, or assign you a role that has these permission.",
 	"SPACE1889.NonLethal": "Non Lethal",
 	"SPACE1889.Lethal": "Lethal",
 	"SPACE1889.Controls": "Controls",
