@@ -1,6 +1,7 @@
 import SPACE1889Healing from "../helpers/healing.js";
 import SPACE1889Helper from "./helper.js";
 import SPACE1889Light from "./light.js";
+import SPACE1889Vision from "./vision.js";
 
 export default class SPACE1889Time
 {
@@ -163,5 +164,6 @@ export default class SPACE1889Time
 
 		SPACE1889Healing.healByTime();
 		SPACE1889Light.timePasses();
+		SPACE1889Vision.timePasses();
 	}
 }

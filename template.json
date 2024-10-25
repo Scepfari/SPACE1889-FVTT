@@ -290,8 +290,12 @@
 			"emissionStartTimestamp": 0,
 			"usedDuration": 0,
 			"visionRange": "15",
-			"visionMode": "monochromatic",
+			"visionMode": "darkvision",
 			"visionAngle": 360,
+			"visionAttenuation": 0.1,
+			"visionBrightness": 1,
+			"visionColor": null,
+			"visionContrast": 0,
 			"visionSaturation": -1
 		},
 		"lightSource": {

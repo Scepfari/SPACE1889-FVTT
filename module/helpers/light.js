@@ -75,7 +75,7 @@ export default class SPACE1889Light
 		if (!SPACE1889Helper.hasTokenConfigurePermission())
 			return;
 
-		const usedDuration = this._calcUsedDuration(lightSource);
+		const usedDuration = this.calcUsedDuration(lightSource);
 
 		await lightSource.update({
 			"system.isActive": false,
@@ -118,19 +118,19 @@ export default class SPACE1889Light
 
 	static calcAndGetRemainingTime(lightSource)
 	{
-		return Math.max(0, lightSource.system.duration - this._calcUsedDuration(lightSource));
+		return Math.max(0, lightSource.system.duration - this.calcUsedDuration(lightSource));
 	}
 
-	static _calcUsedDuration(lightSource)
+	static calcUsedDuration(item)
 	{
-		if (!lightSource)
+		if (!item || (item.type !== "lightSource" && item.type !== "vision") )
 			return 0;
 
 		let timeDelta = 0.0;
-		if (SPACE1889Time.isSimpleCalendarEnabled() && lightSource.system.emissionStartTimestamp !== 0)
-			timeDelta = Number(SPACE1889Time.getTimeDifInSeconds(SPACE1889Time.getCurrentTimestamp(), lightSource.system.emissionStartTimestamp));
+		if (SPACE1889Time.isSimpleCalendarEnabled() && item.system.emissionStartTimestamp !== 0)
+			timeDelta = Number(SPACE1889Time.getTimeDifInSeconds(SPACE1889Time.getCurrentTimestamp(), item.system.emissionStartTimestamp));
 
-		return Number(lightSource.system.usedDuration) + (timeDelta / 60.0);
+		return Number(item.system.usedDuration) + (timeDelta / 60.0);
 	}
 
 	static async _resetTokenLight(token, prototypeToken)
@@ -376,7 +376,7 @@ export default class SPACE1889Light
 		messageContent += SPACE1889Time.isSimpleCalendarEnabled() ? `<p>${SPACE1889Time.getCurrentTimeDateString()}</p>` : "";
 		messageContent += `${rollWithHtml.html} <br>`;
 
-		const remainingTime = Math.max(0, item.system.duration - this._calcUsedDuration(item));
+		const remainingTime = Math.max(0, item.system.duration - this.calcUsedDuration(item));
 		let addLightSource = false;
 
 		if (rollWithHtml.roll.total <= breakingLimit)
@@ -460,7 +460,7 @@ export default class SPACE1889Light
 		return { roll: roll, html: fullHtml };
 	}
 
-	static async redoTokenLightAndVision(event)
+	static async redoTokenLight(event)
 	{
 		if (!SPACE1889Helper.hasTokenConfigurePermission())
 			return;

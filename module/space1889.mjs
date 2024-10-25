@@ -572,6 +572,20 @@ Handlebars.registerHelper('remainingEmissionTime', function (item, asText = true
 	return time;
 });
 
+Handlebars.registerHelper('remainingVisionTime', function (item, asText = true) 
+{
+	if (!item)
+		return "";
+
+	const time = SPACE1889Light.calcAndGetRemainingTime(item);
+	if (asText)
+	{
+		return game.i18n.format("SPACE1889.RemainingVisionTimeWithTime", { remainingTime: time, duration: item.system?.duration });
+	}
+	return time;
+});
+
+
 Handlebars.registerHelper('remainingEmissionEnergySymbol', function (item) 
 {
 	if (!item)

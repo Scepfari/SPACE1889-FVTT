@@ -387,6 +387,7 @@ export class Space1889Actor extends Actor
 		const containers = [];
 		const extendedRolls = [];
 		const lightSources = [];
+		const visions = [];
 
 		for (let item of items)
 		{
@@ -412,7 +413,10 @@ export class Space1889Actor extends Actor
 			else if (item.type === 'item')
 				gear.push(item);
 			else if (item.type === 'vision')
+			{
 				gear.push(item);
+				visions.push(item);
+			}
 			else if (item.type === 'lightSource')
 			{
 				gear.push(item);
@@ -461,6 +465,7 @@ export class Space1889Actor extends Actor
 		actor.system.weapons = weapons;
 		actor.system.extendedRolls = extendedRolls;
 		actor.system.lightSources = lightSources;
+		actor.system.visions = visions;
 
 		this.CalcAndSetHealth(actor);
 		this.CalcContainerLoad(actor);

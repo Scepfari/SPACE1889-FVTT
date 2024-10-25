@@ -71,7 +71,11 @@
 	</li>
 	<li class="item flex-group-center flexrow">
 		<div class="resource-content flex-center flex-between">
-			<input type="checkbox" name="system.isActive" {{checked system.isActive}} />
+			{{#if system.isActive}}
+			<label data-tooltip="{{localize 'SPACE1889.VisionActive'}}" class="fas fa-toggle-on"></label>
+			{{else}}
+			<label data-tooltip="{{localize 'SPACE1889.VisionDeActive'}}" class="fa fa-toggle-off"></label>
+			{{/if}}
 		</div>
 		<div class="resource" data-tooltip="{{formatTime system.emissionStartTimestamp}}">
 			<input type="text" name="system.emissionStartTimestamp" value="{{system.emissionStartTimestamp}}" data-dtype="Number" />

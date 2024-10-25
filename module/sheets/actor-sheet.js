@@ -5,6 +5,7 @@ import ForeignNotesEditor from "../helpers/foreignNotesEditor.js"
 import SPACE1889Healing from "../helpers/healing.js";
 import SPACE1889Time from "../helpers/time.js";
 import SPACE1889Light from "../helpers/light.js";
+import SPACE1889Vision from "../helpers/vision.js";
 
 /**
  * Extend the basic ActorSheet with some very simple modifications
@@ -417,6 +418,11 @@ export class Space1889ActorSheet extends ActorSheet {
 				ui.notifications.info(game.i18n.localize("SPACE1889.CanNotMoveActivateLightSource"));
 				return;
 			}
+			if (item.type === "vision" && item.system.isActive)
+			{
+				ui.notifications.info(game.i18n.localize("SPACE1889.CanNotMoveActivateVision"));
+				return;
+			}
 			const newId = this.incrementLocation(ev, item.system.containerId, this.actor);
 			item.update({ 'system.containerId': newId });
 
@@ -436,6 +442,20 @@ export class Space1889ActorSheet extends ActorSheet {
 			}
 		});
 
+		html.find('.vision-toggle-click').mousedown(ev =>
+		{
+			const itemId = this._getItemId(ev);
+			const item = this.actor.items.get(itemId);
+			if (item.type === "vision")
+			{
+				let newState = !item.system.isActive;
+				if (newState)
+					SPACE1889Vision.activateVision(item, this.actor);
+				else
+					SPACE1889Vision.deactivateVision(item, this.actor);
+			}
+		});
+
 		html.find('.lighthand-click').mousedown(ev =>
 		{
 			const itemId = this._getItemId(ev);
@@ -449,6 +469,13 @@ export class Space1889ActorSheet extends ActorSheet {
 			const itemId = this._getItemId(ev);
 			const item = this.actor.items.get(itemId);
 			SPACE1889Light.refillLightSource(item, this.actor);
+		});
+
+		html.find('.visionEnergy-click').mousedown(ev =>
+		{
+			const itemId = this._getItemId(ev);
+			const item = this.actor.items.get(itemId);
+			SPACE1889Vision.refillVision(item, this.actor);
 		});
 
 		html.find('.weaponhand-click').mousedown(ev =>
@@ -733,6 +760,11 @@ export class Space1889ActorSheet extends ActorSheet {
 		{
 			const newValue = !this.actor.system.visualisation.compressedLightSources;
 			this.actor.update({ 'system.visualisation.compressedLightSources': newValue });
+		});
+		html.find('.compressed-vision-toggle').mousedown(ev =>
+		{
+			const newValue = !this.actor.system.visualisation.compressedVisions;
+			this.actor.update({ 'system.visualisation.compressedVisions': newValue });
 		});
 		html.find('.compressed-items-toggle').mousedown(ev =>
 		{
@@ -1151,6 +1183,11 @@ export class Space1889ActorSheet extends ActorSheet {
 			if (item.type === "lightSource" && item.system.isActive)
 			{
 				ui.notifications.info(game.i18n.localize("SPACE1889.CanNotMoveActivateLightSource"));
+				return;
+			}
+			if (item.type === "vision" && item.system.isActive)
+			{
+				ui.notifications.info(game.i18n.localize("SPACE1889.CanNotMoveActivateVision"));
 				return;
 			}
 

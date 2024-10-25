@@ -1,6 +1,6 @@
 {{#if (not system.visualisation.compressedItems)}}
 {{#each system.gear as |item id|}}
-{{#if (and (eq item.system.containerId null) (ne item.type "lightSource"))}}
+{{#if (and (eq item.system.containerId null) (ne item.type "vision") (ne item.type "lightSource"))}}
 
 	<li class="item row-section flexrow" data-item-id="{{item._id}}">
 		<div data-tooltip="{{fullItemToolTipDescription item}}" data-tooltip-direction="RIGHT" class="item-name">

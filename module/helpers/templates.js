@@ -27,6 +27,7 @@
 		"systems/space1889/templates/actor/parts/actor-sub-items.html",
 		"systems/space1889/templates/actor/parts/actor-sub-items-body.html",
 		"systems/space1889/templates/actor/parts/actor-sub-items-light.html",
+		"systems/space1889/templates/actor/parts/actor-sub-items-vision.html",
 		"systems/space1889/templates/actor/parts/actor-creature-skills.html",
 		"systems/space1889/templates/actor/parts/actor-creature-talents.html",
 		"systems/space1889/templates/actor/parts/actor-creature-weapons.html",

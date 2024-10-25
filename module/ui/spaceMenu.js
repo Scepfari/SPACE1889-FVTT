@@ -1,5 +1,6 @@
 import SPACE1889Helper from "../helpers/helper.js";
 import SPACE1889Light from "../helpers/light.js";
+import SPACE1889Vision from "../helpers/vision.js";
 
 export class Space1889Menu extends FormApplication {
 
@@ -93,7 +94,8 @@ export class Space1889Menu extends FormApplication {
 
 		html.on("click", ".redoTokenLightAndVision", ev =>
 		{
-			SPACE1889Light.redoTokenLightAndVision(ev);
+			SPACE1889Light.redoTokenLight(ev);
+			SPACE1889Vision.redoTokenVision(ev);
 		});
 	}
 };

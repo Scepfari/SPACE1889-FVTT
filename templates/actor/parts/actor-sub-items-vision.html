@@ -1,0 +1,53 @@
+<li class="item flexrow items-header">
+	<div class="item-name ">{{localize "Types.Item.vision"}}&ensp;
+		{{#if system.visualisation.compressedVisions}}
+		<a class="compressed-vision-toggle" data-tooltip="{{localize 'SPACE1889.ContainerExpand'}}" data-tooltip-direction="DOWN"><i class="fal fa-expand-arrows-alt"></i></a>
+		{{else}}
+		<a class="compressed-vision-toggle" data-tooltip="{{localize 'SPACE1889.ContainerCompress'}}" data-tooltip-direction="DOWN"><i class="fal fa-compress-arrows-alt" ></i></a>
+		{{/if}}
+	</div>
+	<div data-tooltip='{{localize "SPACE1889.RemainingVisionTime"}}' class="items-list item-max-with30px">{{localize "SPACE1889.RemainingVisionTimeAbbr"}} </div>
+	<div data-tooltip='{{localize "SPACE1889.Emission"}}' class="items-list item-max-with30px">{{localize "SPACE1889.EmissionAbbr"}} </div>
+	<div class="items-name item-max-with40px ">{{localize "SPACE1889.Quantity"}}</div>
+	<div data-tooltip='{{localize "SPACE1889.Weight"}}' class="items-name item-max-with60px ">{{localize "SPACE1889.Weight"}}</div>
+	<div data-tooltip='{{localize "SPACE1889.StorageLocation"}}' class="items-name item-max-with40px ">{{localize "SPACE1889.StorageLocation"}}</div>
+	<div class="item-controls item-max-with50px">
+		<a class="item-control item-create item-max-with50px" data-tooltip='{{localize "SPACE1889.CreateItem"}}' data-type="lightSource"><i class="fas fa-plus"></i> Add</a>
+	</div>
+</li>
+
+{{#if (not system.visualisation.compressedVisions)}}
+	{{#each system.visions as |item id|}}
+		{{#if (eq item.system.containerId null)}}
+			<li class="item row-section flexrow" data-item-id="{{item._id}}">
+				<div data-tooltip="{{fullItemToolTipDescription item}}" data-tooltip-direction="RIGHT" class="item-name">
+					<img class="item-image-small-fix-ratio" src="{{item.img}}" />
+					<div data-tooltip="{{fullItemToolTipDescription item}}" class="item-name">
+						<h4 for="" class="rollable" data-roll-type="item" data-label="{{item.name}}">{{item.system.label}}</h4>
+					</div>
+				</div>
+				<div data-tooltip='{{remainingVisionTime item true}}' class="items-list item-max-with30px">
+					<a class="visionEnergy-click"><i class="{{remainingEmissionEnergySymbol item}}"></i></a>
+				</div>
+				<div class="item-controls item-max-with30px">
+				{{#if item.system.isActive}}
+				<a class="vision-toggle-click" data-tooltip="{{localize 'SPACE1889.VisionActive'}}"><i class="fas fa-toggle-on"></i></a>
+				{{else}}
+				<a class="vision-toggle-click" data-tooltip="{{localize 'SPACE1889.VisionDeActive'}}"><i class="fa fa-toggle-off"></i></a>
+				{{/if}}
+				</div>
+				<div class="items-list item-max-with40px">
+					<a class="increment-click">{{item.system.quantity}}</a>
+				</div>
+				<label class="items-list item-max-with60px">{{item.system.weight}}kg</label>
+				<div class="items-list item-max-with40px">
+					<a data-tooltip='{{item.system.locationLong}}' class="location-click">{{item.system.display}}</a>
+				</div>
+				<div class="item-controls item-max-with50px">
+					<a class="item-control item-edit" data-tooltip="{{localize 'SPACE1889.EditItem'}}"><i class="fas fa-edit"></i></a>
+					<a class="item-control item-delete" data-tooltip="{{localize 'SPACE1889.DeleteItem'}}"><i class="fas fa-trash"></i></a>
+				</div>
+			</li>
+		{{/if}}
+	{{/each}}
+{{/if}}
