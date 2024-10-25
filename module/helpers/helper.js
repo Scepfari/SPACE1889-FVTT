@@ -2118,7 +2118,7 @@ export default class SPACE1889Helper
 //			}
 //		}
 
-		const add = game.data.addresses.remote.substr(8, 27) == 'freunde-der-oper.moltenhost';
+		const add = game.data?.addresses?.remote?.substr(8, 27) == 'freunde-der-oper.moltenhost';
 		if (add)
 		{
 			dialogData.buttons.zero =  {
