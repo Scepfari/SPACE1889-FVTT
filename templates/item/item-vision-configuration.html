@@ -1,0 +1,74 @@
+<div class="tab" data-group="main" data-tab="basic">
+	<div class="form-group">
+		<label>{{localize "TOKEN.VisionEnabled"}}</label>
+		<input type="checkbox" name="sight.enabled" {{checked true}} disabled="disabled" />
+		<p class="hint">{{ localize 'TOKEN.VisionEnabledHint' }}</p>
+	</div>
+
+	<div class="form-group slim">
+		<label>{{localize "TOKEN.VisionRange"}} <span class="units">(m)</span></label>
+		<div class="form-fields">
+			{{numberInput system.visionRange name="system.visionRange" placeholder="m" min="0" step="any"}}
+		</div>
+		<p class="hint">{{ localize 'TOKEN.VisionRangeHint' }}</p>
+	</div>
+
+	<div class="form-group slim">
+		<label>{{localize "TOKEN.VisionAngle"}} <span class="units">({{localize "Degrees"}})</span></label>
+		<div class="form-fields">
+			{{numberInput system.visionAngle name="system.visionAngle" placeholder=(localize "Degrees")}}
+		</div>
+		<p class="hint">{{ localize 'TOKEN.VisionAngleHint' }}</p>
+	</div>
+
+	<div class="form-group">
+		<label>{{ localize "TOKEN.VisionMode"}}</label>
+		<div class="form-fields">
+			<select name="system.visionMode" data-dtype="String">
+				{{selectOptions system.visionModes selected=system.visionMode localize=true}}
+			</select>
+		</div>
+		<p class="hint">{{ localize 'TOKEN.VisionModeHint' }}</p>
+	</div>
+</div>
+
+<div class="tab" data-group="main" data-tab="advanced">
+	<div class="form-group">
+		<label>{{ localize "TOKEN.VisionColor" }}</label>
+		<div class="form-fields">
+			{{colorPicker name="system.visionColor" value=system.visionColor}}
+		</div>
+	</div>
+
+	<div class="form-group">
+		<label>{{ localize 'TOKEN.VisionAttenuation' }}</label>
+		<div class="form-fields">
+			{{rangePicker name="system.visionAttenuation" value=system.visionAttenuation min="0" max="1" step="0.05"}}
+		</div>
+		<p class="hint">{{ localize 'TOKEN.VisionAttenuationHint' }}</p>
+	</div>
+
+	<div class="form-group">
+		<label>{{ localize 'TOKEN.VisionBrightness' }}</label>
+		<div class="form-fields">
+			{{rangePicker name="system.visionBrightness" value=system.visionBrightness min="-1" max="1" step="0.05"}}
+		</div>
+		<p class="hint">{{ localize 'TOKEN.VisionBrightnessHint' }}</p>
+	</div>
+
+	<div class="form-group">
+		<label>{{ localize 'TOKEN.VisionSaturation' }}</label>
+		<div class="form-fields">
+			{{rangePicker name="system.visionSaturation" value=system.visionSaturation min="-1" max="1" step="0.05"}}
+		</div>
+		<p class="hint">{{ localize 'TOKEN.VisionSaturationHint' }}</p>
+	</div>
+
+	<div class="form-group">
+		<label>{{ localize 'TOKEN.VisionContrast' }}</label>
+		<div class="form-fields">
+			{{rangePicker name="system.visionContrast" value=system.visionContrast min="-1" max="1" step="0.05"}}
+		</div>
+		<p class="hint">{{ localize 'TOKEN.VisionContrastHint' }}</p>
+	</div>
+</div>

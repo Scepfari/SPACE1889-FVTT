@@ -1022,6 +1022,21 @@ SPACE1889.lightAnimations = {
 	"witchwave": "LIGHT.AnimationBewitchingWave"
 }
 
+SPACE1889.lightShaderTechniques =
+{
+	0: "LIGHT.LegacyColoration",
+	1: "LIGHT.AdaptiveLuminance",
+	2: "LIGHT.InternalHalo",
+	3: "LIGHT.ExternalHalo",
+	4: "LIGHT.ColorBurn",
+	5: "LIGHT.InternalBurn",
+	6: "LIGHT.ExternalBurn",
+	7: "LIGHT.LowAbsorption",
+	8: "LIGHT.HighAbsorption",
+	9: "LIGHT.InvertAbsorption",
+	10: "LIGHT.NaturalLight"
+}
+
 SPACE1889.umlautMap = {
 	'\u00dc': 'UE',
 	'\u00c4': 'AE',

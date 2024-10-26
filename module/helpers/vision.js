@@ -184,10 +184,10 @@ export default class SPACE1889Vision
 		{
 			await token.update({
 				"sight.angle": visionItem.system.visionAngle,
-				//"sight.attenuation": visionItem.system.visionAttenuation,
-				//"sight.brightness": visionItem.system.visionBrightness,
-				//"sight.color": visionItem.system.visionColor,
-				//"sight.contrast": visionItem.system.visionContrast,
+				"sight.attenuation": visionItem.system.visionAttenuation,
+				"sight.brightness": visionItem.system.visionBrightness,
+				"sight.color": visionItem.system.visionColor,
+				"sight.contrast": visionItem.system.visionContrast,
 				"sight.range": visionItem.system.visionRange,
 				"sight.saturation": visionItem.system.visionSaturation,
 				"sight.visionMode": visionItem.system.visionMode,

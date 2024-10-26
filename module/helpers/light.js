@@ -145,11 +145,17 @@ export default class SPACE1889Light
 					"light.bright": light.bright,
 					"light.angle": light.angle,
 					"light.color": light.color,
-					"light.luminosity": light.luminosity,
+					"light.alpha": light.alpha,
 					"light.animation.type": light.animation.type,
 					"light.animation.speed": light.animation.speed,
 					"light.animation.intensity": light.animation.intensity,
-					"light.animation.reverse": light.animation.reverse
+					"light.animation.reverse": light.animation.reverse,
+					"light.coloration": light.coloration,
+					"light.luminosity": light.luminosity,
+					"light.attenuation": light.attenuation,
+					"light.saturation": light.saturation,
+					"light.contrast": light.contrast,
+					"light.shadows": light.shadows
 				});
 			}
 			else
@@ -159,11 +165,17 @@ export default class SPACE1889Light
 					"light.bright": 0,
 					"light.angle": 360,
 					"light.color": null,
-					"light.luminosity": 0.5,
+					"light.alpha": 0.5,
 					"light.animation.type": null,
 					"light.animation.speed": 5,
 					"light.animation.intensity": 5,
-					"light.animation.reverse": false
+					"light.animation.reverse": false,
+					"light.coloration": 1,
+					"light.luminosity": 0.5,
+					"light.attenuation": 0.5,
+					"light.saturation": 0,
+					"light.contrast": 0,
+					"light.shadows": 0
 				});
 			}
 		}
@@ -222,11 +234,17 @@ export default class SPACE1889Light
 				"light.bright": lightSource.system.brightRadius,
 				"light.angle": lightSource.system.angle,
 				"light.color": lightSource.system.color,
-				"light.luminosity": lightSource.system.colorIntensity,
+				"light.alpha": lightSource.system.alpha,
 				"light.animation.type": lightSource.system.animationType === "none" ? null : lightSource.system.animationType,
 				"light.animation.speed": lightSource.system.animationSpeed,
 				"light.animation.intensity": lightSource.system.animationIntensity,
-				"light.animation.reverse": lightSource.system.reverseDirection
+				"light.animation.reverse": lightSource.system.reverseDirection,
+				"light.coloration": lightSource.system.coloration,
+				"light.luminosity": lightSource.system.luminosity,
+				"light.attenuation": lightSource.system.attenuation,
+				"light.saturation": lightSource.system.saturation,
+				"light.contrast": lightSource.system.contrast,
+				"light.shadows": lightSource.system.shadows
 			});
 		}
 	}
