@@ -988,6 +988,13 @@ SPACE1889.propertyKeys = {
 	"skill": "SPACE1889.Skill"
 }
 
+SPACE1889.itemUseTypes = {
+	"consumables": "SPACE1889.Consumables",
+	"rechargeable": "SPACE1889.Rechargeable",
+	"refillable": "SPACE1889.Refillable",
+	"permanentlyUsable": "SPACE1889.PermanentlyUsable"
+}
+
 SPACE1889.visionModes = {
 	"basic": "VISION.ModeBasicVision",
 	"darkvision": "VISION.ModeDarkvision",

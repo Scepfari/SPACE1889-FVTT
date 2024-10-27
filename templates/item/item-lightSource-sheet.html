@@ -53,16 +53,22 @@
 			</li>
 
 			<li class="item flexrow items-header">
+				<label class="resource-label">{{ localize "SPACE1889.UseType"}}</label>
 				<label class="resource-label">{{ localize "SPACE1889.Duration"}}[min]</label>
-				<label class="resource-label">{{ localize "SPACE1889.Rechargeable"}}</label>
 				<label class="resource-label">{{ localize "SPACE1889.Interruptible"}}</label>
 			</li>
 			<li class="item flex-group-center flexrow">
 				<div class="resource-content flex-center flex-between">
-					<input type="text" min="0" step="1" name="system.duration" value="{{system.duration}}" />
+					<select name="system.itemUseType" data-dtype="String">
+						{{selectOptions system.itemUseTypes selected=system.itemUseType localize=true}} 
+					</select>
 				</div>
 				<div class="resource-content flex-center flex-between">
-					<input type="checkbox" name="system.rechargeable" {{checked system.rechargeable}} />
+					{{#if (eq system.itemUseType "permanentlyUsable")}}
+					<label>&infin;</label>
+					{{else}}
+					<input type="text" min="0" step="1" name="system.duration" value="{{system.duration}}" />
+					{{/if}}
 				</div>
 				<div class="resource-content flex-center flex-between">
 					<input type="checkbox" name="system.interruptible" {{checked system.interruptible}} />

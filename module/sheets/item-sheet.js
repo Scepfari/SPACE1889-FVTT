@@ -112,6 +112,7 @@ export class Space1889ItemSheet extends ItemSheet {
 		else if (item.type === "vision")
 		{
 			context.system['visionModes'] = CONFIG.SPACE1889.visionModes;
+			context.system['itemUseTypes'] = CONFIG.SPACE1889.itemUseTypes;
 			context.system['storageLocations'] = CONFIG.SPACE1889.allStorageLocations;
 			context.system['storageLocationsAbbr'] = CONFIG.SPACE1889.allStorageLocationsAbbreviations;
 		}
@@ -121,6 +122,7 @@ export class Space1889ItemSheet extends ItemSheet {
 			context.system['lightShaderTechniques'] = CONFIG.SPACE1889.lightShaderTechniques;
 			context.system['storageLocations'] = CONFIG.SPACE1889.allStorageLocations;
 			context.system['storageLocationsAbbr'] = CONFIG.SPACE1889.allStorageLocationsAbbreviations;
+			context.system['itemUseTypes'] = CONFIG.SPACE1889.itemUseTypes;
 		}
 
 		if (item.type == "weapon")

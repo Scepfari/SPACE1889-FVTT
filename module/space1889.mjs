@@ -564,9 +564,12 @@ Handlebars.registerHelper('remainingEmissionTime', function (item, asText = true
 	if (!item)
 		return "";
 
-	const time = SPACE1889Light.calcAndGetRemainingTime(item);
+	const isInfinity = SPACE1889Light.isPermanentlyUsable(item);
+	const time = isInfinity ? "&infin;" : SPACE1889Light.calcAndGetRemainingTime(item);
 	if (asText)
 	{
+		if (isInfinity)
+			return `${game.i18n.localize("SPACE1889.RemainingEmissionDuration")} : ${time}`;
 		return game.i18n.format("SPACE1889.RemainingEmissionDurationWithTime", { remainingTime: time, duration: item.system?.duration });
 	}
 	return time;
@@ -577,9 +580,13 @@ Handlebars.registerHelper('remainingVisionTime', function (item, asText = true)
 	if (!item)
 		return "";
 
-	const time = SPACE1889Light.calcAndGetRemainingTime(item);
+	const isInfinity = SPACE1889Light.isPermanentlyUsable(item);
+	const time = isInfinity ? "&infin;" : SPACE1889Light.calcAndGetRemainingTime(item);
+
 	if (asText)
 	{
+		if (isInfinity)
+			return `${game.i18n.localize("SPACE1889.RemainingVisionTime")} : ${time}`;
 		return game.i18n.format("SPACE1889.RemainingVisionTimeWithTime", { remainingTime: time, duration: item.system?.duration });
 	}
 	return time;

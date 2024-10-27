@@ -32,40 +32,23 @@
 			</div>
 		</li>
 		
-		<!--<li class="item flexrow items-header">
-			<label class="resource-label">{{localize "TOKEN.VisionRange"}}[m]</label>
-			<label class="resource-label">{{localize "TOKEN.VisionMode"}}</label>
-			<label class="resource-label">{{localize "TOKEN.VisionAngle"}}[&deg;]</label>
-			<label class="resource-label">{{localize "TOKEN.VisionSaturation"}}</label>
-		</li>
-		<li class="item flex-group-center flexrow">
-			<div class="resource-content flex-center flex-between">
-				<input type="text" name="system.visionRange" value="{{system.visionRange}}" data-dtype="Number" />
-			</div>
-			<div class="resource-content flex-center flex-between">
-				<select name="system.visionMode" data-dtype="String">
-					{{selectOptions system.visionModes selected=system.visionMode localize=true}}
-				</select>
-			</div>
-			<div class="resource-content flex-center flex-between">
-				<input type="text" min="0" max="360" step="1" name="system.visionAngle" value="{{system.visionAngle}}"/>
-			</div>
-			<div class="resource-content flex-center flex-between">
-				<input type="text" min="-1" max="1" step="0.1" name="system.visionSaturation" value="{{system.visionSaturation}}"/>
-			</div>
-		</li>-->
-
 		<li class="item flexrow items-header">
+			<label class="resource-label">{{ localize "SPACE1889.UseType"}}</label>
 			<label class="resource-label">{{ localize "SPACE1889.Duration"}}[min]</label>
-			<label class="resource-label">{{ localize "SPACE1889.Rechargeable"}}</label>
 			<label class="resource-label">{{ localize "SPACE1889.Interruptible"}}</label>
 		</li>
 		<li class="item flex-group-center flexrow">
 			<div class="resource-content flex-center flex-between">
-				<input type="text" min="0" step="1" name="system.duration" value="{{system.duration}}"/>
+				<select name="system.itemUseType" data-dtype="String">
+					{{selectOptions system.itemUseTypes selected=system.itemUseType localize=true}} 
+				</select>
 			</div>
 			<div class="resource-content flex-center flex-between">
-				<input type="checkbox" name="system.rechargeable" {{checked system.rechargeable}} />
+			{{#if (eq system.itemUseType "permanentlyUsable")}}
+			<label>&infin;</label>
+			{{else}}
+			<input type="text" min="0" step="1" name="system.duration" value="{{system.duration}}" />
+			{{/if}}
 			</div>
 			<div class="resource-content flex-center flex-between">
 				<input type="checkbox" name="system.interruptible" {{checked system.interruptible}} />

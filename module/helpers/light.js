@@ -14,7 +14,7 @@ export default class SPACE1889Light
 		{
 			for (const lightSource of actor.system.lightSources)
 			{
-				if (!lightSource.system.isActive || lightSource.system.emissionStartTimestamp === 0)
+				if (!lightSource.system.isActive || lightSource.system.emissionStartTimestamp === 0 || this.isPermanentlyUsable(lightSource))
 					continue;
 
 				const timeDelta = Number(SPACE1889Time.getTimeDifInSeconds(currentTimeStamp, lightSource.system.emissionStartTimestamp));
@@ -28,9 +28,10 @@ export default class SPACE1889Light
 	static async _deactivateLightSourceByTime(lightSource, actor)
 	{
 		let newQuantity = lightSource.system.quantity;
-		const usedDuration = lightSource.system.rechargeable ? lightSource.system.duration : 0;
+		const isConsumables = lightSource.system.itemUseType === "consumables";
+		const usedDuration = isConsumables? 0 : lightSource.system.duration;
 		let startTimestamp = lightSource.system.emissionStartTimestamp;
-		if (!lightSource.system.rechargeable)
+		if (isConsumables)
 		{
 			newQuantity = Math.max(0, newQuantity - 1);
 			startTimestamp = 0;
@@ -104,6 +105,9 @@ export default class SPACE1889Light
 
 	static getEnergySymbol(lightSource)
 	{
+		if (this.isPermanentlyUsable(lightSource))
+			return "fa fa-battery-full";
+
 		const fillLevel = this.calcAndGetRemainingTime(lightSource) / lightSource.system.duration;
 		if (fillLevel <= 0)
 			return "fa fa-battery-empty";
@@ -116,8 +120,16 @@ export default class SPACE1889Light
 		return "fa fa-battery-full";
 	}
 
+	static isPermanentlyUsable(item)
+	{
+		return item?.system?.itemUseType === "permanentlyUsable";
+	}
+
 	static calcAndGetRemainingTime(lightSource)
 	{
+		if (this.isPermanentlyUsable(lightSource))
+			return lightSource.system.duration;
+
 		return Math.max(0, lightSource.system.duration - this.calcUsedDuration(lightSource));
 	}
 
@@ -327,7 +339,7 @@ export default class SPACE1889Light
 			return wanted;
 
 		let secondTry = this.getNextLightSourceHand(backwardDirection, wanted, false);
-		if (SPACE1889Helper.isWeaponHandPossible(secondTry, isPrimaryPossible, isOffPossible))
+		if (SPACE1889Helper.isWeaponHandPossible(secondTry, isPrimaryPossible, isOffPossible, isNonePossible))
 			return secondTry;
 
 		return fallback;
@@ -338,7 +350,7 @@ export default class SPACE1889Light
 		if (!lightSource || !actor || lightSource.type !== "lightSource")
 			return;
 
-		if (!lightSource.system.rechargeable)
+		if (lightSource.system.itemUseType === "consumables" || this.isPermanentlyUsable(lightSource))
 		{
 			ui.notifications.info(game.i18n.format("SPACE1889.LightCanNotRecharge", { "name": lightSource.system.label }));
 			return;

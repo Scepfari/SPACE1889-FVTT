@@ -15,7 +15,7 @@ export default class SPACE1889Vision
 		{
 			for (const vision of actor.system.visions)
 			{
-				if (!vision.system.isActive || vision.system.emissionStartTimestamp === 0)
+				if (!vision.system.isActive || vision.system.emissionStartTimestamp === 0 || SPACE1889Light.isPermanentlyUsable(vision))
 					continue;
 
 				const timeDelta = Number(SPACE1889Time.getTimeDifInSeconds(currentTimeStamp, vision.system.emissionStartTimestamp));
@@ -29,9 +29,10 @@ export default class SPACE1889Vision
 	static async _deactivateVisionByTime(visionItem, actor)
 	{
 		let newQuantity = visionItem.system.quantity;
-		const usedDuration = visionItem.system.rechargeable ? visionItem.system.duration : 0;
+		const isConsumables = visionItem.system.itemUseType === "consumables";
+		const usedDuration = isConsumables ? 0 : visionItem.system.duration;
 		let startTimestamp = visionItem.system.emissionStartTimestamp;
-		if (!visionItem.system.rechargeable)
+		if (isConsumables)
 		{
 			newQuantity = Math.max(0, newQuantity - 1);
 			startTimestamp = 0;
@@ -146,7 +147,7 @@ export default class SPACE1889Vision
 			ui.notifications.info(game.i18n.format("SPACE1889.CanNotActivateVisionNoItem", { "name": visionItem.system.label }));
 			return;
 		}
-		if (visionItem.system.usedDuration >= visionItem.system.duration)
+		if (!SPACE1889Light.isPermanentlyUsable(visionItem) && visionItem.system.usedDuration >= visionItem.system.duration)
 		{
 			ui.notifications.info(game.i18n.localize("SPACE1889.CanNotActivateVisionNoEnergy"));
 			return;
@@ -201,7 +202,7 @@ export default class SPACE1889Vision
 		if (!visionItem || !actor || visionItem.type !== "vision")
 			return;
 
-		if (!visionItem.system.rechargeable)
+		if (visionItem.system.itemUseType === "consumables" || SPACE1889Light.isPermanentlyUsable(visionItem))
 		{
 			ui.notifications.info(game.i18n.format("SPACE1889.VisionCanNotRecharge", { "name": visionItem.system.label }));
 			return;
