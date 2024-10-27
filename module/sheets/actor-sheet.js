@@ -175,7 +175,7 @@ export class Space1889ActorSheet extends ActorSheet {
 		{
 			if (lightSource.type === "lightSource")
 			{
-				if (lightSource.system.requiresHands)
+				if (lightSource.system.requiredHands > 0)
 				{
 					lightSource.system.usedHandsIcon = CONFIG.SPACE1889.weaponHandIcon[lightSource.system.usedHands];
 					lightSource.system.usedHandsInfo = game.i18n.localize(CONFIG.SPACE1889.weaponHand[lightSource.system.usedHands]);

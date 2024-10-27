@@ -1044,6 +1044,13 @@ SPACE1889.lightShaderTechniques =
 	10: "LIGHT.NaturalLight"
 }
 
+SPACE1889.lightSourceHands =
+{
+	0: {id:"SPACE1889.RequiresNoHands", infoId: "SPACE1889.RequiresNoHandsInfo"},
+	1: {id:"SPACE1889.RequiresOneHands", infoId: "SPACE1889.RequiresOneHandsInfo"},
+	2: {id:"SPACE1889.RequiresTwoHands", infoId: "SPACE1889.RequiresTwoHandsInfo"}
+}
+
 SPACE1889.umlautMap = {
 	'\u00dc': 'UE',
 	'\u00c4': 'AE',

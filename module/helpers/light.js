@@ -200,7 +200,7 @@ export default class SPACE1889Light
 			ui.notifications.info(game.i18n.format("SPACE1889.CanNotActivateLightNoItem", { "name": lightSource.system.label }));
 			return;
 		}
-		if (lightSource.system.requiresHands && lightSource.system.usedHands === "none")
+		if (lightSource.system.requiredHands > 0 && lightSource.system.usedHands === "none")
 		{
 			ui.notifications.info(game.i18n.localize("SPACE1889.CanNotActivateLightNoHand"));
 			return;
@@ -273,7 +273,7 @@ export default class SPACE1889Light
 
 		for (let ls of actor.system.lightSources)
 		{
-			if (ls.type === "lightSource" && ls.system.requiresHands)
+			if (ls.type === "lightSource" && ls.system.requiredHands > 0)
 			{
 				if (ls.system.usedHands === "primaryHand" || ls.system.usedHands === "bothHands")
 				{
@@ -313,14 +313,17 @@ export default class SPACE1889Light
 		const newHand = this.getNextValidLightSourceHandPosition(lightSource, actor, backward);
 
 		if (newHand === lightSource.system.usedHands)
+		{
+			ui.notifications.info(game.i18n.format("SPACE1889.LightSourceCanNotReady", { lightSourceName: lightSource.name, handCount: lightSource.system.requiredHands }));
 			return;
+		}
 
 		await actor.updateEmbeddedDocuments("Item", [{ _id: lightSource._id, "system.usedHands": newHand }]);
 	}
 
 	static getNextValidLightSourceHandPosition(lightSource, actor, backwardDirection)
 	{
-		if (!lightSource || !lightSource.system.requiresHands)
+		if (!lightSource || lightSource.system.requiredHands === 0)
 			return "none";
 
 		let fallback = "none";
@@ -334,7 +337,7 @@ export default class SPACE1889Light
 		const isOffPossible = weaponInHands.off.length === 0 && !lsBlocked.off;
 		const isNonePossible = !lightSource.system.isActive;
 
-		let wanted = this.getNextLightSourceHand(backwardDirection, lightSource.system.usedHands, false);
+		let wanted = this.getNextLightSourceHand(backwardDirection, lightSource.system.usedHands, lightSource.system.requiredHands > 1);
 		if (SPACE1889Helper.isWeaponHandPossible(wanted, isPrimaryPossible, isOffPossible, isNonePossible))
 			return wanted;
 

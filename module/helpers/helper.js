@@ -788,15 +788,19 @@ export default class SPACE1889Helper
 			return "none";
 		}
 
-		if (wanted == "primaryHand")
+		if (wanted === "primaryHand")
 		{
-			const itemName = actor.system.weapons.find(e => e._id == weaponInHands.primary[0])?.name;
+			let itemName = actor.system.weapons.find(e => e._id === weaponInHands.primary[0])?.name;
+			if (!itemName)
+				itemName = actor.system.lightSources.find(e => e._id === lsBlocked.primaryId)?.name;
 			ui.notifications.info(game.i18n.format("SPACE1889.WeaponCanNotReadyPrimaryHand", { weapon: weapon.name, item: itemName}));
 		}
-		else if (wanted == "offHand")
+		else if (wanted === "offHand")
 		{
-			const itemName = actor.system.weapons.find(e => e._id == weaponInHands.off[0])?.name;
-			ui.notifications.info(game.i18n.format("SPACE1889.WeaponCanNotReadyPrimaryHand", { weapon: weapon.name, item: itemName}));
+			let itemName = actor.system.weapons.find(e => e._id === weaponInHands.off[0])?.name;
+			if (!itemName)
+				itemName = actor.system.lightSources.find(e => e._id === lsBlocked.offId)?.name;
+			ui.notifications.info(game.i18n.format("SPACE1889.WeaponCanNotReadyOffHand", { weapon: weapon.name, item: itemName}));
 		}
 
 		let secondTry = this.getNextWeaponHand(backwardDirection, wanted, weapon.system.isTwoHanded);

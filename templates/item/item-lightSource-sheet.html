@@ -41,14 +41,16 @@
 				<label class="resource-label" data-tooltip="{{localize 'SPACE1889.ProbabilityOfBreakingInfo'}}">{{localize "SPACE1889.ProbabilityOfBreaking"}}</label>
 			</li>
 			<li class="item flex-group-center flexrow">
-				<div class="resource-content flex-center flex-between">
-					<input type="checkbox" name="system.requiresHands" {{checked system.requiresHands}} />
+				<div class="resource-content flex-center flex-between" data-tooltip="{{system.requiredHandsTooltip}}">
+					<select name="system.requiredHands" data-dtype="String">
+						{{selectOptions system.lightSourceHands selected=system.requiredHands labelAttr="id" localize=true}} 
+					</select>
 				</div>
 				<div class="resource-content flex-center flex-between">
-					<input type="number" {{#if (not system.requiresHands)}} disabled="disabled" {{/if}} min="0" step="1" max="100" name="system.probabilityOfFailing" value="{{system.probabilityOfFailing}}" data-dtype="Number" />
+					<input type="number" {{#if (eq system.requiredHands 0)}} disabled="disabled" {{/if}} min="0" step="1" max="100" name="system.probabilityOfFailing" value="{{system.probabilityOfFailing}}" data-dtype="Number" />
 				</div>
 				<div class="resource-content flex-center flex-between">
-					<input type="number" {{#if (not system.requiresHands)}} disabled="disabled" {{/if}} min="0" step="1" max="100" name="system.probabilityOfBreaking" value="{{system.probabilityOfBreaking}}" data-dtype="Number" />
+					<input type="number" {{#if (eq system.requiredHands 0)}} disabled="disabled" {{/if}} min="0" step="1" max="100" name="system.probabilityOfBreaking" value="{{system.probabilityOfBreaking}}" data-dtype="Number" />
 				</div>
 			</li>
 

@@ -123,6 +123,7 @@ export class Space1889ItemSheet extends ItemSheet {
 			context.system['storageLocations'] = CONFIG.SPACE1889.allStorageLocations;
 			context.system['storageLocationsAbbr'] = CONFIG.SPACE1889.allStorageLocationsAbbreviations;
 			context.system['itemUseTypes'] = CONFIG.SPACE1889.itemUseTypes;
+			context.system['lightSourceHands'] = CONFIG.SPACE1889.lightSourceHands;
 		}
 
 		if (item.type == "weapon")

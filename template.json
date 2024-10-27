@@ -301,7 +301,7 @@
 		"lightSource": {
 			"templates": [ "description", "weight", "location", "price", "id", "containerId" ],
 			"quantity": 1,
-			"requiresHands": true,
+			"requiredHands": 1,
 			"usedHands": "none",
 			"isActive": false,
 			"duration": 60,

@@ -103,13 +103,15 @@ export class Space1889Item extends Item {
 			}
 			else if (item.type === "vision")
 			{
-				this.setLangIdAndLabel(item, "Vision", true);
+				this.setLangIdAndLabel(item, "Item", true);
 				if (item.img === "icons/svg/item-bag.svg")
 					item.img = "icons/svg/eye.svg";
 			}
 			else if (item.type === "lightSource")
 			{
-				this.setLangIdAndLabel(item, "LightSource", true);
+				this.setLangIdAndLabel(item, "Item", true);
+				const infoObject = CONFIG.SPACE1889.lightSourceHands[item.system.requiredHands];
+				item.system.requiredHandsTooltip = infoObject ? game.i18n.localize(infoObject.infoId) : "";
 				if (item.img === "icons/svg/item-bag.svg")
 					item.img = "icons/svg/light.svg";
 			}
@@ -589,7 +591,10 @@ export class Space1889Item extends Item {
 			{
 				let desc = this._addLine("TOKEN.VisionRange", this.system.visionRange, "m", false);
 				desc += this._addLine("TOKEN.VisionAngle", this.system.visionAngle, "&deg;");
-				desc += this._addLine("SPACE1889.Duration", this.system.duration.toString(), "min");
+				if (this.system.itemUseType === "permanentlyUsable")
+					desc += this._addLine("SPACE1889.Duration", "&infin;");
+				else
+					desc += this._addLine("SPACE1889.Duration", this.system.duration.toString(), "min");
 				desc += this._addLineFromToIds("SPACE1889.IsActive", this.system.isActive ? "SPACE1889.Yes" : "SPACE1889.No");
 				if (this.system.description !== "")
 					desc += this.system.description;
@@ -604,8 +609,11 @@ export class Space1889Item extends Item {
 				desc += this._addLine("LIGHT.Dim", this.system.dimRadius, "m");
 				desc += this._addLine("LIGHT.Bright", this.system.brightRadius, "m");
 				desc += this._addLine("LIGHT.Angle", this.system.angle, "&deg;");
-				desc += this._addLine("SPACE1889.Duration", this.system.duration, "min");
-				desc += this._addLineFromToIds("SPACE1889.RequiresHands", this.system.requiresHands ? "SPACE1889.Yes" : "SPACE1889.No");
+				if (this.system.itemUseType === "permanentlyUsable")
+					desc += this._addLine("SPACE1889.Duration", "&infin;");
+				else
+					desc += this._addLine("SPACE1889.Duration", this.system.duration, "min");
+				desc += this._addLineFromToIds("SPACE1889.RequiresHands", this.system.requiredHands);
 
 				desc += this._addLineFromToIds("SPACE1889.IsActive", this.system.isActive ? "SPACE1889.Yes" : "SPACE1889.No");
 				if (this.system.description !== "")
