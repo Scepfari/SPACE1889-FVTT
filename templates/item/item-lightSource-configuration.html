@@ -39,7 +39,7 @@
 		<label>{{localize "LIGHT.AnimationType"}}</label>
 		<div class="form-fields">
 			<select name="system.animationType" data-dtype="String">
-				{{selectOptions system.lightAnimations selected=system.animationType localize=true}}
+				{{selectOptions system.lightAnimations selected=system.animationType nameAttr="key" labelAttr="label"}}
 			</select>
 		</div>
 	</div>

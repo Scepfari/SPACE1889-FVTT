@@ -118,7 +118,7 @@ export class Space1889ItemSheet extends ItemSheet {
 		}
 		else if (item.type === "lightSource")
 		{
-			context.system['lightAnimations'] = CONFIG.SPACE1889.lightAnimations;
+			context.system['lightAnimations'] = SPACE1889Helper.getSortedAnimationtypes();
 			context.system['lightShaderTechniques'] = CONFIG.SPACE1889.lightShaderTechniques;
 			context.system['storageLocations'] = CONFIG.SPACE1889.allStorageLocations;
 			context.system['storageLocationsAbbr'] = CONFIG.SPACE1889.allStorageLocationsAbbreviations;

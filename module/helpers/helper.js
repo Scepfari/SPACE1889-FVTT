@@ -2334,6 +2334,22 @@ export default class SPACE1889Helper
 		}
 	}
 
+	static getSortedAnimationtypes()
+	{
+		let list = [];
+		const animations = CONFIG.SPACE1889.lightAnimations;
+		const keys = Object.keys(animations);
+
+		for (const key of keys)
+		{
+			const name = game.i18n.localize(animations[key]);
+			list.push({ key: key, label: name });
+		}
+
+		list.sort((a, b) => { return a.label.localeCompare(b.label); });
+		return list;
+	}
+
 	static async getSortedSkillIdsWithLocalizedName()
 	{
 		let pack = game.packs.get("space1889.fertigkeiten");
