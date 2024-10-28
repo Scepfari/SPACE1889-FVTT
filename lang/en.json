@@ -250,7 +250,7 @@
 	"SPACE1889.ProbabilityOfFailing": "P of failing[%]",
 	"SPACE1889.ProbabilityOfBreakingInfo": "Probability of breaking when dropped",
 	"SPACE1889.ProbabilityOfFailingInfo": "Probability of going out when dropping",
-	"SPACE1889.DropItem": "drop <em>\"{name}\"</em>",
+	"SPACE1889.DropItem": "drop <em>{name}</em>",
 	"SPACE1889.DropEffect": "Drop effect",
 	"SPACE1889.LightDropBreakingInfo": "<em>\"{name}\"</em> falls to the ground and shatters on the surface, causing the light emission to stop.",
 	"SPACE1889.LightDropFailingInfo": "<p>The light source falls to the ground without breaking, but it goes out on impact.<br>Remaining light duration: {remainingTime}min</p>",
@@ -449,6 +449,7 @@
 	"SPACE1889.CanNotDeActivateVision": "The vision enhancement <em>\"{name}\"</em> cannot be cancelled once it has been activated. The only thing to do is wait until the effect duration is over...",
 	"SPACE1889.CanNotActivateVisionNoItem": "You can only activate vision enhancements that you have, your <em>\"{name}\"</em> supply is currently zero",
 	"SPACE1889.CanNotActivateVisionNoEnergy": "The vision enhancement requires a fresh energy source; it cannot be switched on again in its current state.",
+	"SPACE1889.CanNotMoveActivateVision": "Active visual enhancements cannot be stowed in containers or storage locations",
 
 	"SPACE1889.VehicleTypeOrClass": "Type / Class",
 	"SPACE1889.VehicleIsAirship": "Is Airship",
@@ -2563,7 +2564,10 @@
 	"SPACE1889.ItemDescSchaufel": "An essential tool for explorers performing excavations and archaeological tasks. If used as a weapon, treat as a two-handed club. If your character wishes to do lethal damage (by striking with the edge of the blade), you suffer a – 2 penalty on your Attack roll.",
 	"SPACE1889.ItemDescRuehmkorfflampe": "The ‘Rühmkorff-apparatus’ consists of an electrical gas discharge lamp, which is served by a special accumulator with crank-elicitor. Rühmkorff-lamps are large and bulky, but robust. Experienced miners claim that a Rühmkorff-lamp is so reliable that one could possibly dig through to the center of the Earth without the lamp failing. The ingenious combination of accumulator and crank-elicitor ensures that the lamp literally never runs out of energy. The battery can be recharged anytime by simply turning the crank.",
 	"SPACE1889.ItemDescSumpfschuhe": "These shoes, most frequently used on Venus, resemble snow shoes from Earth. They consist of a round woven wicker-frame, over which a net of plant-fibers is stretched. Attached to the feet they enable the wearer to walk on muddy ground without sinking in on every other step. Walking in swamp shoes needs practice, but it can be learned over one or two days. Wearing swamp shoes you move 25% slower, and both running and jumping are impossible.",
-
+	"SPACE1889.ItemDescInfrarotbrille": "<p><b>Effect:</b> The lenses of the heavy aviator goggles are made of monocrystalline germanium, allowing the user to see additional infrared radiation.</p><p>The heat radiation emitted by warm-blooded animals and warm objects (such as most vehicles, machines, etc.) appears in a bright white colour. The user does not suffer any penalties due to poor visibility (darkness). Extremely hot objects can dazzle the user and outshine less warm objects in the vicinity so that they cannot be seen.</p>",
+	"SPACE1889.ItemDescInfrarotsichtaugentropfen": "<p><b>Effect:</b> The chemical dripped into the eyes causes the photoreceptors to adapt for 5 hours so that they can perceive the infrared range in addition to the normal colour spectrum.</p><p>The heat radiation emitted by warm-blooded animals and warm objects (such as most vehicles, machines, etc.) appears in a bright white. The user does not suffer any penalties due to poor visibility (darkness). Extremely hot objects can dazzle the user and outshine less warm objects in the vicinity so that they cannot be seen.</p>",
+	"SPACE1889.ItemDescMagnesiumfackel": "<p><b>Effect:</b> Once ignited, the torch is very difficult to extinguish as it continues to burn even under water (the high burning temperature of over 2500°C ensures sufficient separation of the oxygen in the water molecules so that the combustion process is maintained).</p>",
+	"SPACE1889.ItemDescLaterneOelbetrieben": "<p>The reservoir holds 0.5 litres of oil, which is enough for 6 hours of light.</p>",
 
 	"SPACE1889.Weapon22Repetiergewehr": ".22 Bolt-Action Rifle",
 	"SPACE1889.Weapon22RepetiergewehrGranatenaufsatz": ".22 Bolt-Action Rifle grenade attachment",
