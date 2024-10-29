@@ -14,7 +14,7 @@ export default class SPACE1889Light
 		{
 			for (const lightSource of actor.system.lightSources)
 			{
-				this._refreshLightSourceByTime(currentTimeStamp, lightSource, actor, undefined);
+				this._checkAndDeactivateLightSourceByTime(currentTimeStamp, lightSource, actor, undefined);
 			}
 		}
 
@@ -25,7 +25,7 @@ export default class SPACE1889Light
 
 			for (const lightSource of token.actor.system.lightSources)
 			{
-				this._refreshLightSourceByTime(currentTimeStamp, lightSource, token.actor, token);
+				this._checkAndDeactivateLightSourceByTime(currentTimeStamp, lightSource, token.actor, token);
 			}
 		}
 
@@ -43,7 +43,7 @@ export default class SPACE1889Light
 		}
 	}
 
-	static _refreshLightSourceByTime(timeStamp, lightSource, actor, token)
+	static _checkAndDeactivateLightSourceByTime(timeStamp, lightSource, actor, token)
 	{
 		if (!lightSource.system.isActive || lightSource.system.emissionStartTimestamp === 0 || this.isPermanentlyUsable(lightSource))
 			return false;
@@ -92,11 +92,11 @@ export default class SPACE1889Light
 			"system.usedHands": isConsumables ? "none" : lightSource.system.usedHands
 		});
 
-		let tokens = game.scenes.active.tokens.filter(e => e.actorId === actor.id);
 		if (token)
 			this._resetTokenLight(token, actor?.prototypeToken);
 		else
 		{
+			const tokens = game.scenes.active.tokens.filter(e => e.actorId === actor.id);
 			for (let tok of tokens)
 			{
 				this._resetTokenLight(tok, actor?.prototypeToken);
@@ -611,7 +611,7 @@ export default class SPACE1889Light
 
 			if (lightSource && doTimeRefresh)
 			{
-				if (this._refreshLightSourceByTime(currentTimeStamp, lightSource, token.actor, token))
+				if (this._checkAndDeactivateLightSourceByTime(currentTimeStamp, lightSource, token.actor, token))
 					return;
 			}
 
