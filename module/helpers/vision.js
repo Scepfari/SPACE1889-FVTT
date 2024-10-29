@@ -15,18 +15,38 @@ export default class SPACE1889Vision
 		{
 			for (const vision of actor.system.visions)
 			{
-				if (!vision.system.isActive || vision.system.emissionStartTimestamp === 0 || SPACE1889Light.isPermanentlyUsable(vision))
-					continue;
+				this._checkAndDeactivateVisionByTime(currentTimeStamp, vision, actor, undefined);
+			}
+		}
 
-				const timeDelta = Number(SPACE1889Time.getTimeDifInSeconds(currentTimeStamp, vision.system.emissionStartTimestamp));
-				const usedDuration = Number(vision.system.usedDuration) + (timeDelta / 60.0);
-				if (usedDuration >= vision.system.duration)
-					this._deactivateVisionByTime(vision, actor);
+		for (const token of game.scenes.viewed.tokens)
+		{
+			if (token.actorLink && token.actor.type === "character")
+				continue;
+
+			for (const vision of token.actor.system.visions)
+			{
+				this._checkAndDeactivateVisionByTime(currentTimeStamp, vision, token.actor, token);
 			}
 		}
 	}
 
-	static async _deactivateVisionByTime(visionItem, actor)
+	static _checkAndDeactivateVisionByTime(timeStamp, vision, actor, token)
+	{
+		if (!vision.system.isActive || vision.system.emissionStartTimestamp === 0 || SPACE1889Light.isPermanentlyUsable(vision))
+			return false;
+
+		const timeDelta = Number(SPACE1889Time.getTimeDifInSeconds(timeStamp, vision.system.emissionStartTimestamp));
+		const usedDuration = Number(vision.system.usedDuration) + (timeDelta / 60.0);
+		if (usedDuration >= vision.system.duration)
+		{
+			this._deactivateVisionByTime(vision, actor, token);
+			return true;
+		}
+		return false;
+	}
+
+	static async _deactivateVisionByTime(visionItem, actor, token)
 	{
 		let newQuantity = visionItem.system.quantity;
 		const isConsumables = visionItem.system.itemUseType === "consumables";
@@ -39,7 +59,7 @@ export default class SPACE1889Vision
 		}
 
 		const delta = Math.max(0, visionItem.system.duration - visionItem.system.usedDuration) * 60;
-		let emissionEndTimeStamp = visionItem.system.emissionStartTimestamp + delta;
+		const emissionEndTimeStamp = visionItem.system.emissionStartTimestamp + delta;
 
 		await visionItem.update({
 			"system.isActive": false,
@@ -48,14 +68,19 @@ export default class SPACE1889Vision
 			"system.quantity": newQuantity
 		});
 
-		let tokens = game.scenes.active.tokens.filter(e => e.actorId === actor.id);
-		for (let token of tokens)
-		{
+		if (token)
 			this._resetTokenVision(token, actor?.prototypeToken);
+		else
+		{
+			const tokens = game.scenes.active.tokens.filter(e => e.actorId === actor.id);
+			for (let tok of tokens)
+			{
+				this._resetTokenVision(tok, actor?.prototypeToken);
+			}
 		}
 
 		const timeAsString = SPACE1889Time.isSimpleCalendarEnabled() ? SPACE1889Time.formatTimeDate(SPACE1889Time.getTimeAndDate(emissionEndTimeStamp)) : "";
-		const messageContent = game.i18n.format("SPACE1889.VisionFades", { "vision": visionItem.system.label, "name": actor.name, "time": timeAsString });
+		const messageContent = game.i18n.format("SPACE1889.VisionFades", { "vision": visionItem.system.label, "name": token ? token.name : actor.name, "time": timeAsString });
 		let chatData =
 		{
 			user: game.user.id,
@@ -238,6 +263,8 @@ export default class SPACE1889Vision
 			return;
 
 		const resetVision = event?.shiftKey && event?.ctrlKey;
+		const doTimeRefresh = game.user.isGM;
+		const currentTimeStamp = SPACE1889Time.getCurrentTimestamp();
 
 		for (let token of game.scenes.viewed.tokens)
 		{
@@ -245,6 +272,13 @@ export default class SPACE1889Vision
 				continue;
 
 			const visionItem = this._getActiveVision(token.actor);
+
+			if (visionItem && doTimeRefresh)
+			{
+				if (this._checkAndDeactivateVisionByTime(currentTimeStamp, visionItem, token.actor, token))
+					return; 
+			}
+
 			if (visionItem)
 				await this._setTokenVision(visionItem, token);
 			else if (resetVision)
