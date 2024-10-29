@@ -23,6 +23,30 @@ export default class SPACE1889Light
 					this._deactivateLightSourceByTime(lightSource, actor);
 			}
 		}
+
+		for (const light of game.scenes.viewed.lights)
+		{
+			if (!light.flags.space1889?.timestamp || !light.flags.space1889?.remainingTime)
+				continue;
+
+			const timeDeltaInMinutes = Math.max(0, Number(SPACE1889Time.getTimeDifInSeconds(currentTimeStamp, light.flags.space1889?.timestamp))) / 60;
+			if (light.flags.space1889.remainingTime < timeDeltaInMinutes)
+			{
+				// Licht ausschalten
+				this._hideSceneLightAndRemoveFlag(light);
+			}
+		}
+	}
+
+	static async _hideSceneLightAndRemoveFlag(light)
+	{
+		if (!light)
+			return;
+
+		await light.update({
+			"hidden": true
+		});
+		await light.unsetFlag("space1889", "timestamp");
 	}
 
 	static async _deactivateLightSourceByTime(lightSource, actor)
@@ -426,21 +450,23 @@ export default class SPACE1889Light
 			addLightSource = true;
 		}
 
-		if (addLightSource && tokenDocument?.id)
+		if (addLightSource && tokenDocument?.id && item.system.isActive)
 		{
-			// ToDo: Lichtquelle hinzufügen
-			//if (game.user.isGM)
-			//		Lichtquelle am Ort des Token erstellen!!
-			//	else if (tokenDocument?.id)
-			//	{
-			//		game.socket.emit("system.space1889", {
-			//			type: "addLightSource",
-			//			payload: {
-			//				tokenId: tokenDocument.id,
-			//				sceneId: game.scenes.viewed.id
-			//			}
-			//		});
-			//	}
+			if (game.user.isGM)
+			{
+				await this.createLightSourceOnScene(tokenDocument.id, item.id, game.scenes.viewed.id);
+			}
+			else
+			{
+				game.socket.emit("system.space1889", {
+					type: "addLightSource",
+					payload: {
+						tokenId: tokenDocument.id,
+						sceneId: game.scenes.viewed.id,
+						lightSourceId: item.id
+					}
+				});
+			}
 		}
 		await this._deactivateLightSourceFromDrop(item, actor);
 
@@ -452,6 +478,54 @@ export default class SPACE1889Light
 			content: messageContent
 		};
 		await ChatMessage.create(chatData, {});
+	}
+
+	static async createLightSourceOnScene(tokenId, itemId, sceneId)
+	{
+		const scene = game.scenes.get(sceneId);
+		if (!scene)
+			return undefined;
+
+		const tokenDoc = scene.tokens?.get(tokenId);
+		if (!tokenDoc)
+			return undefined;
+
+		const lightSource = tokenDoc._actor.items.get(itemId);
+		if (!lightSource)
+			return undefined;
+
+		let spaceFlags = {};
+		if (lightSource.system.itemUseType !== "permanentlyUsable" && SPACE1889Time.isSimpleCalendarEnabled())
+		{
+			const remainingTime = Math.max(0, lightSource.system.duration - this.calcUsedDuration(lightSource));
+			const timestamp = SPACE1889Time.getCurrentTimestamp();
+			spaceFlags = { space1889: { timestamp: timestamp, remainingTime: remainingTime } };
+		}
+
+		const light1={x: tokenDoc.x+25, y: tokenDoc.y+25, vision:false, walls:true,
+			config:{
+				bright:lightSource.system.brightRadius,
+				dim: lightSource.system.dimRadius,
+				angle: lightSource.system.angle,
+				color:lightSource.system.color,
+				alpha:lightSource.system.alpha,
+				coloration:lightSource.system.coloration,
+				luminosity:lightSource.system.luminosity,
+				attenuation: lightSource.system.attenuation,
+				saturation: lightSource.system.saturation,
+				contrast: lightSource.system.contrast,
+				shadows: lightSource.system.shadows,
+				animation:{
+					speed:lightSource.system.animationSpeed,
+					intensity: lightSource.system.animationIntensity,
+					reverse:lightSource.system.reverseDirection,
+					type:lightSource.system.animationType
+				}
+			},
+			flags: spaceFlags
+		}
+
+		return await scene.createEmbeddedDocuments("AmbientLight", [light1]);
 	}
 
 	static async _deactivateLightSourceFromDrop(lightSource, actor)

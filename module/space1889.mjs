@@ -674,6 +674,11 @@ Hooks.once("ready", async function() {
 							SPACE1889RollHelper.copyActorItem(actorToken, sourceToken, data.payload.itemId);
 					}
 					break;
+				case "addLightSource":
+					{
+						SPACE1889Light.createLightSourceOnScene(data.payload.tokenId, data.payload.lightSourceId, data.payload.sceneId);
+					}
+					break;
 				default:
 					console.warn(`Unhandled socket data type ${data.type}`);
 			}
