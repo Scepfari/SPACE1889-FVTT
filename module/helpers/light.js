@@ -364,7 +364,10 @@ export default class SPACE1889Light
 
 		if (newHand === lightSource.system.usedHands)
 		{
-			ui.notifications.info(game.i18n.format("SPACE1889.LightSourceCanNotReady", { lightSourceName: lightSource.name, handCount: lightSource.system.requiredHands }));
+			if (lightSource.system.quantity === 0)
+				ui.notifications.info(game.i18n.format("SPACE1889.LightSourceCanNotReadyNoItem", { name: lightSource.name }));
+			else
+				ui.notifications.info(game.i18n.format("SPACE1889.LightSourceCanNotReady", { lightSourceName: lightSource.name, handCount: lightSource.system.requiredHands }));
 			return;
 		}
 
@@ -373,7 +376,7 @@ export default class SPACE1889Light
 
 	static getNextValidLightSourceHandPosition(lightSource, actor, backwardDirection)
 	{
-		if (!lightSource || lightSource.system.requiredHands === 0)
+		if (!lightSource || lightSource.system.requiredHands === 0 || lightSource.system.quantity === 0)
 			return "none";
 
 		let fallback = "none";
