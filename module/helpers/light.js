@@ -14,13 +14,18 @@ export default class SPACE1889Light
 		{
 			for (const lightSource of actor.system.lightSources)
 			{
-				if (!lightSource.system.isActive || lightSource.system.emissionStartTimestamp === 0 || this.isPermanentlyUsable(lightSource))
-					continue;
+				this._refreshLightSourceByTime(currentTimeStamp, lightSource, actor, undefined);
+			}
+		}
 
-				const timeDelta = Number(SPACE1889Time.getTimeDifInSeconds(currentTimeStamp, lightSource.system.emissionStartTimestamp));
-				const usedDuration = Number(lightSource.system.usedDuration) + (timeDelta / 60.0);
-				if (usedDuration >= lightSource.system.duration)
-					this._deactivateLightSourceByTime(lightSource, actor);
+		for (const token of game.scenes.viewed.tokens)
+		{
+			if (token.actorLink && token.actor.type === "character")
+				continue;
+
+			for (const lightSource of token.actor.system.lightSources)
+			{
+				this._refreshLightSourceByTime(currentTimeStamp, lightSource, token.actor, token);
 			}
 		}
 
@@ -38,6 +43,21 @@ export default class SPACE1889Light
 		}
 	}
 
+	static _refreshLightSourceByTime(timeStamp, lightSource, actor, token)
+	{
+		if (!lightSource.system.isActive || lightSource.system.emissionStartTimestamp === 0 || this.isPermanentlyUsable(lightSource))
+			return false;
+
+		const timeDelta = Number(SPACE1889Time.getTimeDifInSeconds(timeStamp, lightSource.system.emissionStartTimestamp));
+		const usedDuration = Number(lightSource.system.usedDuration) + (timeDelta / 60.0);
+		if (usedDuration >= lightSource.system.duration)
+		{
+			this._deactivateLightSourceByTime(lightSource, actor, token);
+			return true;
+		}
+		return false;
+	}
+
 	static async _hideSceneLightAndRemoveFlag(light)
 	{
 		if (!light)
@@ -49,7 +69,7 @@ export default class SPACE1889Light
 		await light.unsetFlag("space1889", "timestamp");
 	}
 
-	static async _deactivateLightSourceByTime(lightSource, actor)
+	static async _deactivateLightSourceByTime(lightSource, actor, token)
 	{
 		let newQuantity = lightSource.system.quantity;
 		const isConsumables = lightSource.system.itemUseType === "consumables";
@@ -68,17 +88,23 @@ export default class SPACE1889Light
 			"system.isActive": false,
 			"system.usedDuration": usedDuration,
 			"system.emissionStartTimestamp": startTimestamp,
-			"system.quantity": newQuantity
+			"system.quantity": newQuantity,
+			"system.usedHands": isConsumables ? "none" : lightSource.system.usedHands
 		});
 
 		let tokens = game.scenes.active.tokens.filter(e => e.actorId === actor.id);
-		for (let token of tokens)
-		{
+		if (token)
 			this._resetTokenLight(token, actor?.prototypeToken);
+		else
+		{
+			for (let tok of tokens)
+			{
+				this._resetTokenLight(tok, actor?.prototypeToken);
+			}
 		}
 
 		const timeAsString = SPACE1889Time.isSimpleCalendarEnabled() ? SPACE1889Time.formatTimeDate(SPACE1889Time.getTimeAndDate(emissionEndTimeStamp)) : "";
-		const messageContent = game.i18n.format("SPACE1889.LightGoesOut", { "lightSource": lightSource.system.label, "name": actor.name, "time": timeAsString });
+		const messageContent = game.i18n.format("SPACE1889.LightGoesOut", { "lightSource": lightSource.system.label, "name": token ? token.name : actor.name, "time": timeAsString });
 		let chatData =
 		{
 			user: game.user.id,
@@ -573,6 +599,8 @@ export default class SPACE1889Light
 			return;
 
 		const resetLight = event?.shiftKey && event?.ctrlKey;
+		const doTimeRefresh = game.user.isGM;
+		const currentTimeStamp = SPACE1889Time.getCurrentTimestamp();
 
 		for (let token of game.scenes.viewed.tokens)
 		{
@@ -580,6 +608,13 @@ export default class SPACE1889Light
 				continue;
 
 			const lightSource = this._getActiveLightSource(token.actor);
+
+			if (lightSource && doTimeRefresh)
+			{
+				if (this._refreshLightSourceByTime(currentTimeStamp, lightSource, token.actor, token))
+					return;
+			}
+
 			if (lightSource)
 				await this._setTokenLight(lightSource, token);
 			else if (resetLight)
