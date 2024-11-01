@@ -2,6 +2,14 @@
 
 ## Mondreich
 
+### v2.3.3
+- Lichtquellen und Sicht: Das System besitzt zwei neue Item Typen (Lichtquelle Sichtverbesserung), die im Inventar von Charakteren dazu genutzt werden können, schnell die Licht und Sicht Einstellungen von Figuren zu beeinflussen. Ist das Modul Simple Calendar aktiv, werden die Einstellungen nach Ablauf der Wirkungsdauer automatisch zurückgesetzt. Einzelheiten dazu können der Hilfe entnommen werden.   
+- Gehaltene Lichtquellen können fallen gelassen werden, falls die den Sturz unbeschadet überstehen, wird an der Stelle des Token eine Lichtquelle auf der Beleuchtungsebene platziert, die nach der Restleuchtzeit automatisch verlischt (benötigt Simple Calendar). 
+- Automatische Figurenauswahl: Für die SL wird in Begegnungen automatisch die (NSC-) Figur selektiert, die am Zug ist. Ausgenommen davon sind Figuren, die einem Spieler gehören. Die Funktion lässt sich in den SPACE 1889 Einstellungsoptionen abschalten.
+- Erweiterte Liste für die SL bei der Gravitationseinstellung,  d.h. sie kann nun in 0.1g Schritten gewählt werden. Zusätzlich sind die Monde Io, Ganymed und Titan hinzugekommen.
+- Mehr Informationen bei Mehrfachverteidigung im Chat, also der wievielte Abwehrwurf in der Runde war das und welchen Malus bewirkt er.
+- Die Add Item Auswahlliste ist jetzt für deutsch alphabetisch sortiert.
+
 ### v2.3.2
 - Bugfix: Fehlende Icons bei den Musiksteuerungsknöpfen ([#21](https://github.com/Scepfari/SPACE1889-FVTT/issues/21))
 - Bugfix: Fehlerhafte Fertigkeitswertberechnung ([#22](https://github.com/Scepfari/SPACE1889-FVTT/issues/22))
