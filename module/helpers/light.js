@@ -35,7 +35,7 @@ export default class SPACE1889Light
 				continue;
 
 			const timeDeltaInMinutes = Math.max(0, Number(SPACE1889Time.getTimeDifInSeconds(currentTimeStamp, light.flags.space1889?.timestamp))) / 60;
-			if (light.flags.space1889.remainingTime < timeDeltaInMinutes)
+			if (light.flags.space1889.remainingTime <= timeDeltaInMinutes)
 			{
 				// Licht ausschalten
 				this._hideSceneLightAndRemoveFlag(light);
@@ -96,7 +96,7 @@ export default class SPACE1889Light
 			this._resetTokenLight(token, actor?.prototypeToken);
 		else
 		{
-			const tokens = game.scenes.active.tokens.filter(e => e.actorId === actor.id);
+			const tokens = game.scenes.viewed.tokens.filter(e => e.actorId === actor.id);
 			for (let tok of tokens)
 			{
 				this._resetTokenLight(tok, actor?.prototypeToken);
@@ -462,7 +462,8 @@ export default class SPACE1889Light
 		messageContent += SPACE1889Time.isSimpleCalendarEnabled() ? `<p>${SPACE1889Time.getCurrentTimeDateString()}</p>` : "";
 		messageContent += `${rollWithHtml.html} <br>`;
 
-		const remainingTime = Math.max(0, item.system.duration - this.calcUsedDuration(item));
+		const remainingTime = this.isPermanentlyUsable(item) ? "&infin;" : Math.max(0, item.system.duration - this.calcUsedDuration(item));
+
 		let addLightSource = false;
 
 		if (rollWithHtml.roll.total <= breakingLimit)
@@ -519,7 +520,7 @@ export default class SPACE1889Light
 		if (!tokenDoc)
 			return undefined;
 
-		const lightSource = tokenDoc._actor.items.get(itemId);
+		const lightSource = tokenDoc.actor.items.get(itemId);
 		if (!lightSource)
 			return undefined;
 

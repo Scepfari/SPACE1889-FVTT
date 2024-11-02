@@ -72,7 +72,7 @@ export default class SPACE1889Vision
 			this._resetTokenVision(token, actor?.prototypeToken);
 		else
 		{
-			const tokens = game.scenes.active.tokens.filter(e => e.actorId === actor.id);
+			const tokens = game.scenes.viewed.tokens.filter(e => e.actorId === actor.id);
 			for (let tok of tokens)
 			{
 				this._resetTokenVision(tok, actor?.prototypeToken);
