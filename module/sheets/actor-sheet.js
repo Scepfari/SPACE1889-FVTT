@@ -1260,6 +1260,8 @@ export class Space1889ActorSheet extends ActorSheet {
 				this.showGeschaerfterSinnDialog(item);
 			if (isValid && item.system.id == "eigenartigerKampfstil")
 				this.showTalentSkillSelectionDialog(item);
+			if (isValid && item.system.id == "schwerkraftadaption")
+				this.showSchwerkraftadaptionDialog(item);
 			return isValid;
 		}
 		return true;		
@@ -1373,6 +1375,73 @@ export class Space1889ActorSheet extends ActorSheet {
 					let newTalent = actor.system.talents.find(e => e.system.id === "geschaerfterSinn" && e.system.bonusTarget === "");
 					if (newTalent != undefined)
 						this.actor.updateEmbeddedDocuments("Item", [{ _id: newTalent._id, "system.bonusTarget": selectedOption, "system.bonusTargetType": "sense" }]);
+
+					console.log("set system.bonusTarget to: " + selectedOption);
+				}
+			}
+		});
+		dialog.render(true);
+	}
+
+	showSchwerkraftadaptionDialog(item)
+	{
+		
+		let actor = this.actor;
+
+		const currentZone = "0.8";
+		let optionen = "";
+		for (let [k, v] of Object.entries(CONFIG.SPACE1889.gravity)) 
+		{
+			if (["earth", "venus", "mars"].includes(k))
+				continue;
+
+			const selected = (k === currentZone ? " selected" : "");
+			const gravZone = CONFIG.SPACE1889.gravityZone[k]?.zone.toFixed(1);
+			const gravText = game.i18n.format("SPACE1889.GravityZone", { value: gravZone });
+			optionen += `<option value="${k}"${selected}>${game.i18n.localize(v)} (${gravText} )</option>`;
+		}
+
+
+
+		let gravityAdaptation = game.i18n.localize("SPACE1889.TalentSchwerkraftadaption");
+		let text = game.i18n.localize("SPACE1889.ChooseGravity") + " " + gravityAdaptation;
+		let choices = game.i18n.localize("SPACE1889.Choices");
+		let selectedOption;
+		let dialog = new Dialog({
+			title: `${actor.name} : ${gravityAdaptation}`,
+			content: `
+				<form>
+				  <p>${text}:</p>
+				  <div class="form-group">
+					<label>${choices}:</label>
+					<select id="choices" name="choices">
+					  ${optionen}
+					</select>
+				  </div>
+				</form>
+			`,
+			buttons: {
+				yes: {
+					icon: '<i class="fas fa-check"></i>',
+					label: "Submit",
+					callback: (html) =>
+					{
+						selectedOption = html.find('#choices').val();
+					}
+				},
+				no: {
+					icon: '<i class="fas fa-times"></i>',
+					label: "Cancel"
+				}
+			},
+			default: "yes",
+			close: () =>
+			{
+				if (selectedOption) 
+				{
+					let newTalent = actor.system.talents.find(e => e.system.id === "schwerkraftadaption" && e.system.bonusTarget === "");
+					if (newTalent != undefined)
+						this.actor.updateEmbeddedDocuments("Item", [{ _id: newTalent._id, "system.bonusTarget": selectedOption, "system.bonusTargetType": "gravity" }]);
 
 					console.log("set system.bonusTarget to: " + selectedOption);
 				}

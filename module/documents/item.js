@@ -253,9 +253,10 @@ export class Space1889Item extends Item {
 	 */
 	ShowTalentDetail(item)
 	{
-		if (item.system.id == "geschaerfterSinn"
-			|| item.system.id == "begabung"
-			|| item.system.id == "eigenartigerKampfstil")
+		if (item.system.id === "geschaerfterSinn"
+			|| item.system.id === "begabung"
+			|| item.system.id === "eigenartigerKampfstil"
+			|| item.system.id === "schwerkraftadaption")
 		{
 			return true;
 		}
