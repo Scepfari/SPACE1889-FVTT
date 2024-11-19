@@ -18,9 +18,11 @@
 			</div>
 			<label class="items-list item-max-with40px">{{item.system.level.max}}</label>
 			<div class="item-controls item-max-with75px">
-				{{#if (eq item.system.isBase false)}}
 				<a class="item-control item-edit" data-tooltip="{{localize 'SPACE1889.EditItem'}}"><i class="fas fa-edit"></i></a>
+				{{#if (eq item.system.isBase false)}}
 				<a class="item-control item-delete" data-tooltip="{{localize 'SPACE1889.DeleteItem'}}"><i class="fas fa-trash"></i></a>
+				{{else}}
+				<a class="item-control" data-tooltip=""><i>  </i></a>
 				{{/if}}
 			</div>
 		</li>
