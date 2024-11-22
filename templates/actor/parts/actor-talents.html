@@ -29,8 +29,8 @@
 			<label class="items-list item-max-with40px resource-label">{{item.system.level.total}}</label>
 			<label class="items-list item-max-with40px">{{item.system.level.max}}</label>
 			<div class="item-controls item-max-with50px">
-				<a class="item-control item-edit" data-tooltip="{{localize 'SPACE1889.EditItem'}}"><i class="fas fa-edit"></i></a>
-				<a class="item-control item-delete" data-tooltip="{{localize 'SPACE1889.DeleteItem'}}"><i class="fas fa-trash"></i></a>
+				<a class="item-control item-edit" data-tooltip='{{localize "SPACE1889.EditItemWithName" name=item.system.label}}'><i class="fas fa-edit"></i></a>
+				<a class="item-control item-delete" data-tooltip='{{localize "SPACE1889.DeleteItemWithName" name=item.system.label}}'><i class="fas fa-trash"></i></a>
 			</div>
 		</li>
 	{{/each}}
@@ -55,12 +55,12 @@
 				<a class="increment-click">{{resource.system.level.value}}</a>
 			</div>
 			<label class="items-list item-max-with40px">{{resource.system.level.max}}</label>
-			<div class="item-controls item-max-with50px">
-				<a class="item-control item-edit" data-tooltip="{{localize 'SPACE1889.EditItem'}}"><i class="fas fa-edit"></i></a>
+			<div class="item-max-with50px">
+				<a class="item-control item-edit" data-tooltip='{{localize "SPACE1889.EditItemWithName" name=resource.system.label}}'><i class="fas fa-edit"></i></a>
 				{{#if (eq resource.system.isBase false)}}
-				<a class="item-control item-delete" data-tooltip="{{localize 'SPACE1889.DeleteItem'}}"><i class="fas fa-trash"></i></a>
+				<a class="item-control item-delete" data-tooltip='{{localize "SPACE1889.DeleteItemWithName" name=resource.system.label}}'><i class="fas fa-trash"></i></a>
 				{{else}}
-				<a class="item-control"><i></i></a>
+				<span> <i class="fa-solid fa-trash" style="color:darkgrey"></i></span>
 				{{/if}}
 			</div>
 		</li>
