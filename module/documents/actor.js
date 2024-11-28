@@ -817,6 +817,13 @@ export class Space1889Actor extends Actor
 		if (!actor || !actor.system.ammunitions || actor.system.ammunitions.length == 0 || !weapon.system.isRangeWeapon)
 			return;
 
+		if (weapon.system.ammunition.type === "sunbeams")
+		{
+			weapon.system.ammunition.remainingRounds = weapon.system.capacity;
+			weapon.system.ammunition.display = game.i18n.localize("SPACE1889.InfoWeaponIsReadySunbeam");
+			return;
+		}
+
 		let list = [];
 		for (let ammo of actor.system.ammunitions)
 		{

@@ -35,19 +35,24 @@
 		<label class="items-list item-max-with30px">{{item.system.skillRating}}</label>
 
 		{{#if item.system.isRangeWeapon}}
-		<select data-tooltip="{{item.system.ammunition.display}} " name="currentAmmo-{{item._id}}" class="ammo-selector" data-item-id="{{item._id}}" data-dtype="String">
-			{{#oldSelect item.system.ammunition.currentItemId}}
-			<option class="ammo-option" value="">-</option>
-			{{#each item.system.ammunition.ammos as |ammo a|}}
-			<option class="ammo-option" value="{{ammo._id}}">
-				{{ammo.name}}
-			</option>
-			{{/each}}
-			{{/oldSelect}}
-		</select>
-		<div data-tooltip="{{item.system.ammunition.loadStateDisplay}}" class="items-list resource-label item-max-with40px">
-			<a class="reload-click">{{item.system.ammunition.remainingRounds}}/{{item.system.capacity}}</a>
-		</div>
+			{{#if (eq item.system.ammunition.type "sunbeams")}}
+			<label data-tooltip="{{item.system.ammunition.display}}" class="ammo-selector">{{localize "SPACE1889.AmmunitionTypeSunbeams"}}</label>
+			<label class="items-list resource-label item-max-with40px"></label>
+			{{else}}
+			<select data-tooltip="{{item.system.ammunition.display}} " name="currentAmmo-{{item._id}}" class="ammo-selector" data-item-id="{{item._id}}" data-dtype="String">
+				{{#oldSelect item.system.ammunition.currentItemId}}
+				<option class="ammo-option" value="">-</option>
+				{{#each item.system.ammunition.ammos as |ammo a|}}
+				<option class="ammo-option" value="{{ammo._id}}">
+					{{ammo.name}}
+				</option>
+				{{/each}}
+				{{/oldSelect}}
+			</select>
+			<div data-tooltip="{{item.system.ammunition.loadStateDisplay}}" class="items-list resource-label item-max-with40px">
+				<a class="reload-click">{{item.system.ammunition.remainingRounds}}/{{item.system.capacity}}</a>
+			</div>
+			{{/if}}
 		{{else}}
 		<label class="ammo-selector">-</label>
 		<label class="items-list resource-label item-max-with40px"></label>

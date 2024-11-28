@@ -18,7 +18,7 @@
 			<input type="text" name="system.caliber" value="{{system.caliber}}" />
 		</div>
 		<select name="system.type" system-dtype="String">
-			{{selectOptions system.ammunitionTypes selected=system.type localize=true}}
+			{{selectOptions system.ammunitionTypes selected=system.type nameAttr="key" labelAttr="label"}}
 		</select>
 		<select name="system.capacityType" system-dtype="String">
 			{{selectOptions system.capacityTypes selected=system.capacityType localize=true}}

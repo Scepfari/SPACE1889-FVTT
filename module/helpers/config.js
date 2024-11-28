@@ -787,6 +787,7 @@ SPACE1889.weaponAmmunitionTypes = {
 	"catridges": "SPACE1889.AmmunitionTypeCartridges",
 	"grenades": "SPACE1889.AmmunitionTypeGrenades",
 	"power": "SPACE1889.AmmunitionTypePower",
+	"sunbeams": "SPACE1889.AmmunitionTypeSunbeams",
 	"chemicals": "SPACE1889.AmmunitionTypeChemicals"
 }
 

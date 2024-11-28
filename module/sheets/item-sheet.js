@@ -67,7 +67,7 @@ export class Space1889ItemSheet extends ItemSheet {
 			context.system['damageTypes'] = CONFIG.SPACE1889.damageTypes;
 			context.system['damageTypeAbbr'] = CONFIG.SPACE1889.damageTypeAbbreviations;
 			context.system['capacityTypes'] = CONFIG.SPACE1889.weaponCapacityTypes;
-			context.system['ammunitionTypes'] = CONFIG.SPACE1889.weaponAmmunitionTypes;
+			context.system['ammunitionTypes'] = SPACE1889Helper.getSortedAmmunitionTypes();
 			context.system['effectTypes'] = CONFIG.SPACE1889.effects;
 			context.system['specializations'] = await SPACE1889Helper.getSortedSpecializationsFromSkill(context.system.skillId);
 
@@ -86,7 +86,7 @@ export class Space1889ItemSheet extends ItemSheet {
 			context.system['damageTypes'] = CONFIG.SPACE1889.noComboDamageTypes;
 			context.system['damageTypeAbbr'] = CONFIG.SPACE1889.damageTypeAbbreviations;
 			context.system['capacityTypes'] = CONFIG.SPACE1889.ammunitionCapacityTypes;
-			context.system['ammunitionTypes'] = CONFIG.SPACE1889.weaponAmmunitionTypes;
+			context.system['ammunitionTypes'] = SPACE1889Helper.getSortedAmmunitionTypes(true);
 			context.system['storageLocations'] = CONFIG.SPACE1889.storageLocations;
 			context.system['storageLocationsAbbr'] = CONFIG.SPACE1889.storageLocationsAbbreviations;
 		}

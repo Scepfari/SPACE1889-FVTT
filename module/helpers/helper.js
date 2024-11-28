@@ -994,6 +994,9 @@ export default class SPACE1889Helper
 		if (!weapon.system.isRangeWeapon || actor.type == "vehicle")
 			return true;
 
+		if (weapon.system.ammunition.type === "sunbeams")
+			return true;
+
 		if (weapon.system.ammunition.remainingRounds >= roundsToUse)
 			return true;
 
@@ -1036,7 +1039,8 @@ export default class SPACE1889Helper
 
 		if (weapon.system.ammunition.remainingRounds >= roundsToUse)
 		{
-			await actor.updateEmbeddedDocuments("Item", [{ _id: weapon._id, "system.ammunition.remainingRounds": weapon.system.ammunition.remainingRounds - roundsToUse }]);
+			if (weapon.system.ammunition.type !== "sunbeams")
+				await actor.updateEmbeddedDocuments("Item", [{ _id: weapon._id, "system.ammunition.remainingRounds": weapon.system.ammunition.remainingRounds - roundsToUse }]);
 			return {used: true, chatInfo: ""};
 		}
 
@@ -2408,6 +2412,24 @@ export default class SPACE1889Helper
 		{
 			list.push({key: item.system.id, label: item.system.label});
 		}
+		return list;
+	}
+
+	static getSortedAmmunitionTypes(noSunbeams = false)
+	{
+		let list = [];
+		const ammunitionTypes = CONFIG.SPACE1889.weaponAmmunitionTypes;
+		const keys = Object.keys(ammunitionTypes);
+
+		for (const key of keys)
+		{
+			if (noSunbeams && key === "sunbeams")
+				continue;
+			const name = game.i18n.localize(ammunitionTypes[key]);
+			list.push({ key: key, label: name });
+		}
+
+		list.sort((a, b) => { return a.label.localeCompare(b.label); });
 		return list;
 	}
 
