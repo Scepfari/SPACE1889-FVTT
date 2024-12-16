@@ -4,7 +4,7 @@
 	<header class="sheet-header">
 		<img class="profile-img artwork" src="{{actor.img}}" data-edit="img" data-tooltip="{{actor.name}}" height="100" width="100"/>
 		<div class="header-fields">
-			<h1 class="charname"><input name="name" type="text" value="{{actor.name}}" placeholder="Name"/></h1>
+			<h2 class="charname"><input name="name" type="text" value="{{actor.name}}" placeholder="Name"/></h2>
 			{{!-- The grid classes are defined in scss/global/_grid.scss. To use,
 			use both the "grid" and "grid-Ncol" class where "N" can be any number
 			from 1 to 12 and will create that number of columns.  --}}
@@ -50,11 +50,19 @@
 				</div>
 
 			</div>
-			{{#if (ne system.load.dexAndMoveMalus 0)}}
-			<div class="resource flex-group-center">
-				<i class="fas fa-weight-hanging fa-beat" data-tooltip="{{localize "SPACE1889.Overloaded"}}! <br/> {{localize system.load.bodyAndBackpackLoadConsequence}}"></i>
+			<div class="resources grid grid-2col">
+				{{#if (ne system.load.dexAndMoveMalus 0)}}
+				<div class="resource flex-group-center">
+					<i class="fas fa-weight-hanging fa-beat" data-tooltip="{{localize "SPACE1889.Overloaded"}}! <br/> {{localize system.load.bodyAndBackpackLoadConsequence}}"></i>
+				</div>
+				{{/if}}
+				{{#if (ne system.gravity.malus 0)}}
+				<div class="resource flex-group-center">
+					<i class="fas fa-space1889-gravity fa-beat" data-tooltip="{{localize "SPACE1889.Gravity"}}: {{localize system.gravity.langId}} <br/> {{localize system.gravity.malusToolTip}}"></i>
+				</div>
+				{{/if}}
+
 			</div>
-			{{/if}}
 		</div>
 	</header>
 

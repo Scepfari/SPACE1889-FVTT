@@ -1504,10 +1504,43 @@ export class Space1889Actor extends Actor
 		}
 	}
 
-	CalcAndSetLoad(actor)
+	CalcAndSetGravity(actor)
 	{
 		const gravity = SPACE1889Helper.getGravity();
 		actor.system.gravity = gravity;
+		let acclimatizationMalus = 0;
+		const timePassedInSeconds = SPACE1889Helper.getTimePassedSinceLastGravityChange();
+		let acclimatizationBaseTime = "12h";
+		let gravityMalusReduction = 0;
+		if (timePassedInSeconds !== undefined)
+		{
+			let talentLevel = SPACE1889Helper.getTalentLevel(actor, "schwerkrafterfahren");
+			if (talentLevel > 4)
+				talentLevel = 4;
+			if (talentLevel < 0)
+				talentLevel = 0;
+
+			const acclimatizationTimes = [12 * 3600, 6 * 3600, 3 * 3600, 3 * 1800, 3 * 900];
+			const reduction = [0, 1, 2, 4, 8];
+			acclimatizationMalus = timePassedInSeconds < acclimatizationTimes[talentLevel] ? 1 : 0;
+			acclimatizationBaseTime = this.FormatDuration(acclimatizationTimes[talentLevel]);
+			gravityMalusReduction = reduction[talentLevel];
+		}
+
+		actor.system.gravity.acclimatizationMalus = acclimatizationMalus;
+		const malusToHomeWorld = SPACE1889Helper.isHomeGravityZone(actor)
+			? 0
+			: SPACE1889Helper.getGravityMalus(CONFIG.SPACE1889.gravityZone[actor.system.homeGravity]?.zone, actor.system.gravity.zone);
+		actor.system.gravity.malus = Math.max(0, malusToHomeWorld - gravityMalusReduction) + acclimatizationMalus;
+		actor.system.gravity.malusToolTip = actor.system.gravity.malus > 0 
+			? game.i18n.format("SPACE1889.GravityMalusTooltip", { malus: actor.system.gravity.malus, acclimatization: acclimatizationMalus, baseTime: acclimatizationBaseTime }) 
+			: "";
+	}
+
+
+	CalcAndSetLoad(actor)
+	{
+		this.CalcAndSetGravity(actor);
 		const gravityFactor = actor.system.gravity.gravityFactor;
 
 		let str = actor.system.abilities["str"].total;

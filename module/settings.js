@@ -314,5 +314,15 @@ export const registerSystemSettings = function ()
 		    config: false,
 		    default: "earth",
 		    type: String
+		});
+
+    game.settings.register("space1889", "gravityChangeTime",
+	    {
+		    name: "gravity change time",
+		    hint: "time for the last gravity zone change",
+		    scope: "world",
+		    config: false,
+		    default: "",
+		    type: String
 	    });
 }

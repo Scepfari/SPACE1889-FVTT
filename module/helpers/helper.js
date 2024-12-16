@@ -1896,8 +1896,12 @@ export default class SPACE1889Helper
 			const newGravity = CONFIG.SPACE1889.gravityZone[newKey]?.value;
 			if (CONFIG.SPACE1889.gravity[newKey] && newGravity)
 			{
-				await game.settings.set("space1889", "gravityZone", newKey);
-
+				if (newKey !== game.settings.get("space1889", "gravityZone"))
+				{
+					const time = SPACE1889Time.isSimpleCalendarEnabled() ? SPACE1889Time.getCurrentTimestamp().toString() : "";
+					await game.settings.set("space1889", "gravityChangeTime", time);
+					await game.settings.set("space1889", "gravityZone", newKey);
+				}
 				Hooks.call("space1889GravityChanged", { key: newKey, gravity: newGravity });
 				game.socket.emit("system.space1889", {
 					type: "gravityChanged",
@@ -1922,11 +1926,48 @@ export default class SPACE1889Helper
 		const gravity = CONFIG.SPACE1889.gravityZone[key]?.value;
 		const zone = CONFIG.SPACE1889.gravityZone[key]?.zone;
 		const langId = CONFIG.SPACE1889.gravity[key];
-		if (!key || !gravity || !zone)
+		if (key===undefined || gravity===undefined || zone===undefined)
 			return { key: "earth", gravityFactor: 1.0, zone: 1.0, langId: "SPACE1889.GravityEarth" , malusToEarth: 0};
 
 		const malus = this.getGravityMalus(CONFIG.SPACE1889.gravityZone["earth"].zone, zone);
 		return { key: key, gravityFactor: gravity, zone: zone, langId: langId, malusToEarth: malus };
+	}
+
+	static getGravityChangeTimestamp()
+	{
+		const time = game.settings.get("space1889", "gravityChangeTime");
+		if (time === "")
+			return undefined;
+		return Number(time);
+	}
+
+	static getTimePassedSinceLastGravityChange()
+	{
+		const timeStamp = this.getGravityChangeTimestamp();
+		if (!timeStamp || !SPACE1889Time.isSimpleCalendarEnabled())
+			return undefined;
+
+		return SPACE1889Time.getTimeDifInSeconds(SPACE1889Time.getCurrentTimestamp(), timeStamp);
+	}
+
+	static isHomeGravityZone(actor)
+	{
+		if (!actor)
+			return false;
+
+		const currentGravity = this.getGravity();
+		const actorHomeZone = CONFIG.SPACE1889.gravityZone[actor.system.homeGravity]?.zone;
+		let homeZones = [actorHomeZone !== undefined ? actorHomeZone : 1.0];
+		for (const talent of actor.system.talents)
+		{
+			if (talent.system.bonusTargetType !== "gravity")
+				continue;
+			const zone = CONFIG.SPACE1889.gravityZone[talent.system.bonusTarget]?.zone;
+			if (zone !== undefined)
+				homeZones.push(zone);
+		}
+
+		return homeZones.includes(currentGravity.zone);
 	}
 
 	static getGravityMalus(baseZone, currentZone)

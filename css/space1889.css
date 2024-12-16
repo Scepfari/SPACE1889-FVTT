@@ -789,6 +789,25 @@ font-size: 12px;
     bottom: 0;
 }
 
+.fa-space1889-gravity {
+	position: relative;
+	width: 16px;
+	height: 16px;
+}
+
+.fa-space1889-gravity:before {
+	content: '';
+	background-image: url('../icons/svg/gravity.svg');
+	background-size: contain;
+	background-repeat: no-repeat;
+	background-position: center;
+	position: absolute;
+	left: 0;
+	right: 0;
+	top: 0;
+	bottom: 0;
+}
+
 #pause img {
 	content: url('../icons/spacepause.webp');
 	height: 150px;

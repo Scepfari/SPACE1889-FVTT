@@ -6,7 +6,7 @@
 	</select>
 </div>
 {{else}}
-<div style="display: grid; grid-template-columns: 40% 3% 57%; grid-template-rows: 25% 25% 25% 25%;">
+<div style="display: grid; grid-template-columns: 40% 3% 57%; grid-template-rows: 20% 20% 20% 20% 20%;">
 	<div class="item flex-group-center flexrow" style="grid-row: 1 / span 1; grid-column: 1 / span 1;">
 		<label class="resource-label">{{localize "SPACE1889.Height"}}</label>
 		<div class="resource-content flex-center flex-between">
@@ -31,12 +31,21 @@
 			<input type="text" name="system.dateOfBirth" value="{{system.dateOfBirth}}" />
 		</div>
 	</div>
-	<div class="flex-group-center" grid-row-start="2" style="grid-row: 1 / span 4; grid-column: 3 / span 1;">
+	<div class="item flex-group-center flexrow" style="grid-row: 5 / span 1; grid-column: 1 / span 1;">
+		<label class="resource-label" data-tooltip="{{localize 'SPACE1889.HomeGravity'}}">{{localize "SPACE1889.HomeGravityAbbr"}}</label>
+		<div class="resource-content flex-center flex-between">
+			<select name="system.homeGravity" data-dtype="String">
+				{{selectOptions system.allGravityForces selected=system.homeGravity localize=true}}
+			</select>
+		</div>
+	</div>
+	<div class="flex-group-center" grid-row-start="2" style="grid-row: 1 / span 5; grid-column: 3 / span 1;">
 
 		{{> "systems/space1889/templates/actor/parts/actor-currency.html"}}
 
 	</div>
 </div>
+<hr/>
 {{/if}}
 <div style="max-height:18px">
 	<b>{{localize "SPACE1889.Biography"}}</b>

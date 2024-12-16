@@ -985,6 +985,25 @@ SPACE1889.gravity = {
 	"zeroGravity": "SPACE1889.GravityZeroGravity"
 }
 
+SPACE1889.gravityShort = {
+	"earth": "SPACE1889.GravityEarth",
+	"venus": "SPACE1889.GravityVenus",
+	"mars": "SPACE1889.GravityMars",
+	"0.8": "SPACE1889.Gravity0.8Abbr",
+	"0.7": "SPACE1889.Gravity0.7Abbr",
+	"0.6": "SPACE1889.Gravity0.6Abbr",
+	"0.5": "SPACE1889.Gravity0.5Abbr",
+	"mercury": "SPACE1889.GravityMercury",
+	"0.3": "SPACE1889.Gravity0.3Abbr",
+	"0.2": "SPACE1889.Gravity0.2Abbr",
+	"io":"SPACE1889.GravityIo",
+	"luna": "SPACE1889.GravityLuna",
+	"ganymed": "SPACE1889.GravityGanymed",
+	"titan": "SPACE1889.GravityTitan",
+	"0.1": "SPACE1889.Gravity0.1Abbr",
+	"zeroGravity": "SPACE1889.GravityZeroGravity"
+}
+
 SPACE1889.gravityZone = {
 	"earth": { zone: 1.0, value: 1.0},
 	"venus": { zone: 1.0, value: 1.0},

@@ -19,7 +19,8 @@
 				"age": "",
 				"dateOfBirth": "",
 				"height": "",
-				"weight ": ""
+				"weight ": "",
+				"homeGravity": "earth"
 			},
 			"notes": {
 				"notes": {

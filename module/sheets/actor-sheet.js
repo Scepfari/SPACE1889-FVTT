@@ -104,6 +104,7 @@ export class Space1889ActorSheet extends ActorSheet {
 		context.system['motivations'] = SPACE1889Helper.getSortedItemIdsFromType("motivation", true);
 //		context.system['resources'] = CONFIG.SPACE1889.resources;
 		context.system['storageLocations'] = CONFIG.SPACE1889.storageLocation;
+		context.system['allGravityForces'] = CONFIG.SPACE1889.gravityShort;
 	}
 
 	_prepareCreatureData(context)
