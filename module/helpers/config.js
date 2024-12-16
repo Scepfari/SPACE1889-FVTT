@@ -273,10 +273,30 @@ SPACE1889.preConditionTypes = {
 	"primary": "SPACE1889.PreConTypePrimary",
 	"secondary": "SPACE1889.PreConTypeSecondary",
 	"skill": "SPACE1889.Skill",
+	"skillGroup": "SPACE1889.SkillGroup",
 	"specialization": "SPACE1889.Specialization",
 	"species": "SPACE1889.PreConTypeSpecies",
 	"talent": "SPACE1889.Talent",
 	"weakness": "SPACE1889.PreConTypeWeakness"
+};
+
+SPACE1889.talentBonusTypes = {
+	"": "-",
+	"ability": "SPACE1889.PreConTypePrimary",
+	"secondary": "SPACE1889.PreConTypeSecondary",
+	"skill": "SPACE1889.Skill",
+	"specialization": "SPACE1889.Specialization",
+	"health": "SPACE1889.Health",
+	"sense": "SPACE1889.Sense"
+};
+
+SPACE1889.senseTypes = {
+	"": "-",
+	"hearing": "SPACE1889.SenseHearing",
+	"smell": "SPACE1889.SenseSmell",
+	"taste": "SPACE1889.SenseTaste",
+	"vision": "SPACE1889.SenseVision",
+	"touch": "SPACE1889.SenseTouch"
 };
 
 SPACE1889.archetypes = {

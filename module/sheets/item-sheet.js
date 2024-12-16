@@ -56,10 +56,25 @@ export class Space1889ItemSheet extends ItemSheet {
 			context.system['publications'] = CONFIG.SPACE1889.publications;
 			context.system['skillGroups'] = CONFIG.SPACE1889.skillGroups;
 		}
-		else if (item.type == "talent")
+		else if (item.type === "talent")
 		{
 			context.system['preConditionTypes'] = CONFIG.SPACE1889.preConditionTypes;
 			context.system['publications'] = CONFIG.SPACE1889.publications;
+			context.system['primaryAbilityTypes'] = SPACE1889Helper.getSortedPrimaryAbilityTypes(true);
+			context.system['secondaryAbilityTypes'] = SPACE1889Helper.getSortedSecondaryAbilityTypes();
+			context.system['actorTypes'] = SPACE1889Helper.getSortedActorTypes();
+			context.system['speciesTypes'] = SPACE1889Helper.getSortedSpecies(true);
+			context.system['talents'] = await SPACE1889Helper.getSortedTalents();
+			context.system['skills'] = await SPACE1889Helper.getSortedSkillIdsWithLocalizedName(false, true);
+			context.system['skillsWithGroups'] = await SPACE1889Helper.getSortedSkillIdsWithLocalizedName(true, true, true);
+			context.system['weaknesses'] = await SPACE1889Helper.getSortedWeaknesses();
+			context.system['skillGroups'] = SPACE1889Helper.getSortedSkillGroups();
+			context.system['emptyEntry'] = [{ key: "", label: "" }];
+			context.system['bonusTypes'] = SPACE1889Helper.getSortedTalentBonusTypes();
+			context.system['senseTypes'] = SPACE1889Helper.getSortedSenseTypes();
+			context.system['specializations'] = context.system.bonusTargetType === "specialization"
+				? await SPACE1889Helper.getSortedSpecializations()
+				: [];
 		}
 		else if (item.type == "weapon")
 		{

@@ -2354,7 +2354,99 @@ export default class SPACE1889Helper
 		return list;
 	}
 
-	static async getSortedSkillIdsWithLocalizedName()
+	static getSortedActorTypes()
+	{
+		let list = [];
+		list.push({ key: "character", label: game.i18n.localize("TYPES.Actor.character") });
+		list.push({ key: "npc", label: game.i18n.localize("TYPES.Actor.npc") });
+		list.push({ key: "creature", label: game.i18n.localize("TYPES.Actor.creature") });
+		list.push({ key: "vehicle", label: game.i18n.localize("TYPES.Actor.vehicle") });
+
+		list.sort((a, b) => { return a.label.localeCompare(b.label); });
+		return list;
+	}
+
+	static getSortedPrimaryAbilityTypes(withEmptyElement = false)
+	{
+		let list = [];
+		const primaries = CONFIG.SPACE1889.abilities;
+		const keys = Object.keys(primaries);
+
+		for (const key of keys)
+		{
+			const name = game.i18n.localize(primaries[key]);
+			list.push({ key: key, label: name });
+		}
+
+		list.sort((a, b) => { return a.label.localeCompare(b.label); });
+		if (withEmptyElement)
+		{
+			list.splice(0, 0, { key: "", label: "-" });
+		}
+		return list;
+	}
+
+	static getSortedSecondaryAbilityTypes()
+	{
+		let list = [];
+		const secondaries = CONFIG.SPACE1889.secondaries;
+		const keys = Object.keys(secondaries);
+
+		for (const key of keys)
+		{
+			const name = game.i18n.localize(secondaries[key]);
+			list.push({ key: key, label: name });
+		}
+
+		list.sort((a, b) => { return a.label.localeCompare(b.label); });
+		return list;
+	}
+
+	static getSortedSpecies(addCombinations = false)
+	{
+		let list = [];
+		const species = CONFIG.SPACE1889.species;
+		const keys = Object.keys(species);
+
+		for (const key of keys)
+		{
+			const name = game.i18n.localize(species[key]);
+			list.push({ key: key, label: name });
+		}
+
+		let local = game.items.filter((x) => x.type === "species");
+		for (const item of local)
+		{
+			if (!list.find((x) => x.key === item.system.id))
+				list.push({ key: item.system.id, label: item.name });
+		}
+
+		if (addCombinations)
+		{
+			list.push({ key: "selenit;hochlandmarsianer", label: game.i18n.localize("SPACE1889.SpeciesSelenitAndHighMartian") });
+		}
+
+		list.sort((a, b) => { return a.label.localeCompare(b.label); });
+		return list;
+	}
+
+	static getSortedSkillGroups()
+	{
+		let list = [];
+		const skillGroups = CONFIG.SPACE1889.skillGroups;
+		const keys = Object.keys(skillGroups);
+
+		for (const key of keys)
+		{
+			const name = game.i18n.localize(skillGroups[key]);
+			list.push({ key: key, label: name });
+		}
+
+		list.sort((a, b) => { return a.label.localeCompare(b.label); });
+		return list;
+	}
+
+	static async getSortedSkillIdsWithLocalizedName(withSkillGroups = true, withEmptyElement = false, shortGroupNameAttachment = false)
 	{
 		let pack = game.packs.get("space1889.fertigkeiten");
 		let packDocs = await pack.getDocuments();
@@ -2363,6 +2455,9 @@ export default class SPACE1889Helper
 		let local = game.items.filter((x) => x.type === "skill");
 		for (const item of local)
 		{
+			if (!withSkillGroups && item.system.isSkillGroup)
+				continue;
+
 			if (!packDocs.find((x) => x.system.id === item.system.id))
 				packDocs.push(item);
 		}
@@ -2377,12 +2472,21 @@ export default class SPACE1889Helper
 		let skillList = [];
 		for (const item of packDocs)
 		{
+			if (!withSkillGroups && item.system.isSkillGroup)
+				continue;
+
 			const groupLangId = item.system.isSkillGroup ? game.space1889.config.skillGroups[item.system.skillGroupName] : "";
 			let name = item.system.label;
 			if (item.system.isSkillGroup)
-				name += ` (${game.i18n.localize(groupLangId)})`;
+			{
+				name += ` (${game.i18n.localize(groupLangId + (shortGroupNameAttachment ? "Abbr" : ""))})`;
+			}
 
 			skillList.push({ key: item.system.id, label: name, groupId: item.system.skillGroupName });
+		}
+		if (withEmptyElement)
+		{
+			skillList.splice(0, 0, { key: "", label: "-" });
 		}
 		return skillList;
 	}
@@ -2412,6 +2516,116 @@ export default class SPACE1889Helper
 		{
 			list.push({key: item.system.id, label: item.system.label});
 		}
+		return list;
+	}
+
+	static async getSortedSpecializations()
+	{
+		let pack = game.packs.get("space1889.spezialisierungen");
+		let packDocs = await pack.getDocuments();
+
+		// um lokale Spezialisierungen erweitern
+		let local = game.items.filter((x) => x.type === "specialization");
+
+		for (const item of local)
+		{
+			if (!packDocs.find((x) => x.system.id === item.system.id))
+				packDocs.push(item);
+		}
+
+		packDocs.sort((a, b) => { return a.system.label.localeCompare(b.system.label); });
+
+		let list = [];
+		for (const item of packDocs)
+		{
+			list.push({key: item.system.id, label: item.system.label, skillId: item.system.underlyingSkillId});
+		}
+		return list;
+	}
+
+	static async getSortedTalents(withEmptyElement = false)
+	{
+		let pack = game.packs.get("space1889.talente");
+		let packDocs = await pack.getDocuments();
+
+		// um lokale Talente erweitern
+		let local = game.items.filter((x) => x.type === "talent");
+		for (const item of local)
+		{
+			if (!packDocs.find((x) => x.system.id === item.system.id))
+				packDocs.push(item);
+		}
+
+		packDocs.sort((a, b) => { return a.system.label.localeCompare(b.system.label); });
+
+		let talentList = [];
+		for (const item of packDocs)
+		{
+			talentList.push({ key: item.system.id, label: item.system.label });
+		}
+		if (withEmptyElement)
+		{
+			talentList.splice(0, 0, { key: "", label: "-" });
+		}
+		return talentList;
+	}
+
+	static async getSortedWeaknesses(withEmptyElement = false)
+	{
+		let pack = game.packs.get("space1889.schwachen");
+		let packDocs = await pack.getDocuments();
+
+		// um lokale Schwäche erweitern
+		let local = game.items.filter((x) => x.type === "weakness");
+		for (const item of local)
+		{
+			if (!packDocs.find((x) => x.system.id === item.system.id))
+				packDocs.push(item);
+		}
+
+		packDocs.sort((a, b) => { return a.system.label.localeCompare(b.system.label); });
+
+		let weaknessList = [];
+		for (const item of packDocs)
+		{
+			weaknessList.push({ key: item.system.id, label: item.system.label });
+		}
+		if (withEmptyElement)
+		{
+			weaknessList.splice(0, 0, { key: "", label: "-" });
+		}
+		return weaknessList;
+	}
+
+	static getSortedTalentBonusTypes()
+	{
+		let list = [];
+		const bonusTypes = CONFIG.SPACE1889.talentBonusTypes;
+		const keys = Object.keys(bonusTypes);
+
+		for (const key of keys)
+		{
+			const name = bonusTypes[key] !== "-" ? game.i18n.localize(bonusTypes[key]) : bonusTypes[key];
+			list.push({ key: key, label: name });
+		}
+
+		list.sort((a, b) => { return a.label.localeCompare(b.label); });
+		return list;
+	}
+
+	static getSortedSenseTypes()
+	{
+		let list = [];
+		const senseTypes = CONFIG.SPACE1889.senseTypes;
+		const keys = Object.keys(senseTypes);
+
+		for (const key of keys)
+		{
+			const name = senseTypes[key] !== "-" ? game.i18n.localize(senseTypes[key]) : senseTypes[key];
+			list.push({ key: key, label: name });
+		}
+
+		list.sort((a, b) => { return a.label.localeCompare(b.label); });
 		return list;
 	}
 

@@ -16,6 +16,7 @@ export class Space1889Migration
 			await this.weaponTwoHandedIntroduction(lastUsedVersion);
 			await this.containerIntroduction(lastUsedVersion);
 			await this.damageRework(lastUsedVersion);
+			await this.updateTalentSkillGroup(lastUsedVersion);
 			await game.settings.set("space1889", "lastUsedSystemVersion", currentVersion);
 		}
 		if (game.user.isGM)
@@ -214,6 +215,36 @@ export class Space1889Migration
 
 		let actorList = this.getAllActorsWithoutVehicleAndCreature();
 		await SPACE1889Helper.createDamageTimestamps(actorList);
+	}	
+
+	static async updateTalentSkillGroup(lastUsedVersion)
+	{
+		const lastNonFixVersion = "2.3.3";
+		if (foundry.utils.isNewerVersion(lastUsedVersion, lastNonFixVersion) || !game.user.isGM)
+			return;
+		
+		let actorList = this.getAllActorsWithoutVehicleAndCreature();
+		for (let actor of actorList)
+		{
+			if (!actor.system.talents || actor.system.talents.length == 0)
+				continue;
+
+			let updateData = [];
+			for (let talent of actor.system.talents)
+			{
+				if (talent.system.preconditionType === "skill" && talent.system.isGroup)
+				{
+					updateData.push({ _id: talent._id, "system.preconditionType": "skillGroup" });
+					console.log(`${actor.name} (${actor.id}): talent: ${talent.system.id} (${talent.system.preconditionName})`);
+				}
+			}
+
+			if (updateData.length > 0)
+			{
+				await actor.updateEmbeddedDocuments("Item", updateData);
+				console.log(game.i18n.format("SPACE1889.MigrationTalentSkillGroup", { name: actor.name, id: actor._id }));
+			}
+		}
 	}	
 
 	static async migrateEffectsForFoundryV11(lastUsedVersion, lastUsedFoundryVersion)

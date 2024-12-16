@@ -1502,7 +1502,7 @@ export class Space1889ActorSheet extends ActorSheet {
 				return true;
 			}
 		}
-		else if (type == "skill" && isGroup)
+		else if ((type == "skill" && isGroup) || type === "skillGroup")
 		{
 			let maxLevel = 0;
 			for (let item of actor.items)

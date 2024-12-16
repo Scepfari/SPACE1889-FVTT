@@ -403,6 +403,18 @@
 	font-weight: bold;
 }
 
+	.space1889 .items-header-left {
+		height: 28px;
+		margin: 2px 0;
+		padding: 0;
+		-webkit-box-align: start;
+		-ms-flex-align: start;
+		align-items: center;
+		background: rgba(0, 0, 0, 0.05);
+		border: 2px groove #eeede0;
+		font-weight: bold;
+	}
+
 .space1889 .items-header-height40 {
 	height: 40px;
 	margin: 2px 0;
@@ -810,6 +822,10 @@ font-size: 12px;
 	font-size: 13px;
 }
 
+.noOverflow {
+	overflow: hidden;
+	min-width:0;
+}
 
 .space1889list {
 	list-style-type: none;
