@@ -287,7 +287,8 @@ SPACE1889.talentBonusTypes = {
 	"skill": "SPACE1889.Skill",
 	"specialization": "SPACE1889.Specialization",
 	"health": "SPACE1889.Health",
-	"sense": "SPACE1889.Sense"
+	"sense": "SPACE1889.Sense",
+	"gravity": "SPACE1889.TalentSchwerkraftadaption"
 };
 
 SPACE1889.senseTypes = {

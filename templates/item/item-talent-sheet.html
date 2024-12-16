@@ -271,6 +271,13 @@
 			<!--<input type="text" name="system.bonusTarget" value="{{system.bonusTarget}}" />-->
 		</div>
 		{{/if}}
+		{{#if (eq system.bonusTargetType 'gravity')}}
+		<div class="resource">
+			<select name="system.bonusTarget" data-dtype="String">
+				{{selectOptions system.gravity selected=system.bonusTarget localize=true}}
+			</select>
+		</div>
+		{{/if}}
 		
 		<div class="resource-content flex-center flex-between">
 			<input type="text" name="system.bonus" value="{{system.bonus}}" data-dtype="Number"/>

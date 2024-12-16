@@ -75,6 +75,7 @@ export class Space1889ItemSheet extends ItemSheet {
 			context.system['specializations'] = context.system.bonusTargetType === "specialization"
 				? await SPACE1889Helper.getSortedSpecializations()
 				: [];
+			context.system['gravity'] = CONFIG.SPACE1889.gravity;
 		}
 		else if (item.type == "weapon")
 		{
