@@ -2,6 +2,19 @@
 
 ## Mondreich
 
+### v2.3.4
+- Schwerkraft:
+  - Bei SCs und NSCs kann jetzt die Heimatschwerkraft eingetragen werden
+  - Im Charakterbogen erscheint ein Hinweis, falls sich der Charakter im ungewohnten Schwerkraftfeld bewegt
+  - Der Tooltip gibt über den Malus Auskunft, wobei Eingewöhnungszeit, sowie die Talente Schwerkrafterfahren und Schwerkraftadaption beachtet werden
+  - Anpassung der Charakter in den Kompendien
+- Überarbeitung der Bearbeiten / Löschen Icons im Charakterbogen (Stil und Tooltip)
+- Grundressourcen lassen sich nun im Charakterbogen editieren
+- Überarbeitung des Talentbogens: Anstelle der in der Hilfe aufgelisteten Schlüssel einzutragen, lassen sich nun alle Werte bequem über Auswahlboxen einstellen
+- Neuer Munitionstyp Sonnenstrahlen eingeführt, für Waffen die kein Munitionselement benötigen. z.B. wie das Solargewehr
+- Bugfix: fix Add Ressource Knopf im NPC Bogen
+- Bugfix: Talent Innerer Kompass im Kompendium korrigiert, sodass der Bonus auf Orientierung nun enthalten ist
+
 ### v2.3.3
 - Lichtquellen und Sicht: Das System besitzt zwei neue Item Typen (Lichtquelle Sichtverbesserung), die im Inventar von Charakteren dazu genutzt werden können, schnell die Licht und Sicht Einstellungen von Figuren zu beeinflussen. Ist das Modul Simple Calendar aktiv, werden die Einstellungen nach Ablauf der Wirkungsdauer automatisch zurückgesetzt. Einzelheiten dazu können der Hilfe entnommen werden.   
 - Gehaltene Lichtquellen können fallen gelassen werden, falls die den Sturz unbeschadet überstehen, wird an der Stelle des Token eine Lichtquelle auf der Beleuchtungsebene platziert, die nach der Restleuchtzeit automatisch verlischt (benötigt Simple Calendar). 
