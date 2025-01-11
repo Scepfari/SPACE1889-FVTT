@@ -924,7 +924,7 @@ export default class SPACE1889Helper
 	
 		const speaker = ChatMessage.getSpeaker({ actor: actor });
 			
-		const label = `<div><h2>${game.i18n.localize("SPACE1889.AmmunitionReload")}</h2></div>`;
+		const label = `<div><h2>${game.i18n.localize("SPACE1889.AmmunitionReload")}<small> (${currentAmmo.system.label})</small></h2></div>`;
 		desc = label + `<div>${desc}</div>`;
 		ChatMessage.create({
 			speaker: speaker,
@@ -971,7 +971,7 @@ export default class SPACE1889Helper
 		const infoId = SPACE1889Helper.getTalentLevel(actor, "schnellladen") > 0 ? "SPACE1889.AmmunitionInstantUnload" : "SPACE1889.AmmunitionDefaultUnloadAction";
 			
 		let desc = game.i18n.format(infoId, { weaponName: weapon.name });
-		const label = `<div><h2>${game.i18n.localize("SPACE1889.AmmunitionUnload")}</h2></div>`;
+		const label = `<div><h2>${game.i18n.localize("SPACE1889.AmmunitionUnload")}<small> (${currentAmmo.system.label})</small></h2></div>`;
 		desc = label + `<div>${desc}</div>`;
 		ChatMessage.create({
 			speaker: speaker,
