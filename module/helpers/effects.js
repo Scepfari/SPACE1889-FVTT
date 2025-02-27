@@ -73,7 +73,8 @@ export function getEffectInfoText(effect, forChat = false)
 		}
 	}
 
-	desc += forChat ? SPACE1889Helper.getItemChatImageHtml(effect.icon, true) : SPACE1889Helper.getItemChatImageHtml(effect.icon, true, 150);
+	const effectImage = game.release.generation >= 12 ? effect.img : effect.icon;
+	desc += forChat ? SPACE1889Helper.getItemChatImageHtml(effectImage, true) : SPACE1889Helper.getItemChatImageHtml(effectImage, true, 150);
 
 	if (effect.disabled)
 		desc += `<p><strong>${game.i18n.localize("SPACE1889.EffectDeactivated")}</strong></p>`;
