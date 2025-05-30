@@ -3184,6 +3184,8 @@
 	"SPACE1889.KeyInfoNpcsDrawWeapon": "Prepare the weapons for all selected or all NPCs of a scene, asking whether melee or ranged weapons should be preferred. The weapon with the highest damage is chosen. The corresponding messages in the chat are whispered to the GM. Quick access for the SPACE menu option of the same name.",
 	"SPACE1889.KeyCloseSingleWindow": "Close active window",
 	"SPACE1889.KeyInfoCloseSingleWindow": "The key combination entered here has priority over those from the system, i.e. if the default is left at ESC, only the active window and not all open windows (sheets, notes, etc.) will be closed when ESC is pressed.",
+	"SPACE1889.KeyShowTokenArt": "Show token art",
+	"SPACE1889.KeyShowCharacterArt": "Show character art of token",
 	"SPACE1889.ConfigUseGmTokenMovementLimiter": "GM token movement restriction",
 	"SPACE1889.ConfigUseGmTokenMovementLimiterInfo": "activates the token movement restriction for the SL as well. Can be toggled via the key combination [Ctrl + B].",
 	"SPACE1889.KeyRollAnySkill": "Roll skill",

@@ -9,6 +9,9 @@ import { SPACE1889 } from "./config.js";
 
 export default class SPACE1889Helper
 {
+	static lastTokenArt = "";
+	static lastCharacterArt = "";
+
 	static getTalentData(actor, talentId)
 	{
 		return actor?.system?.talents?.find(entry => entry.system.id === talentId);
@@ -562,7 +565,7 @@ export default class SPACE1889Helper
 				title: hide ? (isOwner ? name : "-") : name,
 				shareable: true,
 				uuid
-			}).render(true)
+			}).render(true);
 	}
 
 	static getControlledTokenDocument()
@@ -2096,6 +2099,32 @@ export default class SPACE1889Helper
 		const image = $(ev.currentTarget);
 		const src = image[0].src;
 		new ImagePopout(src, { editable: false, shareable: true }).render(true);
+	}
+
+	static showTokenArt()
+	{
+		if (this.lastTokenArt)
+			new ImagePopout(this.lastTokenArt, { editable: false, shareable: true }).render(true);
+	}
+
+	static showCharacterArt()
+	{
+		if (this.lastCharacterArt)
+			new ImagePopout(this.lastCharacterArt, { editable: false, shareable: true }).render(true);
+	}
+
+	static setLastTokenArt(token)
+	{
+		this.lastTokenArt = token?.document?.texture?.src;
+
+		if (this.hasTokenOwnership(token?.id))
+			this.lastCharacterArt = token?.actor?.img;
+	}
+
+	static resetLastTokenArt()
+	{
+		this.lastTokenArt = undefined;
+		this.lastCharacterArt = undefined;
 	}
 
 	static isGerman()

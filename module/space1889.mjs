@@ -189,8 +189,8 @@ Hooks.once("setup", () =>
 		editable: [
 			{
 				key: 'Escape',
-				modifiers: [],
-			},
+				modifiers: []
+			}
 		],
 		onDown: () =>
 		{
@@ -213,6 +213,26 @@ Hooks.once("setup", () =>
 		},
 		restricted: false,
 		precedence: CONST.KEYBINDING_PRECEDENCE.PRIORITY,
+	});
+
+	game.keybindings.register("space1889", "showTokenArt", {
+		name: "SPACE1889.KeyShowTokenArt",
+		hint: game.i18n.localize("SPACE1889.KeyInfoRollAnySkill"),
+		editable: [{ key: "KeyI" }],
+		onDown: () =>
+		{
+			SPACE1889Helper.showTokenArt();
+		}
+	});
+
+	game.keybindings.register("space1889", "showCharacterArt", {
+		name: "SPACE1889.KeyShowCharacterArt",
+		hint: game.i18n.localize("SPACE1889.KeyInfoRollAnySkill"),
+		editable: [{ key: "KeyI", modifiers: [KeyboardManager.MODIFIER_KEYS.SHIFT] }],
+		onDown: () =>
+		{
+			SPACE1889Helper.showCharacterArt();
+		}
 	});
 });
 
@@ -371,9 +391,17 @@ Hooks.on("deleteToken", (token) => {
 	SPACE1889Helper.regenerateMarkers();
 });
 
+Hooks.on('hoverToken', (token, hovered) =>
+{
+	if (hovered)
+		SPACE1889Helper.setLastTokenArt(token);
+	else
+		SPACE1889Helper.resetLastTokenArt();
+});
+
 Hooks.on('preCreateToken', (token, data, options, userId) =>
 {
-	const actor = token.actor
+	const actor = token.actor;
 	if (!actor)
 		return;
 
