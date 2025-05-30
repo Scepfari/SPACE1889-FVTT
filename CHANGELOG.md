@@ -2,6 +2,13 @@
 
 ## Mondreich
 
+### v2.3.5
+- Das Figuren bzw. das Charakterbild einer Figur kann nun per Tastendruck, Standard ist [I] bzw. [SHIFT][I], in groß angezeigt werden. Dafür muss nur der Mauszeiger vorher über der gewünschten Figur platziert werden.
+- Bugfixes:
+  - Beim Laden und Entladen von Waffen wird im Chat nun auch die Munitionsart mit angegeben
+  - Berechung des Schwerkraftsmalus im Charakterbogen wurde korrigiert, wodurch das Talent Schwerkraftadaption richtig beachtet wird, d.h. von allen Heimat Schwerkraftzone wird die, die am nächsten an der aktuellen Zone liegt, für die Malusberechung herangezogen.
+  - Entfernen von Foundry V12 warnings
+
 ### v2.3.4
 - Schwerkraft:
   - Bei SCs und NSCs kann jetzt die Heimatschwerkraft eingetragen werden
