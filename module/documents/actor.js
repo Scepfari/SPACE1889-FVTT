@@ -1528,9 +1528,7 @@ export class Space1889Actor extends Actor
 		}
 
 		actor.system.gravity.acclimatizationMalus = acclimatizationMalus;
-		const malusToHomeWorld = SPACE1889Helper.isHomeGravityZone(actor)
-			? 0
-			: SPACE1889Helper.getGravityMalus(CONFIG.SPACE1889.gravityZone[actor.system.homeGravity]?.zone, actor.system.gravity.zone);
+		const malusToHomeWorld = SPACE1889Helper.getMalusToHomeWorld(actor);
 		actor.system.gravity.malus = Math.max(0, malusToHomeWorld - gravityMalusReduction) + acclimatizationMalus;
 		actor.system.gravity.malusToolTip = actor.system.gravity.malus > 0 
 			? game.i18n.format("SPACE1889.GravityMalusTooltip", { malus: actor.system.gravity.malus, acclimatization: acclimatizationMalus, baseTime: acclimatizationBaseTime }) 

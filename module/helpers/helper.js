@@ -1973,6 +1973,40 @@ export default class SPACE1889Helper
 		return homeZones.includes(currentGravity.zone);
 	}
 
+	static getMalusToHomeWorld(actor)
+	{
+		if (!actor)
+			return 0;
+
+		const currentGravity = this.getGravity();
+
+		const actorHomeZone = CONFIG.SPACE1889.gravityZone[actor.system.homeGravity]?.zone;
+		let homeZones = [actorHomeZone !== undefined ? actorHomeZone : 1.0];
+		for (const talent of actor.system.talents)
+		{
+			if (talent.system.bonusTargetType !== "gravity")
+				continue;
+			const zone = CONFIG.SPACE1889.gravityZone[talent.system.bonusTarget]?.zone;
+			if (zone !== undefined)
+				homeZones.push(zone);
+		}
+
+		let minDelta = 100;
+		let bestZone = actorHomeZone;
+		for (const zone of homeZones)
+		{
+			const delta = Math.abs(zone - currentGravity.zone);
+			if (minDelta > delta)
+			{
+				minDelta = delta;
+				bestZone = zone;
+			}
+		}
+
+		return SPACE1889Helper.getGravityMalus(bestZone, currentGravity.zone);
+	}
+
+
 	static getGravityMalus(baseZone, currentZone)
 	{
 		const malus = Math.round(100 * Math.abs(baseZone - currentZone) / 0.2) / 100;
