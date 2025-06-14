@@ -349,7 +349,8 @@
 			"bonusTarget": "",
 			"bonusTargetType": "",
 			"bonusStartLevel": 1,
-			"info": ""
+			"info": "",
+			"noEp": false
 		},
 		"skill": {
 			"templates": [ "description", "skillbase", "id", "source" ],

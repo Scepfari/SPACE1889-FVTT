@@ -18,7 +18,7 @@
 			</div>
 			{{/if}}
 			<div class="item-name" data-tooltip="{{fullItemToolTipDescription item}}" data-tooltip-direction="RIGHT">
-				<h4 class="rollable" data-roll-type="item">{{item.system.label}}	</h4>
+				<h4 class="rollable" data-roll-type="item">{{item.system.label}} {{#if item.system.noEp }} <i class="fa fa-user-plus" aria-hidden="true"></i>{{/if}}</h4>
 			</div>
 			<div class="item-max-with40px">
 				<a class="increment-click">{{item.system.level.value}}</a>

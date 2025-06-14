@@ -1759,7 +1759,8 @@ export class Space1889Actor extends Actor
 			}
 			else if (item.type == "talent")
 			{
-				xp += item.system.level.value * baseXp;
+				if (!item.system.noEp)
+					xp += item.system.level.value * baseXp;
 			}
 			else if (item.type == "resource")
 			{
