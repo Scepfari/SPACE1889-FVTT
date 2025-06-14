@@ -2,6 +2,9 @@
 
 ## Mondreich
 
+### v2.3.6
+- Talente haben nun einen Schalter Kampagnen Effekt. Wird dieser aktiviert, wird das Talent von der Berechnung der verwendeten Erfahrungspunkte ausgenommen.
+
 ### v2.3.5
 - Das Figuren bzw. das Charakterbild einer Figur kann nun per Tastendruck, Standard ist [I] bzw. [SHIFT][I], in groß angezeigt werden. Dafür muss nur der Mauszeiger vorher über der gewünschten Figur platziert werden.
 - Bugfixes:
