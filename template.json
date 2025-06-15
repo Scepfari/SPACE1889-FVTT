@@ -350,19 +350,24 @@
 			"bonusTargetType": "",
 			"bonusStartLevel": 1,
 			"info": "",
-			"noEp": false
+			"noEp": false,
+			"noEpSource":  "" 
 		},
 		"skill": {
 			"templates": [ "description", "skillbase", "id", "source" ],
 			"underlyingAttribute": "dex",
 			"talentBonus": 0,
 			"isSkillGroup": false,
-			"skillGroupName": ""
+			"skillGroupName": "",
+			"noEpFirstLevel": false,
+			"noEpSource": ""
 		},
 		"specialization": {
 			"templates": [ "description", "skillbase", "id" ],
 			"underlyingSkillId": "akrobatik",
-			"noSelection": false
+			"noSelection": false,
+			"noEpFirstLevel": false,
+			"noEpSource": ""
 		},
 		"weapon": {
 			"templates": [ "description", "weight", "id", "location", "price", "containerId" ],
@@ -423,7 +428,8 @@
 				"max": 5
 			},
 			"isBase": false,
-			"noEp": false
+			"noEp": false,
+			"noEpSource": ""
 		},
 		"language": {
 			"templates": [ "id" ],

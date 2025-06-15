@@ -429,7 +429,7 @@ export class Space1889Item extends Item {
 
 			if (this.type === "talent")
 			{
-				let desc = this.system.noEp ? `<em><strong>${game.i18n.localize("SPACE1889.IsCampaingnEffect")}</strong></em>` : "";
+				let desc = this.system.noEp ? `<em><strong>${game.i18n.localize("SPACE1889.IsCampaingnEffect")}</strong></em> [${game.i18n.localize("SPACE1889.Source")}: ${this.system.noEpSource}]` : "";
 
 				if (this.system.level.max > 1)
 					desc += this._addLine("SPACE1889.Level", this.system.level.value, "", desc.length > 0);

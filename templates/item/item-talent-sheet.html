@@ -312,10 +312,14 @@
     <div>
     <li class="item flexrow items-header">
 	    <label class="resource-label">{{ localize "SPACE1889.IsCampaingnEffect"}}</label>
+	    <label class="resource-label">{{ localize "SPACE1889.Source"}}</label>
     </li>
     <li class="item flex-group-center flexrow">
 	    <div class="resource-content flex-center flex-between">
 		    <input data-tooltip="{{localize "SPACE1889.NoEpCauseTempCampaingnEffect"}}" type="checkbox" name="system.noEp" {{checked system.noEp}} />
+	    </div>
+	    <div class="resource-content flex-center flex-between">
+		    <input type="text" name="system.noEpSource" value="{{system.noEpSource}}" />
 	    </div>
     </li>
 	</div>

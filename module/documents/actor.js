@@ -351,6 +351,10 @@ export class Space1889Actor extends Actor
 				item.system.level.effectBonus = SPACE1889Helper.getBonusFromEffects("system.level.effectBonus", item.effects);
 				item.system.level.total = SPACE1889Helper.constrain(item.system.level.value + this.getAsNumber(item.system.level.effectBonus), item.system.level.min, item.system.level.max);
 			}
+			else if (item.type === 'skill' || item.type === 'specialization')
+			{
+				item.system.effectBonus = SPACE1889Helper.getBonusFromEffects("system.effectBonus", item.effects);
+			}
 		}
 
 		for (let [key, ability] of Object.entries(actor.system.abilities))
@@ -1746,18 +1750,22 @@ export class Space1889Actor extends Actor
 
 		for (let item of actor.items)
 		{
-			if (item.type == "skill")
+			if (item.type === "skill")
 			{
 				xp += this.CalcPartialSum(item.system.level) * 2;
+				if (item.system.noEpFirstLevel && item.system.level >= 1)
+					xp -= 2;
 			}
-			else if (item.type == "specialization")
+			else if (item.type === "specialization")
 			{
 				if (houseRoule)
 					xp += this.CalcPartialSum(item.system.level);
 				else
 					xp += item.system.level * 3;
+				if (item.system.noEpFirstLevel)
+					xp -= houseRoule ? 1 : 3;
 			}
-			else if (item.type == "talent")
+			else if (item.type === "talent")
 			{
 				if (!item.system.noEp)
 					xp += item.system.level.value * baseXp;
@@ -1805,7 +1813,7 @@ export class Space1889Actor extends Actor
 	CalcPartialSum(n)
 	{
 		n = Math.round(n);
-		return (n * (n + 1)) / 2
+		return (n * (n + 1)) / 2;
 	}
 
 	IsHouseRouleXpCalculationActive()
