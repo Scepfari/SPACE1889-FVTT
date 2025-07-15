@@ -144,7 +144,7 @@ Hooks.once("setup", () =>
 	game.keybindings.register("space1889", "combatToggleMovementLimiter", {
 		name: "SPACE1889.KeyMovementLimiter",
 		hint: game.i18n.localize("SPACE1889.KeyInfoMovementLimiter"),
-		editable: [{ key: "KeyB", modifiers: [KeyboardManager.MODIFIER_KEYS.CONTROL] }],
+		editable: [{ key: "KeyB", modifiers: [foundry.helpers.interaction.KeyboardManager.MODIFIER_KEYS.CONTROL] }],
 		restricted: true,
 		onDown: () =>
 		{
@@ -227,7 +227,7 @@ Hooks.once("setup", () =>
 	game.keybindings.register("space1889", "showCharacterArt", {
 		name: "SPACE1889.KeyShowCharacterArt",
 		hint: game.i18n.localize("SPACE1889.KeyInfoRollAnySkill"),
-		editable: [{ key: "KeyI", modifiers: [KeyboardManager.MODIFIER_KEYS.SHIFT] }],
+		editable: [{ key: "KeyI", modifiers: [foundry.helpers.interaction.KeyboardManager.MODIFIER_KEYS.SHIFT] }],
 		onDown: () =>
 		{
 			SPACE1889Helper.showCharacterArt();
