@@ -1,4 +1,3 @@
-import TurnMarker from "../helpers/turnMarker.js";
 import SPACE1889RollHelper from "./roll-helper.js";
 import SPACE1889Time from "./time.js";
 import SPACE1889Healing from "../helpers/healing.js";
@@ -539,23 +538,6 @@ export default class SPACE1889Helper
 
 		const list = [3000, 2000, 1000];
 		return list[speed - 1];
-	}
-
-//function refreshSpaceCombatMarker()
-	static regenerateMarkers()
-	{
-		if (!game.combat?.started)
-			return;
-		if (!game.settings.get("space1889", "useCombatTurnMarker"))
-			return;
-		if (!canvas.tokens.Space1889TurnMarker)
-			new TurnMarker();
-		canvas.tokens.Space1889TurnMarker?.MoveToCombatant();
-	}
-
-	static refreshTurnMarker(reallyDestroy)
-	{
-		canvas.tokens?.Space1889TurnMarker?.Destroy(reallyDestroy);
 	}
 
 	static async showArtwork({ img, name, uuid, isOwner }, hide = false) 

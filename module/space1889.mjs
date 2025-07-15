@@ -20,7 +20,6 @@ import SPACE1889Time from "./helpers/time.js";
 import SPACE1889Light from "./helpers/light.js";
 import DistanceMeasuring from "./helpers/distanceMeasuring.js";
 import { Space1889Combat, Space1889Combatant } from "./helpers/combatTracker.js";
-import TurnMarker from "./helpers/turnMarker.js";
 import * as CleanHeader from "./ui/cleanHeader.js";
 import * as sideBar from "./ui/sidebar.js";
 import * as tokenHud from "./ui/tokenHud.js";
@@ -346,24 +345,8 @@ Hooks.on("canvasInit", function ()
 		SquareGrid.prototype.measureDistances = DistanceMeasuring.measureDistances;
 });
 
-Hooks.on("canvasReady", function ()
-{
-	if (game.settings.get("space1889", "useCombatTurnMarker"))
-	{
-		new TurnMarker();
-
-		Hooks.once("renderCombatTracker", function ()
-		{
-			SPACE1889Helper.regenerateMarkers();
-			if (canvas.tokens.Space1889TurnMarker && !canvas.tokens.Space1889TurnMarker.token)
-				canvas.tokens.Space1889TurnMarker.MoveToCombatant();
-		});
-	}
-});
-
 Hooks.on("updateCombat", function () 
 {
-	SPACE1889Helper.regenerateMarkers();
 	if (game.combat)
 	{
 		game.combat.checkEffectLifeTime();
@@ -376,19 +359,6 @@ Hooks.on("preDeleteCombat", function (combat, dummy, id)
 {
 	if (combat)
 		combat.cleanEffectsOnCombatEnd();
-})
-
-Hooks.on("updateToken", function (token, updates)
-{
-	if (token.id === canvas.tokens.Space1889TurnMarker?.token?.id)
-	{
-		if ("texture" in updates)
-			canvas.tokens.Space1889TurnMarker.Update();
-	}
-});
-
-Hooks.on("deleteToken", (token) => {
-	SPACE1889Helper.regenerateMarkers();
 });
 
 Hooks.on('hoverToken', (token, hovered) =>
