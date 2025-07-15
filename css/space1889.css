@@ -815,6 +815,7 @@ font-size: 12px;
 	top: -85px;
 	left: calc(50% - 125px);
 	opacity: 0.9;
+	animation-duration: 0s;
 }
 
 #pause .pause-space1889 {
