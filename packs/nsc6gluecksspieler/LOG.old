@@ -1,0 +1,8 @@
+2025/07/16-01:13:08.814 5ca8 Recovering log #4
+2025/07/16-01:13:09.042 5ca8 Delete type=0 #4
+2025/07/16-01:13:09.042 5ca8 Delete type=3 #2
+2025/07/16-01:30:08.780 1050 Level-0 table #9: started
+2025/07/16-01:30:08.780 1050 Level-0 table #9: 0 bytes OK
+2025/07/16-01:30:08.908 1050 Delete type=0 #7
+2025/07/16-01:30:09.222 1050 Manual compaction at level-0 from '!actors!GamyxLLfqcN55iNo' @ 72057594037927935 : 1 .. '!actors.items!dYnwRGMVQU0u6dIS.wBDuzmcoocxFhbXX' @ 0 : 0; will stop at (end)
+2025/07/16-01:30:09.222 1050 Manual compaction at level-1 from '!actors!GamyxLLfqcN55iNo' @ 72057594037927935 : 1 .. '!actors.items!dYnwRGMVQU0u6dIS.wBDuzmcoocxFhbXX' @ 0 : 0; will stop at (end)

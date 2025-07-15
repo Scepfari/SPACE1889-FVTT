@@ -4,12 +4,10 @@
 	"title": "Space 1889",
 	"description": "The SPACE 1889 Ubiquity system for FoundryVTT!",
 	"version": "2.3.6",
-	"minimumCoreVersion": "10",
-	"compatibleCoreVersion": "10",
 	"compatibility": {
-		"minimum": 10,
-		"verified": "12.343",
-		"maximum": 13.341
+		"minimum": 13,
+		"verified": "13.341",
+		"maximum": 13
 	},
 
 	"authors": [
@@ -31,7 +29,7 @@
 			"name": "fertigkeiten",
 			"label": "Fertigkeiten",
 			"system": "space1889",
-			"path": "./packs/fertigkeiten.db",
+			"path": "packs/fertigkeiten",
 			"type": "Item",
 			"ownership": {
 				"PLAYER": "OBSERVER",
@@ -43,7 +41,7 @@
 			"name": "ressourcen",
 			"label": "Ressourcen",
 			"system": "space1889",
-			"path": "./packs/ressourcen.db",
+			"path": "packs/ressourcen",
 			"type": "Item",
 			"ownership": {
 				"PLAYER": "OBSERVER",
@@ -55,7 +53,7 @@
 			"name": "rustungen",
 			"label": "Ruestungen",
 			"system": "space1889",
-			"path": "./packs/rustungen.db",
+			"path": "packs/rustungen",
 			"type": "Item",
 			"ownership": {
 				"PLAYER": "OBSERVER",
@@ -67,7 +65,7 @@
 			"name": "schwachen",
 			"label": "Schwaechen",
 			"system": "space1889",
-			"path": "./packs/schwachen.db",
+			"path": "packs/schwachen",
 			"type": "Item",
 			"ownership": {
 				"PLAYER": "OBSERVER",
@@ -79,7 +77,7 @@
 			"name": "spezialisierungen",
 			"label": "Spezialisierungen",
 			"system": "space1889",
-			"path": "./packs/spezialisierungen.db",
+			"path": "packs/spezialisierungen",
 			"type": "Item",
 			"ownership": {
 				"PLAYER": "OBSERVER",
@@ -91,7 +89,7 @@
 			"name": "sprachen",
 			"label": "Sprachen",
 			"system": "space1889",
-			"path": "./packs/sprachen.db",
+			"path": "packs/sprachen",
 			"type": "Item",
 			"ownership": {
 				"PLAYER": "OBSERVER",
@@ -103,7 +101,7 @@
 			"name": "talente",
 			"label": "Talente",
 			"system": "space1889",
-			"path": "./packs/talente.db",
+			"path": "packs/talente",
 			"type": "Item",
 			"ownership": {
 				"PLAYER": "OBSERVER",
@@ -115,7 +113,7 @@
 			"name": "waffen",
 			"label": "Waffen",
 			"system": "space1889",
-			"path": "./packs/waffen.db",
+			"path": "packs/waffen",
 			"type": "Item",
 			"ownership": {
 				"PLAYER": "OBSERVER",
@@ -127,7 +125,7 @@
 			"name": "munition",
 			"label": "Munition",
 			"system": "space1889",
-			"path": "./packs/munition.db",
+			"path": "packs/munition",
 			"type": "Item",
 			"ownership": {
 				"PLAYER": "OBSERVER",
@@ -139,7 +137,7 @@
 			"name": "gegenstaende",
 			"label": "Gegenstaende",
 			"system": "space1889",
-			"path": "./packs/gegenstaende.db",
+			"path": "packs/gegenstaende",
 			"type": "Item",
 			"ownership": {
 				"PLAYER": "OBSERVER",
@@ -151,7 +149,7 @@
 			"name": "beispielcharaktere",
 			"label": "Beispielcharaktere",
 			"system": "space1889",
-			"path": "./packs/beispielcharaktere.db",
+			"path": "packs/beispielcharaktere",
 			"type": "Actor",
 			"ownership": {
 				"PLAYER": "OBSERVER",
@@ -163,7 +161,7 @@
 			"name": "kreaturenerde",
 			"label": "Kreaturen-Erde",
 			"system": "space1889",
-			"path": "./packs/kreaturen-erde.db",
+			"path": "packs/kreaturen-erde",
 			"type": "Actor",
 			"ownership": {
 				"PLAYER": "NONE",
@@ -175,7 +173,7 @@
 			"name": "kreaturenluna",
 			"label": "Kreaturen-Luna",
 			"system": "space1889",
-			"path": "./packs/kreaturen-luna.db",
+			"path": "packs/kreaturen-luna",
 			"type": "Actor",
 			"ownership": {
 				"PLAYER": "NONE",
@@ -187,7 +185,7 @@
 			"name": "kreaturenmars",
 			"label": "Kreaturen-Mars",
 			"system": "space1889",
-			"path": "./packs/kreaturen-mars.db",
+			"path": "packs/kreaturen-mars",
 			"type": "Actor",
 			"ownership": {
 				"PLAYER": "NONE",
@@ -199,7 +197,7 @@
 			"name": "kreaturenvenus",
 			"label": "Kreaturen-Venus",
 			"system": "space1889",
-			"path": "./packs/kreaturen-venus.db",
+			"path": "packs/kreaturen-venus",
 			"type": "Actor",
 			"ownership": {
 				"PLAYER": "NONE",
@@ -211,7 +209,7 @@
 			"name": "kreaturenmerkur",
 			"label": "Kreaturen-Merkur",
 			"system": "space1889",
-			"path": "./packs/kreaturen-merkur.db",
+			"path": "packs/kreaturen-merkur",
 			"type": "Actor",
 			"ownership": {
 				"PLAYER": "NONE",
@@ -223,7 +221,7 @@
 			"name": "gelderde",
 			"label": "Geld-Erde",
 			"system": "space1889",
-			"path": "./packs/geld-erde.db",
+			"path": "packs/geld-erde",
 			"type": "Item",
 			"ownership": {
 				"PLAYER": "OBSERVER",
@@ -235,7 +233,7 @@
 			"name": "geldmars",
 			"label": "Geld-Mars",
 			"system": "space1889",
-			"path": "./packs/geld-mars.db",
+			"path": "packs/geld-mars",
 			"type": "Item",
 			"ownership": {
 				"PLAYER": "OBSERVER",
@@ -247,7 +245,7 @@
 			"name": "makros",
 			"label": "Makros",
 			"system": "space1889",
-			"path": "./packs/makros.db",
+			"path": "packs/makros",
 			"type": "Macro",
 			"ownership": {
 				"PLAYER": "OBSERVER",
@@ -259,7 +257,7 @@
 			"name": "nsc1beamte",
 			"label": "Beamte",
 			"system": "space1889",
-			"path": "./packs/nsc1beamte.db",
+			"path": "packs/nsc1beamte",
 			"type": "Actor",
 			"ownership": {
 				"PLAYER": "NONE",
@@ -271,7 +269,7 @@
 			"name": "nsc1buehnenkuenstler",
 			"label": "Buehnenkuenstler",
 			"system": "space1889",
-			"path": "./packs/nsc1buehnenkuenstler.db",
+			"path": "packs/nsc1buehnenkuenstler",
 			"type": "Actor",
 			"ownership": {
 				"PLAYER": "NONE",
@@ -283,7 +281,7 @@
 			"name": "nsc1dienstpersonal",
 			"label": "Dienstpersonal",
 			"system": "space1889",
-			"path": "./packs/nsc1dienstpersonal.db",
+			"path": "packs/nsc1dienstpersonal",
 			"type": "Actor",
 			"ownership": {
 				"PLAYER": "NONE",
@@ -295,7 +293,7 @@
 			"name": "nsc1haendlerundkaufleute",
 			"label": "Haendler Und Kaufleute",
 			"system": "space1889",
-			"path": "./packs/nsc1haendlerundkaufleute.db",
+			"path": "packs/nsc1haendlerundkaufleute",
 			"type": "Actor",
 			"ownership": {
 				"PLAYER": "NONE",
@@ -307,7 +305,7 @@
 			"name": "nsc1handwerker",
 			"label": "Handwerker",
 			"system": "space1889",
-			"path": "./packs/nsc1handwerker.db",
+			"path": "packs/nsc1handwerker",
 			"type": "Actor",
 			"ownership": {
 				"PLAYER": "NONE",
@@ -319,7 +317,7 @@
 			"name": "nsc2eingeborene",
 			"label": "Eingeborene",
 			"system": "space1889",
-			"path": "./packs/nsc2eingeborene.db",
+			"path": "packs/nsc2eingeborene",
 			"type": "Actor",
 			"ownership": {
 				"PLAYER": "NONE",
@@ -331,7 +329,7 @@
 			"name": "nsc3herrenunddamenvonstand",
 			"label": "Herren und Damen von Stand",
 			"system": "space1889",
-			"path": "./packs/nsc3herrenunddamenvonstand.db",
+			"path": "packs/nsc3herrenunddamenvonstand",
 			"type": "Actor",
 			"ownership": {
 				"PLAYER": "NONE",
@@ -343,7 +341,7 @@
 			"name": "nsc4hochlandmarsianer",
 			"label": "Hochlandmarsianer",
 			"system": "space1889",
-			"path": "./packs/nsc4hochlandmarsianer.db",
+			"path": "packs/nsc4hochlandmarsianer",
 			"type": "Actor",
 			"ownership": {
 				"PLAYER": "NONE",
@@ -355,7 +353,7 @@
 			"name": "nsc4huegelmarsianer",
 			"label": "Huegelmarsianer",
 			"system": "space1889",
-			"path": "./packs/nsc4huegelmarsianer.db",
+			"path": "packs/nsc4huegelmarsianer",
 			"type": "Actor",
 			"ownership": {
 				"PLAYER": "NONE",
@@ -367,7 +365,7 @@
 			"name": "nsc5militaer",
 			"label": "Militaer",
 			"system": "space1889",
-			"path": "./packs/nsc5militaer.db",
+			"path": "packs/nsc5militaer",
 			"type": "Actor",
 			"ownership": {
 				"PLAYER": "NONE",
@@ -379,7 +377,7 @@
 			"name": "nsc6amuesierdamen",
 			"label": "Amuesierdamen und gestrauchelte Frauen",
 			"system": "space1889",
-			"path": "./packs/nsc6amuesierdamen.db",
+			"path": "packs/nsc6amuesierdamen",
 			"type": "Actor",
 			"ownership": {
 				"PLAYER": "NONE",
@@ -391,7 +389,7 @@
 			"name": "nsc6gauner",
 			"label": "Gauner",
 			"system": "space1889",
-			"path": "./packs/nsc6gauner.db",
+			"path": "packs/nsc6gauner",
 			"type": "Actor",
 			"ownership": {
 				"PLAYER": "NONE",
@@ -403,7 +401,7 @@
 			"name": "nsc6gluecksspieler",
 			"label": "Gluecksspieler",
 			"system": "space1889",
-			"path": "./packs/nsc6gluecksspieler.db",
+			"path": "packs/nsc6gluecksspieler",
 			"type": "Actor",
 			"ownership": {
 				"PLAYER": "NONE",
@@ -415,7 +413,7 @@
 			"name": "nsc6schlaeger",
 			"label": "Schlaeger",
 			"system": "space1889",
-			"path": "./packs/nsc6schlaeger.db",
+			"path": "packs/nsc6schlaeger",
 			"type": "Actor",
 			"ownership": {
 				"PLAYER": "NONE",
@@ -427,7 +425,7 @@
 			"name": "nsc7archaischevenusier",
 			"label": "Archaische Venusier",
 			"system": "space1889",
-			"path": "./packs/nsc7archaischevenusier.db",
+			"path": "packs/nsc7archaischevenusier",
 			"type": "Actor",
 			"ownership": {
 				"PLAYER": "NONE",
@@ -439,7 +437,7 @@
 			"name": "nsc7entwickeltevenusier",
 			"label": "Entwickelte Venusier",
 			"system": "space1889",
-			"path": "./packs/nsc7entwickeltevenusier.db",
+			"path": "packs/nsc7entwickeltevenusier",
 			"type": "Actor",
 			"ownership": {
 				"PLAYER": "NONE",
@@ -451,7 +449,7 @@
 			"name": "fahrzeugwaffen",
 			"label": "Waffen fuer Fahrzeuge",
 			"system": "space1889",
-			"path": "./packs/fahrzeugwaffen.db",
+			"path": "packs/fahrzeugwaffen",
 			"type": "Item",
 			"ownership": {
 				"PLAYER": "OBSERVER",
@@ -463,7 +461,7 @@
 			"name": "atherfahrzeuge",
 			"label": "Aetherfahrzeuge",
 			"system": "space1889",
-			"path": "./packs/atherfahrzeuge.db",
+			"path": "packs/atherfahrzeuge",
 			"type": "Actor",
 			"ownership": {
 				"PLAYER": "NONE",
@@ -475,7 +473,7 @@
 			"name": "landfahrzeuge",
 			"label": "Landfahrzeuge",
 			"system": "space1889",
-			"path": "./packs/landfahrzeuge.db",
+			"path": "packs/landfahrzeuge",
 			"type": "Actor",
 			"ownership": {
 				"PLAYER": "NONE",
@@ -487,7 +485,7 @@
 			"name": "luftfahrzeuge",
 			"label": "Luftfahrzeuge",
 			"system": "space1889",
-			"path": "./packs/luftfahrzeuge.db",
+			"path": "packs/luftfahrzeuge",
 			"type": "Actor",
 			"ownership": {
 				"PLAYER": "NONE",
@@ -499,7 +497,7 @@
 			"name": "wasserfahrzeuge",
 			"label": "Wasserfahrzeuge",
 			"system": "space1889",
-			"path": "./packs/wasserfahrzeuge.db",
+			"path": "packs/wasserfahrzeuge",
 			"type": "Actor",
 			"ownership": {
 				"PLAYER": "NONE",
@@ -511,7 +509,7 @@
 			"name": "help",
 			"label": "SPACE1889 Hilfe",
 			"system": "space1889",
-			"path": "./packs/space-1889-hilfe.db",
+			"path": "packs/space-1889-hilfe",
 			"type": "JournalEntry",
 			"ownership": {
 				"PLAYER": "OBSERVER",
@@ -523,7 +521,7 @@
 			"name": "gminfos",
 			"label": "SPACE1889 GM Infos",
 			"system": "space1889",
-			"path": "./packs/space-1889-gm-infos.db",
+			"path": "packs/space-1889-gm-infos",
 			"type": "JournalEntry",
 			"ownership": {
 				"PLAYER": "NONE",
