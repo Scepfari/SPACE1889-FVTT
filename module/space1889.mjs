@@ -96,16 +96,19 @@ Hooks.once('init', async function() {
 
 Hooks.on("ready", async function () 
 {
-	const dialog = SPACE1889Helper.getExternalLinksDialogData()
-	let externalLinks = new Dialog(dialog.data, dialog.options);
-
-	var logo = document.getElementById("logo");
-	logo.setAttribute("src", "/systems/space1889/icons/vttLogo.webp");
-	logo.title = game.i18n.localize("SPACE1889.ExternalLinksTitel");
-	logo.addEventListener("click", function ()
+	if (game.release.generation <= 12)
 	{
-		externalLinks.render(true)
-	});
+		const dialog = SPACE1889Helper.getExternalLinksDialogData();
+		let externalLinks = new Dialog(dialog.data, dialog.options);
+
+		var logo = document.getElementById("logo");
+		logo.setAttribute("src", "/systems/space1889/icons/vttLogo.webp");
+		logo.title = game.i18n.localize("SPACE1889.ExternalLinksTitel");
+		logo.addEventListener("click", function ()
+		{
+			externalLinks.render(true);
+		});
+	}
 
 	let indent = game.settings.get("space1889", "subfolder-indent");
 	document.documentElement.style.setProperty('--space1889-indent', `${indent}px`);
@@ -406,32 +409,36 @@ Hooks.on("space1889GravityChanged", (changeInfo) =>
 
 Hooks.on('renderSceneControls', (sceneControls, html, options) =>
 {
-	const tooltip = game.i18n.localize("CONTROLS.Space1889Menu");
-
-	const spaceControl = $(`<li class="scene-control" role="tab" data-tooltip="${tooltip}"><i class="fas fa-space1889"></i></li>`);
-	spaceControl.on('click', () =>
+	if (game.release.generation <= 12)
 	{
-		const presetMenu = Object.values(ui.windows).find((app) => app instanceof Space1889Menu);
-		if (presetMenu) {
-			presetMenu.close();
-			return;
-		}
+		const tooltip = game.i18n.localize("CONTROLS.Space1889Menu");
 
-		const savedPos = game.settings.get("space1889", "menuPosition").split("|");
-		let savedLeft = Number(savedPos[0]);
-		let savedTop = Number(savedPos[1]);
-		if (savedLeft < 0 || savedTop < 0)
+		const spaceControl = $(`<li class="scene-control" role="tab" data-tooltip="${tooltip}"><i class="fas fa-space1889"></i></li>`);
+		spaceControl.on('click', () =>
 		{
-			savedLeft = spaceControl.position().left + (2 * spaceControl.width());
-			savedTop = spaceControl.position().top;
-		}
+			const presetMenu = Object.values(ui.windows).find((app) => app instanceof Space1889Menu);
+			if (presetMenu)
+			{
+				presetMenu.close();
+				return;
+			}
 
-		new Space1889Menu({
-			left: savedLeft,
-			top: savedTop
-		}).render(true);
-	});
-	html.find('.control-tools').find('.scene-control').last().after(spaceControl);
+			const savedPos = game.settings.get("space1889", "menuPosition").split("|");
+			let savedLeft = Number(savedPos[0]);
+			let savedTop = Number(savedPos[1]);
+			if (savedLeft < 0 || savedTop < 0)
+			{
+				savedLeft = spaceControl.position().left + (2 * spaceControl.width());
+				savedTop = spaceControl.position().top;
+			}
+
+			new Space1889Menu({
+				left: savedLeft,
+				top: savedTop
+			}).render(true);
+		});
+		html.find('.control-tools').find('.scene-control').last().after(spaceControl);
+	}
 });
 
 /* -------------------------------------------- */

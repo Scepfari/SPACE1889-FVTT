@@ -2155,14 +2155,6 @@ export default class SPACE1889Helper
 			title: game.i18n.localize("SPACE1889.ExternalLinksTitel"),
 			content: game.i18n.localize("SPACE1889.ExternalLinksContent"),
 			buttons: {
-				one: {
-					icon: '<i class="fad fa-bug" style="font-size:40px"></i>',
-					label: game.i18n.localize("SPACE1889.ExternalLinksBugReport"),
-					callback: () => {
-						var windowObjectReference = window.open("https://github.com/Scepfari/SPACE1889-FVTT/issues/new", "_blank");
-
-					}
-				},
 				two: {
 					icon: '<i class="fad fa-cogs" style="font-size:40px"></i>',
 					label: '<div>' + game.i18n.localize("SPACE1889.ExternalLinksModules") + '</div>',
