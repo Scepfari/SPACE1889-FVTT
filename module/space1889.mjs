@@ -24,6 +24,7 @@ import * as CleanHeader from "./ui/cleanHeader.js";
 import * as sideBar from "./ui/sidebar.js";
 import * as tokenHud from "./ui/tokenHud.js";
 import { Space1889Menu } from "./ui/spaceMenu.js";
+import Space1889MenuV13 from "./ui/spaceMenu.js";
 import { getEffectInfoText } from "./helpers/effects.js";
 
 
@@ -124,6 +125,8 @@ Hooks.on("ready", async function ()
 
 Hooks.once("setup", () =>
 {
+	Space1889MenuV13.registerButtons();
+
 	game.keybindings.register("space1889", "combatTrackerNext", {
 		name: "COMBAT.TurnNext",
 		hint: game.i18n.localize("SPACE1889.KeyInfoCombatNextTurn"),
