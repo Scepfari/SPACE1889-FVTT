@@ -11,7 +11,7 @@ import SPACE1889Vision from "../helpers/vision.js";
  * Extend the basic ActorSheet with some very simple modifications
  * @extends {ActorSheet}
  */
-export class Space1889ActorSheet extends ActorSheet {
+export class Space1889ActorSheet extends foundry.appv1.sheets.ActorSheet {
 
 	/** @override */
 	static get defaultOptions() {

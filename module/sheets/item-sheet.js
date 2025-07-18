@@ -5,7 +5,7 @@ import SPACE1889Helper from "../helpers/helper.js";
  * Extend the basic ItemSheet with some very simple modifications
  * @extends {ItemSheet}
  */
-export class Space1889ItemSheet extends ItemSheet {
+export class Space1889ItemSheet extends foundry.appv1.sheets.ItemSheet {
 
 	/** @override */
 	static get defaultOptions() {

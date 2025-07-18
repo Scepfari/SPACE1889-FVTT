@@ -1,4 +1,4 @@
-export class Space1889Tour extends Tour
+export class Space1889Tour extends foundry.nue.Tour
 {
 	static tours = ["systems/space1889/module/tours/pcActor"]; //, "systems/space1889/module/tours/settings", "systems/space1889/modules/tours/item"]
 

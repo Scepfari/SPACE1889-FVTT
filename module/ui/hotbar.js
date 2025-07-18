@@ -1,4 +1,4 @@
-export default class SPACE1889Hotbar extends Hotbar
+export default class SPACE1889Hotbar extends foundry.applications.ui.Hotbar
 {
     async collapse() {
         if (this._collapsed) return true

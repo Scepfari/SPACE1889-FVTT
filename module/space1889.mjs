@@ -61,10 +61,10 @@ Hooks.once('init', async function() {
 	CONFIG.ui.hotbar = SPACE1889Hotbar;
 
 	// Register sheet application classes
-	Actors.unregisterSheet("core", ActorSheet);
-	Actors.registerSheet("space1889", Space1889ActorSheet, { makeDefault: true });
-	Items.unregisterSheet("core", ItemSheet);
-	Items.registerSheet("space1889", Space1889ItemSheet, { makeDefault: true });
+	foundry.documents.collections.Actors.unregisterSheet("core", foundry.appv1.sheets.ActorSheet);
+	foundry.documents.collections.Actors.registerSheet("space1889", Space1889ActorSheet, { makeDefault: true });
+	foundry.documents.collections.Items.unregisterSheet("core", foundry.appv1.sheets.ItemSheet);
+	foundry.documents.collections.Items.registerSheet("space1889", Space1889ItemSheet, { makeDefault: true });
 
 	// Register System Settings
 	registerSystemSettings();
