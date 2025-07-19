@@ -80,10 +80,10 @@ export class Space1889ActorSheet extends foundry.appv1.sheets.ActorSheet {
 		context.effects = this.actor.effects;
 
 		//TextEditor
-		context.enrichedBiography = await TextEditor.enrichHTML(this.object.system.biography, { async: true });
-		context.enrichedDescription = await TextEditor.enrichHTML(this.object.system.description, {async: true});
-		context.enrichedNotes = await TextEditor.enrichHTML(this.object.system.notes.value, { async: true });
-		context.enrichedGmNotes = await TextEditor.enrichHTML(this.object.system.notes.gmInfo, { async: true });
+		context.enrichedBiography = await foundry.applications.ux.TextEditor.implementation.enrichHTML(this.object.system.biography, { async: true });
+		context.enrichedDescription = await foundry.applications.ux.TextEditor.implementation.enrichHTML(this.object.system.description, {async: true});
+		context.enrichedNotes = await foundry.applications.ux.TextEditor.implementation.enrichHTML(this.object.system.notes.value, { async: true });
+		context.enrichedGmNotes = await foundry.applications.ux.TextEditor.implementation.enrichHTML(this.object.system.notes.gmInfo, { async: true });
 		return context;
 	}
 

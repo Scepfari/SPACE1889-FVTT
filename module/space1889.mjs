@@ -288,8 +288,9 @@ Hooks.on("chatMessage", (html, content, msg) =>
 	}
 });
 
-Hooks.on("renderChatMessage", (app, html, msg) => 
+Hooks.on("renderChatMessageHTML", (app, html, msg) => 
 {
+	html = $(html);
 	html.on('click', '.autoDefence', ev =>
 	{
 		SPACE1889RollHelper.onAutoDefense(ev);

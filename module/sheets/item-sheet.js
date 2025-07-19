@@ -208,7 +208,7 @@ export class Space1889ItemSheet extends foundry.appv1.sheets.ItemSheet {
 		}
 
 		//TextEditor
-		context.enrichedDescription = await TextEditor.enrichHTML(this.object.system.description, { async: true });
+		context.enrichedDescription = await foundry.applications.ux.TextEditor.implementation.enrichHTML(this.object.system.description, { async: true });
 
 		return context;
 	}
