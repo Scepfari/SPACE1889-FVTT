@@ -52,7 +52,7 @@
 			<label class="resource-label">{{ localize "SPACE1889.Skill" }}</label>
 			<div>
 				<select name="system.skillOrAttributeId" data-dtype="String">
-					{{selectOptions system.skills selected=system.skillOrAttributeId nameAttr="key" labelAttr="label"}}
+					{{selectOptions system.skills selected=system.skillOrAttributeId valueAttr="key" labelAttr="label"}}
 				</select>
 			</div>
 		</div>
@@ -77,7 +77,7 @@
 			<label class="resource-label">{{ localize "SPACE1889.Specialization" }}</label>
 			<div>
 				<select name="system.spezialisationId" data-dtype="String">
-					{{selectOptions system.specializations selected=system.spezialisationId nameAttr="key" labelAttr="label"}}
+					{{selectOptions system.specializations selected=system.spezialisationId valueAttr="key" labelAttr="label"}}
 				</select>
 			</div>
 		</div>
