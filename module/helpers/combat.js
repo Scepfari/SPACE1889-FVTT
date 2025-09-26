@@ -911,6 +911,7 @@ export default class SPACE1889Combat
 		const modifierLabel = game.i18n.localize("SPACE1889.Modifier");
 		const labelWurf = game.i18n.localize("SPACE1889.DefenseDice") + ": ";
 		const options = SPACE1889Helper.getHtmlChatOptions();
+		const coverOptions = SPACE1889Helper.getHtmlCoverOptions();
 
 		const lossOfAA = "(" + game.i18n.localize("SPACE1889.LossOfAttackAction") + ")";
 
@@ -925,8 +926,8 @@ export default class SPACE1889Combat
 			const passiveDefenseValue = $('#passiveDefense')[0].checked ? passiveDefense : 0;
 			const activeDefenseValue = $('#activeDefense')[0].checked ? activeDefense : 0;
 			const opposedRollValue = $('#opposed')[0].checked ? baseOpposed : 0;
-
-			let attributValue = mod + value + totalDefenseValue + blockValue + parryValue + evasionValue + passiveDefenseValue + activeDefenseValue + opposedRollValue;
+			let coverValue = Number($("#cover")[0].value);
+			let attributValue = mod + value + totalDefenseValue + blockValue + parryValue + evasionValue + passiveDefenseValue + activeDefenseValue + opposedRollValue + coverValue;
 
 			$("#anzahlDerWuerfel")[0].value = attributValue;
 		}
@@ -977,6 +978,12 @@ export default class SPACE1889Combat
 			{
 				Recalc();
 			});
+
+			html.on('change', '.cover', () =>
+			{
+				Recalc();
+			});
+
 			Recalc();
 		}
 
@@ -992,7 +999,8 @@ export default class SPACE1889Combat
 					<fieldset>
 						<legend>${game.i18n.localize("SPACE1889.DefenseDialogDefenseType")}</legend>
 						<p>${game.i18n.format("SPACE1889.DefenseDialogAttackType", { type: attackTypeName })}</p>
-						<p>${game.i18n.format("SPACE1889.DefenseCountInCombatRound", { count: defenseCount + 1, round: combatRound, malus: multiDefenseMalus}) }</p>
+						<p>${game.i18n.format("SPACE1889.DefenseCountInCombatRound", { count: defenseCount + 1, round: combatRound, malus: multiDefenseMalus }) }</p>
+						<p><select id="cover" name="cover" class="cover">${coverOptions}</select></p>
 						<fieldset ${isOpposed ? hideText : ""}>
 							<legend>${game.i18n.localize("SPACE1889.DefenseDialogNomalDefense")}</legend>
 							<input ${disableNormalDefenseInHtlmText} type="radio" id="normal" name="type" class="normal" value="N" ${normalSelected}>
@@ -1107,6 +1115,7 @@ export default class SPACE1889Combat
 			}
 
 			const input = html.find('#anzahlDerWuerfel').val();
+			const coverMod = parseInt(html.find('#cover').val());
 			const diceCount = input ? parseInt(input) : 0;
 			if (useActionForDefense)
 				selectedDefenseType += "UseActionForDefense";
@@ -1115,7 +1124,11 @@ export default class SPACE1889Combat
 			let modifierToolTipInfo = (multiDefenseMalus === 0 ? "" : game.i18n.format("SPACE1889.ChatMultiAttackDefenseModifier", { mod: multiDefenseMalus }));
 			if (defOpposedInfo.canDo && defOpposedInfo.twoHandBonus != 0)
 			{
-				modifierToolTipInfo += ` game.i18n.format("SPACE1889.ChatDisarmTwoHandBonus", { bonus: defOpposedInfo.twoHandBonus }) : ""`;
+				modifierToolTipInfo += ` ${game.i18n.format("SPACE1889.ChatDisarmTwoHandBonus", { bonus: defOpposedInfo.twoHandBonus })}`;
+			}
+			if (coverMod > 0)
+			{
+				modifierToolTipInfo += ` ${game.i18n.format("SPACE1889.Cover")}: ${coverMod}`;
 			}
 
 			SPACE1889RollHelper.rollDefenseAndAddDamageSub(data, diceCount, modifierToolTipInfo, defOpt.additionalChatContent);

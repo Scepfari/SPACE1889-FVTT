@@ -3234,6 +3234,13 @@
 	"SPACE1889.UnderlyingSkillNoSelection": "Aufheben der Beschränkung auf die Fertigkeiten aus den Regelwerken\nZwingend nötig falls man Spezialisierungen zu selbst definierten Fertigkeiten anlegen möchte.",
 	"SPACE1889.UnderlyingSkillSelection": "Aktivieren der Beschränkung auf die Fertigkeiten aus den Regelwerken",
 
+	"SPACE1889.Cover": "Deckung",
+	"SPACE1889.NoCover": "Keine Deckung",
+	"SPACE1889.PartialCover": "Teildeckung",
+	"SPACE1889.HalfCover": "Halbe Deckung",
+	"SPACE1889.MajorCover": "Weitgehende Deckung",
+	"SPACE1889.FullCover": "Volle Deckung",
+
 	"SPACE1889.CompendiumFolderNameSkill": "Fertigkeiten",
 	"SPACE1889.CompendiumFolderNameResource": "Ressourcen",
 	"SPACE1889.CompendiumFolderNameArmor": "Rüstungen",
