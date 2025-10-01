@@ -2,6 +2,12 @@
 
 ## Mondreich
 
+### v2.3.7
+* Die Deckung kann jetzt im Abwehr Dialog direkt ausgewählt werden, wodurch der daraus resultierende Bonus automatisch in die Anzahl der Abwehrwürfel mit eingerechnet wird.
+* Effekte für Fertigkeiten und Spezialisierungen sind nun verfügbar, analog zu denen der Talente. Damit lässt sich z.B. das Level modifizieren (Schlüssel: system.effectBonus), ohne die EP Kosten zu beeinflussen.
+* Fertigkeiten und Spezialisierungen können nun wie Talente, als Kampagnen Effekt deklariert werden, wodurch das erste Level bei der EP Berechnung keine Punkte verbraucht. Für alle weiteren Stufen werden die regulären Kosten angerechnet. Steigerungen über Effekte generieren ebenfalls keine EP Kosten.
+* Migrationsvorbereitung bezüglich der Zeit, d.h. falls Simple Calendar mit gregorianischen Kalender verwendet wird, wird dessen Jahr Null gesondert gespeichert, um alle Zeitstempel beim Umstieg auf Foundry V13+ konvertieren zu können.
+
 ### v2.3.6
 - Talente haben nun einen Schalter Kampagnen Effekt. Wird dieser aktiviert, wird das Talent von der Berechnung der verwendeten Erfahrungspunkte ausgenommen.
 
