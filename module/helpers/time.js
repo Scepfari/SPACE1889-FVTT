@@ -18,13 +18,20 @@ export default class SPACE1889Time
 		Hooks.on(SimpleCalendar.Hooks.Ready, (data) => 
 		{
 			console.log("SimpleCalendar.Ready");
+
+			if (game.user.isGM && SimpleCalendar.api.getCurrentCalendar().leapYear.rule === 'gregorian')
+			{
+				const yearZero = SimpleCalendar.api.getCurrentCalendar().year.yearZero;
+				const yearZeroInfo = "true|" + yearZero.toString();
+				game.settings.set("space1889", "yearZero", yearZeroInfo);
+			}
 		});
 	}
 
 	static isSimpleCalendarEnabled()
 	{
 		const id = "foundryvtt-simple-calendar";
-		return game.modules.get(id) && game.modules.get(id).active
+		return game.modules.get(id) && game.modules.get(id).active;
 	}
 
 	static getCurrentTimestamp()
