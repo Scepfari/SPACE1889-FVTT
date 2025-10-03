@@ -875,7 +875,7 @@ export default class SPACE1889Combat
 
 		let baseBlock = defBlockInfo ? defBlockInfo.diceCount : 0;
 		let blockToolTip = defBlockInfo ? defBlockInfo.info : ""; 
-		const instinctiveBlock = defBlockInfo ? actor.system.block.instinctive : false;
+		const instinctiveBlock = defBlockInfo && actor.system.block ? actor.system.block.instinctive : false;
 		const canDoBlock = defBlockInfo ? defBlockInfo.canDo : false;
 
 		let baseDodge = defDodgeInfo ? defDodgeInfo.diceCount : 0;
@@ -911,10 +911,11 @@ export default class SPACE1889Combat
 		const modifierLabel = game.i18n.localize("SPACE1889.Modifier");
 		const labelWurf = game.i18n.localize("SPACE1889.DefenseDice") + ": ";
 		const options = SPACE1889Helper.getHtmlChatOptions();
+		const coverOptions = SPACE1889Helper.getHtmlCoverOptions();
 
 		const lossOfAA = "(" + game.i18n.localize("SPACE1889.LossOfAttackAction") + ")";
 
-		function Recalc()
+		function recalc()
 		{
 			let mod = Number($("#modifier")[0].value);
 			const value = $('#normal')[0].checked ? base : 0;
@@ -926,188 +927,152 @@ export default class SPACE1889Combat
 			const activeDefenseValue = $('#activeDefense')[0].checked ? activeDefense : 0;
 			const opposedRollValue = $('#opposed')[0].checked ? baseOpposed : 0;
 
-			let attributValue = mod + value + totalDefenseValue + blockValue + parryValue + evasionValue + passiveDefenseValue + activeDefenseValue + opposedRollValue;
+			let coverValue = Number(document.getElementsByClassName('cover')[0].value);
+			let attributValue = mod + value + totalDefenseValue + blockValue + parryValue + evasionValue + passiveDefenseValue + activeDefenseValue + opposedRollValue + coverValue;
 
 			$("#anzahlDerWuerfel")[0].value = attributValue;
-		}
-
-		function handleRender(html)
-		{
-			html.on('change', '.normal', () =>
-			{
-				Recalc();
-			});
-
-			html.on('change', '.totalDefense', () =>
-			{
-				Recalc();
-			});
-
-			html.on('change', '.block', () =>
-			{
-				Recalc();
-			});
-
-			html.on('change', '.parry', () =>
-			{
-				Recalc();
-			});
-
-			html.on('change', '.evasion', () =>
-			{
-				Recalc();
-			});
-	
-			html.on('change', '.passiveDefense', () =>
-			{
-				Recalc();
-			});
-
-			html.on('change', '.activeDefense', () =>
-			{
-				Recalc();
-			});
-
-			html.on('change', '.opposed', () =>
-			{
-				Recalc();
-			});
-
-			html.on('change', '.modInput', () =>
-			{
-				Recalc();
-			});
-			Recalc();
 		}
 
 		const attackTypeName = CONFIG.SPACE1889.combatSkills.hasOwnProperty(data.combatSkillId)
 			? game.i18n.localize(CONFIG.SPACE1889.combatSkills[data.combatSkillId])
 			: data.combatSkillId;
 
-		let dialogue = new Dialog(
+		let dialogue = foundry.applications.api.DialogV2.wait(
 		{
-			title: `${name}: ${game.i18n.localize("SPACE1889.DefenseDialogDefenceProbe")}`,
+			window: { title: `${name}: ${game.i18n.localize("SPACE1889.DefenseDialogDefenceProbe")}`, resizable: true },
+			position: { width: 480 },
 			content: `
-				<form >
-					<fieldset>
-						<legend>${game.i18n.localize("SPACE1889.DefenseDialogDefenseType")}</legend>
-						<p>${game.i18n.format("SPACE1889.DefenseDialogAttackType", { type: attackTypeName })}</p>
-						<p>${game.i18n.format("SPACE1889.DefenseCountInCombatRound", { count: defenseCount + 1, round: combatRound, malus: multiDefenseMalus}) }</p>
-						<fieldset ${isOpposed ? hideText : ""}>
-							<legend>${game.i18n.localize("SPACE1889.DefenseDialogNomalDefense")}</legend>
-							<input ${disableNormalDefenseInHtlmText} type="radio" id="normal" name="type" class="normal" value="N" ${normalSelected}>
-							<label ${disableNormalDefenseInHtlmText} for="normal">${game.i18n.localize("SPACE1889.SecondaryAttributeDef")} ${base}</label><br>
+			<form >
+				<fieldset style="row-gap: 0.5rem">
+					<legend>${game.i18n.format("SPACE1889.DefenseDialogAttackType", { type: attackTypeName })}</legend>
+					${game.i18n.format("SPACE1889.DefenseCountInCombatRound", { count: defenseCount + 1, round: combatRound, malus: multiDefenseMalus })}</div>
+					<fieldset style="padding-top: 0.5rem; padding-bottom: 0.5rem" ${isOpposed ? hideText : ""}>
+						<legend>${game.i18n.localize("SPACE1889.DefenseDialogNomalDefense")}</legend>
+						<div><input ${disableNormalDefenseInHtlmText} type="radio" id="normal" name="type" class="normal" value="N" ${normalSelected}>
+						<label ${disableNormalDefenseInHtlmText} for="normal">${game.i18n.localize("SPACE1889.SecondaryAttributeDef")} ${base}</label><br>
 
-							<input ${disableActiveDefenseInHtlmText} type="radio" id="activeDefense" class="activeDefense" name="type" value="A" ${activeSelected}>
-							<label ${disableActiveDefenseInHtlmText} for="activeDefense">${game.i18n.localize("SPACE1889.ActiveDefense")} ${activeDefense}</label><br>
+						<input ${disableActiveDefenseInHtlmText} type="radio" id="activeDefense" class="activeDefense" name="type" value="A" ${activeSelected}>
+						<label ${disableActiveDefenseInHtlmText} for="activeDefense">${game.i18n.localize("SPACE1889.ActiveDefense")} ${activeDefense}</label><br>
 
-							<input ${disablePassiveDefenseInHtlmText} type="radio" id="passiveDefense" class="passiveDefense" name="type" value="PD" ${passiveSelected} data-tooltip="${game.i18n.localize("SPACE1889.AttackDialogFullAutofireToolTip")}">
-							<label ${disablePassiveDefenseInHtlmText} for="passiveDefense" data-tooltip="${game.i18n.localize("SPACE1889.PassiveDefenseDesc")}">${game.i18n.localize("SPACE1889.PassiveDefense")} ${passiveDefense}</label><br>
+						<input ${disablePassiveDefenseInHtlmText} type="radio" id="passiveDefense" class="passiveDefense" name="type" value="PD" ${passiveSelected} data-tooltip="${game.i18n.localize("SPACE1889.AttackDialogFullAutofireToolTip")}">
+						<label ${disablePassiveDefenseInHtlmText} for="passiveDefense" data-tooltip="${game.i18n.localize("SPACE1889.PassiveDefenseDesc")}">${game.i18n.localize("SPACE1889.PassiveDefense")} ${passiveDefense}</label></div>
 			
-						</fieldset>
-
-						<fieldset ${isOpposed ? "" : hideText}>
-							<legend>${game.i18n.localize("SPACE1889.ChatOpposedRoll")}</legend>
-							<input type="radio" id="opposed" class="opposed" name="type" value="OP" data-tooltip="${opposedToolTip}" ${opposedSelected}>
-							<label for="opposed" data-tooltip="${opposedToolTip}">${defOpposedInfo.skillName} ${baseOpposed}</label><br>
-						</fieldset>
-
-						<fieldset>
-							<legend>${game.i18n.localize("SPACE1889.DefenseDialogSpecialDefense")}</legend>
-							<input  ${disableTotalDefenseInHtlmText} type="radio" id="totalDefense" name="type" class="totalDefense" value="V" ${totalSelected}>
-							<label  ${disableTotalDefenseInHtlmText} for="totalDefense">${game.i18n.localize("SPACE1889.TotalDefense")}: ${totalDefense} ${lossOfAA}</label><br>
-			
-							<input ${disableBlockInHtlmText} type="radio" id="block" class="block" name="type" value="B" ${blockSelected} data-tooltip="${blockToolTip}">
-							<label ${disableBlockInHtlmText} for="block" data-tooltip="${blockToolTip}">${game.i18n.localize("SPACE1889.Block")} ${baseBlock} ${instinctiveBlock ? "" : lossOfAA}</label><br>
-
-							<input ${disableParryInHtlmText} type="radio" id="parry" class="parry" name="type" value="P" ${parrySelected} data-tooltip="${parryToolTip}">
-							<label ${disableParryInHtlmText} for="parry" data-tooltip="${parryToolTip}">${game.i18n.localize("SPACE1889.Parry")} ${baseParry} ${instinctiveParry ? "" : lossOfAA}</label><br>
-
-							<input ${disableDodgeInHtlmText} type="radio" id="evasion" class="evasion" name="type" value="D" ${dodgeSelected} data-tooltip="${dodgeToolTip}">
-							<label ${disableDodgeInHtlmText} for="evasion" data-tooltip="${dodgeToolTip}">${game.i18n.localize("SPACE1889.Evasion")} ${baseDodge} ${instinctiveDodge ? "" : lossOfAA}</label><br>
-						</fieldset>
-
 					</fieldset>
-					<ul>
-					<li class="flexrow">
-						<div class="item flexrow flex-group-left">
-							<div>${modifierLabel}:</div>
-							<input type="number" class="modInput" id="modifier" value = "0">
+
+					<fieldset ${isOpposed ? "" : hideText}>
+						<legend>${game.i18n.localize("SPACE1889.ChatOpposedRoll")}</legend>
+						<div><input type="radio" id="opposed" class="opposed" name="type" value="OP" data-tooltip="${opposedToolTip}" ${opposedSelected}>
+						<label for="opposed" data-tooltip="${opposedToolTip}">${defOpposedInfo.skillName} ${baseOpposed}</label></div>
+					</fieldset>
+
+					<fieldset style="padding-top: 0.5rem; padding-bottom: 0.5rem">
+						<legend>${game.i18n.localize("SPACE1889.DefenseDialogSpecialDefense")}</legend>
+						<div><input  ${disableTotalDefenseInHtlmText} type="radio" id="totalDefense" name="type" class="totalDefense" value="V" ${totalSelected}>
+						<label  ${disableTotalDefenseInHtlmText} for="totalDefense">${game.i18n.localize("SPACE1889.TotalDefense")}: ${totalDefense} ${lossOfAA}</label><br>
+			
+						<input ${disableBlockInHtlmText} type="radio" id="block" class="block" name="type" value="B" ${blockSelected} data-tooltip="${blockToolTip}">
+						<label ${disableBlockInHtlmText} for="block" data-tooltip="${blockToolTip}">${game.i18n.localize("SPACE1889.Block")} ${baseBlock} ${instinctiveBlock ? "" : lossOfAA}</label><br>
+
+						<input ${disableParryInHtlmText} type="radio" id="parry" class="parry" name="type" value="P" ${parrySelected} data-tooltip="${parryToolTip}">
+						<label ${disableParryInHtlmText} for="parry" data-tooltip="${parryToolTip}">${game.i18n.localize("SPACE1889.Parry")} ${baseParry} ${instinctiveParry ? "" : lossOfAA}</label><br>
+
+						<input ${disableDodgeInHtlmText} type="radio" id="evasion" class="evasion" name="type" value="D" ${dodgeSelected} data-tooltip="${dodgeToolTip}">
+						<label ${disableDodgeInHtlmText} for="evasion" data-tooltip="${dodgeToolTip}">${game.i18n.localize("SPACE1889.Evasion")} ${baseDodge} ${instinctiveDodge ? "" : lossOfAA}</label></div>
+					</fieldset>
+					<div><select id="cover" name="cover" class="cover">${coverOptions}</select></div>
+					<div style="display: grid; grid-template-columns: 50%  50%; grid-template-rows: 100%;">
+						<div style="margin-top:4px; margin-left: 5px">${modifierLabel}:</div> 
+						<div>
+							<input style="max-width: 150px; text-align: center" type="number" class="modInput" id="modifier" value = "0">
 						</div>
-					</li>
-					<hr>
-					<div class="space1889 sheet actor">
-						<li class="flexrow">
-							<h2 class="item flexrow flex-group-left ">
-								<label for="zusammensetzung">${labelWurf}</label>
-								<input class="h2input" id="anzahlDerWuerfel" value="10" disabled="true" visible="false">
-							</h2>
-						</li>
 					</div>
-					</ul>
-					<hr>
-					<p><select id="choices" name="choices">${options}</select></p>
-				</form>`,
-			buttons:
-			{
-				ok:
+					<h4 style="margin-top: 0px; margin-bottom: 0px">
+						<div style="display: grid; grid-template-columns: 50%  50%;">
+							<div style="margin-top:4px; margin-left: 5px">${game.i18n.localize("SPACE1889.NumberOfDice")}:</div> 
+							<div>
+								<input style="max-width: 150px; text-align: center" id="anzahlDerWuerfel" value="10" disabled="true" visible="false">
+							<div>
+						</div>
+					</h4>
+				</fieldset>
+
+
+				<div><select id="choices" name="choices">${options}</select></div>
+			</form>`,
+			buttons: [
 				{
+					action: 'ok',
 					icon: '',
 					label: game.i18n.localize("SPACE1889.Go"),
-					callback: (html) => theCallback(html)
+					default: true,
+					callback: (event, button, dialog) => theCallback(event, button, dialog)
 				},
-				abbruch:
 				{
+					action: 'abbruch',
 					label: game.i18n.localize("SPACE1889.Cancel"),
 					callback: () => { ui.notifications.info(game.i18n.localize("SPACE1889.CancelRoll")) },
 					icon: `<i class="fas fa-times"></i>`
 				}
-			},
-			default: "ok",
-			render: handleRender
+			],
+			form: { closeOnSbmit: false },
+			render: (_event, _dialog) =>
+			{
+				recalc();
+				document.getElementsByClassName('normal')[0].addEventListener("change", recalc, false);
+				document.getElementsByClassName('totalDefense')[0].addEventListener("change", recalc, false);
+				document.getElementsByClassName('block')[0].addEventListener("change", recalc, false);
+				document.getElementsByClassName('parry')[0].addEventListener("change", recalc, false);
+				document.getElementsByClassName('evasion')[0].addEventListener("change", recalc, false);
+				document.getElementsByClassName('passiveDefense')[0].addEventListener("change", recalc, false);
+				document.getElementsByClassName('activeDefense')[0].addEventListener("change", recalc, false);
+				document.getElementsByClassName('opposed')[0].addEventListener("change", recalc, false);
+				document.getElementsByClassName('modInput')[0].addEventListener("change", recalc, false);
+				document.getElementsByClassName('cover')[0].addEventListener("change", recalc, false);
+			}
 		});
 	
-		dialogue.render(true);
 
-		async function theCallback(html)
+		async function theCallback(event, button, dialog)
 		{
 			let useActionForDefense = false;
 			let selectedDefenseType = defenseType;
 
-			if (html.find('#normal')[0].checked)
+			if (button.form.elements.normal.checked)
 			{
 				useActionForDefense = false;
 			}
-			else if (html.find('#totalDefense')[0].checked)
+			else if (button.form.elements.totalDefense.checked)
 			{
 				useActionForDefense = true;
 				selectedDefenseType += totalInfo.defenseType;
 			}
-			else if (html.find('#block')[0].checked)
+			else if (button.form.elements.block.checked)
 			{
 				useActionForDefense = !instinctiveBlock;
 				selectedDefenseType = defBlockInfo.defenseType;
 				data.riposteDamageType = defBlockInfo.riposteDamageType;
 			}
-			else if (html.find('#parry')[0].checked)
+			else if (button.form.elements.parry.checked)
 			{
 				useActionForDefense = !instinctiveParry;
 				selectedDefenseType = defParryInfo.defenseType;
 				data.riposteDamageType = defParryInfo.riposteDamageType;
 			}
-			else if (html.find('#evasion')[0].checked)
+			else if (button.form.elements.evasion.checked)
 			{
 				useActionForDefense = !instinctiveDodge;
 				selectedDefenseType = defDodgeInfo.defenseType;
 			}
-			else if (html.find('#opposed'))
+			else if (button.form.elements.opposed.checked)
 			{
 				useActionForDefense = false;
 				selectedDefenseType = defOpposedInfo.defenseType;
 			}
 
-			const input = html.find('#anzahlDerWuerfel').val();
+			const input = button.form.elements.anzahlDerWuerfel.value;
 			const diceCount = input ? parseInt(input) : 0;
+			const coverMod = parseInt(button.form.elements.cover.value);
+			const modifier = parseInt(button.form.elements.modifier.value);
 			if (useActionForDefense)
 				selectedDefenseType += "UseActionForDefense";
 
@@ -1115,7 +1080,15 @@ export default class SPACE1889Combat
 			let modifierToolTipInfo = (multiDefenseMalus === 0 ? "" : game.i18n.format("SPACE1889.ChatMultiAttackDefenseModifier", { mod: multiDefenseMalus }));
 			if (defOpposedInfo.canDo && defOpposedInfo.twoHandBonus != 0)
 			{
-				modifierToolTipInfo += ` game.i18n.format("SPACE1889.ChatDisarmTwoHandBonus", { bonus: defOpposedInfo.twoHandBonus }) : ""`;
+				modifierToolTipInfo += ` ${game.i18n.format("SPACE1889.ChatDisarmTwoHandBonus", { bonus: defOpposedInfo.twoHandBonus })}`;
+			}
+			if (modifier > 0)
+			{
+				modifierToolTipInfo += ` ${game.i18n.format("SPACE1889.ChatModifier", { mod: modifier })}`;
+			}
+			if (coverMod > 0)
+			{
+				modifierToolTipInfo += ` ${game.i18n.format("SPACE1889.Cover")}: ${coverMod}`;
 			}
 
 			SPACE1889RollHelper.rollDefenseAndAddDamageSub(data, diceCount, modifierToolTipInfo, defOpt.additionalChatContent);

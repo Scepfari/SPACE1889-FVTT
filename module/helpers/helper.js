@@ -2991,4 +2991,14 @@ export default class SPACE1889Helper
 		options += '<option value="public" selected="selected">' + game.i18n.localize("CHAT.RollPublic") + '</option>';
 		return options;
 	}
+
+	static getHtmlCoverOptions()
+	{
+		let options = '<option value="0" selected="selected">' + game.i18n.localize("SPACE1889.NoCover") + '</option>';
+		options += '<option value="1">' + game.i18n.localize("SPACE1889.PartialCover") + ' (+1) </option>';
+		options += '<option value="2">' + game.i18n.localize("SPACE1889.HalfCover") + ' (+2) </option>';
+		options += '<option value="4">' + game.i18n.localize("SPACE1889.MajorCover") + ' (+4) </option>';
+		options += '<option value="8">' + game.i18n.localize("SPACE1889.FullCover") + ' (+8) </option>';
+		return options;
+	}
 }

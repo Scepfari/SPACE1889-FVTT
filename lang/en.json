@@ -3236,6 +3236,13 @@
 	"SPACE1889.UnderlyingSkillNoSelection": "Unlock the restriction to the skills from the rulebooks\nMandatory if you want to create specializations for self-defined skills.",
 	"SPACE1889.UnderlyingSkillSelection": "Activate the restriction to the skills from the rulebooks",
 
+	"SPACE1889.Cover": "Cover",
+	"SPACE1889.NoCover": "No cover",
+	"SPACE1889.PartialCover": "Partial cover",
+	"SPACE1889.HalfCover": "Half cover",
+	"SPACE1889.MajorCover": "Major cover",
+	"SPACE1889.FullCover": "Full cover",
+
 	"SPACE1889.CompendiumFolderNameSkill": "Skills",
 	"SPACE1889.CompendiumFolderNameResource": "Resources",
 	"SPACE1889.CompendiumFolderNameArmor": "Armors",
