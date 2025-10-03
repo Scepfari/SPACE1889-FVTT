@@ -2875,9 +2875,9 @@ export default class SPACE1889Helper
 
 		async function recalc()
 		{
-			skillId = $("#choices")[0].value;
+			skillId = document.getElementsByClassName('choices')[0].value;
 			await RefreshSpecialization(skillId);
-			$("#speciChoice")[0].innerHTML = specializationOptions;
+			document.getElementsByClassName('speciChoice')[0].innerHTML = specializationOptions;
 			refreshSpeziId();
 			const element = skills.find(e => e.key === skillId);
 			skillGroupId = element ? element.groupId : "";
@@ -2886,7 +2886,7 @@ export default class SPACE1889Helper
 
 		function refreshSpeziId()
 		{
-			spezId = $("#speciChoice")[0].value;
+			spezId = document.getElementsByClassName('speciChoice')[0].value;
 			recalcDiceCount();
 		}
 
@@ -2897,77 +2897,66 @@ export default class SPACE1889Helper
 			$("#anzahlDerWuerfel")[0].value = (diceCount + mod).toString();
 		}
 
-		function handleRender(html)
+		let dialogue = foundry.applications.api.DialogV2.wait(
 		{
-			html.on('input', '.choices', () =>
-			{
-				recalc();
-			});
-			html.on('change', '.speciChoice', () =>
-			{
-				refreshSpeziId();
-			});
-			html.on('change', '.modInput', () =>
-			{
-				recalc();
-			});
-
-			recalc();
-		}
-
-		let dialogue = new Dialog(
-		{
-			title: `${titelPartOne}: ${game.i18n.localize("SPACE1889.Probe")}`,
-				content: `
-				<div style="display: grid; grid-template-columns: 30%  70%; grid-template-rows: 100%;">
-					<label style="margin-top:4px; margin-left: 5px">${game.i18n.localize("SPACE1889.Skill")}:</label>
-					<div>
-						<select id="choices" class="choices" name="choices" autofocus>${options}</select>
-					</div>
+			window: { title: `${titelPartOne}: ${game.i18n.localize("SPACE1889.Probe")}`}, 
+			position: { width: 480 },
+			content: `
+			<div style="display: grid; grid-template-columns: 30%  70%; grid-template-rows: 100%;">
+				<label style="margin-top:4px; margin-left: 5px">${game.i18n.localize("SPACE1889.Skill")}:</label>
+				<div>
+					<select id="choices" class="choices" name="choices" autofocus>${options}</select>
 				</div>
-				<div style="display: grid; grid-template-columns: 30%  70%; grid-template-rows: 100%;">
-					<label style="margin-top:4px; margin-left: 5px">${game.i18n.localize("SPACE1889.Specialization")}:</label>
-					<div>
-						<select id="speciChoice" class="speciChoice" name="speciChoice">${specializationOptions}</select>
-					</div>
+			</div>
+			<div style="display: grid; grid-template-columns: 30%  70%; grid-template-rows: 100%;">
+				<label style="margin-top:4px; margin-left: 5px">${game.i18n.localize("SPACE1889.Specialization")}:</label>
+				<div>
+					<select id="speciChoice" class="speciChoice" name="speciChoice">${specializationOptions}</select>
 				</div>
-				<div style="display: grid; grid-template-columns: 30%  70%; grid-template-rows: 100%;">
-					<div style="margin-top:4px; margin-left: 5px">${game.i18n.localize("SPACE1889.Modifier")}:</div> 
-					<div>
-						<input type="number" class="modInput" id="modifier" value = "0">
-					</div>
+			</div>
+			<div style="display: grid; grid-template-columns: 30%  70%; grid-template-rows: 100%;">
+				<div style="margin-top:4px; margin-left: 5px">${game.i18n.localize("SPACE1889.Modifier")}:</div> 
+				<div>
+					<input type="number" class="modInput" id="modifier" value = "0">
 				</div>
-				<hr>
-				<div class="space1889 sheet actor">
-					<h2 class="item flexrow flex-group-left ">
-						<label for="zusammensetzung">${game.i18n.localize("SPACE1889.NumberOfDice")}</label>
-						<input class="h2input" id="anzahlDerWuerfel" value="10" disabled="true" visible="false">
-					</h2>
-				</div>
-				<hr>
-				<p><select id="chatChoices" name="chatChoices">${SPACE1889Helper.getHtmlChatOptions()}</select></p>
-				`,
-			buttons:
-			{
-				ok:
+			</div>
+			<hr>
+			<div class="space1889 sheet actor">
+				<h4 class="item flexrow flex-group-left ">
+					<label for="zusammensetzung">${game.i18n.localize("SPACE1889.NumberOfDice")}</label>
+					<input id="anzahlDerWuerfel" value="10" disabled="true" visible="false">
+				</h4>
+			</div>
+			<hr>
+			<p><select id="chatChoices" name="chatChoices">${SPACE1889Helper.getHtmlChatOptions()}</select></p>
+			`,
+			buttons: [
 				{
+					action: "ok",
 					icon: '',
 					label: game.i18n.localize("SPACE1889.Go"),
-					callback: (html) => theCallback(html)
+					default: true,
+					callback: (event, button, dialog) => theCallback(event, button, dialog)
 				},
-				abbruch:
 				{
+					action: "abbruch",
 					label: game.i18n.localize("SPACE1889.Cancel"),
 					callback: () => { ui.notifications.info(game.i18n.localize("SPACE1889.CancelRoll")) },
 					icon: `<i class="fas fa-times"></i>`
 				}
-			},
-			default: "ok",
-			render: handleRender
-		});
-		dialogue.render(true);
+			],
+			form: { closeOnSbmit: false},
+			render: (_event, _dialog) =>
+			{
+				recalc();
 
-		async function theCallback(html)
+				document.getElementsByClassName('choices')[0].addEventListener("change", recalc, false);
+				document.getElementsByClassName('modInput')[0].addEventListener("change", recalc, false);
+				document.getElementsByClassName('speciChoice')[0].addEventListener("change", refreshSpeziId, false);
+			}
+		});
+
+		async function theCallback(event, button, dialog)
 		{
 			const skillName = skills.find(e => e.key === skillId)?.label;
 			let titelName = "";
@@ -2979,7 +2968,7 @@ export default class SPACE1889Helper
 
 			const mod = Number($("#modifier")[0].value);
 			const toolTipInfo = mod == 0 ? "" : game.i18n.format("SPACE1889.ChatModifier", { mod: SPACE1889Helper.getSignedStringFromNumber(mod) });
-			const input = html.find('#anzahlDerWuerfel').val();
+			const input = button.form.elements.anzahlDerWuerfel.value;
 			const diceSum = input ? parseInt(input) : 0;
 			const rollWithHtml = await SPACE1889RollHelper.createInlineRollWithHtml(Math.max(0, diceSum), "", toolTipInfo);
 
@@ -2987,7 +2976,7 @@ export default class SPACE1889Helper
 				{
 					user: game.user.id,
 					speaker: ChatMessage.getSpeaker({ actor: actor }),
-					whisper: SPACE1889RollHelper.getChatIds(html.find('#chatChoices').val()),
+					whisper: SPACE1889RollHelper.getChatIds(button.form.elements.chatChoices.value),
 					content: `<h2>${titelName}</h2>${rollWithHtml.html}`
 				},
 				{}
