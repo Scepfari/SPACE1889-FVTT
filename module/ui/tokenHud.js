@@ -8,6 +8,9 @@ export default function ()
 	{
 		const tokenDocument = game.scenes.viewed.tokens.get(data._id);
 		const actor = tokenDocument ? tokenDocument.actor : game.actors.get(data.actorId);
+		if (!actor)
+			return;
+
 		const weapons = SPACE1889Combat.getWeaponInHands(actor);
 		const lightSources = SPACE1889Light.blockedHandsFromLightSources(actor);
 		let actions = [];
@@ -112,32 +115,57 @@ export default function ()
 			actions.push(action);
 		}
 
-		const maxCol = 5;
-		let cols = Math.min(maxCol, actions.length);
-		let actionHtml = `<div class="space1889-tokenHudAction" style="width:${cols * 50}px;">`; 
-		if (!actor || actions.length === 0)
+
+		if (actions.length === 0)
 			return;
 
-		for (let i = 0; i < Math.min(maxCol * 2, actions.length); ++i)
+		const maxCol = 5;
+		let cols = Math.min(maxCol, actions.length);
+
+		const actionHUD = document.createElement("div");
+        actionHUD.className = "space1889-tokenHudAction";
+        actionHUD.style.width = `${maxCol * 43}px`;
+
+		for (let i = 0; i < cols; i++)
 		{
-			actionHtml += `<div class="control-icon" name="SPACE1889Action" actionType="${actions[i].type}" tokenId="${tokenDocument ? tokenDocument.id : ""}" id="${actor.id}" itemId="${actions[i].itemId}" > 
-			<img class="scale-down" src="${actions[i].image}" width="35" height="35" data-tooltip="${actions[i].tooltip}"/></div>`;
+			const action = actions[i];
+			const iconDiv = document.createElement("div");
+			iconDiv.className = "control-icon";
+			iconDiv.setAttribute("name", "SPACE1889Action");
+			iconDiv.setAttribute("itemId", action.itemId);
+			iconDiv.setAttribute("actionType", action.type);
+			iconDiv.setAttribute("actorId", actor.id);
+			iconDiv.setAttribute("tokenId", tokenDocument ? tokenDocument.id : "");
+			iconDiv.setAttribute("data-tooltip", action.tooltip);
+			iconDiv.id = action.name;
+
+			const img = document.createElement("img");
+			img.src = action.image;
+			img.width = 35;
+			img.height = 35;
+			img.className = "space1889-tokenHudButton";
+			iconDiv.appendChild(img);
+			actionHUD.appendChild(iconDiv);
 		}
-		actionHtml += "</div>";
 
-		const controlIcons = html.find(`div[class="col left"]`);
-		controlIcons.before(actionHtml);
-		const cHUDWidth = $(".space1889-tokenHudAction").outerWidth(true);
-		const hudWidth = $(html).outerWidth(true);
-		const diff = (hudWidth - cHUDWidth) / 2;
-		$(".space1889-tokenHudAction").css({ left: diff });
-		$(html.find(`div[name="SPACE1889Action"]`)).on("click", function(event) {
-			const type = this.getAttribute("actionType");
-			const itemId = this.hasAttribute("actionType") ? this.getAttribute("itemId") : "";
-			const actorId = this.getAttribute("id");
-			const tokenId = this.getAttribute("tokenId");
+        const controlIcons = html.querySelector('div.col.left');
+		if (!controlIcons || !controlIcons.parentNode)
+			return;
 
-			SPACE1889RollHelper.rollHudAction(event, tokenId, actorId, type, itemId);
+        controlIcons.parentNode.insertBefore(actionHUD, controlIcons);
+
+		actionHUD.querySelectorAll('div[name="SPACE1889Action"]').forEach(btn =>
+		{
+			btn.addEventListener("click", function (event)
+			{
+				const type = this.getAttribute("actionType");
+				const itemId = this.hasAttribute("actionType") ? this.getAttribute("itemId") : "";
+				const actorId = this.getAttribute("actorId");
+				const tokenId = this.getAttribute("tokenId");
+
+				SPACE1889RollHelper.rollHudAction(event, tokenId, actorId, type, itemId);
+
+			});
 		});
 	});
 }

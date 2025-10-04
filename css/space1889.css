@@ -925,7 +925,18 @@ font-size: 12px;
 	flex-wrap: wrap;
 	align-items: baseline;
 	justify-content: space-evenly;
-	top: calc(100% + 55px);
+	top: calc(100% + 60px);
+	left: -58px;
 	height: auto;
 	position: absolute;
 }
+
+.space1889-tokenHudButton {
+	-webkit-box-flex: 0;
+	-ms-flex: 0 0 35px;
+	flex: 0 0 35px;
+	height: 35px;
+	object-fit: scale-down;
+	margin-top: -5px;
+}
+
