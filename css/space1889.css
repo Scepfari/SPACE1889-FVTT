@@ -940,3 +940,6 @@ font-size: 12px;
 	margin-top: -5px;
 }
 
+.space1889-dialogFieldset {
+	row-gap: 0.5rem;
+}

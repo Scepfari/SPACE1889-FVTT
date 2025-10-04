@@ -431,6 +431,7 @@ export default class SPACE1889Combat
 	static AttackDialog(actor, wantedWeapon = undefined)
 	{
 		const token = this.getCombatToken(actor) || this.getToken(actor);
+		const name = token ? token.name : actor.name;
 
 		const weaponInHands = SPACE1889Helper.getWeaponIdsInHands(actor);
 		let weapon = undefined;
@@ -531,7 +532,7 @@ export default class SPACE1889Combat
 		const labelWurf = game.i18n.localize("SPACE1889.AttackValue") + ": ";
 
 
-		function Recalc()
+		function recalc()
 		{
 			let mod = Number($("#modifier")[0].value);
 			const salveBonus = $('#salve')[0].checked ? baseSalve : 0;
@@ -548,85 +549,30 @@ export default class SPACE1889Combat
 			$("#anzahlDerWuerfel")[0].value = attributValue.toString() + damageType;
 		}
 
-		function handleRender(html)
+		let dialogue = foundry.applications.api.DialogV2.wait(
 		{
-			html.on('change', '.normal', () =>
-			{
-				Recalc();
-			});
-
-			html.on('change', '.salve', () =>
-			{
-				Recalc();
-			});
-
-			html.on('change', '.vollerAngriff', () =>
-			{
-				Recalc();
-			});
-
-			html.on('change', '.beidhaendig', () =>
-			{
-				Recalc();
-			});
-
-			html.on('change', '.doppelschusss', () =>
-			{
-				Recalc();
-			});
-
-			html.on('change', '.wirbeln', () =>
-			{
-				Recalc();
-			});
-	
-			html.on('change', '.rundumschlag', () =>
-			{
-				Recalc();
-			});
-
-			html.on('change', '.dauerFeuer', () =>
-			{
-				Recalc();
-			});
-
-			html.on('change', '.streuFeuer', () =>
-			{
-				Recalc();
-			});
-
-
-			html.on('change', '.modInput', () =>
-			{
-				Recalc();
-			});
-			Recalc();
-		}
-
-
-		let dialogue = new Dialog(
-		{
-			title: `${game.i18n.localize("SPACE1889.AttackDialogAttackProbe")}`,
+			window: { title: `${name}: ${game.i18n.localize("SPACE1889.AttackDialogAttackProbe")}`, resizable: true },
+			position: { width: 480 },
 			content: `
 				<form >
-					<h2>${waffenName}: ${game.i18n.localize("SPACE1889.AttackDialogBaseValue")} ${baseValue}${damageType}</h2>
-					<label data-tooltip="${targetToolTip}">${game.i18n.localize("SPACE1889.AttackDialogTargetCount")}: ${game.user.targets.size} ${targetNamesInBrackets}</label><br>
-					<label>${game.i18n.localize("SPACE1889.Distance")} ${distanceInfo.distance.toFixed(2)}${distanceInfo.unit}: ${SPACE1889Helper.getSignedStringFromNumber(distanceMod)}</label>
-					<fieldset>
+					<h4 style="margin-bottom: 0px">${waffenName}: ${game.i18n.localize("SPACE1889.AttackDialogBaseValue")} ${baseValue}${damageType}</h4>
+					<div><label data-tooltip="${targetToolTip}">${game.i18n.localize("SPACE1889.AttackDialogTargetCount")}: ${game.user.targets.size} ${targetNamesInBrackets}</label><br>
+					<label>${game.i18n.localize("SPACE1889.Distance")} ${distanceInfo.distance.toFixed(2)}${distanceInfo.unit}: ${SPACE1889Helper.getSignedStringFromNumber(distanceMod)}</label></div>
+					<fieldset class="space1889-dialogFieldset">
 						<legend>${game.i18n.localize("SPACE1889.AttackDialogAttackType")}</legend>
 						<fieldset>
 							<legend>${game.i18n.localize("SPACE1889.AttackDialogSimpleAttack")}</legend>
-							<input type="radio" id="normal" name="type" class="normal" value="N" checked>
+							<div><input type="radio" id="normal" name="type" class="normal" value="N" checked>
 							<label for="normal">${game.i18n.localize("SPACE1889.AttackDialogRegular")}</label><br>
 							<div ${hideSalveInHtlmText}>            
 								<input ${disableAutoFeuerInHtmlText} type="radio" id="salve" name="type" class="salve" value="S" data-tooltip="${game.i18n.localize("SPACE1889.AttackDialogBurstFireToolTip")}">
 								<label ${disableAutoFeuerInHtmlText} for="salve" data-tooltip="${game.i18n.localize("SPACE1889.AttackDialogBurstFireToolTip")}">${game.i18n.format("SPACE1889.AttackDialogBurstFire", { bonus: SPACE1889Helper.getSignedStringFromNumber(baseSalve) })}</label><br>
-							</div>
+							</div></div>
 						</fieldset>
 
-						<fieldset>
+						<fieldset class="space1889-dialogFieldset">
 							<legend>${game.i18n.localize("SPACE1889.AttackDialogTotalAttackHeadline")}</legend>
-							<input type="radio" id="vollerAngriff" name="type" class="vollerAngriff" value="V">
+							<div><input type="radio" id="vollerAngriff" name="type" class="vollerAngriff" value="V">
 							<label for="vollerAngriff">${game.i18n.localize("SPACE1889.AttackDialogTotalAttack")}</label><br>
 			
 							<input ${disableBeidhaendigInHtlmText} type="radio" id="beidhaendig" class="beidhaendig" name="type" value="B" data-tooltip="${game.i18n.localize("SPACE1889.AttackDialogDualWieldToolTip")}">
@@ -641,60 +587,70 @@ export default class SPACE1889Combat
 							</div>
 							<div ${hideRundumschalgInHtlmText}>
 								<input ${disableRundumschlagInHtlmText} type="radio" id="rundumschlag" class="rundumschlag" name="type" value="B">
-								<label ${disableRundumschlagInHtlmText} for="rundumschlag">${game.i18n.format("SPACE1889.AttackDialogSweepingBlow", { malus: SPACE1889Helper.getSignedStringFromNumber(baseRundumschlag) })}</label><br>
-							</div>
+								<label ${disableRundumschlagInHtlmText} for="rundumschlag">${game.i18n.format("SPACE1889.AttackDialogSweepingBlow", { malus: SPACE1889Helper.getSignedStringFromNumber(baseRundumschlag) })}</label>
+							</div></div>
 						</fieldset>
 
-						<fieldset ${!canDoAutoFeuer ? hideText : ""}>
+						<fieldset class="space1889-dialogFieldset" ${!canDoAutoFeuer ? hideText : ""}>
 							<legend>${game.i18n.localize("SPACE1889.AttackDialogAutoFireHeadline")}</legend>
-							<input type="radio" id="dauerFeuer" class="dauerFeuer" name="type" value="DA" data-tooltip="${game.i18n.localize("SPACE1889.AttackDialogFullAutofireToolTip")}">
+							<div><input type="radio" id="dauerFeuer" class="dauerFeuer" name="type" value="DA" data-tooltip="${game.i18n.localize("SPACE1889.AttackDialogFullAutofireToolTip")}">
 							<label for="dauerFeuer" data-tooltip="${game.i18n.localize("SPACE1889.AttackDialogFullAutofireToolTip")}">${game.i18n.format("SPACE1889.AttackDialogFullAutofire", { bonus: SPACE1889Helper.getSignedStringFromNumber(baseDauerfeuer) })}</label><br>
 			
 							<input ${disableStreufeuerInHtlmText} type="radio" id="streuFeuer" class="streuFeuer" name="type" value="B">
-							<label ${disableStreufeuerInHtlmText} for="streuFeuer">${game.i18n.format("SPACE1889.AttackDialogStrafing", { bonus: SPACE1889Helper.getSignedStringFromNumber(baseStreufeuer) })}</label><br>
+							<label ${disableStreufeuerInHtlmText} for="streuFeuer">${game.i18n.format("SPACE1889.AttackDialogStrafing", { bonus: SPACE1889Helper.getSignedStringFromNumber(baseStreufeuer) })}</label><div>
 						</fieldset>
 					</fieldset>
-					<ul>
-					<li class="flexrow">
-						<div class="item flexrow flex-group-left">
-							<div>${modifierLabel}:</div> <input type="number" class="modInput" id="modifier" value = "0">
+
+					<div style="display: grid; grid-template-columns: 50%  50%; grid-template-rows: 100%;">
+						<div style="margin-top:4px; margin-left: 5px">${modifierLabel}:</div> 
+						<div>
+							<input style="max-width: 150px; text-align: center" type="number" class="modInput" id="modifier" value = "0">
 						</div>
-					</li>
-					<hr>
-					<div class="space1889 sheet actor">
-						<li class="flexrow">
-							<h2 class="item flexrow flex-group-left ">
-								<label for="zusammensetzung">${labelWurf}</label>
-								<input class="h2input" id="anzahlDerWuerfel" value="10" disabled="true" visible="false">
-							</h2>
-						</li>
 					</div>
-					</ul>
+					<h4 style="margin-top: 0px; margin-bottom: 0px">
+						<div style="display: grid; grid-template-columns: 50%  50%;">
+							<div style="margin-top:4px; margin-left: 5px">${labelWurf}</div> 
+							<div>
+								<input style="max-width: 150px; text-align: center" id="anzahlDerWuerfel" value="10" disabled="true" visible="false">
+							<div>
+						</div>
+					</h4>
 					<hr>
 					<p><select id="choices" name="choices">${optionen}</select></p>
 				</form>`,
-			buttons:
-			{
-				ok:
+			buttons: [
 				{
+					action: 'ok',
 					icon: '',
 					label: game.i18n.localize("SPACE1889.Go"),
-					callback: (html) => theCallback(html)
+					default: true,
+					callback: (event, button, dialog) => theCallback(event, button, dialog)
 				},
-				abbruch:
 				{
+					action: 'abbruch',
 					label: game.i18n.localize("SPACE1889.Cancel"),
 					callback: () => { ui.notifications.info(game.i18n.localize("SPACE1889.CancelRoll")) },
 					icon: `<i class="fas fa-times"></i>`
 				}
-			},
-			default: "ok",
-			render: handleRender
+			],
+			form: { closeOnSbmit: false },
+			render: (_event, _dialog) =>
+			{
+				recalc();
+				document.getElementsByClassName('normal')[0].addEventListener("change", recalc, false);
+				document.getElementsByClassName('salve')[0].addEventListener("change", recalc, false);
+				document.getElementsByClassName('vollerAngriff')[0].addEventListener("change", recalc, false);
+				document.getElementsByClassName('beidhaendig')[0].addEventListener("change", recalc, false);
+				document.getElementsByClassName('doppelschusss')[0].addEventListener("change", recalc, false);
+				document.getElementsByClassName('wirbeln')[0].addEventListener("change", recalc, false);
+				document.getElementsByClassName('rundumschlag')[0].addEventListener("change", recalc, false);
+				document.getElementsByClassName('dauerFeuer')[0].addEventListener("change", recalc, false);
+				document.getElementsByClassName('streuFeuer')[0].addEventListener("change", recalc, false);
+				document.getElementsByClassName('modInput')[0].addEventListener("change", recalc, false);
+			}
 		});
 	
-		dialogue.render(true);
-
-		async function theCallback(html)
+		async function theCallback(event, button, dialog)
 		{
 			const firstTargetId = (game.user.targets?.size > 0) ? game.user.targets.first().id : "";
 			const target = game.user.targets.find(e => e.id == firstTargetId);
@@ -704,26 +660,26 @@ export default class SPACE1889Combat
 			let isFullAttack = false;
 			let roundsToUse = 1;
 			let rolls = 1;
-			if (html.find('#salve')[0].checked)
+			if (button.form.elements.salve.checked)
 			{
 				attackName = game.i18n.localize("SPACE1889.AttackTypeBurstFire");
 				toolTipInfo = attackName + ": " + SPACE1889Helper.getSignedStringFromNumber(baseSalve);
 				roundsToUse = 3;
 			}
-			else if (html.find('#vollerAngriff')[0].checked)
+			else if (button.form.elements.vollerAngriff.checked)
 			{
 				attackName = game.i18n.localize("SPACE1889.AttackTypeTotalAttack");
 				toolTipInfo = attackName + ": " + SPACE1889Helper.getSignedStringFromNumber(baseVollerAngriff);
 				isFullAttack = true;
 			}
-			else if (html.find('#beidhaendig')[0].checked)
+			else if (button.form.elements.beidhaendig.checked)
 			{
 				const hand = isNebenHand ? game.i18n.localize("SPACE1889.WeaponUseOffHand") : game.i18n.localize("SPACE1889.WeaponUsePrimaryHand");
 				attackName = hand + " " + game.i18n.localize("SPACE1889.AttackTypeDualWield");
 				toolTipInfo = attackName + ": " + SPACE1889Helper.getSignedStringFromNumber(baseBeidhaendig);
 				isFullAttack = true;
 			}
-			else if (html.find('#doppelschusss')[0].checked)
+			else if (button.form.elements.doppelschusss.checked)
 			{
 				attackName = game.i18n.localize("SPACE1889.AttackTypeRapidFire");
 				toolTipInfo = attackName + ": " + SPACE1889Helper.getSignedStringFromNumber(baseDoppelschuss);
@@ -731,27 +687,27 @@ export default class SPACE1889Combat
 				rolls = 2;
 				isFullAttack = true;
 			}
-			else if (html.find('#dauerFeuer')[0].checked)
+			else if (button.form.elements.dauerFeuer.checked)
 			{
 				attackName = game.i18n.localize("SPACE1889.AttackTypeFullAutofire");
 				toolTipInfo = attackName + ": " + SPACE1889Helper.getSignedStringFromNumber(baseDauerfeuer);
 				roundsToUse = 20;
 				isFullAttack = true;
 			}
-			else if (html.find('#streuFeuer')[0].checked)
+			else if (button.form.elements.streuFeuer.checked)
 			{
 				attackName = game.i18n.localize("SPACE1889.AttackTypeStrafing");
 				toolTipInfo = attackName + ": " + SPACE1889Helper.getSignedStringFromNumber(baseStreufeuer);
 				roundsToUse = 20;
 				isFullAttack = true;
 			}
-			else if (html.find('#rundumschlag')[0].checked)
+			else if (button.form.elements.rundumschlag.checked)
 			{
 				attackName = game.i18n.localize("SPACE1889.AttackTypeSweepingBlow");
 				toolTipInfo = attackName + ": " + SPACE1889Helper.getSignedStringFromNumber(baseRundumschlag);
 				isFullAttack = true;
 			}
-			else if (html.find('#wirbeln')[0].checked)
+			else if (button.form.elements.wirbeln.checked)
 			{
 				attackName = game.i18n.localize("SPACE1889.AttackTypeFlurry");
 				toolTipInfo = attackName + ": " + SPACE1889Helper.getSignedStringFromNumber(baseWirbeln);
@@ -766,11 +722,11 @@ export default class SPACE1889Combat
 				titelInfo += game.i18n.localize("SPACE1889.Attack") ?? "Attack";
 
 
-			const chatoption = html.find('#choices').val();
-			const input = html.find('#anzahlDerWuerfel').val();
+			const chatoption = button.form.elements.choices.value;
+			const input = button.form.elements.anzahlDerWuerfel.value;
 			const anzahl = input ? parseInt(input) : 0;
 
-			const mod = Number($("#modifier")[0].value);
+			const mod = Number(button.form.elements.modifier.value);
 			if (mod != 0)
 				toolTipInfo += (toolTipInfo.length > 0 ? " " : "") + game.i18n.format("SPACE1889.ChatModifier", { mod: SPACE1889Helper.getSignedStringFromNumber(mod) });
 
