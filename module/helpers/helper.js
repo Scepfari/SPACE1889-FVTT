@@ -2987,6 +2987,7 @@ export default class SPACE1889Helper
 	static getHtmlChatOptions()
 	{
 		let options = '<option value="selfAndGm">' + game.i18n.localize("CHAT.RollPrivate") + '</option>';
+		options += '<option value="blind">' + game.i18n.localize("CHAT.RollBlind") + '</option>';
 		options += '<option value="self">' + game.i18n.localize("CHAT.RollSelf") + '</option>';
 		options += '<option value="public" selected="selected">' + game.i18n.localize("CHAT.RollPublic") + '</option>';
 		return options;

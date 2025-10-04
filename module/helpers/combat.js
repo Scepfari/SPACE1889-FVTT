@@ -909,8 +909,6 @@ export default class SPACE1889Combat
 		const disableNormalDefenseInHtlmText = (hasPassiveDefense && hasActiveDefense) ? "" : `disabled="true"`;
 
 		const modifierLabel = game.i18n.localize("SPACE1889.Modifier");
-		const labelWurf = game.i18n.localize("SPACE1889.DefenseDice") + ": ";
-		const options = SPACE1889Helper.getHtmlChatOptions();
 		const coverOptions = SPACE1889Helper.getHtmlCoverOptions();
 
 		const lossOfAA = "(" + game.i18n.localize("SPACE1889.LossOfAttackAction") + ")";
@@ -988,16 +986,13 @@ export default class SPACE1889Combat
 					</div>
 					<h4 style="margin-top: 0px; margin-bottom: 0px">
 						<div style="display: grid; grid-template-columns: 50%  50%;">
-							<div style="margin-top:4px; margin-left: 5px">${game.i18n.localize("SPACE1889.NumberOfDice")}:</div> 
+							<div style="margin-top:4px; margin-left: 5px">${game.i18n.localize("SPACE1889.DefenseDice")}:</div> 
 							<div>
 								<input style="max-width: 150px; text-align: center" id="anzahlDerWuerfel" value="10" disabled="true" visible="false">
 							<div>
 						</div>
 					</h4>
 				</fieldset>
-
-
-				<div><select id="choices" name="choices">${options}</select></div>
 			</form>`,
 			buttons: [
 				{
