@@ -25,7 +25,7 @@ static measureDistances(segments, options = {})
  */
 	static getPixelDistance(start, end)
 	{
-		let ray = new Ray(start, end);
+		let ray = new foundry.canvas.geometry.Ray(start, end);
 		return ray.distance;
 	}
 
@@ -96,7 +96,7 @@ static measureDistances(segments, options = {})
 		if (targetTile == undefined)
 			return Number.POSITIVE_INFINITY;
 
-		let ray = new Ray(sourceToken, targetTile);
+		let ray = new foundry.canvas.geometry.Ray(sourceToken, targetTile);
 		const deltaXinGridTiles = ray.dx / this.getGridPixelSize();
 		const deltaYinGridTiles = ray.dy / this.getGridPixelSize();
 
