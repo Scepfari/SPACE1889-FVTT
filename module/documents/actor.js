@@ -2279,6 +2279,8 @@ export class Space1889Actor extends Actor
 	rollAttribute(dieCount, showDialog, key, specialDialog = false)
 	{
 		const theActor = this;
+		const actorName = theActor.isToken && theActor.token ? theActor.token.name : theActor.name;
+
 		let singleOnly = specialDialog;
 
 		const baseValue = dieCount;
@@ -2323,18 +2325,17 @@ export class Space1889Actor extends Actor
 
 		if (showDialog)
 		{
-			let checkbox = '<li class="flexrow">';
-			checkbox += '<div class="item flexrow flex-group-left">';
-			checkbox += '<input type="' + (isAbility ? "checkbox" : "hidden") + '" id="selected" class="einfachCheckbox" text-align="left"' + (singleOnly ? " checked>" : ">");
+			let checkbox = '<div style="display: grid; grid-template-columns: 50%  50%;">';
+			checkbox += '<input type="' + (isAbility ? "checkbox" : "hidden") + '" id="singlePrimaryAttribute" class="singlePrimaryAttribute" text-align="left"' + (singleOnly ? " checked>" : ">");
 			if (isAbility)
 				checkbox += '<div class="item-name">  ' + game.i18n.localize("SPACE1889.SingleValueOnly") + '</div > ';
-			checkbox += '</div></li>'
+			checkbox += '</div>'; //</li>'
 
 			let chatOptions = SPACE1889Helper.getHtmlChatOptions();
 
-			function Recalc()
+			function recalc()
 			{
-				singleOnly = $('#selected')[0].checked;
+				singleOnly = $('#singlePrimaryAttribute')[0].checked;
 				let mod = Number($("#modifier")[0].value);
 
 				attributValue = getDiceCount(singleOnly, mod, deduction);
@@ -2342,73 +2343,63 @@ export class Space1889Actor extends Actor
 				$("#anzahlDerWuerfel")[0].value = attributValue;
 			}
 
-			function handleRender(html)
-			{
-				html.on('change', '.einfachCheckbox', () =>
+			let dialogue = foundry.applications.api.DialogV2.wait(
 				{
-					Recalc();
-				});
-
-				html.on('change', '.modInput', () =>
-				{
-					Recalc();
-				});
-				Recalc();
-			}
-
-			let dialogue = new Dialog(
-				{
-					title: `${titleName}`,
+					window: { title: `${actorName}: ${titleName}` },
+					position: { width: 315 },
 					content: `
-			<form>
-			<h2>${attributeName}: ${baseValue}</h2>
-			<ul>
-				${checkbox}
-				<li class="flexrow">
-					<div class="item flexrow flex-group-left">
-						<div>${modifierLabel}:</div> <input type="number" class="modInput" id="modifier" value = "0" autofocus />
-					</div>
-				</li>
-				<hr>
-				<h4>
-				<div>
-					<li class="flexrow">
-						<div class="item flexrow flex-group-left">
-							<label for="anzahlDerWuerfel">${labelNumberOfDice}</label>
-							<input id="anzahlDerWuerfel" value = "0" disabled="true" visible="false">
+						<form>
+						<h5 style="margin-top: 0px; margin-bottom: 0px">${attributeName}: ${baseValue}</h5>
+						${checkbox}
+
+
+						<div style="display: grid; grid-template-columns: 50%  50%; grid-template-rows: 100%;">
+							<div style="margin-top:4px; margin-left: 5px">${modifierLabel}:</div> 
+							<div>
+								<input style="max-width: 110px; text-align: center" type="number" class="modInput" id="modifier" value = "0">
+							</div>
 						</div>
-					</li>
-				</div>
-				</h4>
-				</ul>
-				<hr>
-				<p><select id="choices" name="choices">${chatOptions}</select></p>
-			</form>`,
-					buttons:
-					{
-						ok:
+						<h5 style="margin-top: 0px; margin-bottom: 0px">
+							<div style="display: grid; grid-template-columns: 50%  50%;">
+								<div style="margin-top:14px; margin-left: 5px">${labelNumberOfDice}:</div> 
+								<div>
+									<input style="max-width: 110px; text-align: center" id="anzahlDerWuerfel" value="10" disabled="true" visible="false">
+								<div>
+							</div>
+						</h5>
+						<hr>
+						<div><select id="choices" name="choices">${chatOptions}</select></div>
+						</form>`,
+					buttons: [
 						{
+							action: 'ok',
 							icon: '',
-							label: 'Los!',
-							callback: (html) => 
+							label: game.i18n.localize("SPACE1889.Go"),
+							default: true,
+							callback: (event, button, dialog) => 
 							{
-								const mod = parseInt(html.find('#modifier').val());
-								const single = html.find('#selected').is(":checked");
-								const chatoption = html.find('#choices').val();
+								const mod = parseInt(button.form.elements.modifier.value);
+								const single = button.form.elements.singlePrimaryAttribute.checked;
+								const chatoption = button.form.elements.choices.value;
 								attributValue = getDiceCount(single, mod, deduction);
 
 								ChatMessage.create(getChatData(attributValue, mod, chatoption), {});
 							}
 						},
-						abbruch:
 						{
+							action: 'abbruch',
 							label: game.i18n.localize("SPACE1889.Cancel"),
 							callback: () => { ui.notifications.info(game.i18n.localize("SPACE1889.CancelRoll")) },
 							icon: `<i class="fas fa-times"></i>`
 						}
-					},
-					default: "ok",
-					render: handleRender
+					],
+					form: { closeOnSbmit: false },
+					render: (_event, _dialog) =>
+					{
+						recalc();
+						document.getElementsByClassName('singlePrimaryAttribute')[0].addEventListener("change", recalc, false);
+						document.getElementsByClassName('modInput')[0].addEventListener("change", recalc, false);
+					}
 				});
 			dialogue.render(true)
 		}
