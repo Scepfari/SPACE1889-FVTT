@@ -68,7 +68,7 @@ class Space1889MenuLayer extends foundry.canvas.layers.InteractionLayer
 				visible: game.user.isGM,
 				onClick: () =>
 				{
-					SPACE1889Light.npcsDrawWeaponsWithDialog();
+					SPACE1889Helper.npcsDrawWeaponsWithDialog();
 				}
 			},
 			showTokenNameAndBar: {
@@ -79,7 +79,7 @@ class Space1889MenuLayer extends foundry.canvas.layers.InteractionLayer
 				visible: game.user.isGM,
 				onClick: () =>
 				{
-					SPACE1889Light.showTokenNameAndBarWithDialog();
+					SPACE1889Helper.showTokenNameAndBarWithDialog();
 				}
 			},
 			hideNames: {
@@ -90,7 +90,7 @@ class Space1889MenuLayer extends foundry.canvas.layers.InteractionLayer
 				visible: game.user.isGM,
 				onClick: () =>
 				{
-					SPACE1889Light.hideNameOfNonCharactersWithDialog();
+					SPACE1889Helper.hideNameOfNonCharactersWithDialog();
 				}
 			},
 			redoTokenLightAndVision: {
