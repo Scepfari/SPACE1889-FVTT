@@ -257,15 +257,14 @@ export default class SPACE1889Helper
 		let positionLabel = game.i18n.localize("SPACE1889.VehicleCrewPosition");
 		let submit = game.i18n.localize("SPACE1889.Submit")
 		let cancel = game.i18n.localize("SPACE1889.Cancel")
-		let selectedOption;
-		let userInputName;
 
-
-		let dialog = new Dialog({
-			title: `${vehicle.name} : ${dropedActor.name}`,
-			content: `
-				<form class="flexcol">
-					<p>${text}</p>
+		new foundry.applications.api.DialogV2(
+			{
+				window: { title: `${vehicle.name} : ${dropedActor.name}`, resizable: true },
+				position: { width: 400 },
+				content: `
+					<form>
+						<div>${text}</div>
 						<div>
 							<label>${positionLabel}:</label>
 							<div>
@@ -274,50 +273,47 @@ export default class SPACE1889Helper
 								</select>
 							</div>
 						</div>
-				</form>
-			`,
-			buttons: {
-				yes: {
-					icon: '<i class="fas fa-check"></i>',
-					label: `${submit}`,
-					callback: (html) =>
+					</form>
+				`,
+				buttons: [
 					{
-						selectedOption = html.find('#position').val();
+						action: "yes",
+						icon: '<i class="fas fa-check"></i>',
+						label: `${submit}`,
+						default: true,
+						callback: (event, button, dialog) => myCallback(button)
 					},
-				},
-				no: {
-					icon: '<i class="fas fa-times"></i>',
-					label: `${cancel}`,
-				}
-			},
-			default: "yes",
-			close: () =>
-			{
-				if (selectedOption)
-				{
-					let all = selectedOption == "all";
-					const id = dropedActor._id;
+					{
+						action: "no",
+						icon: '<i class="fas fa-times"></i>',
+						label: `${cancel}`
+					}
+				]
+			}).render({ force: true });
 
-					if (selectedOption == "captain" || all)
-						vehicle.update({ 'system.positions.captain.actorId': id, 'system.positions.captain.actorName': actorName });
-					if (selectedOption == "pilot" || all)
-						vehicle.update({ 'system.positions.pilot.actorId': id, 'system.positions.pilot.actorName': actorName });
-					if (selectedOption == "copilot" || all)
-						vehicle.update({ 'system.positions.copilot.actorId': id, 'system.positions.copilot.actorName': actorName });
-					if (selectedOption == "gunner" || all)
-						vehicle.update({ 'system.positions.gunner.actorId': id, 'system.positions.gunner.actorName': actorName });
-					if (selectedOption == "signaler" || all)
-						vehicle.update({ 'system.positions.signaler.actorId': id, 'system.positions.signaler.actorName': actorName });
-					if (selectedOption == "lookout" || all)
-						vehicle.update({ 'system.positions.lookout.actorId': id, 'system.positions.lookout.actorName': actorName });
-					if (selectedOption == "mechanic" || all)
-						vehicle.update({ 'system.positions.mechanic.actorId': id, 'system.positions.mechanic.actorName': actorName });
-					if (selectedOption == "medic" || all)
-						vehicle.update({ 'system.positions.medic.actorId': id, 'system.positions.medic.actorName': actorName });
-				}
-			}
-		});
-		dialog.render(true);
+		async function myCallback(button)
+		{
+			const selectedOption = button.form.elements.position.value;
+			let all = selectedOption == "all";
+			const id = dropedActor._id;
+
+			if (selectedOption == "captain" || all)
+				vehicle.update({ 'system.positions.captain.actorId': id, 'system.positions.captain.actorName': actorName });
+			if (selectedOption == "pilot" || all)
+				vehicle.update({ 'system.positions.pilot.actorId': id, 'system.positions.pilot.actorName': actorName });
+			if (selectedOption == "copilot" || all)
+				vehicle.update({ 'system.positions.copilot.actorId': id, 'system.positions.copilot.actorName': actorName });
+			if (selectedOption == "gunner" || all)
+				vehicle.update({ 'system.positions.gunner.actorId': id, 'system.positions.gunner.actorName': actorName });
+			if (selectedOption == "signaler" || all)
+				vehicle.update({ 'system.positions.signaler.actorId': id, 'system.positions.signaler.actorName': actorName });
+			if (selectedOption == "lookout" || all)
+				vehicle.update({ 'system.positions.lookout.actorId': id, 'system.positions.lookout.actorName': actorName });
+			if (selectedOption == "mechanic" || all)
+				vehicle.update({ 'system.positions.mechanic.actorId': id, 'system.positions.mechanic.actorName': actorName });
+			if (selectedOption == "medic" || all)
+				vehicle.update({ 'system.positions.medic.actorId': id, 'system.positions.medic.actorName': actorName });
+		}
 	}
 
 	static showActorSheet(id)
@@ -1469,25 +1465,25 @@ export default class SPACE1889Helper
 			if (askUser)
 			{
 				update["flags.space1889.PreCreation"] = 101;
-				new Dialog({
-					title: `${game.i18n.localize("SPACE1889.AddLinkedTokenTitle")}: ${token.name} `,
+				new foundry.applications.api.DialogV2({
+					window: { title: `${game.i18n.localize("SPACE1889.AddLinkedTokenTitle")}: ${token.name} ` },
+					position: { width: 400 },
 					content: `<p>${game.i18n.localize("SPACE1889.AddLinkedTokenContent")}: </p>`,
-					buttons:
-					{
-						ok:
+					buttons: [
 						{
+							action: "ok",
 							icon: '',
-							label: game.i18n.localize("SPACE1889.AddLinkedTokenDoIt"),
+							label: game.i18n.localize("SPACE1889.AddLinkedTokenDoIt")
 						},
-						nein:
 						{
+							action: "nein",
+							default: true,
 							label: game.i18n.localize("SPACE1889.AddLinkedTokenUnlink"),
 							callback: () => changeIt(),
 							icon: ''
 						}
-					},
-					default: "nein"
-				}).render(true);
+					]
+				}).render({ force: true });
 
 				function changeIt()
 				{
@@ -1552,55 +1548,54 @@ export default class SPACE1889Helper
 			checkbox += ">";
 		checkbox += '</div></li></ul>'
 
-		let dialogue = new Dialog(
-		{
-			title: `${game.i18n.localize("SPACE1889.WeaponReadyWeapon")}`,
-			content: `
-				<form>
-					${checkbox}
-					<fieldset>
-						<legend>${game.i18n.localize("SPACE1889.PreferredWeaponType")}</legend>
-            
-						<input type="radio" id="ranged" name="type" value="R" checked>
-						<label for="ranged">${game.i18n.localize("SPACE1889.RangedAttack")}</label><br>
-            
-						<input type="radio" id="melee" name="type" value="M">
-						<label for="melee">${game.i18n.localize("SPACE1889.SkillNahkampf")}</label><br>
-            
-						<input type="radio" id="noMatter" name="type" value="N">
-						<label for="noMatter">${game.i18n.localize("SPACE1889.NoMatter")}</label>
-					</fieldset><br>
-				</form>`,
-			buttons:
+		new foundry.applications.api.DialogV2(
 			{
-				ok:
-				{
-					icon: '',
-					label: game.i18n.localize("SPACE1889.Go"),
-					callback: (html) => 
+				window: { title: `${game.i18n.localize("SPACE1889.WeaponReadyWeapon")}` },
+				position: { width: 400 },
+				content: `
+					<form>
+						${checkbox}
+						<fieldset class="space1889-dialogFieldset">
+							<legend>${game.i18n.localize("SPACE1889.PreferredWeaponType")}</legend>
+            
+							<div><input type="radio" id="ranged" name="type" value="R" checked>
+							<label for="ranged">${game.i18n.localize("SPACE1889.RangedAttack")}</label></div>
+            
+							<div><input type="radio" id="melee" name="type" value="M">
+							<label for="melee">${game.i18n.localize("SPACE1889.SkillNahkampf")}</label></div>
+            
+							<div><input type="radio" id="noMatter" name="type" value="N">
+							<label for="noMatter">${game.i18n.localize("SPACE1889.NoMatter")}</label></div>
+						</fieldset>
+					</form>`,
+				buttons: [
 					{
-						const rangedWeapon = html.find('#ranged')[0].checked;
-						const meleeWeapon = html.find('#melee')[0].checked;
-						const selectedOnly = html.find('#selected')[0].checked;
-						if (rangedWeapon)
-							this.npcsDrawWeapons("ranged", selectedOnly);
-						else if (meleeWeapon)
-							this.npcsDrawWeapons("melee", selectedOnly);
-						else
-							this.npcsDrawWeapons("", selectedOnly);
+						action: "ok",
+						icon: '',
+						label: game.i18n.localize("SPACE1889.Go"),
+						default: true,
+						callback: (event, button, dialog) => 
+						{
+							const rangedWeapon = button.form.elements.ranged.checked;
+							const meleeWeapon = button.form.elements.melee.checked;
+							const selectedOnly = button.form.elements.selected.checked;
+							if (rangedWeapon)
+								this.npcsDrawWeapons("ranged", selectedOnly);
+							else if (meleeWeapon)
+								this.npcsDrawWeapons("melee", selectedOnly);
+							else
+								this.npcsDrawWeapons("", selectedOnly);
+						}
+					},
+					{
+						action: "abbruch",
+						label: game.i18n.localize("SPACE1889.Cancel"),
+						callback: () => { ui.notifications.info(game.i18n.localize("SPACE1889.FunctionCanceled")) },
+						icon: `<i class="fas fa-times"></i>`
 					}
-				},
-				abbruch:
-				{
-					label: game.i18n.localize("SPACE1889.Cancel"),
-					callback: () => { ui.notifications.info(game.i18n.localize("SPACE1889.FunctionCanceled")) },
-					icon: `<i class="fas fa-times"></i>`
-				}
-			},
-			default: "ok"
-		});
-    
-		dialogue.render(true);		
+				],
+			}
+		).render({ force: true });
 	}
 
 	static async npcsDrawWeapons(preferredWeapon, selectedOnly)
@@ -1667,40 +1662,35 @@ export default class SPACE1889Helper
 			return;
 		}
 
-		let dialogue = new Dialog(
+		new foundry.applications.api.DialogV2(
 		{
-			title: `${game.i18n.localize("SPACE1889.RenameTokens")}`,
-			content: `
-					${game.i18n.localize("SPACE1889.HideTokenNamesSelectedOnly")}
-					<br>
-				`,
-			buttons:
-			{
-				yes:
+			window: { title: `${game.i18n.localize("SPACE1889.RenameTokens")}` },
+			position: { width: 400 },
+			content: `${game.i18n.localize("SPACE1889.HideTokenNamesSelectedOnly")}`,
+			buttons: [
 				{
+					action: "yes",
 					icon: '',
 					label: game.i18n.localize("SPACE1889.SelectedOnly"),
+					default: true,
 					callback: () => 
 					{
 						this.hideNameOfNonCharacters(true);
 					}
 				},
-				all:
 				{
+					action: "all",
 					label: game.i18n.localize("SPACE1889.All"),
 					callback: () => { this.hideNameOfNonCharacters(false); },
 				},
-				abbruch:
 				{
+					action: "abbruch",
 					label: game.i18n.localize("SPACE1889.Cancel"),
 					callback: () => { ui.notifications.info(game.i18n.localize("SPACE1889.FunctionCanceled")) },
 					icon: `<i class="fas fa-times"></i>`
 				}
-			},
-			default: "ok"
-		});
-    
-		dialogue.render(true);		
+			]
+		}).render({ force: true });
 	}
 
 	static async hideNameOfNonCharacters(selectedOnly)
@@ -1753,49 +1743,50 @@ export default class SPACE1889Helper
 		}
 
 		let options = { force: false, displayBars: 30, displayName: 30 };
-		const barHtml = this.getTokenDisplayOptions("bar-select", game.i18n.localize("SPACE1889.TokenLifebarDisplayType"));
-		const nameHtml = this.getTokenDisplayOptions("name-select", game.i18n.localize("SPACE1889.TokenNameDisplayType"));
+		const barHtml = this.getTokenDisplayOptions("barSelect", game.i18n.localize("SPACE1889.TokenLifebarDisplayType"));
+		const nameHtml = this.getTokenDisplayOptions("nameSelect", game.i18n.localize("SPACE1889.TokenNameDisplayType"));
 
-		const dialogue = new Dialog({
-			title: `${game.i18n.localize("SPACE1889.TokenChangeDisplay")}`,
-			content: `
-				<form>
-				${barHtml}
-				<hr>
-				${nameHtml}
-				<hr>
-				<fieldset>
-					<legend>${game.i18n.localize("SPACE1889.TokenForceChange")}</legend>
-					<input type="radio" id="force" name="yesno" value="yes">
-					<label for="force">${game.i18n.localize("Yes")}</label><br>
-					<input type="radio" id="noforce" name="yesno" value="no" checked>
-					<label for="noforce">${game.i18n.localize("No")}</label><br>
-				</fieldset><br>
-				</form>`,
-			buttons:
+		new foundry.applications.api.DialogV2(
 			{
-				ok:
-				{
-					icon: '',
-					label: game.i18n.localize("SPACE1889.Go"),
-					callback: (html) => 
+				window: { title: `${game.i18n.localize("SPACE1889.TokenChangeDisplay")}` },
+				position: { width: 400 },
+				content: `
+					<form>
+					<div>${barHtml}</div>
+					<hr>
+					<div>${nameHtml}</div>
+					<hr>
+					<fieldset class="space1889-dialogFieldset">
+						<legend>${game.i18n.localize("SPACE1889.TokenForceChange")}</legend>
+						<div><input type="radio" id="force" name="yesno" value="yes">
+						<label for="force">${game.i18n.localize("Yes")}</label><br>
+						<input type="radio" id="noforce" name="yesno" value="no" checked>
+						<label for="noforce">${game.i18n.localize("No")}</label></div>
+					</fieldset><br>
+					</form>`,
+				buttons: [
 					{
-						options.force = html.find('#force')[0].checked;
-						options.displayBars = Number(html.find('#bar-select')[0].value);
-						options.displayName = Number(html.find('#name-select')[0].value);
-						this.showTokenNameAndBar(options);
+						action: "ok",
+						icon: '',
+						label: game.i18n.localize("SPACE1889.Go"),
+						default: true,
+						callback: (event, button, dialog) => 
+						{
+							options.force = button.form.elements.force.checked;
+							options.displayBars = button.form.elements.barSelect.value;
+							options.displayName = Number(button.form.elements.nameSelect.value);
+							this.showTokenNameAndBar(options);
+						}
+					},
+					{
+						action: "abbruch",
+						label: game.i18n.localize("SPACE1889.Cancel"),
+						callback: () => { ui.notifications.info(game.i18n.localize("SPACE1889.FunctionCanceled")) },
+						icon: `<i class="fas fa-times"></i>`
 					}
-				},
-				abbruch:
-				{
-					label: game.i18n.localize("SPACE1889.Cancel"),
-					callback: () => { ui.notifications.info(game.i18n.localize("SPACE1889.FunctionCanceled")) },
-					icon: `<i class="fas fa-times"></i>`
-				}
-			},
-			default: "ok"
-		});
-		dialogue.render(true);	
+				]
+			}
+		).render({ force: true });
 	}
 
 	static getTokenDisplayOptions(id, labelName)
@@ -1849,35 +1840,34 @@ export default class SPACE1889Helper
 		}
 		opt += '</select></div>';
 
-		const dialogue = new Dialog({
-			title: `${game.i18n.localize("SPACE1889.SetGravityDialogTitle")}`,
+		new foundry.applications.api.DialogV2({
+			window: { title: `${game.i18n.localize("SPACE1889.SetGravityDialogTitle")}` },
+			position: { width: 450 },
 			content: `
 				<form>
 				${opt}
 				<hr>
 				</form>`,
-			buttons:
-			{
-				ok:
+			buttons: [
 				{
+					action: "ok",
 					icon: '',
 					label: game.i18n.localize("SPACE1889.Submit"),
-					callback: (html) => theCallback(html)
+					default: true,
+					callback: (event, button, dialog) => theCallback(button)
 				},
-				abbruch:
 				{
+					action: "abbruch",
 					label: game.i18n.localize("SPACE1889.Cancel"),
 					callback: () => { ui.notifications.info(game.i18n.localize("SPACE1889.FunctionCanceled")) },
 					icon: `<i class="fas fa-times"></i>`
 				}
-			},
-			default: "ok"
-		});
-		dialogue.render(true);
+			]
+		}).render({ force: true });
 
-		async function theCallback(html)
+		async function theCallback(button)
 		{
-			const newKey = html.find('#grav-select')[0].value;
+			const newKey = button.form.elements.grav-select.value;
 			const newGravity = CONFIG.SPACE1889.gravityZone[newKey]?.value;
 			if (CONFIG.SPACE1889.gravity[newKey] && newGravity)
 			{
@@ -2230,16 +2220,19 @@ export default class SPACE1889Helper
 		const isGerman = game.settings.get('core', 'language') == "de";
 		let content = await renderTemplate("systems/space1889/change/" + (isGerman ? "de" : "en") + "_modules.html");
 
-		new Dialog({
-			title: `${game.i18n.localize("SPACE1889.ExternalLinksModules")}`,
-			content,
-			buttons: {
-				ok: {
+		new foundry.applications.api.DialogV2({
+			window: { title: `${game.i18n.localize("SPACE1889.ExternalLinksModules")}`, resizable: true },
+			position: {width: 1000, height: 750 },
+			content: `${content}`,
+			buttons: [
+				{
+					action: "ok",
+					default: true,
 					icon: '<i class="fas fa-check"></i>',
 					label: `${game.i18n.localize("Close")}`
 				}
-			}
-		}).render(true, { resizable: true, width: 1000, height: 750 });
+			]
+		}).render({ force: true });
 	}
 
 	static getCombatSupportTargetInfo()

@@ -266,33 +266,33 @@ export default class SPACE1889Healing
 			reductionOptions += `<option value="${i}"> ${i} ${damageLocalized} (${i * 2} ${stylePointsLocalized})</option>`;
 		}
 
-		const inputDesc = game.i18n.localize("SPACE1889.ChooseDamageReduction") + ":";
+		const inputDesc = game.i18n.localize("SPACE1889.ChooseDamageReduction");
 
-		let dialogue = new Dialog(
+		new foundry.applications.api.DialogV2(
 			{
-				title: `${game.i18n.localize("SPACE1889.UseStylePoints")}: (${actorStylePoints})`,
-				content: `<p>${inputDesc}:</p><p><select id="choices" name="choices">${reductionOptions}</select></p>`,
-				buttons:
-				{
-					ok:
+				window: { title: `${game.i18n.localize("SPACE1889.UseStylePoints")}: (${actorStylePoints})` },
+				content: `<div>${inputDesc}:</div><div><select id="choices" name="choices">${reductionOptions}</select></div>`,
+				buttons: [
 					{
+						action: "ok",
 						icon: '',
 						label: game.i18n.localize("SPACE1889.Apply"),
-						callback: (html) => myCallback(html)
+						default: true,
+						callback: (event, button, dialog) => myCallback(event, button, dialog)
 					},
-					abbruch:
 					{
+						action: "abbruch",
 						label: game.i18n.localize("SPACE1889.Cancel"),
 						callback: () => { },
 						icon: `<i class="fas fa-times"></i>`
 					}
-				},
-				default: "ok"
-			}).render(true);
+				],
+				
+			}).render({ force: true });
 
-		async function myCallback(html)
+		async function myCallback(event, button, dialog)
 		{
-			const input = html.find('#choices').val();
+			const input = button.form.elements.choices.value;
 			const damageReduction = input ? Number(input) : 0;
 
 			if (damageReduction == 0 || actorStylePoints != actor.system.style.value)

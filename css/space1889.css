@@ -945,3 +945,15 @@ font-size: 12px;
 	padding-top: 0.5rem;
 	padding-bottom: 0.5rem;
 }
+
+/*foundry werte überschreiben*/
+
+.standard-form {
+	row-gap: 0.5rem;
+}
+
+ul,
+ol {
+	margin-top: 0.5rem;
+	margin-bottom: 0.5rem;
+}
