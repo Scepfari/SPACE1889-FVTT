@@ -560,7 +560,7 @@ export default class SPACE1889Combat
 					<label>${game.i18n.localize("SPACE1889.Distance")} ${distanceInfo.distance.toFixed(2)}${distanceInfo.unit}: ${SPACE1889Helper.getSignedStringFromNumber(distanceMod)}</label></div>
 					<fieldset class="space1889-dialogFieldset">
 						<legend>${game.i18n.localize("SPACE1889.AttackDialogAttackType")}</legend>
-						<fieldset>
+						<fieldset class="space1889-dialogFieldset">
 							<legend>${game.i18n.localize("SPACE1889.AttackDialogSimpleAttack")}</legend>
 							<div><input type="radio" id="normal" name="type" class="normal" value="N" checked>
 							<label for="normal">${game.i18n.localize("SPACE1889.AttackDialogRegular")}</label><br>
@@ -897,10 +897,10 @@ export default class SPACE1889Combat
 			position: { width: 480 },
 			content: `
 			<form >
-				<fieldset style="row-gap: 0.5rem">
+				<fieldset class="space1889-dialogFieldset">
 					<legend>${game.i18n.format("SPACE1889.DefenseDialogAttackType", { type: attackTypeName })}</legend>
 					${game.i18n.format("SPACE1889.DefenseCountInCombatRound", { count: defenseCount + 1, round: combatRound, malus: multiDefenseMalus })}</div>
-					<fieldset style="padding-top: 0.5rem; padding-bottom: 0.5rem" ${isOpposed ? hideText : ""}>
+					<fieldset class="space1889-dialogFieldset" ${isOpposed ? hideText : ""}>
 						<legend>${game.i18n.localize("SPACE1889.DefenseDialogNomalDefense")}</legend>
 						<div><input ${disableNormalDefenseInHtlmText} type="radio" id="normal" name="type" class="normal" value="N" ${normalSelected}>
 						<label ${disableNormalDefenseInHtlmText} for="normal">${game.i18n.localize("SPACE1889.SecondaryAttributeDef")} ${base}</label><br>
@@ -913,13 +913,13 @@ export default class SPACE1889Combat
 			
 					</fieldset>
 
-					<fieldset ${isOpposed ? "" : hideText}>
+					<fieldset class="space1889-dialogFieldset" ${isOpposed ? "" : hideText}>
 						<legend>${game.i18n.localize("SPACE1889.ChatOpposedRoll")}</legend>
 						<div><input type="radio" id="opposed" class="opposed" name="type" value="OP" data-tooltip="${opposedToolTip}" ${opposedSelected}>
 						<label for="opposed" data-tooltip="${opposedToolTip}">${defOpposedInfo.skillName} ${baseOpposed}</label></div>
 					</fieldset>
 
-					<fieldset style="padding-top: 0.5rem; padding-bottom: 0.5rem">
+					<fieldset class="space1889-dialogFieldset">
 						<legend>${game.i18n.localize("SPACE1889.DefenseDialogSpecialDefense")}</legend>
 						<div><input  ${disableTotalDefenseInHtlmText} type="radio" id="totalDefense" name="type" class="totalDefense" value="V" ${totalSelected}>
 						<label  ${disableTotalDefenseInHtlmText} for="totalDefense">${game.i18n.localize("SPACE1889.TotalDefense")}: ${totalDefense} ${lossOfAA}</label><br>
@@ -1406,6 +1406,7 @@ export default class SPACE1889Combat
 		let manoeuverName = "";
 		let data;
 		const token = actorToken ? actorToken : this.getCombatToken(actor) || this.getToken(actor);
+		const name = token ? token.name : actor.name;
 		const target = game.user.targets.first();
 		let baseValue = 0;
 		let weapon = null;
@@ -1481,7 +1482,7 @@ export default class SPACE1889Combat
 		const labelWurf = game.i18n.localize("SPACE1889.AttackValue") + ": ";
 
 
-		function Recalc()
+		function recalc()
 		{
 			let mod = Number($("#modifier")[0].value);
 
@@ -1491,122 +1492,99 @@ export default class SPACE1889Combat
 			$("#anzahlDerWuerfel")[0].value = attributValue.toString();
 		}
 
-		function handleRender(html)
-		{
-			html.on('change', '.normal', () =>
+		let dialogue = foundry.applications.api.DialogV2.wait(
 			{
-				Recalc();
-			});
-
-			html.on('change', '.secondNormal', () =>
-			{
-				Recalc();
-			});
-
-			html.on('change', '.vollerAngriff', () =>
-			{
-				Recalc();
-			});
-
-			html.on('change', '.totalAttackSecOpt', () =>
-			{
-				Recalc();
-			});
-
-			html.on('change', '.modInput', () =>
-			{
-				Recalc();
-			});
-			Recalc();
-		}
-
-
-		let dialogue = new Dialog(
-		{
-			title: `${game.i18n.localize("SPACE1889.VehicleManoeuvre")} ${manoeuverName}`,
-			content: `
+				window: { title: `${name}: ${game.i18n.localize("SPACE1889.VehicleManoeuvre")} ${manoeuverName}` },
+				position: { width: 480 },
+				content: `
 				<form >
-					<h2>${manoeuverName}</h2>
-					<label data-tooltip="${targetToolTip}">${game.i18n.localize("SPACE1889.Target")}: ${targetName}</label><br>
-					<label>${game.i18n.localize("SPACE1889.Distance")} ${distanceInfo.distance.toFixed(2)}${distanceInfo.unit}</label>
-					<fieldset>
+					<h4 style="margin-bottom: 0px">${manoeuverName}</h4>
+					<div><label data-tooltip="${targetToolTip}">${game.i18n.localize("SPACE1889.Target")}: ${targetName}</label><br>
+					<label>${game.i18n.localize("SPACE1889.Distance")} ${distanceInfo.distance.toFixed(2)}${distanceInfo.unit}</label><div>
+					<fieldset class="space1889-dialogFieldset">
 						<legend>${game.i18n.localize("SPACE1889.AttackDialogAttackType")}</legend>
-						<fieldset>
+						<fieldset class="space1889-dialogFieldset">
 							<legend>${game.i18n.localize("SPACE1889.AttackDialogSimpleAttack")}</legend>
-							<div ${showNormalOpt ? "" : hideText}>
+							<div><div ${showNormalOpt ? "" : hideText}>
 								<input type="radio" id="normal" name="type" class="normal" value="N" ${normalSelected}>
 								<label for="normal">${normalOptName}</label><br>
 							</div>
 							<div ${showNormalSecondOpt ? "" : hideText}>
 								<input type="radio" id="secondNormal" name="type" class="secondNormal" value="S" ${secondNormalSelected}>
 								<label for="secondNormal" data-tooltip="${data?.weapon?.system?.label}">${normalSecondOptName}</label><br>
-							</div>
+							</div></div>
 						</fieldset>
 
-						<fieldset>
+						<fieldset class="space1889-dialogFieldset">
 							<legend>${game.i18n.localize("SPACE1889.AttackDialogTotalAttackHeadline")}</legend>
-							<div ${showNormalOpt ? "" : hideText}>
+							<div><div ${showNormalOpt ? "" : hideText}>
 								<input ${disableTotalAttackInHtlmText} type="radio" id="vollerAngriff" name="type" class="vollerAngriff" value="V">
 								<label ${disableTotalAttackInHtlmText} for="vollerAngriff">${totalAttackName}</label><br>
 							</div>
 							<div ${showNormalSecondOpt ? "" : hideText}>
 								<input ${disableTotalAttackInHtlmText} type="radio" id="totalAttackSecOpt" name="type" class="totalAttackSecOpt" value="TS">
 								<label ${disableTotalAttackInHtlmText} for="totalAttackSecOpt">${totalAttackSecOptName}</label><br>
-							</div>
+							</div></div>
 						</fieldset>
 					</fieldset>
 					<ul>
 					<li class="flexrow">
 						<div class="item flexrow flex-group-left">
-							<div>${modifierLabel}:</div> <input type="number" class="modInput" id="modifier" value = "0">
+							<div>${modifierLabel}:</div> <input style="max-width: 150px; text-align: center" type="number" class="modInput" id="modifier" value = "0">
 						</div>
 					</li>
 					<hr>
 					<div class="space1889 sheet actor">
 						<li class="flexrow">
-							<h2 class="item flexrow flex-group-left ">
+							<h4 style="margin-bottom: 0rem;" class="item flexrow flex-group-left ">
 								<label for="zusammensetzung">${labelWurf}</label>
-								<input class="h2input" id="anzahlDerWuerfel" value="10" disabled="true" visible="false">
-							</h2>
+								<input style="max-width: 150px; text-align: center" class="h2input" id="anzahlDerWuerfel" value="10" disabled="true" visible="false">
+							</h4>
 						</li>
 					</div>
 					</ul>
 					<hr>
 					<p><select id="choices" name="choices">${optionen}</select></p>
 				</form>`,
-			buttons:
-			{
-				ok:
+				buttons: [
+					{
+						action: 'ok',
+						icon: '',
+						label: game.i18n.localize("SPACE1889.Go"),
+						callback: (event, button, dialog) => theCallback(event, button, dialog),
+						default: true
+					},
+					{
+						action: 'abbruch',
+						label: game.i18n.localize("SPACE1889.Cancel"),
+						callback: () => { ui.notifications.info(game.i18n.localize("SPACE1889.CancelRoll")) },
+						icon: `<i class="fas fa-times"></i>`
+					}
+				],
+				form: { closeOnSbmit: false },
+				render: (_event, _dialog) =>
 				{
-					icon: '',
-					label: game.i18n.localize("SPACE1889.Go"),
-					callback: (html) => theCallback(html)
-				},
-				abbruch:
-				{
-					label: game.i18n.localize("SPACE1889.Cancel"),
-					callback: () => { ui.notifications.info(game.i18n.localize("SPACE1889.CancelRoll")) },
-					icon: `<i class="fas fa-times"></i>`
+					recalc();
+					document.getElementsByClassName('normal')[0].addEventListener("change", recalc, false);
+					document.getElementsByClassName('secondNormal')[0].addEventListener("change", recalc, false);
+					document.getElementsByClassName('vollerAngriff')[0].addEventListener("change", recalc, false);
+					document.getElementsByClassName('totalAttackSecOpt')[0].addEventListener("change", recalc, false);
+					document.getElementsByClassName('modInput')[0].addEventListener("change", recalc, false);
 				}
-			},
-			default: "ok",
-			render: handleRender
-		});
+			});
 	
-		dialogue.render(true);
-
-		async function theCallback(html)
+		async function theCallback(event, button, dialog)
 		{
 			let attackName = "";
 			let toolTipInfo = data.toolTipInfo;
 			let isFullAttack = false;
-			if (html.find('#vollerAngriff')[0].checked || $('#totalAttackSecOpt')[0].checked)
+			if (button.form.elements.vollerAngriff.checked || button.form.elements.totalAttackSecOpt.checked)
 			{
 				attackName = game.i18n.localize("SPACE1889.AttackTypeTotalAttack");
 				toolTipInfo += attackName + ": " + SPACE1889Helper.getSignedStringFromNumber(baseVollerAngriff);
 				isFullAttack = true;
 			}
-			if (html.find('#secondNormal')[0].checked || $('#totalAttackSecOpt')[0].checked)
+			if (button.form.elements.secondNormal.checked || button.form.elements.totalAttackSecOpt.checked)
 			{
 				manoeuver = "disarmWithWeapon";
 				chatInfo = game.i18n.format("SPACE1889.DisarmWithWeapon", { weapon: weapon.system.label });
@@ -1616,11 +1594,11 @@ export default class SPACE1889Combat
 			if (target)
 				titelInfo += game.i18n.format("SPACE1889.AttackOn", { targetName: targetName });
 
-			const chatoption = html.find('#choices').val();
-			const input = html.find('#anzahlDerWuerfel').val();
+			const chatoption = button.form.elements.choices.value;
+			const input = button.form.elements.anzahlDerWuerfel.value;
 			const anzahl = input ? parseInt(input) : 0;
 
-			const mod = Number($("#modifier")[0].value);
+			const mod = Number(button.form.elements.modifier.value);
 			if (mod != 0)
 				toolTipInfo += (toolTipInfo.length > 0 ? " " : "") + game.i18n.format("SPACE1889.ChatModifier", { mod: SPACE1889Helper.getSignedStringFromNumber(mod) });
 
@@ -1635,7 +1613,5 @@ export default class SPACE1889Combat
 				SPACE1889Helper.addEffect(actor, { name: "noActiveDefense", rounds: 1 });
 		}
 	}
-
-
 }
 

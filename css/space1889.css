@@ -942,4 +942,6 @@ font-size: 12px;
 
 .space1889-dialogFieldset {
 	row-gap: 0.5rem;
+	padding-top: 0.5rem;
+	padding-bottom: 0.5rem;
 }
