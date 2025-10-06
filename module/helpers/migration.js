@@ -21,7 +21,6 @@ export class Space1889Migration
 		}
 		if (game.user.isGM)
 		{
-			await this.checkFoundryMigrationBug();
 			await this.migrateEffectsForFoundryV11(lastUsedVersion, lastUsedFoundryVersion);
 
 			await game.settings.set("space1889", "lastUsedFoundryVersion", game.version);
@@ -272,91 +271,37 @@ export class Space1889Migration
 		}
 	}
 
-	static async checkFoundryMigrationBug()
-	{
-		if (game.version === "10.284")
-		{
-			for (const scene of game.scenes)
-			{
-				for (let token of scene.tokens)
-				{
-					if (token.actorLink || token.actor == undefined)
-						continue;
-
-					const newDocuments = await token.actor.createEmbeddedDocuments("Item", [{ name: "Foundry Bug 8180", type: "item" }]);
-					const toKill = newDocuments.map(d => d._id);
-					await token.actor.deleteEmbeddedDocuments("Item", toKill);
-				}
-			}
-		}
-		if (game.version === "10.285" && game.settings.get("space1889", "lastUsedFoundryVersion") === "9.28")
-		{
-			this.showWarning();
-		}
-	}
-
-	static showWarning()
-	{
-		const info = game.settings.get("space1889", "newVersionPopup").split("|");
-		const currentVersion = game.version;
-		if (game.user.isGM && (foundry.utils.isNewerVersion(currentVersion, info[1]) || info[0] > 0))
-		{
-			let content = game.i18n.localize("SPACE1889.FoundryBug8180");
-			const understood = game.i18n.localize("SPACE1889.Understood");
-			const warning = game.i18n.localize("SPACE1889.Warning");
-
-			new Dialog({
-				title: `${warning} ${currentVersion}`,
-				content,
-				buttons: {
-					ok: {
-						icon: '<i class="fas fa-check"></i>',
-						label: `${understood}`
-					},
-				},
-			}).render(true);
-		}
-
-		const speaker = game.userId;
-		let desc = game.i18n.localize("SPACE1889.FoundryBug8180");
-
-		ChatMessage.create({
-			speaker: speaker,
-			content: desc
-		});
-
-	}
-
-
 	static async showNewVersionInfo(noCheck = false)
 	{
 		const info = game.settings.get("space1889", "newVersionPopup").split("|");
 		const currentVersion = game.system.version;
 		if (noCheck || (game.user.isGM && (foundry.utils.isNewerVersion(currentVersion, info[1]) || info[0] > 0)))
 		{
-			//let content = game.i18n.localize("SPACE1889.VersionInfo");
 			const isGerman = game.settings.get('core', 'language') == "de";
 			let content = await renderTemplate("systems/space1889/change/" + (isGerman ? "de" : "en") + "_changelog_2.3.html");
 			const understood = game.i18n.localize("SPACE1889.Understood");
 			const stayAway = game.i18n.localize("SPACE1889.StayAway");
 			const newVersion = game.i18n.localize("SPACE1889.NewVersion");
 
-			new Dialog({
-				title: `${newVersion} ${currentVersion}`,
-				content,
-				buttons: {
-					ok: {
+			new foundry.applications.api.DialogV2({
+				window: { title: `${newVersion} ${currentVersion}`, resizable: true },
+				position: { width: 650, height: 750},
+				content: `${content}`,
+				buttons: [
+					{
+						action: "ok",
 						icon: '<i class="fas fa-check"></i>',
 						label: `${understood}`,
 						callback: () => game.settings.set("space1889", "newVersionPopup", `1|${currentVersion}`),
 					},
-					dont_remind: {
+					{
+						action: "dont_remind",
 						icon: '<i class="fas fa-times"></i>',
 						label: `${stayAway}`,
 						callback: () => game.settings.set("space1889", "newVersionPopup", `0|${currentVersion}`),
 					}
-				}
-			}).render(true, { resizable: true, width: 650, height: 750});
+				]
+			}).render({ force: true });
 		}
 	}
 }

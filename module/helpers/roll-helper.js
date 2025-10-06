@@ -61,28 +61,27 @@ export default class SPACE1889RollHelper
 			text = game.i18n.format("SPACE1889.DeadTargets", { count: info.targets, dead: info.isDeadCount });
 
 		const titelInfo = game.i18n.localize("SPACE1889.DoAttack");
-		let dialogue = new Dialog(
-			{
-				title: `${titelInfo}`,
-				content: `<p>${text}</p>`,
-				buttons:
+		new foundry.applications.api.DialogV2({
+			window: { title: `${titelInfo}`, resizable: true },
+			position: { width: 400 },
+			content: `<div>${text}</div>`,
+			buttons: [
 				{
-					ok:
-					{
-						icon: '',
-						label: game.i18n.localize("SPACE1889.Go"),
-						callback: (html) => myCallback(html)
-					},
-					abbruch:
-					{
-						label: game.i18n.localize("SPACE1889.Cancel"),
-						icon: `<i class="fas fa-times"></i>`
-					}
+					action: "ok",
+					icon: '',
+					default: true,
+					label: game.i18n.localize("SPACE1889.Go"),
+					callback: () => myCallback()
 				},
-				default: "ok"
-			}).render(true);
+				{
+					action: "abbruch",
+					label: game.i18n.localize("SPACE1889.Cancel"),
+					icon: `<i class="fas fa-times"></i>`
+				}
+			]
+		}).render({ force: true });
 
-		async function myCallback(html)
+		async function myCallback()
 		{
 			if (manoeuverType === "grapple")
 			{
@@ -459,32 +458,31 @@ export default class SPACE1889RollHelper
 			let chatOptions = SPACE1889Helper.getHtmlChatOptions();
 
 			const diceCount = dieCount - defaultMod;
-			let dialogue = new Dialog(
-				{
-					title: `${titelPartOne}: ${item.system.label} (${diceCount} ${diceDesc})`,
-					content: `<p>${inputDesc}: <input type="number" id="anzahlDerWuerfel" value = "${defaultMod}" autofocus></p><hr><p><select id="choices" name="choices">${chatOptions}</select></p>`,
-					buttons:
+			new foundry.applications.api.DialogV2({
+				window: { title: `${titelPartOne}: ${item.system.label} (${diceCount} ${diceDesc})`, resizable: true },
+				position: { width: 400 },
+				content: `<p>${inputDesc}: <input type="number" id="anzahlDerWuerfel" value = "${defaultMod}" autofocus></p><hr><p><select id="choices" name="choices">${chatOptions}</select></p>`,
+				buttons: [
 					{
-						ok:
-						{
-							icon: '',
-							label: game.i18n.localize("SPACE1889.Go"),
-							callback: (html) => myCallback(html)
-						},
-						abbruch:
-						{
-							label: game.i18n.localize("SPACE1889.Cancel"),
-							callback: () => { ui.notifications.info(game.i18n.localize("SPACE1889.CancelRoll")) },
-							icon: `<i class="fas fa-times"></i>`
-						}
+						action: "ok",
+						icon: '',
+						label: game.i18n.localize("SPACE1889.Go"),
+						default: true,
+						callback: (event, button, dialog) => myCallback(button)
 					},
-					default: "ok"
-				}).render(true);
+					{
+						action: "abbruch",
+						label: game.i18n.localize("SPACE1889.Cancel"),
+						callback: () => { ui.notifications.info(game.i18n.localize("SPACE1889.CancelRoll")) },
+						icon: `<i class="fas fa-times"></i>`
+					}
+				]
+			}).render({ force: true });
 
-			async function myCallback(html)
+			async function myCallback(button)
 			{
-				const chatoption = html.find('#choices').val();
-				const input = html.find('#anzahlDerWuerfel').val();
+				const chatoption = button.form.elements.choices.value;
+				const input = button.form.elements.anzahlDerWuerfel.value;
 				let anzahl = input ? parseInt(input) : 0;
 				toolTipInfo = anzahl == 0 ? "" : game.i18n.format("SPACE1889.ChatModifier", { mod: SPACE1889Helper.getSignedStringFromNumber(anzahl) }); 
 				anzahl += diceCount;
@@ -908,13 +906,16 @@ export default class SPACE1889RollHelper
 		let damageType = game.i18n.localize("SPACE1889.DamageTypeAbbr");
 		let submit = game.i18n.localize("SPACE1889.Submit");
 		let cancel = game.i18n.localize("SPACE1889.Cancel");
-		let selectedOption;
-		let userInputName;
+		let selectedOption = "";
+		let userInputName = "";
 		let damageAmount = 1;
+
+
 		const imgPath = isLethal ? "icons/skills/wounds/blood-drip-droplet-red.webp" : "icons/skills/wounds/injury-pain-body-orange.webp";
 
-		let dialog = new Dialog({
-			title: `${actor.name} : ${damageLabel}`,
+		new foundry.applications.api.DialogV2({
+			window: { title: `${actor.name} : ${damageLabel}`, resizable: true },
+			position: { width: 400 },
 			content: `
 				<form class="flexcol">
 					<div class="resources grid grid-4col">
@@ -943,56 +944,64 @@ export default class SPACE1889RollHelper
 					</div>
 				</form>
 			`,
-			buttons: {
-				yes: {
+			buttons: [
+				{
+					action: "yes",
 					icon: '<i class="fas fa-check"></i>',
 					label: `${submit}`,
-					callback: (html) =>
+					default: true,
+					callback: (event, button, dialog) =>
 					{
-						selectedOption = html.find('#damageType').val();
-						userInputName = html.find('#damageName').val();
-						damageAmount = html.find('#damage').val();
+						selectedOption = button.form.elements.damageType.value;
+						userInputName = button.form.elements.damageName.value;
+						damageAmount = button.form.elements.damage.value;
 					}
 				},
-				no: {
+				{
+					action: "no",
 					icon: '<i class="fas fa-times"></i>',
 					label: `${cancel}`
 				}
-			},
-			default: "yes",
-			close: () =>
+			],
+			submit: result =>
 			{
-				if (selectedOption && actor.items.get(item._id) != undefined)
-				{
-					let useInputName = actor.type != "creature";
-					if (userInputName == "")
-					{
-						useInputName = false;
-						userInputName = selectedOption == "lethal" ? game.i18n.localize("SPACE1889.Lethal") : game.i18n.localize("SPACE1889.NonLethal");
-					}
-
-					const path = selectedOption == "lethal" ? "icons/skills/wounds/blood-drip-droplet-red.webp" : "icons/skills/wounds/injury-pain-body-orange.webp";
-
-					let damageAmountInt = parseInt(damageAmount);
-					if (damageAmountInt == NaN)
-						damageAmountInt = 1;
-					damageAmountInt = Math.max(1, damageAmountInt);
-					const eventDate = SPACE1889Time.getCurrentTimeDateString();
-					const timestamp = SPACE1889Time.getCurrentTimestamp();
-					const isCombat = game.combat?.active && game.combat?.started;
-
-					doIt(selectedOption, userInputName, path,damageAmountInt,eventDate,timestamp,isCombat, (useInputName ? userInputName : ""));
-				}
+				if (result === "yes" && selectedOption)
+					addDamage()
 				else if (actor.items.get(item._id) != undefined)
 				{
 					actor.deleteEmbeddedDocuments("Item", [item._id]);
 					ui.notifications.info(game.i18n.format("SPACE1889.ChatInfoUndoDamage", { name: actor.name }));
 				}
-			}
-		});
-		dialog.render(true);
 
-		async function doIt(damageType, name, path, damageAmount, eventDate, timestamp, isCombat, userInputName)
+			}
+		}).render({ force: true });
+
+		async function addDamage()
+		{
+			if (actor.items.get(item._id) != undefined)
+			{
+				let useInputName = actor.type != "creature";
+				if (userInputName == "")
+				{
+					useInputName = false;
+					userInputName = selectedOption == "lethal" ? game.i18n.localize("SPACE1889.Lethal") : game.i18n.localize("SPACE1889.NonLethal");
+				}
+
+				const path = selectedOption == "lethal" ? "icons/skills/wounds/blood-drip-droplet-red.webp" : "icons/skills/wounds/injury-pain-body-orange.webp";
+
+				let damageAmountInt = parseInt(damageAmount);
+				if (damageAmountInt == NaN)
+					damageAmountInt = 1;
+				damageAmountInt = Math.max(1, damageAmountInt);
+				const eventDate = SPACE1889Time.getCurrentTimeDateString();
+				const timestamp = SPACE1889Time.getCurrentTimestamp();
+				const isCombat = game.combat?.active && game.combat?.started;
+
+				await doActorUpdate(selectedOption, userInputName, path, damageAmountInt, eventDate, timestamp, isCombat, (useInputName ? userInputName : ""));
+			}
+		}
+
+		async function doActorUpdate(damageType, name, path, damageAmount, eventDate, timestamp, isCombat, userInputName)
 		{
 			await actor.updateEmbeddedDocuments("Item", [{
 				_id: item._id,
@@ -1375,7 +1384,7 @@ export default class SPACE1889RollHelper
 
 		if (supporter.length > 0)
 		{
-			checkboxHtml = '<fieldset>';
+			checkboxHtml = '<fieldset class="space1889-dialogFieldset" style="row-gap:0.0rem">';
 			checkboxHtml += '<legend>' + lablelUnterstuetzung + '</legend>';
 			for (let [positionKey, description] of supporter)
 			{
@@ -1414,7 +1423,7 @@ export default class SPACE1889RollHelper
 		if (isDefense)
 			actorInfo = "[" + skillWithSpezAndValue + "]";
 
-		function Recalc()
+		function recalc()
 		{
 			let mod = Number($("#modifier")[0].value);
 			let unterstuetzung = 0;
@@ -1484,105 +1493,75 @@ export default class SPACE1889RollHelper
 			$("#anzahlDerWuerfel")[0].value = summe;
 		}
 
-		function handleRender(html)
-		{
-			if (isVisibleSupporter1)
-			{
-				html.on('change', '.supporter1Checkbox', () =>
+		let dialogue = foundry.applications.api.DialogV2.wait({
+			window: { title: `${titleName}` },
+			position: { width: 420 },
+			content: `
+				<form>
+					<h4 class="space1889-dialogViertelMargin">${manoeuvreAndName}</h4>
+					${weaponChoiceHtml}
+					<div>
+						<input type="text" id="infoToChange" value="${skillWithSpezAndValue}" disabled="true">
+					</div>
+					${checkboxHtml}
+					<p>${modifierLabel}: <input type="number" class="modInput" id="modifier" value = "${modifierDefault}"></p>
+					<hr>
+					<h4 class="space1889-dialogViertelMargin">
+					<div>
+						<label for="zusammensetzung">${labelWurf}</label>
+						<input type="text" id="zusammensetzung" value="${labelWurf}" disabled="true"></label>
+						<input type="hidden" id="anzahlDerWuerfel" value = "0" disabled="true" visible="false">
+					</div>
+					</h4>
+					<hr>
+				</form>`,
+			buttons: [
 				{
-					Recalc();
-				});
-			}
-			if (isVisibleSupporter2)
-			{
-				html.on('change', '.supporter2Checkbox', () =>
-				{
-					Recalc();
-				});
-			}
-			if (isVisibleSupporter3)
-			{
-				html.on('change', '.supporter3Checkbox', () =>
-				{
-					Recalc();
-				});
-			}
-			html.on('input', '.modInput', () =>
-			{
-				Recalc();
-			});
-			if (weaponChoiceHtml != '')
-			{
-				html.on('change', '.choices', () =>
-				{
-					Recalc();
-				});
-			}
-			Recalc();
-		}
-
-		let dialogue = new Dialog(
-			{
-				title: `${titleName}`,
-				content: `
-  <form>
-    <h2>${manoeuvreAndName}</h2>
-    <br>
-	${weaponChoiceHtml}
-	<div>
-		<input type="text" id="infoToChange" value="${skillWithSpezAndValue}" disabled="true">
-	</div>
-	${checkboxHtml}
-    <p>${modifierLabel}: <input type="number" class="modInput" id="modifier" value = "${modifierDefault}"></p>
-    <hr>
-    <h3>
-    <div>
-        <label for="zusammensetzung">${labelWurf}</label>
-        <input type="text" id="zusammensetzung" value="${labelWurf}" disabled="true"></label>
-        <input type="hidden" id="anzahlDerWuerfel" value = "0" disabled="true" visible="false">
-    </div>
-    </h3>
-    <hr>
-  </form>`,
-				buttons:
-				{
-					ok:
+					action: "ok",
+					icon: '',
+					label: game.i18n.localize("SPACE1889.Go"),
+					default: true,
+					callback: (event, button, dialog) => 
 					{
-						icon: '',
-						label: game.i18n.localize("SPACE1889.Go"),
-						callback: (html) => 
+						const input = button.form.elements.anzahlDerWuerfel.value;
+						const anzahl = input ? parseInt(input) : 1;
+						const realAnzahl = Math.max(0, anzahl);
+						const grund = manoeuvreAndName;
+
+						let messageContent = `<div><h2>${grund}</h2></div>`;
+						messageContent += `<p>${diceInfo}</p>`;
+						messageContent += `<b>[[${realAnzahl}${dieType}]] von ${anzahl}</b> <br>`;
+						let chatData =
 						{
-							const input = html.find('#anzahlDerWuerfel').val();
-							const anzahl = input ? parseInt(input) : 1;
-							const realAnzahl = Math.max(0, anzahl);
-							const grund = manoeuvreAndName;
-
-							let messageContent = `<div><h2>${grund}</h2></div>`;
-							messageContent += `<p>${diceInfo}</p>`;
-							messageContent += `<b>[[${realAnzahl}${dieType}]] von ${anzahl}</b> <br>`;
-							let chatData =
-							{
-								user: game.user.id,
-								speaker: ChatMessage.getSpeaker({ actor: actor }),
-								content: messageContent
-							};
-							ChatMessage.create(chatData, {})
-						}
-					},
-					abbruch:
-					{
-						label: game.i18n.localize("SPACE1889.Cancel"),
-						callback: () => { ui.notifications.info(game.i18n.localize("SPACE1889.CancelRoll")) },
-						icon: `<i class="fas fa-times"></i>`
+							user: game.user.id,
+							speaker: ChatMessage.getSpeaker({ actor: actor }),
+							content: messageContent
+						};
+						ChatMessage.create(chatData, {})
 					}
 				},
-				default: "ok",
-				render: handleRender
-			})
+				{
+					action: "abbruch",
+					label: game.i18n.localize("SPACE1889.Cancel"),
+					callback: () => { ui.notifications.info(game.i18n.localize("SPACE1889.CancelRoll")) },
+					icon: `<i class="fas fa-times"></i>`
+				}
+			],
+			form: { closeOnSbmit: false },
+			render: (_event, _dialog) =>
+			{
+				recalc();
+				if (isVisibleSupporter1)
+					document.getElementsByClassName('supporter1Checkbox')[0].addEventListener("change", recalc, false);
+				if (isVisibleSupporter2)
+					document.getElementsByClassName('supporter2Checkbox')[0].addEventListener("change", recalc, false);
+				if (isVisibleSupporter3)
+					document.getElementsByClassName('supporter3Checkbox')[0].addEventListener("change", recalc, false);
 
-		dialogue.render(true)
-
-
+				document.getElementsByClassName('modInput')[0].addEventListener("change", recalc, false);
+				document.getElementsByClassName('choices')[0].addEventListener("change", recalc, false);
+			}
+		});
 	}
 
 	static showManoeuverInfo(key, actor, whisper)

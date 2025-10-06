@@ -946,6 +946,11 @@ font-size: 12px;
 	padding-bottom: 0.5rem;
 }
 
+.space1889-dialogViertelMargin {
+	margin-top: 0.25rem;
+	margin-bottom: 0.25rem;
+}
+
 /*foundry werte überschreiben*/
 
 .standard-form {
@@ -953,7 +958,19 @@ font-size: 12px;
 }
 
 ul,
-ol {
+ol,
+hr {
 	margin-top: 0.5rem;
 	margin-bottom: 0.5rem;
 }
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+	margin: 1rem 0 1rem;
+	line-height: 1;
+}
+
