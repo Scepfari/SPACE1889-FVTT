@@ -3132,6 +3132,7 @@
 	"SPACE1889.InfoWeaponIsReadySunbeam": "Weapon is ready for use if the sun is shining",
 	"SPACE1889.InfoReloadPart": "Weapon is ready for use, left click to reload",
 	"SPACE1889.ChatInfoUndoDamage": "The addition of damage to character {name} has been reverted.",
+	"SPACE1889.ChatInfoUndoAddTalent": "The addition of talent {talentName} to character {name} has been reverted.",
 	"SPACE1889.ChatInfoDamage": "Takes {damage}{damageType} damage",
 	"SPACE1889.ChatInfoVirtualDamage": "Takes {damage} virtual damage",
 	"SPACE1889.ChatInfoVirtualDamageVsStrength": "vs. {str} strength",

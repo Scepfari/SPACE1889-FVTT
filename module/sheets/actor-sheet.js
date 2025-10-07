@@ -907,36 +907,36 @@ export class Space1889ActorSheet extends foundry.appv1.sheets.ActorSheet {
 			const titel = item.system.label;
 			const actor = this.actor;
 
-			let check = canDoAutoSuccess ? "<hr></hr>" : "";
-			check += `<li class="flexrow"><div class="item flexrow flex-group-left"><input type="${canDoAutoSuccess ? "checkbox" : "hidden"}" id="selected" class="einfachCheckbox" text-align="left">`;
-			check += canDoAutoSuccess ? `<div class="item-name"> ${game.i18n.localize("SPACE1889.ExtendedRollUseTakingTheAverage")}</div ></div></li><br>` : "</div></li>";
+			let check = canDoAutoSuccess ? "<hr>" : "";
+			//check += `<li class="flexrow"><div class="item flexrow flex-group-left"><input type="${canDoAutoSuccess ? "checkbox" : "hidden"}" id="selected" class="einfachCheckbox" text-align="left">`;
+			check += `<div><input type="${canDoAutoSuccess ? "checkbox" : "hidden"}" id="selected" class="einfachCheckbox" text-align="left">`;
+			check += canDoAutoSuccess ? `<label for="selected"> ${game.i18n.localize("SPACE1889.ExtendedRollUseTakingTheAverage")}</label></div>` : "</div>";
 
-			new Dialog(
-				{ 
-					title: `${titelPartOne}: ${titel} (${diceCount} ${diceDesc})`,
-					content: `<p>${inputDesc}: <input type="number" id="anzahlDerWuerfel" value = "0" autofocus ></p>${check}`,
-					buttons:
+			new foundry.applications.api.DialogV2({
+				window: { title: `${titelPartOne}: ${titel} (${diceCount} ${diceDesc})`, resizable: true },
+				position: { width: 400 },
+				content: `<p>${inputDesc}: <input type="number" id="anzahlDerWuerfel" value = "0" autofocus ></p>${check}`,
+				buttons: [
 					{
-						ok:
-						{
-							icon: '',
-							label: game.i18n.localize("SPACE1889.Go"),
-							callback: (html) => myCallback(html)
-						},
-						abbruch:
-						{
-							label: game.i18n.localize("SPACE1889.Cancel"),
-							callback: () => { ui.notifications.info(game.i18n.localize("SPACE1889.CancelRoll")) },
-							icon: `<i class="fas fa-times"></i>`
-						}
+						action: "ok",
+						icon: '',
+						label: game.i18n.localize("SPACE1889.Go"),
+						default: true,
+						callback: (event, button, dialog) => myCallback(button)
 					},
-					default: "ok"
-				}).render(true);
+					{
+						action: "abbruch",
+						label: game.i18n.localize("SPACE1889.Cancel"),
+						callback: () => { ui.notifications.info(game.i18n.localize("SPACE1889.CancelRoll")) },
+						icon: `<i class="fas fa-times"></i>`
+					}
+				],
+			}).render({ force: true });
 
-			function myCallback(html)
+			function myCallback(button)
 			{
-				const useAutoSuccess = html.find('#selected').is(":checked");
-				const input = html.find('#anzahlDerWuerfel').val();
+				const useAutoSuccess = button.form.elements.selected.checked;
+				const input = button.form.elements.anzahlDerWuerfel.value;
 				let anzahl = input ? parseInt(input) : 0;
 				const modToolTip = anzahl == 0 ? "" : game.i18n.format("SPACE1889.ChatModifier", { mod: SPACE1889Helper.getSignedStringFromNumber(anzahl) });
 				anzahl = Math.max(0, anzahl + diceCount);
@@ -1038,42 +1038,40 @@ export class Space1889ActorSheet extends foundry.appv1.sheets.ActorSheet {
 
 		const userId = game.user.id;
 
-		let dialogue = new Dialog(
-		{
-		  title: `${titleName}`,
-		  content: `<p><select id="manoeverauswahl" name="manoeverauswahl">${optionen}</select></p>`,
-		  buttons: 
-		  {
-			ok: 
-			{
-			  icon: '',
-			  label: game.i18n.localize("SPACE1889.Go"),
-			  callback: (html) => 
-			  {
-				const selectedOption = html.find('#manoeverauswahl').val();
-				if (selectedOption == "eins")
-				  this.actor.rollManoeuvre("ApproachDistance", event);
-				else if (selectedOption == "zwei")
-				  this.actor.rollManoeuvre("UtmostPower", event);
-				else if (selectedOption == "drei")
-				  this.actor.rollManoeuvre("Turnaround", event);
-				else if (selectedOption == "vier")
-				  this.actor.rollManoeuvre("AbruptBrakingAcceleration", event);
-				else if (selectedOption == "funf")
-				  this.actor.rollManoeuvre("Ramming", event);
-			  }
-			},
-			abbruch:
-			{
-			  label: game.i18n.localize("SPACE1889.Cancel"),
-			  callback: ()=> {ui.notifications.info(game.i18n.localize("SPACE1889.CancelRoll"))},
-			  icon: `<i class="fas fa-times"></i>`
-			}
-		  },
-		  default: "ok"
-		})
+		new foundry.applications.api.DialogV2({
+			window: { title: `${titleName}`, resizable: true },
+			position: { width:310 },
+			content: `<p><select id="manoeverauswahl" name="manoeverauswahl">${optionen}</select></p>`,
+			buttons: [
+				{
+					action: "ok",
+					icon: '',
+					label: game.i18n.localize("SPACE1889.Go"),
+					default: true,
+					callback: (event, button, dialog) => 
+					{
+						const selectedOption = button.form.elements.manoeverauswahl.value;
+						if (selectedOption == "eins")
+							this.actor.rollManoeuvre("ApproachDistance", event);
+						else if (selectedOption == "zwei")
+							this.actor.rollManoeuvre("UtmostPower", event);
+						else if (selectedOption == "drei")
+							this.actor.rollManoeuvre("Turnaround", event);
+						else if (selectedOption == "vier")
+							this.actor.rollManoeuvre("AbruptBrakingAcceleration", event);
+						else if (selectedOption == "funf")
+							this.actor.rollManoeuvre("Ramming", event);
+					}
+				},
+				{
+					action: "abbruch",
+					label: game.i18n.localize("SPACE1889.Cancel"),
+					callback: () => { ui.notifications.info(game.i18n.localize("SPACE1889.CancelRoll")) },
+					icon: `<i class="fas fa-times"></i>`
+				}
+			]
 
-		dialogue.render(true)
+		}).render({ force: true });
 	}
 
 	_doVehicleAttackManeuverClick(event)
@@ -1088,42 +1086,39 @@ export class Space1889ActorSheet extends foundry.appv1.sheets.ActorSheet {
 
 		const userId = game.user.id;
 
-		let dialogue = new Dialog(
-			{
-				title: `${titleName}`,
-				content: `<p><select id="manoeverauswahl" name="manoeverauswahl">${optionen}</select></p>`,
-				buttons:
+		new foundry.applications.api.DialogV2({
+			window: { title: `${titleName}`, resizable: true },
+			position: { width:310 },
+			content: `<p><select id="manoeverauswahl" name="manoeverauswahl">${optionen}</select></p>`,
+			buttons: [
 				{
-					ok:
+					action: "ok",
+					icon: '',
+					label: game.i18n.localize("SPACE1889.Go"),
+					default: true,
+					callback: (event, button, dialog) =>
 					{
-						icon: '',
-						label: game.i18n.localize("SPACE1889.Go"),
-						callback: (html) =>
-						{
-							const selectedOption = html.find('#manoeverauswahl').val();
-							if (selectedOption == "one")
-								this.actor.rollManoeuvre("Attack", event);
-							else if (selectedOption == "two")
-								this.actor.rollManoeuvre("TotalAttack", event);
-							else if (selectedOption == "three")
-								this.actor.rollManoeuvre("DoubleShot", event);
-							else if (selectedOption == "four")
-								this.actor.rollManoeuvre("ContinuousFire", event);
-							else if (selectedOption == "five")
-								this.actor.rollManoeuvre("AimedShot", event);
-						}
-					},
-					abbruch:
-					{
-						label: game.i18n.localize("SPACE1889.Cancel"),
-						callback: () => { ui.notifications.info(game.i18n.localize("SPACE1889.CancelRoll")) },
-						icon: `<i class="fas fa-times"></i>`
+						const selectedOption = button.form.elements.manoeverauswahl.value;
+						if (selectedOption == "one")
+							this.actor.rollManoeuvre("Attack", event);
+						else if (selectedOption == "two")
+							this.actor.rollManoeuvre("TotalAttack", event);
+						else if (selectedOption == "three")
+							this.actor.rollManoeuvre("DoubleShot", event);
+						else if (selectedOption == "four")
+							this.actor.rollManoeuvre("ContinuousFire", event);
+						else if (selectedOption == "five")
+							this.actor.rollManoeuvre("AimedShot", event);
 					}
 				},
-				default: "ok"
-			});
-
-		dialogue.render(true);
+				{
+					action: "abbruch",
+					label: game.i18n.localize("SPACE1889.Cancel"),
+					callback: () => { ui.notifications.info(game.i18n.localize("SPACE1889.CancelRoll")) },
+					icon: `<i class="fas fa-times"></i>`
+				}
+			]
+		}).render({ force: true });
 	}
 
 /*  async _onDrop(event) {
@@ -1274,17 +1269,18 @@ export class Space1889ActorSheet extends foundry.appv1.sheets.ActorSheet {
 		let optionen = '';
 		let actor = this.actor;
 
-		for (let item of actor.system.skills)
+		for (let itemElement of actor.system.skills)
 		{
-			optionen += '<option value="' + item.system.id + '" selected="selected">' + item.system.label + '</option>';
+			optionen += '<option value="' + itemElement.system.id + '" selected="selected">' + itemElement.system.label + '</option>';
 		}
 
 		let talentName = item.name;
 		let text = game.i18n.localize("SPACE1889.ChooseSkill") + " " + talentName;
 		let choices = game.i18n.localize("SPACE1889.Choices");
 		let selectedOption;
-		let dialog = new Dialog({
-			title: `${actor.name} : ${talentName}`,
+		new foundry.applications.api.DialogV2({
+			window: { title: `${actor.name} : ${talentName}`, resizable: true },
+			position: { width: 400 },
 			content: `
 				<form>
 				  <p>${text}:</p>
@@ -1296,39 +1292,45 @@ export class Space1889ActorSheet extends foundry.appv1.sheets.ActorSheet {
 				  </div>
 				</form>
 			`,
-			buttons: {
-				yes: {
+			buttons: [
+				{
+					action: "yes",
 					icon: '<i class="fas fa-check"></i>',
-					label: "Submit",
-					callback: (html) =>
+					label: game.i18n.localize("SPACE1889.Submit"),
+					default: true,
+					callback: (event, button, dialog) =>
 					{
-						selectedOption = html.find('#choices').val();
+						selectedOption = button.form.elements.choices.value;
 					},
 				},
-				no: {
-					icon: '<i class="fas fa-times"></i>',
-					label: "Cancel",
-				}
-			},
-			default: "yes",
-			close: () =>
-			{
-				if (selectedOption) 
 				{
-					let newTalent = actor.system.talents.find(e => e.system.id == item.system.id && e.system.bonusTarget == "");
-					if (newTalent != undefined)
+					action: "no",
+					icon: '<i class="fas fa-times"></i>',
+					label: game.i18n.localize("SPACE1889.Cancel")
+				}
+			],
+			submit: result =>
+			{
+				let newTalent = actor.system.talents.findLast(e => e.system.id == item.system.id && e.system.bonusTarget == "");
+				if (newTalent != undefined)
+				{
+					if (result === "yes" && selectedOption) 
+					{
 						this.actor.updateEmbeddedDocuments("Item", [{ _id: newTalent._id, "system.bonusTarget": selectedOption }]);
-
-					console.log("set system.bonusTarget to: " + selectedOption);
+						console.log("set system.bonusTarget to: " + selectedOption);
+					}
+					else
+					{
+						actor.deleteEmbeddedDocuments("Item", [newTalent._id]);
+						ui.notifications.info(game.i18n.format("SPACE1889.ChatInfoUndoAddTalent", { talentName: newTalent.system.label,  name: actor.name }));
+					}
 				}
 			}
-		});
-		dialog.render(true);
+		}).render({ force: true });
 	}
 
 	showGeschaerfterSinnDialog(item)
 	{
-		
 		let actor = this.actor;
 
 		let optionen = '<option value="hearing" selected="selected">' + game.i18n.localize("SPACE1889.SenseHearing") + '</option>';
@@ -1341,8 +1343,9 @@ export class Space1889ActorSheet extends foundry.appv1.sheets.ActorSheet {
 		let text = game.i18n.localize("SPACE1889.ChooseSense") + " " + sense;
 		let choices = game.i18n.localize("SPACE1889.Choices");
 		let selectedOption;
-		let dialog = new Dialog({
-			title: `${actor.name} : ${sense}`,
+		new foundry.applications.api.DialogV2({
+			window: { title: `${actor.name} : ${sense}`, resizable: true },
+			position: { width: 400 },
 			content: `
 				<form>
 				  <p>${text}:</p>
@@ -1354,34 +1357,41 @@ export class Space1889ActorSheet extends foundry.appv1.sheets.ActorSheet {
 				  </div>
 				</form>
 			`,
-			buttons: {
-				yes: {
-					icon: '<i class="fas fa-check"></i>',
-					label: "Submit",
-					callback: (html) =>
-					{
-						selectedOption = html.find('#choices').val();
-					}
-				},
-				no: {
-					icon: '<i class="fas fa-times"></i>',
-					label: "Cancel"
-				}
-			},
-			default: "yes",
-			close: () =>
-			{
-				if (selectedOption) 
+			buttons: [
 				{
-					let newTalent = actor.system.talents.find(e => e.system.id === "geschaerfterSinn" && e.system.bonusTarget === "");
-					if (newTalent != undefined)
+					action: "yes",
+					icon: '<i class="fas fa-check"></i>',
+					label: game.i18n.localize("SPACE1889.Submit"),
+					default: true,
+					callback: (event, button, dialog) =>
+					{
+						selectedOption = button.form.elements.choices.value;
+					},
+				},
+				{
+					action: "no",
+					icon: '<i class="fas fa-times"></i>',
+					label: game.i18n.localize("SPACE1889.Cancel")
+				}
+			],
+			submit: result =>
+			{
+				let newTalent = actor.system.talents.findLast(e => e.system.id === "geschaerfterSinn" && e.system.bonusTarget == "");
+				if (newTalent != undefined)
+				{
+					if (result === "yes" && selectedOption) 
+					{
 						this.actor.updateEmbeddedDocuments("Item", [{ _id: newTalent._id, "system.bonusTarget": selectedOption, "system.bonusTargetType": "sense" }]);
-
-					console.log("set system.bonusTarget to: " + selectedOption);
+						console.log("set system.bonusTarget to: " + selectedOption);
+					}
+					else
+					{
+						actor.deleteEmbeddedDocuments("Item", [newTalent._id]);
+						ui.notifications.info(game.i18n.format("SPACE1889.ChatInfoUndoAddTalent", { talentName: newTalent.system.label, name: actor.name }));
+					}
 				}
 			}
-		});
-		dialog.render(true);
+		}).render({ force: true });
 	}
 
 	showSchwerkraftadaptionDialog(item)
@@ -1402,14 +1412,13 @@ export class Space1889ActorSheet extends foundry.appv1.sheets.ActorSheet {
 			optionen += `<option value="${k}"${selected}>${game.i18n.localize(v)} (${gravText} )</option>`;
 		}
 
-
-
 		let gravityAdaptation = game.i18n.localize("SPACE1889.TalentSchwerkraftadaption");
 		let text = game.i18n.localize("SPACE1889.ChooseGravity") + " " + gravityAdaptation;
 		let choices = game.i18n.localize("SPACE1889.Choices");
 		let selectedOption;
-		let dialog = new Dialog({
-			title: `${actor.name} : ${gravityAdaptation}`,
+		new foundry.applications.api.DialogV2({
+			window: { title: `${actor.name} : ${gravityAdaptation}`, resizable: true },
+			position: { width: 400 },
 			content: `
 				<form>
 				  <p>${text}:</p>
@@ -1421,34 +1430,41 @@ export class Space1889ActorSheet extends foundry.appv1.sheets.ActorSheet {
 				  </div>
 				</form>
 			`,
-			buttons: {
-				yes: {
-					icon: '<i class="fas fa-check"></i>',
-					label: "Submit",
-					callback: (html) =>
-					{
-						selectedOption = html.find('#choices').val();
-					}
-				},
-				no: {
-					icon: '<i class="fas fa-times"></i>',
-					label: "Cancel"
-				}
-			},
-			default: "yes",
-			close: () =>
-			{
-				if (selectedOption) 
+			buttons: [
 				{
-					let newTalent = actor.system.talents.find(e => e.system.id === "schwerkraftadaption" && e.system.bonusTarget === "");
-					if (newTalent != undefined)
+					action: "yes",
+					icon: '<i class="fas fa-check"></i>',
+					label: game.i18n.localize("SPACE1889.Submit"),
+					default: true,
+					callback: (event, button, dialog) =>
+					{
+						selectedOption = button.form.elements.choices.value;
+					},
+				},
+				{
+					action: "no",
+					icon: '<i class="fas fa-times"></i>',
+					label: game.i18n.localize("SPACE1889.Cancel")
+				}
+			],
+			submit: result =>
+			{
+				let newTalent = actor.system.talents.findLast(e => e.system.id === "schwerkraftadaption" && e.system.bonusTarget === "");
+				if (newTalent != undefined)
+				{
+					if (result === "yes" && selectedOption) 
+					{
 						this.actor.updateEmbeddedDocuments("Item", [{ _id: newTalent._id, "system.bonusTarget": selectedOption, "system.bonusTargetType": "gravity" }]);
-
-					console.log("set system.bonusTarget to: " + selectedOption);
+						console.log("set system.bonusTarget to: " + selectedOption);
+					}
+					else
+					{
+						actor.deleteEmbeddedDocuments("Item", [newTalent._id]);
+						ui.notifications.info(game.i18n.format("SPACE1889.ChatInfoUndoAddTalent", { talentName: newTalent.system.label, name: actor.name }));
+					}
 				}
 			}
-		});
-		dialog.render(true);
+		}).render({ force: true });
 	}
 
 /**

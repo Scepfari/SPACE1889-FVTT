@@ -97,20 +97,6 @@ Hooks.once('init', async function() {
 
 Hooks.on("ready", async function () 
 {
-	if (game.release.generation <= 12)
-	{
-		const dialog = SPACE1889Helper.getExternalLinksDialogData();
-		let externalLinks = new Dialog(dialog.data, dialog.options);
-
-		var logo = document.getElementById("logo");
-		logo.setAttribute("src", "/systems/space1889/icons/vttLogo.webp");
-		logo.title = game.i18n.localize("SPACE1889.ExternalLinksTitel");
-		logo.addEventListener("click", function ()
-		{
-			externalLinks.render(true);
-		});
-	}
-
 	let indent = game.settings.get("space1889", "subfolder-indent");
 	document.documentElement.style.setProperty('--space1889-indent', `${indent}px`);
 

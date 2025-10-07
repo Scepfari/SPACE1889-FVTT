@@ -2140,31 +2140,72 @@ export default class SPACE1889Helper
 
 	static getExternalLinksDialogData()
 	{
-		const isGerman= this.isGerman();
+		const isGerman = this.isGerman();
+		const add2 = true;//game.data?.addresses?.remote?.substr(8, 27) == 'freunde-der-oper.moltenhost';
+
+		const btZero = add2 ? 
+		`<button type="button" data-action="zero" style="height:60px" data-tooltip="Freunde des gepflegten Rollenspiels">
+			<img src="systems/space1889/icons/space1889Logo.webp" alt="logo SPACE 1889" height="50px">
+			privates Forum
+		</button>` : "";
+
+		const bt4 = isGerman ?
+		`<button type="button" data-action="four" style="height:60px" ${game.i18n.localize("SPACE1889.ExternalLinksDiscordDieGiessereiToolTip")}>
+			<img src="systems/space1889/icons/dieGiessereiDiscord.webp" alt="logo foundry discord" height="50px">
+			${game.i18n.localize("SPACE1889.ExternalLinksDiscordDieGiesserei")}
+		</button>` : "";
+
+
 		let dialogData = {
-			title: game.i18n.localize("SPACE1889.ExternalLinksTitel"),
-			content: game.i18n.localize("SPACE1889.ExternalLinksContent"),
-			buttons: {
-				two: {
-					icon: '<i class="fad fa-cogs" style="font-size:40px"></i>',
+			window: { title: game.i18n.localize("SPACE1889.ExternalLinksTitel"), resizable: true },
+			position: {	width: 'auto', height: '180', left: 100, top: 20 },
+			content: `
+			<form>
+				${game.i18n.localize("SPACE1889.ExternalLinksContent")}
+				<ul>
+				<li class="flexrow">
+					${btZero}
+					<button type="button" data-action="two" style="height:60px">
+						<i class="fad fa-cogs" style="font-size:40px"></i>
+						${game.i18n.localize("SPACE1889.ExternalLinksModules")}
+					</button>
+					<button type="button" data-action="three" style="height:60px" ${game.i18n.localize("SPACE1889.ExternalLinksDiscordFoundryToolTip")}>
+						<img src="systems/space1889/icons/foundryDiscord.webp" alt="logo foundry discord" height="50px">
+						${game.i18n.localize("SPACE1889.ExternalLinksDiscordFoundry")}
+					</button>
+					${bt4}
+					<button type="button" data-action="five" style="height:60px">
+						<img src="systems/space1889/icons/zeughaus1889.png" alt="logo zeughaus" height="50px">
+						${game.i18n.localize("SPACE1889.ExternalLinksZeughaus")}
+					</button>
+				</li>
+				</ul>
+			</form>
+			`,
+			buttons: [
+				{
+					action: "two",
+					icon: 'fad fa-cogs',
 					label: '<div>' + game.i18n.localize("SPACE1889.ExternalLinksModules") + '</div>',
 					callback: () => {
 						this.showRecommendedModules();
 					}
 				},
-				three: {
+				{
+					action: "three",
 					icon: '<img src="systems/space1889/icons/foundryDiscord.webp" alt="logo foundry discord" height="50px">',
 					label: game.i18n.localize("SPACE1889.ExternalLinksDiscordFoundry"),
 					callback: () => {
 						var windowObjectReference = window.open("https://discord.gg/foundryvtt", "_blank");
 					}
 				}
-			}
+			]
 		};
 
 		if (isGerman)
 		{
-			dialogData.buttons.four = {
+			dialogData.buttons[dialogData.buttons.length] = {
+				action: "four",
 				icon: '<img src="systems/space1889/icons/dieGiessereiDiscord.webp" alt="logo foundry discord" height="50px">',
 				label: game.i18n.localize("SPACE1889.ExternalLinksDiscordDieGiesserei"),
 				callback: () =>
@@ -2174,7 +2215,8 @@ export default class SPACE1889Helper
 			}
 		}
 
-		dialogData.buttons.five = {
+		dialogData.buttons[dialogData.buttons.length] = {
+			action: "five",
 			icon: '<img src="systems/space1889/icons/zeughaus1889.png" alt="logo zeughaus" height="50px">',
 			label: game.i18n.localize("SPACE1889.ExternalLinksZeughaus"),
 			callback: () =>
@@ -2184,35 +2226,21 @@ export default class SPACE1889Helper
 			}
 		}
 
-//		dialogData.buttons.six = {
-//			icon: '<img src="systems/space1889/icons/uhrwerkLogo.png" alt="logo uhrwerk" height="50px">',
-//			label: game.i18n.localize("SPACE1889.ExternalLinksPublisher"),
-//			callback: () =>
-//			{
-//				var windowObjectReference = window.open("https://www.uhrwerk-verlag.de/", "_blank");
-//
-//			}
-//		}
-
-		const add = game.data?.addresses?.remote?.substr(8, 27) == 'freunde-der-oper.moltenhost';
+		const add = true;//game.data?.addresses?.remote?.substr(8, 27) == 'freunde-der-oper.moltenhost';
 		if (add)
 		{
-			dialogData.buttons.zero =  {
+			dialogData.buttons.unshift({
+				action: "zero",
 				icon: '<img src="systems/space1889/icons/space1889Logo.webp" alt="logo SPACE 1889" height="50px">',
 				label: "<div data-tooltip=\"Freunde des gepflegten Rollenspiels\">privates Forum</div>",
-				callback: () => {
+				callback: () =>
+				{
 					var windowObjectReference = window.open("http://www.space1889.shadowbroker.de/", "_blank");
 				}
-			}
+			});
 		}
 
-		let dialogOptions = {
-			width: 'auto',
-			height: '180',
-			left: 100,
-			top: 20
-		};
-		return { data: dialogData, options: dialogOptions };
+		return dialogData;
 	}
 
 	static async showRecommendedModules()
