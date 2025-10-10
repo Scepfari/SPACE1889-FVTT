@@ -288,10 +288,10 @@ export default class SPACE1889Vision
 
 	static _getActiveVision(actor)
 	{
-		if (!actor)
+		if (!actor || !actor.system || !actor.system.visions)
 			return undefined;
 
-		for (const vision of actor.system?.visions)
+		for (const vision of actor.system.visions)
 		{
 			if (vision.system.isActive)
 				return vision;

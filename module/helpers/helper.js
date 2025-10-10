@@ -1827,8 +1827,8 @@ export default class SPACE1889Helper
 			return;
 		}
 
-		let opt = `<div class="flexrow"><label class="align-center" for="grav-select">${game.i18n.localize("SPACE1889.Gravity")}: </label>`;
-		opt += '<select class="align-center" id="grav-select">';
+		let opt = `<div class="flexrow"><label class="align-center" for="gravSelect">${game.i18n.localize("SPACE1889.Gravity")}: </label>`;
+		opt += '<select class="align-center" id="gravSelect">';
 		const currentZone = game.settings.get("space1889", "gravityZone");
 
 		for (let [k, v] of Object.entries(CONFIG.SPACE1889.gravity)) 
@@ -1867,7 +1867,7 @@ export default class SPACE1889Helper
 
 		async function theCallback(button)
 		{
-			const newKey = button.form.elements.grav-select.value;
+			const newKey = button.form.elements.gravSelect.value;
 			const newGravity = CONFIG.SPACE1889.gravityZone[newKey]?.value;
 			if (CONFIG.SPACE1889.gravity[newKey] && newGravity)
 			{
@@ -1889,7 +1889,7 @@ export default class SPACE1889Helper
 				let theContent = game.i18n.format("SPACE1889.GravitySetTooltip", {planet: name, zone:  newZone.toFixed(1), value: (newGravity < 0.2 ? newGravity.toFixed(2) : newGravity.toFixed(2)), malus: malus });
 				ChatMessage.create({
 					content: `${theContent}`,
-					type: CONST.CHAT_MESSAGE_TYPES.OTHER
+					style: CONST.CHAT_MESSAGE_STYLES.OTHER
 				});
 			}
 		}
@@ -2088,13 +2088,13 @@ export default class SPACE1889Helper
             speaker: ChatMessage.getSpeaker(),
             content: `${theContent}`,
 			whisper: whisper ? [game.user.id] : [],
-            type: CONST.CHAT_MESSAGE_TYPES.OTHER
+            style: CONST.CHAT_MESSAGE_STYLES.OTHER
           });
 	}
 
 	static async filePickerImageToChat(whisper)
 	{
-		await new FilePicker({type: "image", current: "",callback: picked}).render(true);
+		await new foundry.applications.apps.FilePicker({type: "image", current: "",callback: picked}).render(true);
 		async function picked(imagepath) {
 			SPACE1889Helper.addImageToChat(imagepath, whisper);
 		}

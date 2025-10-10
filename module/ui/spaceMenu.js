@@ -66,7 +66,7 @@ class Space1889MenuLayer extends foundry.canvas.layers.InteractionLayer
 				icon: "far fa-hand-rock",
 				button: true,
 				visible: game.user.isGM,
-				onClick: () =>
+				onChange: () =>
 				{
 					SPACE1889Helper.npcsDrawWeaponsWithDialog();
 				}
@@ -77,7 +77,7 @@ class Space1889MenuLayer extends foundry.canvas.layers.InteractionLayer
 				icon: "fa fa-eye",
 				button: true,
 				visible: game.user.isGM,
-				onClick: () =>
+				onChange: () =>
 				{
 					SPACE1889Helper.showTokenNameAndBarWithDialog();
 				}
@@ -88,7 +88,7 @@ class Space1889MenuLayer extends foundry.canvas.layers.InteractionLayer
 				icon: "fa fa-low-vision",
 				button: true,
 				visible: game.user.isGM,
-				onClick: () =>
+				onChange: () =>
 				{
 					SPACE1889Helper.hideNameOfNonCharactersWithDialog();
 				}
@@ -99,7 +99,7 @@ class Space1889MenuLayer extends foundry.canvas.layers.InteractionLayer
 				icon: "far fa-lightbulb",
 				button: true,
 				visible: game.user.isGM,
-				onClick: (ev) =>
+				onChange: (ev) =>
 				{
 					SPACE1889Light.redoTokenLight(ev);
 					SPACE1889Vision.redoTokenVision(ev);
@@ -110,7 +110,7 @@ class Space1889MenuLayer extends foundry.canvas.layers.InteractionLayer
 				title: "CONTROLS.Space1889MenuShowImage",
 				icon: "fas fa-file-image",
 				button: true,
-				onClick: () =>
+				onChange: () =>
 				{
 					SPACE1889Helper.filePickerImageToChat();
 				}
@@ -120,7 +120,7 @@ class Space1889MenuLayer extends foundry.canvas.layers.InteractionLayer
 				title: "CONTROLS.Space1889MenuHelp",
 				icon: "fa fa-info",
 				button: true,
-				onClick: () =>
+				onChange: () =>
 				{
 					SPACE1889Helper.showHelpJournal();
 				}
@@ -130,9 +130,9 @@ class Space1889MenuLayer extends foundry.canvas.layers.InteractionLayer
 				title: "CONTROLS.Space1889MenuToggle",
 				icon: "fa-space1889",
 				button: true,
-				onClick: (ev) =>
+				onChange: (ev) =>
 				{
-					const presetMenu = Object.values(ui.windows).find((app) => app instanceof Space1889Menu);
+					const presetMenu = foundry.applications.instances.get("space1889-menu");
 					if (presetMenu)
 					{
 						presetMenu.close();
@@ -149,8 +149,10 @@ class Space1889MenuLayer extends foundry.canvas.layers.InteractionLayer
 					}
 
 					new Space1889Menu({
-						left: savedLeft,
-						top: savedTop
+						position: {
+							left: savedLeft,
+							top: savedTop
+						}
 					}).render(true);
 
 				}
@@ -169,41 +171,52 @@ class Space1889MenuLayer extends foundry.canvas.layers.InteractionLayer
 }
 
 
-export class Space1889Menu extends FormApplication {
+export class Space1889Menu extends foundry.applications.api.HandlebarsApplicationMixin(foundry.applications.api.ApplicationV2) {
 
-	constructor(options = {})
+	constructor()
 	{
-		super({}, options);
+		super(...arguments);
 	}
 
-	static get defaultOptions() {
-		return foundry.utils.mergeObject(super.defaultOptions, {
-			id: 'space1889-menu',
-			classes: ['space1889-menu-window-header'],
-			template: `systems/space1889/templates/menu/menu.html`,
+	static DEFAULT_OPTIONS = {
+		id: 'space1889-menu',
+		form: {
+			closeOnSubmit: true,
+			class: "space1889Menu"
+		},
+		position: {
+			width: 295,
+			height: 87
+		},
+		tag: "form",
+		window: {
+/*			icon: "fa-space1889",*/
 			resizable: true,
-			minimizable: true,
-			width: 285,
-			height: 82
-		});
+			minimizable: true
+		}
 	}
+
+	static PARTS = {
+		space1889Menu: {
+			template: "systems/space1889/templates/menu/menu.html"
+		}
+	}
+
 
 	get title() {
 		let title = game.i18n.localize('CONTROLS.Space1889Menu');
 		return title;
 	}
 
-	async getData(options = {})
+	_prepareContext(options)
 	{
 		const data = {};
-
 		const gravity = SPACE1889Helper.getGravity();
 
 		const name = game.i18n.localize(gravity.langId);
 		const gravityZone = gravity.zone;
 		const gravityValue = gravity.gravityFactor;
 		data.gravityTooltip = game.i18n.format("SPACE1889.GravitySetTooltip", { planet: name, zone: gravityZone.toFixed(1), value: (gravityValue < 0.2 ? gravityValue.toFixed(2) : gravityValue.toFixed(1)), malus : gravity.malusToEarth });
-
 		return data;
 	}
 
@@ -216,50 +229,40 @@ export class Space1889Menu extends FormApplication {
 		{
 			const savePos = newPos.left.toString() + "|" + newPos.top.toString();
 			game.settings.set("space1889", "menuPosition", savePos);
-			console.log(savePos);
 		}
 	}
 
-	activateListeners(html)
+	_onRender(context, options)
 	{
-		super.activateListeners(html);
-
-		html.on('click', '.showImage', ev =>
+		this.element.querySelector("button[name=showImage]").addEventListener("click", function ()
 		{
-			SPACE1889Helper.filePickerImageToChat();
+			SPACE1889Helper.filePickerImageToChat()
 		});
-
-		html.on('click', '.showGmScreen', ev =>
+		this.element.querySelector("button[name=showGmScreen]").addEventListener("click", function ()
 		{
-			SPACE1889Helper.showGmScreen();
+			SPACE1889Helper.showGmScreen()
 		});
-
-		html.on('click', '.npcsDrawWeapon', ev =>
+		this.element.querySelector("button[name=npcsDrawWeapon]").addEventListener("click", function ()
 		{
-			SPACE1889Helper.npcsDrawWeaponsWithDialog();
+			SPACE1889Helper.npcsDrawWeaponsWithDialog()
 		});
-
-		html.on('click', '.hideNames', ev =>
+		this.element.querySelector("button[name=hideNames]").addEventListener("click", function ()
 		{
-			SPACE1889Helper.hideNameOfNonCharactersWithDialog();
+			SPACE1889Helper.hideNameOfNonCharactersWithDialog()
 		});
-
-		html.on('click', '.showTokenNameAndBar', ev =>
+		this.element.querySelector("button[name=showTokenNameAndBar]").addEventListener("click", function ()
 		{
-			SPACE1889Helper.showTokenNameAndBarWithDialog();
+			SPACE1889Helper.showTokenNameAndBarWithDialog()
 		});
-
-		html.on('click', '.showHelp', ev =>
+		this.element.querySelector("button[name=showHelp]").addEventListener("click", function ()
 		{
-			SPACE1889Helper.showHelpJournal();
+			SPACE1889Helper.showHelpJournal()
 		});
-
-		html.on("click", ".setGravity", ev =>
+		this.element.querySelector("button[name=setGravity]").addEventListener("click", function ()
 		{
-			SPACE1889Helper.showSetGravityDialog();
+			SPACE1889Helper.showSetGravityDialog()
 		});
-
-		html.on("click", ".redoTokenLightAndVision", ev =>
+		this.element.querySelector("button[name=redoTokenLightAndVision]").addEventListener("click", function (event)
 		{
 			SPACE1889Light.redoTokenLight(ev);
 			SPACE1889Vision.redoTokenVision(ev);

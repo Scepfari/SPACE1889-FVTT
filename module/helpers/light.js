@@ -628,10 +628,10 @@ export default class SPACE1889Light
 
 	static _getActiveLightSource(actor)
 	{
-		if (!actor)
+		if (!actor || !actor.system || !actor.system.lightSources)
 			return undefined;
 
-		for (const ls of actor.system?.lightSources)
+		for (const ls of actor.system.lightSources)
 		{
 			if (ls.system.isActive)
 				return ls;

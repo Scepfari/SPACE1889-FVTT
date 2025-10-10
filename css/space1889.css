@@ -953,6 +953,10 @@ font-size: 12px;
 
 /*foundry werte überschreiben*/
 
+.window-content{
+	padding: 0.5rem;
+}
+
 .standard-form {
 	row-gap: 0.5rem;
 }
@@ -974,3 +978,6 @@ h6 {
 	line-height: 1;
 }
 
+#ui-left{
+	--control-size:35
+}
