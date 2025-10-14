@@ -3626,14 +3626,15 @@
 	"SPACE1889.TourPcNoCharacter": "Lege einen Charakter an um die Tour auszuführen",
 
 	"SPACE1889.ExternalLinksTitel": "Externe Links",
-	"SPACE1889.ExternalLinksContent": "<p>Hast du Fragen? Magst du einen Fehler melden? Hier sind nützliche Links:</p>",
+	"SPACE1889.ExternalLinksContent": "Hast du Fragen? Hier sind nützliche Links:",
 	"SPACE1889.ExternalLinksDiscordFoundry": "Foundry VTT",
-	"SPACE1889.ExternalLinksDiscordFoundryToolTip": "data-tooltip=\"Foundry Discord Server (en)\"",
+	"SPACE1889.ExternalLinksDiscordFoundryToolTip": "Foundry Discord Server (en)",
 	"SPACE1889.ExternalLinksDiscordDieGiesserei": "Die Gießerei",
-	"SPACE1889.ExternalLinksDiscordDieGiessereiToolTip": "data-tooltip=\"Deutsche Foundry Discord Server\"",
+	"SPACE1889.ExternalLinksDiscordDieGiessereiToolTip": "Deutsche Foundry Discord Server",
 	"SPACE1889.ExternalLinksBugReport": "<div data-tooltip=\"Fehler im SPACE 1889 System direkt auf Github melden\">Fehler melden</div>",
 	"SPACE1889.ExternalLinksPublisher": "<div>Herausgeber</div>",
 	"SPACE1889.ExternalLinksModules": "Module",
+	"SPACE1889.ExternalLinksModulesToolTip": "Empfohlene Module",
 	"SPACE1889.ExternalLinksZeughaus": "Zeughaus",
 
 	"SPACE1889.BugReport": "SPACE 1889 Fehler melden",

@@ -1,0 +1,25 @@
+<div>
+	<p>{{localize "SPACE1889.ExternalLinksContent"}}</p>
+	<ul>
+		<li class="flexrow">
+			<button type="button" name="externalLinks" style="height:60px" data-tooltip='{{localize "SPACE1889.ExternalLinksModulesToolTip"}}'>
+				<i class="fad fa-cogs" style="font-size:40px"></i>
+				{{localize "SPACE1889.ExternalLinksModules"}}
+			</button>
+			<button type="button" name="discordFoundry" style="height: 60px; width: 220px !important" data-tooltip='{{localize "SPACE1889.ExternalLinksDiscordFoundryToolTip"}}'>
+				<img src="systems/space1889/icons/foundryDiscord.webp" alt="logo foundry discord" height="50px" width="104px">
+				{{localize "SPACE1889.ExternalLinksDiscordFoundry"}}
+			</button>
+			{{#if (isGerman)}}
+			<button type="button" name="discordGiesserei" style="height: 60px" data-tooltip='{{localize "SPACE1889.ExternalLinksDiscordDieGiessereiToolTip"}}'>
+				<img src="systems/space1889/icons/dieGiessereiDiscord.webp" alt="logo foundry discord" height="50px">
+				{{localize "SPACE1889.ExternalLinksDiscordDieGiesserei"}}
+			</button>
+			{{/if}}
+			<button type="button" name="zeughaus" style="height: 60px">
+				<img src="systems/space1889/icons/zeughaus1889.png" alt="logo zeughaus" height="50px">
+				{{localize "SPACE1889.ExternalLinksZeughaus"}}
+			</button>
+		</li>
+	</ul>
+</div>

@@ -503,6 +503,11 @@ Handlebars.registerHelper('isFvttV10', function (str)
 	return SPACE1889Helper.isFoundryV10Running();
 });
 
+Handlebars.registerHelper('isGerman', function ()
+{
+	return SPACE1889Helper.isGerman();
+});
+
 Handlebars.registerHelper('getFvttGeneration', function ()
 {
 	return game.release.generation;
