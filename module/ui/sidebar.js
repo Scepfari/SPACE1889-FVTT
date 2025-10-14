@@ -1,4 +1,5 @@
 import SPACE1889Helper from "../helpers/helper.js";
+import { ExternalLinks } from "./externalLinks.js";
 
 export default function ()
 {
@@ -18,14 +19,10 @@ export default function ()
 		button = $(`<button><i class="fa fa-external-link"></i> ${game.i18n.localize("SPACE1889.ExternalLinksTitel")}</button>`);
 		button.on('click', () =>
 		{
-			const dialog = SPACE1889Helper.getExternalLinksDialogData();
-			let externalLinks = new Dialog(dialog.data, dialog.options);
-			externalLinks.render(true);
+			new ExternalLinks().render(true);
+
 		});
 		documentation.append(button);
-
-		//const systemName = game.system.title;
-		//jHtml.find('.system .label').text(systemName);
 	});
 };
 
