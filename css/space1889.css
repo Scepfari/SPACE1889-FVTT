@@ -953,6 +953,40 @@ font-size: 12px;
 
 /* calendar */
 
+.space1889-ToolTipMouse {
+	position: relative;
+/*	width: 16px;*/
+	height: 16px;
+	left: 0;
+	right: 0;
+	top: 3px;
+/*	bottom: 0;*/
+	/*position: absolute;*/
+}
+
+.space1889-WidgetTimeButton {
+	border: 1px solid var(--border-color);
+	padding: 0px 2px 2px 2px;
+	border-radius: 5px;
+	box-shadow: 0 0 12px #444 inset;
+	display: inline-block;
+	-webkit-box-align: center;
+	-ms-flex-align: center;
+	align-items: center;
+	margin: 0px 1px 1px 1px;
+	position: relative;
+	width: 23px;
+	height: 23px;
+}
+
+.space1889-TimeButtonIcon {
+	position: relative;
+	top: 1px;
+	align-items: center;
+	height: 20px;
+	width: 20px;
+}
+
 .space1889CalendarWidget {
 	position: fixed;
 	top: 5px;
