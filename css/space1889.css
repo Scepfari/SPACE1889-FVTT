@@ -951,6 +951,70 @@ font-size: 12px;
 	margin-bottom: 0.25rem;
 }
 
+/* calendar */
+
+.space1889CalendarWidget {
+	position: fixed;
+	top: 5px;
+	left: 50%;
+	height: 40px;
+	transform: translateX(-50%)
+}
+
+.space1889CalendarWidget button {
+	--control-size: 24px
+}
+
+.space1889CalendarWidget .calendar-widget-content {
+	position: relative;
+	background-repeat: no-repeat;
+	background-position: bottom center;
+	background-size: 100% 20px;
+	align-items: start;
+	height: 40px;
+	--icon-size: 20px;
+	position: relative
+}
+
+.space1889CalendarWidget .calendar-widget-content .dayProgress {
+	position: relative;
+	box-sizing: border-box;
+	--control-size: 24px;
+	--button-size: 24px;
+	font-size: 16px;
+	padding: 2px;
+	border-radius: 5px;
+	cursor: var(--cursor-pointer)
+}
+
+.space1889CalendarWidget .calendar-widget-content .dayProgress .slideIndicator {
+	position: absolute;
+	top: 0;
+	width: 12px;
+	bottom: 0;
+	left: calc(var(--p, 0) - 6px);
+	cursor: var(--cursor-grab)
+}
+
+.space1889CalendarWidget .calendar-widget-content .dayProgress .slideIndicator:after {
+	position: absolute;
+	content: "";
+	inset: 0;
+	background: #ca0606;
+	clip-path: polygon(0% 0%, 100% 0%, 50% 20%, 50% 80%, 100% 100%, 0% 100%, 50% 80%, 50% 20%)
+}
+
+.space1889CalendarWidget .calendar-widget-content:hover .visibilitynone {
+	opacity: 1
+}
+
+.space1889CalendarWidget .calendar-widget-content .visibilitynone {
+	opacity: 0;
+	transition: opacity .15s ease-in-out
+}
+
+
+
 /*foundry werte überschreiben*/
 
 .window-content{

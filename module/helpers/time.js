@@ -7,6 +7,13 @@ export default class SPACE1889Time
 {
 	static connectHooks()
 	{
+		Hooks.on('updateWorldTime', () =>
+		{
+			game.space1889.apps.CalendarWidget.render(true);
+		});
+
+		// ToDo replace SimpleCalendar with foundry core
+
 		if (!this.isSimpleCalendarEnabled())
 			return;
 
@@ -19,6 +26,7 @@ export default class SPACE1889Time
 		{
 			console.log("SimpleCalendar.Ready");
 		});
+
 	}
 
 	static isSimpleCalendarEnabled()
@@ -70,6 +78,17 @@ export default class SPACE1889Time
 	{
 		let text = date.day.toString() + "." + date.month.toString() + "." + date.year.toString() +
 			" " + date.hour.toString() + ":" + (date.minute < 10 ? "0" : "") + date.minute.toString() +
+			":" + (date.second < 10 ? "0" : "") + date.second.toString();
+		return text;
+	}
+
+	static formatLongTimeDate(date)
+	{
+		const dayOfTheWeek = game.i18n.localize(game.time.calendar.days.values[date.dayOfWeek].name);
+		const monthName = game.i18n.localize(game.time.calendar.months.values[date.month].name);
+
+		let text = dayOfTheWeek + ", " + date.dayOfMonth.toString() + ". " + monthName + " " + date.year.toString() +
+			" - " + date.hour.toString() + ":" + (date.minute < 10 ? "0" : "") + date.minute.toString() +
 			":" + (date.second < 10 ? "0" : "") + date.second.toString();
 		return text;
 	}

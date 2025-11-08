@@ -26,7 +26,7 @@ import * as tokenHud from "./ui/tokenHud.js";
 import { Space1889Menu } from "./ui/spaceMenu.js";
 import Space1889MenuV13 from "./ui/spaceMenu.js";
 import { getEffectInfoText } from "./helpers/effects.js";
-
+import { CalendarWidget } from "./ui/calendar.js";
 
 
 /* -------------------------------------------- */
@@ -48,6 +48,9 @@ Hooks.once('init', async function() {
 		combat: SPACE1889Combat,
 		healing: SPACE1889Healing,
 		time: SPACE1889Time,
+		apps: {
+			CalendarWidget: new CalendarWidget()
+		}
 	};
 
 	// Add custom constants for configuration.
@@ -107,6 +110,8 @@ Hooks.on("ready", async function ()
 	}
 
 	SPACE1889Time.connectHooks();
+
+	game.space1889.apps.CalendarWidget.render(true);
 });
 
 Hooks.once("setup", () =>

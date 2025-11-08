@@ -272,5 +272,16 @@ export const registerSystemSettings = function ()
 		    config: false,
 		    default: "",
 		    type: String
-	    });
+		});
+
+	game.settings.register("space1889", "darknessByDayTime",
+	    {
+		    name: "darkness by day time",
+		    hint: "Darkness influence in scene configuration",
+		    scope: "world",
+		    config: false,
+		    default: "",
+		    type: Boolean
+		});
+
 }

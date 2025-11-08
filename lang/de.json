@@ -100,6 +100,11 @@
 	"LIGHT.Shadows": "Schatten",
 	"LIGHT.ShadowsHint": "Verstärke die Intensität der dunklen Farben, die von dieser Lichtquelle beleuchtet werden. Der Standardwert ist 0.",
 
+	"SPACE1889.Calendar.smallForward": "Links-<i class=\"fas fa-computer-mouse\"></i> : 1s<br/>Rechts-<i class=\"fas fa-computer-mouse\"></i> : -1s<br/>[Shift] + Links-<i class=\"fas fa-computer-mouse\"></i> : 6s<br>[Shift] + Rechts-<i class=\"fas fa-computer-mouse\"></i> : -6s<br/>[Strg] + Links-<i class=\"fas fa-computer-mouse\"></i> : 15s<br/>[Strg] + Rechts-<i class=\"fas fa-computer-mouse\"></i> : -15s<br/>[Strg] + [Shift] + Links-<i class=\"fas fa-computer-mouse\"></i> : 30s<br/>[Strg] + [Shift] + Rechts-<i class=\"fas fa-computer-mouse\"></i> : -30s",
+	"SPACE1889.Calendar.forward": "Links-<i class=\"fas fa-computer-mouse\"></i> : 1min<br/>Rechts-<i class=\"fas fa-computer-mouse\"></i> : -1min<br/>[Shift] + Links-<i class=\"fas fa-computer-mouse\"></i> : 5min<br>[Shift] + Rechts-<i class=\"fas fa-computer-mouse\"></i> : -5min<br/>[Strg] + Links-<i class=\"fas fa-computer-mouse\"></i> : 10min<br/>[Strg] + Rechts-<i class=\"fas fa-computer-mouse\"></i> : -10min<br/>[Strg] + [Shift] + Links-<i class=\"fas fa-computer-mouse\"></i> : 30min<br/>[Strg] + [Shift] + Rechts-<i class=\"fas fa-computer-mouse\"></i> : -30min",
+	"SPACE1889.Calendar.fastForward": "Links-<i class=\"fas fa-computer-mouse\"></i> : 1h<br/>Rechts-<i class=\"fas fa-computer-mouse\"></i> : -1h<br/>[Shift] + Links-<i class=\"fas fa-computer-mouse\"></i> : 4h<br>[Shift] + Rechts-<i class=\"fas fa-computer-mouse\"></i> : -4h<br/>[Strg] + Links-<i class=\"fas fa-computer-mouse\"></i> : 12h<br/>[Strg] + Rechts-<i class=\"fas fa-computer-mouse\"></i> : -12h<br/>[Strg] + [Shift] + Links-<i class=\"fas fa-computer-mouse\"></i> : 24h<br/>[Strg] + [Shift] + Rechts-<i class=\"fas fa-computer-mouse\"></i> : -24h",
+	"SPACE1889.Calendar.lightByDayTimeHint": "Der Dunkelheitswert wird automatisch an hand der Uhrzeit angepasst.",
+
 	"SPACE1889.Gravity": "Schwerkraft",
 	"SPACE1889.HomeGravity": "Heimatschwerkraft",
 	"SPACE1889.HomeGravityAbbr": "Heimat SK",

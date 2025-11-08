@@ -100,6 +100,11 @@
 	"LIGHT.Shadows": "Shadows",
 	"LIGHT.ShadowsHint": "Enhance or the intensity of dark colors illuminated by this light source. The default value for a standard light source is 0.",
 
+	"SPACE1889.Calendar.smallForward": "Left-<i class=\"fas fa-computer-mouse\"></i> : 1s<br/>Right-<i class=\"fas fa-computer-mouse\"></i> : -1s<br/>[Shift] + Left-<i class=\"fas fa-computer-mouse\"></i> : 6s<br>[Shift] + Right-<i class=\"fas fa-computer-mouse\"></i> : -6s<br/>[Ctrl] + Left-<i class=\"fas fa-computer-mouse\"></i> : 15s<br/>[Ctrl] + Right-<i class=\"fas fa-computer-mouse\"></i> : -15s<br/>[Ctrl] + [Shift] + Left-<i class=\"fas fa-computer-mouse\"></i> : 30s<br/>[Ctrl] + [Shift] + Right-<i class=\"fas fa-computer-mouse\"></i> : -30s",
+	"SPACE1889.Calendar.forward": "Left-<i class=\"fas fa-computer-mouse\"></i> : 1min<br/>Right-<i class=\"fas fa-computer-mouse\"></i> : -1min<br/>[Shift] + Left-<i class=\"fas fa-computer-mouse\"></i> : 5min<br>[Shift] + Right-<i class=\"fas fa-computer-mouse\"></i> : -5min<br/>[Ctrl] + Left-<i class=\"fas fa-computer-mouse\"></i> : 10min<br/>[Ctrl] + Right-<i class=\"fas fa-computer-mouse\"></i> : -10min<br/>[Ctrl] + [Shift] + Left-<i class=\"fas fa-computer-mouse\"></i> : 30min<br/>[Ctrl] + [Shift] + Right-<i class=\"fas fa-computer-mouse\"></i> : -30min",
+	"SPACE1889.Calendar.fastForward": "Left-<i class=\"fas fa-computer-mouse\"></i> : 1h<br/>Right-<i class=\"fas fa-computer-mouse\"></i> : -1h<br/>[Shift] + Left-<i class=\"fas fa-computer-mouse\"></i> : 4h<br>[Shift] + Right-<i class=\"fas fa-computer-mouse\"></i> : -4h<br/>[Ctrl] + Left-<i class=\"fas fa-computer-mouse\"></i> : 12h<br/>[Ctrl] + Right-<i class=\"fas fa-computer-mouse\"></i> : -12h<br/>[Ctrl] + [Shift] + Left-<i class=\"fas fa-computer-mouse\"></i> : 24h<br/>[Ctrl] + [Shift] + Right-<i class=\"fas fa-computer-mouse\"></i> : -24h",
+	"SPACE1889.Calendar.lightByDayTimeHint": "The darkness value is automatically adjusted based on the time of day.",
+
 	"SPACE1889.Gravity": "Gravity",
 	"SPACE1889.HomeGravity": "Home gravity",
 	"SPACE1889.HomeGravityAbbr": "Home G",
