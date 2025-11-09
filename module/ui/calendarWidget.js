@@ -1,4 +1,4 @@
-import SPACE1889Time from "../helpers/time.js";
+import { SPACE1889WorldCalendar } from "../calendar/calendar.js";
 export class CalendarWidget extends foundry.applications.api.HandlebarsApplicationMixin(foundry.applications.api.ApplicationV2) {
 	static SECONDS_PER_HOUR = 3600;
 	static SECONDS_PER_DAY = 24 * this.SECONDS_PER_HOUR;
@@ -32,10 +32,10 @@ export class CalendarWidget extends foundry.applications.api.HandlebarsApplicati
 		const components = game.time.calendar.timeToComponents(game.time.worldTime);
 		const secondsInDay = this.constructor.calculateSecondsInDay(components);
 
-		const oldDate = { year: components.year, month: components.month + 1, day: components.dayOfMonth + 1, hour: components.hour, minute: components.minute, second: components.second };
+		//const oldDate = { year: components.year, month: components.month + 1, day: components.dayOfMonth + 1, hour: components.hour, minute: components.minute, second: components.second };
 
 		data.components = components;
-		data.dateString = SPACE1889Time.formatLongTimeDate(components);
+		data.dateString = SPACE1889WorldCalendar.formatLongTimeDate(components);
 		data.dateTooltip = game.i18n.localize(game.time.calendar.months.values[components.month].name);
 		data.autoDarknessEnabled = game.settings.get('space1889', 'darknessByDayTime');
 		data.isGM = game.user.isGM;

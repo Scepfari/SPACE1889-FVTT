@@ -274,6 +274,16 @@ export const registerSystemSettings = function ()
 		    type: String
 		});
 
+	game.settings.register("space1889", "yearZero",
+		{
+			name: "calendar year zero",
+			hint: "simple calendar year zero",
+			scope: "world",
+			config: false,
+			default: "false|1970",
+			type: String
+		});
+
 	game.settings.register("space1889", "darknessByDayTime",
 	    {
 		    name: "darkness by day time",

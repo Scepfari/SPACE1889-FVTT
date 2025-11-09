@@ -26,7 +26,8 @@ import * as tokenHud from "./ui/tokenHud.js";
 import { Space1889Menu } from "./ui/spaceMenu.js";
 import Space1889MenuV13 from "./ui/spaceMenu.js";
 import { getEffectInfoText } from "./helpers/effects.js";
-import { CalendarWidget } from "./ui/calendar.js";
+import { CalendarWidget } from "./ui/calendarWidget.js";
+import { SPACE1889WorldCalendar } from "./calendar/calendar.js";
 
 
 /* -------------------------------------------- */
@@ -94,6 +95,8 @@ Hooks.once('init', async function() {
 
 	if (!SPACE1889Helper.isFoundryV10Running())
 		CONFIG.ActiveEffect.legacyTransferral = false;
+
+	SPACE1889WorldCalendar.init();
 
 	return retVal;
 });
