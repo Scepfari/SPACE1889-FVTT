@@ -28,6 +28,7 @@ import Space1889MenuV13 from "./ui/spaceMenu.js";
 import { getEffectInfoText } from "./helpers/effects.js";
 import { CalendarWidget } from "./ui/calendarWidget.js";
 import { SPACE1889WorldCalendar } from "./calendar/calendar.js";
+import { CalendarMonthlyViewWidget } from './ui/calendarMonthlyView.js';
 
 
 /* -------------------------------------------- */
@@ -50,6 +51,7 @@ Hooks.once('init', async function() {
 		healing: SPACE1889Healing,
 		time: SPACE1889Time,
 		apps: {
+			CalendarMonthlyViewWidget,
 			CalendarWidget: new CalendarWidget()
 		}
 	};

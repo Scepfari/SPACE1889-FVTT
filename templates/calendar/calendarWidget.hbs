@@ -1,16 +1,17 @@
 <div>
-  <div class='flexrow calendar-widget-content'>
-    {{#if isGM}}
-      <button type='button' class='visibilitynone noBorder ui-control icon fas fa-toggle-{{ifThen autoLightEnabled 'on' 'off'}}' data-tooltip='SPACE1889.Calendar.lightByDayTimeHint' data-action='toggleAutoLight'></button>      
-    {{/if}}
-    <div data-tooltip='{{dateTooltip}}' class='center button dayProgress noBorder ui-control' style='--p:{{dayProgress}}%;width:auto;background:{{dayTimeBackground.gradient}};color:{{dayTimeBackground.textColor}}' data-action='edit'>
-      <span class="timeIndicator">{{dateString}}</span>
-      <div class="slideIndicator"></div>
-    </div>
-    {{#if isGM}}
-      <button type='button' class='visibilitynone noBorder ui-control space1889-WidgetTimeButton' data-tooltip='SPACE1889.Calendar.smallForward' data-action='smallForward'><img src="systems/space1889/icons/svg/smallForward.svg" class="space1889-TimeButtonIcon" /></button>
-      <button type='button' class='visibilitynone noBorder ui-control space1889-WidgetTimeButton' data-tooltip='SPACE1889.Calendar.forward' data-action='forward'><img src="systems/space1889/icons/svg/forward.svg" class="space1889-TimeButtonIcon" /></button>
-      <button type='button' class='visibilitynone noBorder ui-control space1889-WidgetTimeButton' data-tooltip='SPACE1889.Calendar.fastForward' data-action='fastForward'><img src="systems/space1889/icons/svg/fastForward.svg" class="space1889-TimeButtonIcon" /></button>
-    {{/if}}
-  </div>
+	<div class='flexrow calendar-widget-content'>
+		{{#if isGM}}
+			<button type='button' class='visibilitynone noBorder ui-control icon fas fa-toggle-{{ifThen autoLightEnabled 'on' 'off'}}' data-tooltip='SPACE1889.Calendar.lightByDayTimeHint' data-action='toggleAutoLight'></button>
+		{{/if}}
+		<button type='button' class='visibilitynone noBorder ui-control space1889-WidgetTimeButton' data-tooltip='SPACE1889.Calendar.openCalendar' data-action='openCalendar'><i class="fa fa-calendar-alt" aria-hidden="true"></i></button>
+		<div data-tooltip='{{dateTooltip}}' class='center button dayProgress noBorder ui-control' style='--p:{{dayProgress}}%;width:auto;background:{{dayTimeBackground.gradient}};color:{{dayTimeBackground.textColor}}' data-action='edit'>
+			<span class="timeIndicator">{{dateString}}</span>
+			<div class="slideIndicator"></div>
+		</div>
+		{{#if isGM}}
+			<button type='button' class='visibilitynone noBorder ui-control space1889-WidgetTimeButton' data-tooltip='SPACE1889.Calendar.smallForward' data-action='smallForward'><img src="systems/space1889/icons/svg/smallForward.svg" class="space1889-TimeButtonIcon" /></button>
+			<button type='button' class='visibilitynone noBorder ui-control space1889-WidgetTimeButton' data-tooltip='SPACE1889.Calendar.forward' data-action='forward'><img src="systems/space1889/icons/svg/forward.svg" class="space1889-TimeButtonIcon" /></button>
+			<button type='button' class='visibilitynone noBorder ui-control space1889-WidgetTimeButton' data-tooltip='SPACE1889.Calendar.fastForward' data-action='fastForward'><img src="systems/space1889/icons/svg/fastForward.svg" class="space1889-TimeButtonIcon" /></button>
+		{{/if}}
+	</div>
 </div>

@@ -1,4 +1,5 @@
 import { SPACE1889WorldCalendar } from "../calendar/calendar.js";
+import { CalendarMonthlyViewWidget } from './calendarMonthlyView.js';
 export class CalendarWidget extends foundry.applications.api.HandlebarsApplicationMixin(foundry.applications.api.ApplicationV2) {
 	static SECONDS_PER_HOUR = 3600;
 	static SECONDS_PER_DAY = 24 * this.SECONDS_PER_HOUR;
@@ -12,6 +13,7 @@ export class CalendarWidget extends foundry.applications.api.HandlebarsApplicati
 		classes: ['space1889CalendarWidget', 'faded-ui'],
 		actions: {
 			edit: this.editCalendar,
+			openCalendar: this.openCalendar,
 			toggleAutoLight: this.toggleAutoLight,
 			forward: { handler: this.forward, buttons: [0, 2] },
 			fastForward: { handler: this.fastForward, buttons: [0, 2] },
@@ -26,6 +28,7 @@ export class CalendarWidget extends foundry.applications.api.HandlebarsApplicati
 		},
 	};
 
+	
 	async _prepareContext(_options)
 	{
 		const data = await super._prepareContext(_options);
@@ -40,6 +43,7 @@ export class CalendarWidget extends foundry.applications.api.HandlebarsApplicati
 		data.autoDarknessEnabled = game.settings.get('space1889', 'darknessByDayTime');
 		data.isGM = game.user.isGM;
 		data.dayProgress = Math.round(secondsInDay / this.constructor.SECONDS_PER_DAY * 100);
+		data.calendarViewDate = game.time.worldTime;
 
 		return data;
 	}
@@ -98,7 +102,11 @@ export class CalendarWidget extends foundry.applications.api.HandlebarsApplicati
 	{
 		await super._onRender(context, options);
 
-		if (!game.user.isGM) return;
+		if (this.calendarMonthlyView)
+			this.calendarMonthlyView.render();
+
+		if (!game.user.isGM)
+			return;
 
 		this._setupDragHandlers();
 	}
@@ -109,6 +117,31 @@ export class CalendarWidget extends foundry.applications.api.HandlebarsApplicati
 		await game.settings.set('space1889', 'darknessByDayTime', darknessByDayTime);
 		target.classList.toggle('fa-toggle-on', darknessByDayTime);
 		target.classList.toggle('fa-toggle-off', !darknessByDayTime);
+	}
+
+	static async openCalendar(ev, target)
+	{
+		this.calendarViewDate = game.time.worldTime;
+
+		if (!this.calendarMonthlyView)
+			this.calendarMonthlyView = new CalendarMonthlyViewWidget(this);
+		this.calendarMonthlyView.render(true);
+	}
+
+	onCoseCalendar()
+	{
+		if (this.calendarMonthlyView)
+			this.calendarMonthlyView = null;
+	}
+
+	getCalendarViewDate()
+	{
+		return this.calendarViewDate;
+	}
+
+	setCalendarViewDate(timestamp)
+	{
+		this.calendarViewDate = timestamp;
 	}
 
 	_setupDragHandlers()

@@ -1,0 +1,57 @@
+﻿<div class="space1889CalendarMonthlyView">
+	<h2 class="month-name">{{localize monthData.monthName}} {{viewDate.year}}</h2>
+
+	{{!-- Navigation --}}
+	<div class="flexrow nav-buttons">
+		<button type='button' class='icon fa fa-fast-backward' data-tooltip='SPACE1889.Calendar.PrevYear' data-action='prevYear'></button>
+		<button type='button' class='icon fa fa-backward' data-tooltip='SPACE1889.Calendar.PrevMonth' data-action='prevMonth'></button>
+		<button type='button' class='icon fa fa-eject' data-tooltip='SPACE1889.Calendar.GoToToday' data-action='goToToday'></button>
+		<button type='button' class='icon fa fa-forward' data-tooltip='SPACE1889.Calendar.NextMonth' data-action='nextMonth'></button>
+		<button type='button' class='icon fa fa-fast-forward' data-tooltip='SPACE1889.Calendar.NextYear' data-action='nextYear'></button>
+	</div>
+
+	{{!-- Weekday Headers --}}
+	<div class="weekday-headers" style="--weekday-count: {{weekdays.length}};">
+		{{#each weekdays}}
+			<div class="weekday-header" data-tooltip="{{name}}">
+				<span class="weekday-name">{{localize abbreviation}}</span>
+			</div>
+		{{/each}}
+	</div>
+
+	{{!-- Calendar Grid --}}
+	<div class="calendar-grid" style="--weekday-count: {{weekdays.length}};">
+		{{#each monthData.weeks}}
+			{{!-- Regular week with multiple days --}}
+			<div class="calendar-week">
+				{{#each this}}
+					{{#if isEmpty}}
+						<div class="calendar-day empty"></div>
+					{{else}}
+						<div class="calendar-day {{#if isToday}}today{{/if}} {{#if isSelected}}selected{{/if}} {{#if isClickable}}clickable{{/if}}"
+							data-action="{{#if isClickable}}selectDate{{/if}}"
+							data-day="{{day}}"
+							data-date="{{fullDate}}"
+							data-category="{{primaryCategory}}"
+							{{#if isToday}}
+								data-tooltip="{{localize 'SPACE1889.Calendar.CurrentDate'}}: {{fullDate}}"
+							{{else}}
+								{{#if isClickable}}
+									data-tooltip='SPACE1889.Calendar.SelectDayClickToolTip'
+								{{/if}}
+							{{/if}}>
+							<span class="day-number">{{day}}</span>
+							{{#if hasMoon}}
+								<div class="moon-indicator">
+									{{#if (eq moonPhaseIndex 0)}}<i class="fas fa-circle moon-phase-new"></i>{{/if}}
+									{{#if (eq moonPhaseIndex 4)}}<i class="fas fa-circle moon-phase-full"></i>{{/if}}
+									<i class="{{moonIcon}}"></i>
+								</div>
+							{{/if}}
+						</div>
+					{{/if}}
+				{{/each}}
+			</div>
+		{{/each}}
+	</div>
+</div>

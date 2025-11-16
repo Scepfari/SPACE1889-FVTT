@@ -42,7 +42,7 @@ export class SPACE1889WorldCalendar extends foundry.data.CalendarData
 
 	timeToComponents(timestamp = 0)
 	{
-		const secondsPerDay = 86400;
+		const secondsPerDay = this.secondsPerDay();
 		let days = timestamp >= 0 ? Math.floor(timestamp / secondsPerDay) : Math.ceil(timestamp / secondsPerDay);
 		let secondsInDay = timestamp % secondsPerDay;
 
@@ -86,7 +86,7 @@ export class SPACE1889WorldCalendar extends foundry.data.CalendarData
 			{
 				year--;
 				const dayCountInYear = this.dayCountInYear(year);
-				if (-days < dayCountInYear)
+				if (-days <= dayCountInYear)
 				{
 					daysInYear = dayCountInYear + days;
 					days = daysInYear;
@@ -134,7 +134,7 @@ export class SPACE1889WorldCalendar extends foundry.data.CalendarData
 
 	componentsToTime(components)
 	{
-		const secondsPerDay = 86400;
+		const secondsPerDay = this.secondsPerDay();
 		const yearZero = SPACE1889CalendarConfig.years.yearZero;
 		let totalDays = 0;
 
@@ -186,5 +186,120 @@ export class SPACE1889WorldCalendar extends foundry.data.CalendarData
 		return text;
 	}
 
+	secondsPerDay()
+	{
+		// SPACE1889CalendarConfig.days.hoursPerDay * SPACE1889CalendarConfig.days.minutesPerHour * SPACE1889CalendarConfig.days.secondsPerMinute
+		return 86400;
+	}
+
+	calculateMoonPhaseForDate(dateTimestamp)
+	{
+		if (game.time.calendar.constructor.name != "SPACE1889WorldCalendar")
+			return {};
+
+		const moon = SPACE1889CalendarConfig.moon;
+
+		const referenceDate = game.time.calendar.years.yearZero == 1970 ?
+			moon.firstNewMoonTimestampBasedOnZeroYear1970 :
+			this.componentsToTime(moon.firstNewMoon);
+
+
+		const delta = dateTimestamp - referenceDate;
+		const adjustedSeconds = delta >= 0
+			? delta
+			: delta +
+			Math.ceil(Math.abs(delta) / moon.cycleLengthInSeconds) * moon.cycleLengthInSeconds;
+
+		const adjustedDays = adjustedSeconds / this.secondsPerDay();
+		const dayInCycle = adjustedDays % moon.cycleLength;
+
+		let currentPhaseIndex = 0;
+		let daysIntoPhase = dayInCycle;
+		for (let i = 0; i < moon.phases.length; i++)
+		{
+			if (daysIntoPhase < moon.phases[i].length)
+			{
+				currentPhaseIndex = i;
+				break;
+			}
+			daysIntoPhase -= moon.phases[i].length;
+		}
+		const currentPhase = moon.phases[currentPhaseIndex];
+		return {
+			phase: currentPhase,
+			phaseIndex: currentPhaseIndex,
+		};
+	}
+
+	static getNextWeekday(weekday)
+	{
+		const nextWeekday = Number(weekday) % SPACE1889CalendarConfig.days.values.length;
+		return nextWeekday;
+	}
+
+	static increaseTimeByOneMonth(timestamp)
+	{
+		const data = SPACE1889WorldCalendar.prototype.timeToComponents(timestamp);
+
+		const nextMonthIndex = (data.month + 1) % SPACE1889CalendarConfig.months.values.length;
+		const thisMonthDays = SPACE1889WorldCalendar.prototype.daysInMonth(data.month, data.year);
+		const nextMonthDays = SPACE1889WorldCalendar.prototype.daysInMonth(nextMonthIndex, (nextMonthIndex < data.month ? data.year + 1 : data.year));
+
+		let offset = thisMonthDays;
+		if (data.dayOfMonth + 1 > nextMonthDays)
+			offset = thisMonthDays - (data.dayOfMonth + 1) + nextMonthDays;
+
+		const newTimestamp = timestamp + (offset * SPACE1889WorldCalendar.prototype.secondsPerDay());
+		return newTimestamp;
+	}
+
+	static decreaseTimeByOneMonth(timestamp)
+	{
+		const data = SPACE1889WorldCalendar.prototype.timeToComponents(timestamp);
+		const monthPerYear = SPACE1889CalendarConfig.months.values.length;
+
+		const prevMonthIndex = (data.month + monthPerYear - 1) % monthPerYear;
+		const prevMonthDays = SPACE1889WorldCalendar.prototype.daysInMonth(prevMonthIndex, (prevMonthIndex > data.month ? data.year - 1 : data.year));
+
+		let offset = prevMonthDays;
+		if (data.dayOfMonth + 1 > prevMonthDays)
+			offset = (data.dayOfMonth + 1);
+
+		const newTimestamp = timestamp - (offset * SPACE1889WorldCalendar.prototype.secondsPerDay());
+		return newTimestamp;
+	}
+
+	static increaseTimeByOneYear(timestamp)
+	{
+		const leapDayTreshold = 31 + 28;
+		const data = SPACE1889WorldCalendar.prototype.timeToComponents(timestamp);
+		const isNextYearALeapYear = SPACE1889WorldCalendar.prototype.isLeapYear(data.year + 1);
+
+		let offset = SPACE1889CalendarConfig.days.daysPerYear;
+		if (data.isLeapYear && data.day < leapDayTreshold)
+			++offset;
+		if (isNextYearALeapYear && data.day >= leapDayTreshold)
+			++offset;
+
+		const newTimestamp = timestamp + (offset * SPACE1889WorldCalendar.prototype.secondsPerDay());
+		return newTimestamp;
+	}
+
+	static decreaseTimeByOneYear(timestamp)
+	{
+		const leapDayTreshold = 31 + 28;
+		const data = SPACE1889WorldCalendar.prototype.timeToComponents(timestamp);
+		const isPrevYearALeapYear = SPACE1889WorldCalendar.prototype.isLeapYear(data.year - 1);
+
+		let offset = SPACE1889CalendarConfig.days.daysPerYear;
+		if (data.isLeapYear && data.day >= leapDayTreshold)
+			++offset;
+		if (isPrevYearALeapYear && data.day < leapDayTreshold)
+			++offset;
+
+		const newTimestamp = timestamp - (offset * SPACE1889WorldCalendar.prototype.secondsPerDay());
+		return newTimestamp;
+	}
 
 }
+
