@@ -6,7 +6,7 @@ export default class SPACE1889Vision
 {
 	static timePasses()
 	{
-		if (!game.user.isGM || !SPACE1889Time.isSimpleCalendarEnabled())
+		if (!game.user.isGM || !SPACE1889Time.isCalendarEnabled())
 			return;
 
 		const currentTimeStamp = SPACE1889Time.getCurrentTimestamp();
@@ -79,7 +79,7 @@ export default class SPACE1889Vision
 			}
 		}
 
-		const timeAsString = SPACE1889Time.isSimpleCalendarEnabled() ? SPACE1889Time.formatTimeDate(SPACE1889Time.getTimeAndDate(emissionEndTimeStamp)) : "";
+		const timeAsString = SPACE1889Time.isCalendarEnabled() ? SPACE1889Time.formatTimeDate(SPACE1889Time.getTimeAndDate(emissionEndTimeStamp)) : "";
 		const messageContent = game.i18n.format("SPACE1889.VisionFades", { "vision": visionItem.system.label, "name": token ? token.name : actor.name, "time": timeAsString });
 		let chatData =
 		{
@@ -93,7 +93,7 @@ export default class SPACE1889Vision
 
 	static async deactivateVision(visionItem, actor)
 	{
-		if (SPACE1889Time.isSimpleCalendarEnabled() && !visionItem.system.interruptible)
+		if (SPACE1889Time.isCalendarEnabled() && !visionItem.system.interruptible)
 		{
 			ui.notifications.info(game.i18n.format("SPACE1889.CanNotDeActivateVision", { "name": visionItem.system.label }));
 			return;
@@ -117,7 +117,7 @@ export default class SPACE1889Vision
 				this._resetTokenVision(token, game.actors.get(actor._id)?.prototypeToken);
 		}
 
-		const timeAsString = SPACE1889Time.isSimpleCalendarEnabled() ? SPACE1889Time.getCurrentTimeDateString() : "";
+		const timeAsString = SPACE1889Time.isCalendarEnabled() ? SPACE1889Time.getCurrentTimeDateString() : "";
 		const messageContent = game.i18n.format("SPACE1889.VisionSwitchOff", { "vision": visionItem.system.label, "name": actor.name, "time": timeAsString });
 		let chatData =
 		{
@@ -180,7 +180,7 @@ export default class SPACE1889Vision
 		if (!SPACE1889Helper.hasTokenConfigurePermission())
 			return;
 
-		if (SPACE1889Time.isSimpleCalendarEnabled())
+		if (SPACE1889Time.isCalendarEnabled())
 			await visionItem.update({ "system.isActive": true, "system.emissionStartTimestamp": SPACE1889Time.getCurrentTimestamp() });
 		else
 			await visionItem.update({ "system.isActive": true });
@@ -191,7 +191,7 @@ export default class SPACE1889Vision
 			await this._setTokenVision(visionItem, token);
 		}
 
-		const timeAsString = SPACE1889Time.isSimpleCalendarEnabled() ? SPACE1889Time.getCurrentTimeDateString() : "";
+		const timeAsString = SPACE1889Time.isCalendarEnabled() ? SPACE1889Time.getCurrentTimeDateString() : "";
 		const messageContent = game.i18n.format("SPACE1889.VisionBegins", { "vision": visionItem.system.label, "name": actor.name, "time": timeAsString });
 		let chatData =
 		{

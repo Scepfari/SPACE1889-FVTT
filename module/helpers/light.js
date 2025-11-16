@@ -5,7 +5,7 @@ export default class SPACE1889Light
 {
 	static timePasses()
 	{
-		if (!game.user.isGM || !SPACE1889Time.isSimpleCalendarEnabled())
+		if (!game.user.isGM || !SPACE1889Time.isCalendarEnabled())
 			return;
 
 		const currentTimeStamp = SPACE1889Time.getCurrentTimestamp();
@@ -103,7 +103,7 @@ export default class SPACE1889Light
 			}
 		}
 
-		const timeAsString = SPACE1889Time.isSimpleCalendarEnabled() ? SPACE1889Time.formatTimeDate(SPACE1889Time.getTimeAndDate(emissionEndTimeStamp)) : "";
+		const timeAsString = SPACE1889Time.isCalendarEnabled() ? SPACE1889Time.formatTimeDate(SPACE1889Time.getTimeAndDate(emissionEndTimeStamp)) : "";
 		const messageContent = game.i18n.format("SPACE1889.LightGoesOut", { "lightSource": lightSource.system.label, "name": token ? token.name : actor.name, "time": timeAsString });
 		let chatData =
 		{
@@ -117,7 +117,7 @@ export default class SPACE1889Light
 
 	static async deactivateLightSource(lightSource, actor)
 	{
-		if (SPACE1889Time.isSimpleCalendarEnabled() && !lightSource.system.interruptible)
+		if (SPACE1889Time.isCalendarEnabled() && !lightSource.system.interruptible)
 		{
 			ui.notifications.info(game.i18n.format("SPACE1889.CanNotDeActivateLightSource", { "name": lightSource.system.label }));
 			return;
@@ -141,7 +141,7 @@ export default class SPACE1889Light
 				this._resetTokenLight(token, game.actors.get(actor._id)?.prototypeToken);
 		}
 
-		const timeAsString = SPACE1889Time.isSimpleCalendarEnabled() ? SPACE1889Time.getCurrentTimeDateString() : "";
+		const timeAsString = SPACE1889Time.isCalendarEnabled() ? SPACE1889Time.getCurrentTimeDateString() : "";
 		const messageContent = game.i18n.format("SPACE1889.LightSwitchOff", { "lightSource": lightSource.system.label, "name": actor.name, "time": timeAsString });
 		let chatData =
 		{
@@ -189,7 +189,7 @@ export default class SPACE1889Light
 			return 0;
 
 		let timeDelta = 0.0;
-		if (SPACE1889Time.isSimpleCalendarEnabled() && item.system.emissionStartTimestamp !== 0)
+		if (SPACE1889Time.isCalendarEnabled() && item.system.emissionStartTimestamp !== 0)
 			timeDelta = Number(SPACE1889Time.getTimeDifInSeconds(SPACE1889Time.getCurrentTimestamp(), item.system.emissionStartTimestamp));
 
 		return Number(item.system.usedDuration) + (timeDelta / 60.0);
@@ -263,7 +263,7 @@ export default class SPACE1889Light
 		if (!SPACE1889Helper.hasTokenConfigurePermission())
 			return;
 
-		if (SPACE1889Time.isSimpleCalendarEnabled())
+		if (SPACE1889Time.isCalendarEnabled())
 			await lightSource.update({ "system.isActive": true, "system.emissionStartTimestamp": SPACE1889Time.getCurrentTimestamp() });
 		else
 			await lightSource.update({ "system.isActive": true });
@@ -274,7 +274,7 @@ export default class SPACE1889Light
 			await this._setTokenLight(lightSource, token);
 		}
 
-		const timeAsString = SPACE1889Time.isSimpleCalendarEnabled() ? SPACE1889Time.getCurrentTimeDateString() : "";
+		const timeAsString = SPACE1889Time.isCalendarEnabled() ? SPACE1889Time.getCurrentTimeDateString() : "";
 		const messageContent = game.i18n.format("SPACE1889.LightGoesOn", { "lightSource": lightSource.system.label, "name": actor.name, "time": timeAsString });
 		let chatData =
 		{
@@ -459,7 +459,7 @@ export default class SPACE1889Light
 
 		const titel = game.i18n.format("SPACE1889.DropItem", { name: item.name });
 		messageContent = `<h3>${titel}</h3>`;
-		messageContent += SPACE1889Time.isSimpleCalendarEnabled() ? `<p>${SPACE1889Time.getCurrentTimeDateString()}</p>` : "";
+		messageContent += SPACE1889Time.isCalendarEnabled() ? `<p>${SPACE1889Time.getCurrentTimeDateString()}</p>` : "";
 		messageContent += `${rollWithHtml.html} <br>`;
 
 		const remainingTime = this.isPermanentlyUsable(item) ? "&infin;" : Math.max(0, item.system.duration - this.calcUsedDuration(item));
@@ -525,7 +525,7 @@ export default class SPACE1889Light
 			return undefined;
 
 		let spaceFlags = {};
-		if (lightSource.system.itemUseType !== "permanentlyUsable" && SPACE1889Time.isSimpleCalendarEnabled())
+		if (lightSource.system.itemUseType !== "permanentlyUsable" && SPACE1889Time.isCalendarEnabled())
 		{
 			const remainingTime = Math.max(0, lightSource.system.duration - this.calcUsedDuration(lightSource));
 			const timestamp = SPACE1889Time.getCurrentTimestamp();

@@ -1,3 +1,4 @@
+import { SPACE1889CalendarConfig } from "../calendar/calendarConfig.js";
 import SPACE1889Healing from "../helpers/healing.js";
 import SPACE1889Helper from "./helper.js";
 import SPACE1889Light from "./light.js";
@@ -10,68 +11,30 @@ export default class SPACE1889Time
 		Hooks.on('updateWorldTime', () =>
 		{
 			game.space1889.apps.CalendarWidget.render(true);
+			SPACE1889Time.#dateTimeChanged();
 		});
-
-		// ToDo replace SimpleCalendar with foundry core
-
-		if (!this.isSimpleCalendarEnabled())
-			return;
-
-		Hooks.on(SimpleCalendar.Hooks.DateTimeChange, (data) => 
-		{
-			SPACE1889Time.#dateTimeChanged(data);
-		});
-
-		Hooks.on(SimpleCalendar.Hooks.Ready, (data) => 
-		{
-			console.log("SimpleCalendar.Ready");
-		});
-
 	}
 
-	static isSimpleCalendarEnabled()
+	static isCalendarEnabled()
 	{
-		const id = "foundryvtt-simple-calendar";
-		return game.modules.get(id) && game.modules.get(id).active
+		return game.time.calendar.constructor.name == "SPACE1889WorldCalendar";
 	}
 
 	static getCurrentTimestamp()
 	{
-		if (this.isSimpleCalendarEnabled())
-			return SimpleCalendar.api.timestamp();
-
-		const worldDate = new Date();
-		return worldDate.getTime();
+		return game.time.worldTime;
 	}
 
 	static getCurrentTimeAndDate()
 	{
-		if (this.isSimpleCalendarEnabled())
-		{
-			const date = SimpleCalendar.api.timestampToDate(SimpleCalendar.api.timestamp());
-			return { year: date.year, month: date.month + 1, day: date.day + 1, hour: date.hour, minute: date.minute, second: date.second };
-		}
-		const worldDate = new Date();
-
-		return {
-			year: worldDate.getFullYear(), month: Number(worldDate.getMonth()) + 1, day: worldDate.getDate(),
-			hour: worldDate.getHours(), minute: worldDate.getMinutes(), second: worldDate.getSeconds()
-		};
+		const date = game.time.calendar.timeToComponents(this.getCurrentTimestamp());
+		return { year: date.year, month: date.month + 1, day: date.dayOfMonth + 1, dayOfWeek: date.dayOfWeek, hour: date.hour, minute: date.minute, second: date.second };
 	}
 
 	static getTimeAndDate(timestamp)
 	{
-		if (this.isSimpleCalendarEnabled())
-		{
-			const date = SimpleCalendar.api.timestampToDate(timestamp);
-			return { year: date.year, month: date.month + 1, day: date.day + 1, hour: date.hour, minute: date.minute, second: date.second };
-		}
-		const worldDate = new Date(timestamp);
-
-		return {
-			year: worldDate.getFullYear(), month: Number(worldDate.getMonth()) + 1, day: worldDate.getDate(),
-			hour: worldDate.getHours(), minute: worldDate.getMinutes(), second: worldDate.getSeconds()
-		};
+		const date = game.time.calendar.timeToComponents(timestamp);
+		return { year: date.year, month: date.month + 1, day: date.dayOfMonth + 1, dayOfWeek: date.dayOfWeek, hour: date.hour, minute: date.minute, second: date.second };
 	}
 
 	static formatTimeDate(date)
@@ -85,9 +48,9 @@ export default class SPACE1889Time
 	static formatLongTimeDate(date)
 	{
 		const dayOfTheWeek = game.i18n.localize(game.time.calendar.days.values[date.dayOfWeek].name);
-		const monthName = game.i18n.localize(game.time.calendar.months.values[date.month].name);
+		const monthName = game.i18n.localize(game.time.calendar.months.values[date.month-1].name);
 
-		let text = dayOfTheWeek + ", " + date.dayOfMonth.toString() + ". " + monthName + " " + date.year.toString() +
+		let text = dayOfTheWeek + ", " + date.day.toString() + ". " + monthName + " " + date.year.toString() +
 			" - " + date.hour.toString() + ":" + (date.minute < 10 ? "0" : "") + date.minute.toString() +
 			":" + (date.second < 10 ? "0" : "") + date.second.toString();
 		return text;
@@ -100,7 +63,7 @@ export default class SPACE1889Time
 
 	static formatEffectDuration(effectDuration)
 	{
-		const canDoDate = this.isSimpleCalendarEnabled();
+		const canDoDate = this.isCalendarEnabled();
 		const date = canDoDate ? this.formatTimeDate(this.getTimeAndDate(effectDuration.startTime)) : "";
 		let roundInfo = "";
 
@@ -113,7 +76,7 @@ export default class SPACE1889Time
 
 	static getTimeDifInSeconds(timestamp, secondTimestamp)
 	{
-		if (this.isSimpleCalendarEnabled())
+		if (this.isCalendarEnabled())
 			return (timestamp - secondTimestamp);
 
 		return (timestamp - secondTimestamp) / 1000;
@@ -127,7 +90,7 @@ export default class SPACE1889Time
 
 	static stringToDate(datestring, format)
 	{
-		const dayMod = this.isSimpleCalendarEnabled() ? 1 : 0;
+		const dayMod = this.isCalendarEnabled() ? 1 : 0;
 
 		const normalized = datestring.replace(/[^a-zA-Z0-9]/g, '-');
 		const normalizedFormat = format.toLowerCase().replace(/[^a-zA-Z0-9]/g, '-');
@@ -153,8 +116,41 @@ export default class SPACE1889Time
 
 	static dateStringToTimestamp(datestring, format)
 	{
-		if (this.isSimpleCalendarEnabled())
-			return SimpleCalendar.api.dateToTimestamp(this.stringToDate(datestring, format));
+		if (this.isCalendarEnabled())
+		{
+			const theDate = this.stringToDate(datestring, format)
+			const secondsPerDay = game.time.calendar.secondsPerDay();
+			const yearZero = SPACE1889CalendarConfig.years.yearZero;
+			let totalDays = 0;
+
+			if (theDate.year >= yearZero)
+			{
+				for (let year = yearZero; year < theDate.year; ++year)
+				{
+					totalDays += game.time.calendar.dayCountInYear(year);
+				}
+			}
+			else
+			{
+				for (let year = theDate.year; year < yearZero; ++year)
+				{
+					totalDays -= game.time.calendar.dayCountInYear(year);
+				}
+			}
+
+			const monthMax = Math.min(theDate.month, SPACE1889CalendarConfig.months.values.length);
+			for (let month = 0; month < monthMax; ++month)
+			{
+				totalDays += game.time.calendar.daysInMonth(month, theDate.year);
+			}
+
+			totalDays += theDate.day;
+			let time = totalDays * secondsPerDay;
+			time += (theDate.hour ?? 0) * 3600;
+			time += (theDate.minute ?? 0) * 60;
+			time += (theDate.second ?? 0);
+			return time;
+		}
 
 		const sc = this.stringToDate(datestring, format);
 		let date = new Date(sc.year, sc.month, sc.day, sc.hour, sc.minute, sc.second);
@@ -163,19 +159,11 @@ export default class SPACE1889Time
 
 	static changeDate(offsetInSeconds)
 	{
-		if (this.isSimpleCalendarEnabled())
-		{
-			if (!SimpleCalendar.api.changeDate({ seconds: offsetInSeconds }))
-			{
-				ui.notifications.info(game.i18n.localize("SPACE1889.CanNotSetTime"));
-			}
-		}
+		game.time.advance(offsetInSeconds);
 	}
 
-	static #dateTimeChanged(data)
+	static #dateTimeChanged()
 	{
-		console.log("neues Datum:" + `${data.date.display.day}.${data.date.display.month}.${data.date.year} ${data.date.display.time}`);
-
 		SPACE1889Helper.refreshAllOpenCharacterSheets();
 
 		if (!game.user.isGM)

@@ -1303,7 +1303,7 @@ export default class SPACE1889Helper
 
 	static async createDamageTimestamps(actorList)
 	{
-		if (!SPACE1889Time.isSimpleCalendarEnabled())
+		if (!SPACE1889Time.isCalendarEnabled())
 			return;
 
 		const format = 'dd.mm.yyyy hh:ii:ss';
@@ -1379,19 +1379,17 @@ export default class SPACE1889Helper
 	static hasOwnership(actor, notifyIfNot = false)
 	{
 		const permissions = actor?.ownership;
-		if ((permissions["default"] && permissions["default"] == 3) || (permissions[game.userId] && permissions[game.userId] == 3))
-			return true;
+		const hasOwnership = actor?.isOwner || game.user.isGM
+		if (hasOwnership || !notifyIfNot || !permissions)
+			return hasOwnership;
 
-		if (notifyIfNot)
+		let namensliste = "";
+		for (let user of game.users)
 		{
-			let namensliste = "";
-			for (let user of game.users)
-			{
-				if (permissions[user._id] == 3)
-					namensliste += (namensliste.length > 0 ? ", " : "") + user.name;
-			}
-			ui.notifications.info(game.i18n.format("SPACE1889.NoTokenPermission", { player: namensliste }));
+			if (permissions[user._id] == 3)
+				namensliste += (namensliste.length > 0 ? ", " : "") + user.name;
 		}
+		ui.notifications.info(game.i18n.format("SPACE1889.NoTokenPermission", { player: namensliste }));
 		return false;
 	}
 
@@ -1873,7 +1871,7 @@ export default class SPACE1889Helper
 			{
 				if (newKey !== game.settings.get("space1889", "gravityZone"))
 				{
-					const time = SPACE1889Time.isSimpleCalendarEnabled() ? SPACE1889Time.getCurrentTimestamp().toString() : "";
+					const time = SPACE1889Time.isCalendarEnabled() ? SPACE1889Time.getCurrentTimestamp().toString() : "";
 					await game.settings.set("space1889", "gravityChangeTime", time);
 					await game.settings.set("space1889", "gravityZone", newKey);
 				}
@@ -1919,7 +1917,7 @@ export default class SPACE1889Helper
 	static getTimePassedSinceLastGravityChange()
 	{
 		const timeStamp = this.getGravityChangeTimestamp();
-		if (!timeStamp || !SPACE1889Time.isSimpleCalendarEnabled())
+		if (!timeStamp || !SPACE1889Time.isCalendarEnabled())
 			return undefined;
 
 		return SPACE1889Time.getTimeDifInSeconds(SPACE1889Time.getCurrentTimestamp(), timeStamp);

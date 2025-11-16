@@ -321,7 +321,7 @@ export default class SPACE1889Healing
 
 	static isSameTime(injury)
 	{
-		const checkTimestamps = SPACE1889Time.isSimpleCalendarEnabled();
+		const checkTimestamps = SPACE1889Time.isCalendarEnabled();
 
 		let isSame = checkTimestamps ? injury.system.eventTimestamp == SPACE1889Time.getCurrentTimestamp() : true;
 		const isCombat = game.combat?.active && game.combat?.started;
@@ -390,7 +390,7 @@ export default class SPACE1889Healing
 
 		let healingTime = neededSecondsToHeal / injury.system.healingFactor;
 
-		if (injury.id == injuryInHealingId && SPACE1889Time.isSimpleCalendarEnabled())
+		if (injury.id == injuryInHealingId && SPACE1889Time.isCalendarEnabled())
 			healingTime -= this.getPastTimeInSeconds(healingStartTimeStamp)
 
 		return healingTime;
@@ -404,7 +404,7 @@ export default class SPACE1889Healing
 
 	static getPastTimeInSeconds(healingStartTimeStamp)
 	{
-		if (healingStartTimeStamp == 0 || healingStartTimeStamp == Infinity || !SPACE1889Time.isSimpleCalendarEnabled())
+		if (healingStartTimeStamp == 0 || healingStartTimeStamp == Infinity || !SPACE1889Time.isCalendarEnabled())
 			return 0;
 
 		// nur wenn der aktuelle Zeitpunkt nach dem Heilstart liegt, wird ein Wert != 0 zurückgeliefert
@@ -654,7 +654,7 @@ export default class SPACE1889Healing
 			const combatTokenId = game.combat?.combatant?.token?.id;
 			const token = canvas.tokens.get(combatTokenId);
 			const actor = token?.actor;
-			await this.stabilize(actor, token.name);
+			await this.stabilize(actor, token?.name);
 		}
 	}
 

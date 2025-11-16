@@ -264,8 +264,8 @@ export class Space1889Menu extends foundry.applications.api.HandlebarsApplicatio
 		});
 		this.element.querySelector("button[name=redoTokenLightAndVision]").addEventListener("click", function (event)
 		{
-			SPACE1889Light.redoTokenLight(ev);
-			SPACE1889Vision.redoTokenVision(ev);
+			SPACE1889Light.redoTokenLight(event);
+			SPACE1889Vision.redoTokenVision(event);
 		});
 	}
 };
