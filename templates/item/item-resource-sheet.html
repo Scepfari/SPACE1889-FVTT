@@ -1,12 +1,4 @@
-<form class="{{cssClass}}" autocomplete="off">
-	<header class="sheet-header">
-		<img class="profile-img artwork" src="{{item.img}}" data-edit="img" data-tooltip="{{item.name}}" />
-		<div class="header-fields">
-			<h1 class="charname"><input name="name" type="text" value="{{item.name}}" placeholder="Name" /></h1>
-			{{> "systems/space1889/templates/item/item-sub-id.html"}}
-		</div>
-	</header>
-
+<section class="{{cssClass}}" autocomplete="off">
 
 	<ol>
 		<li class="item flexrow items-header">
@@ -41,25 +33,12 @@
 		</div>
 	</li>
 
+	<hr />
+	{{#if (ne system.descriptionLangId (localize system.descriptionLangId))}}
+		<p><em>{{{localize system.descriptionLangId}}}</em></p>
+	{{/if}}
 
-	{{!-- Sheet Tab Navigation --}}
-	<nav class="sheet-tabs tabs" data-group="primary">
-		<a class="item" data-tab="description">{{localize "SPACE1889.Description"}}</a>
-	</nav>
 
-	{{!-- Sheet Body --}}
-	<section class="sheet-body">
+	{{> "systems/space1889/templates/item/parts/item-description.html"}}
 
-		{{!-- Description Tab --}}
-		<div class="tab" data-group="primary" data-tab="description">
-			<div class="edit-special">
-				{{editor enrichedDescription target="system.description" button=true editable=editable}}
-			</div>
-			{{#if (ne system.descriptionLangId (localize system.descriptionLangId))}}
-			<hr />
-			<p>{{{localize system.descriptionLangId}}}</p>
-			{{/if}}
-		</div>
-	</section>
-
-</form>
+</section>

@@ -39,7 +39,15 @@
 		"systems/space1889/templates/actor/parts/vehicle-biography.html",
 		"systems/space1889/templates/actor/parts/vehicle-damage.html",
 		"systems/space1889/templates/item/item-sub-id.html",
-		"systems/space1889/templates/item/item-vision-configuration.html",
-		"systems/space1889/templates/item/item-lightSource-configuration.html"
+		"systems/space1889/templates/item/parts/item-lightSource-details.html",
+		"systems/space1889/templates/item/parts/item-lightSource-basic-configuration.html",
+		"systems/space1889/templates/item/parts/item-lightSource-animation-configuration.html",
+		"systems/space1889/templates/item/parts/item-lightSource-advanced-configuration.html",
+		"systems/space1889/templates/item/parts/item-vision-details.html",
+		"systems/space1889/templates/item/parts/item-vision-basic-configuration.html",
+		"systems/space1889/templates/item/parts/item-vision-advanced-configuration.html",
+		"systems/space1889/templates/item/parts/item-header.html",
+		"systems/space1889/templates/item/parts/item-description.html",
+		"systems/space1889/templates/item/parts/item-emptyBase.html",
 	]);
 };

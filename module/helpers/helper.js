@@ -538,9 +538,10 @@ export default class SPACE1889Helper
 
 	static async showArtwork({ img, name, uuid, isOwner }, hide = false) 
 	{
-		new ImagePopout(img,
+		return new foundry.applications.apps.ImagePopout(
 			{
-				title: hide ? (isOwner ? name : "-") : name,
+				src: img,
+				window: { title: hide ? (isOwner ? name : "-") : name },
 				shareable: true,
 				uuid
 			}).render(true);

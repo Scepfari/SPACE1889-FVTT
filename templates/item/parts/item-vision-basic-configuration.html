@@ -1,0 +1,36 @@
+<div class="standard-form tab {{tabs.basic.cssClass}}" 
+		 data-tab="{{tabs.basic.id}}" 
+		 data-group="{{tabs.basic.group}}">
+	<div class="form-group">
+		<label>{{localize "TOKEN.FIELDS.sight.enabled.label"}}</label>
+		<input type="checkbox" name="sight.enabled" {{checked true}} disabled="disabled" />
+		<p class="hint">{{ localize 'TOKEN.FIELDS.sight.enabled.hint' }}</p>
+	</div>
+
+	<div class="form-group slim">
+		<label>{{localize "TOKEN.FIELDS.sight.range.label"}} <span class="units">(m)</span></label>
+		<div class="form-fields">
+			{{numberInput system.visionRange name="system.visionRange" placeholder="m" min="0" step="any"}}
+		</div>
+		<p class="hint">{{ localize 'TOKEN.FIELDS.sight.range.hint' }}</p>
+	</div>
+
+	<div class="form-group slim">
+		<label>{{localize "TOKEN.FIELDS.sight.angle.label"}} <span class="units">({{localize "Degrees"}})</span></label>
+		<div class="form-fields">
+			{{numberInput system.visionAngle name="system.visionAngle" placeholder=(localize "Degrees")}}
+		</div>
+		<p class="hint">{{ localize 'TOKEN.FIELDS.sight.angle.hint' }}</p>
+	</div>
+
+	<div class="form-group">
+		<label>{{ localize "TOKEN.FIELDS.sight.visionMode.label"}}</label>
+		<div class="form-fields">
+			<select name="system.visionMode" data-dtype="String">
+				{{selectOptions system.visionModes selected=system.visionMode localize=true}}
+			</select>
+		</div>
+		<p class="hint">{{ localize 'TOKEN.FIELDS.sight.visionMode.hint' }}</p>
+	</div>
+</div>
+

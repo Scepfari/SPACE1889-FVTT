@@ -146,9 +146,11 @@ export class Space1889Item extends Item {
 				item.system.label = item.name;
 				item.system.skillOrAttributeLabel = item.system.skillOrAttributeId;
 				item.system.saveData = {};
+				if (item.system.unlockIdForUser == undefined)
+					item.system.unlockIdForUser = false;
 
 				if (item.system.typeKey === "primary")
-				{ 
+				{
 					if (!CONFIG.SPACE1889.abilities.hasOwnProperty(item.system.skillOrAttributeId))
 					{
 						item.system.skillOrAttributeId = "con";
@@ -184,7 +186,7 @@ export class Space1889Item extends Item {
 						item.system.saveData["system.skillOrAttributeId"] = item.system.skillOrAttributeId;
 					}
 
-					const upperCaseId = item.system.skillOrAttributeId.replace(/^(.)/, function(b){return b.toUpperCase();});
+					const upperCaseId = item.system.skillOrAttributeId.replace(/^(.)/, function (b) { return b.toUpperCase(); });
 					const langId = 'SPACE1889.' + "Skill" + upperCaseId;
 					item.system.skillOrAttributeLabel = game.i18n.localize(langId);
 					if (item.system.skillOrAttributeLabel === langId)
@@ -193,6 +195,11 @@ export class Space1889Item extends Item {
 
 				if (item.img === "icons/svg/item-bag.svg")
 					item.img = "icons/tools/navigation/hourglass-yellow.webp";
+			}
+			else
+			{
+				if (item.system.unlockIdForUser == undefined)
+					item.system.unlockIdForUser = false;
 			}
 
 			if (item.type === "weapon" )

@@ -1,12 +1,4 @@
-<form class="{{cssClass}}" autocomplete="off">
-	<header class="sheet-header">
-		<img class="profile-img artwork" src="{{item.img}}" data-edit="img" data-tooltip="{{item.name}}" />
-		<div class="header-fields">
-			<h1 class="charname"><input name="name" type="text" value="{{item.name}}" placeholder="Name" /></h1>
-			{{> "systems/space1889/templates/item/item-sub-id.html"}}
-		</div>
-	</header>
-
+<section class="{{cssClass}}" autocomplete="off">
 
 	<div class="grid grid-2col">
 		<div class="resource">
@@ -21,9 +13,11 @@
 		</div>
 	</div>
 	<div class="grid grid-2col">
-		<div class="form-group">
-			<label>{{ localize "SPACE1889.SkillGroup" }}</label>
-			<input type="checkbox" name="system.isSkillGroup" {{checked system.isSkillGroup}} />
+		<div class="resource">
+			<label class="resource-label">{{ localize "SPACE1889.SkillGroup" }}</label>
+			<div>
+				<input type="checkbox" name="system.isSkillGroup" {{checked system.isSkillGroup}} />
+			</div>
 		</div>
 		<div class="resource">
 			<label class="resource-label">{{ localize "SPACE1889.Name" }}</label>
@@ -68,24 +62,6 @@
 		{{> "systems/space1889/templates/actor/parts/actor-effects.html"}}
 	</div>
 
-	{{!-- Sheet Tab Navigation --}}
-	<nav class="sheet-tabs tabs" data-group="primary">
-		<a class="item" data-tab="description">{{localize "SPACE1889.Description"}}</a>
-	</nav>
-
-	{{!-- Sheet Body --}}
-	<section class="sheet-body">
-
-		{{!-- Description Tab --}}
-		<div class="tab" data-group="primary" data-tab="description">
-			<div class="edit-special">
-				{{editor enrichedDescription target="system.description" button=true editable=editable}}
-			</div>
-			{{#if (ne system.descriptionLangId (localize system.descriptionLangId))}}
-				<hr />
-				<p>{{{localize system.descriptionLangId}}}</p>
-			{{/if}}
-		</div>
-	</section>
-</form>
+	{{> "systems/space1889/templates/item/parts/item-description.html"}}
+</section>
 

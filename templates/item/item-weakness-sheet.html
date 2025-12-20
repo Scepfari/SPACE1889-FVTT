@@ -1,18 +1,21 @@
-<form class="{{cssClass}}" autocomplete="off">
-	<header class="sheet-header">
-		<img class="profile-img artwork" src="{{item.img}}" data-edit="img" data-tooltip="{{item.name}}"/>
-		<div class="header-fields">
-			<h1 class="charname"><input name="name" type="text" value="{{item.name}}" placeholder="Name" /></h1>
-			{{> "systems/space1889/templates/item/item-sub-id.html"}}
-		</div>
-	</header>
+<section class="{{cssClass}}" autocomplete="off">
 
-	<div class="resource">
-		<label class="resource-label">{{ localize "SPACE1889.WeaknessType" }}</label>
-		<select name="system.type" data-dtype="String">
-			{{selectOptions system.weaknessTypes selected=system.type localize=true}}
-		</select>
+	<hr />
+	<p />
+	<div style="display: grid; grid-template-columns: 50% 50%; grid-template-rows: 100%; align-items: center;">
+	<!--<div class="space1889-formGroup">-->
+		<label class="resource-label" for="weaknessTypeComboBox">{{ localize "SPACE1889.WeaknessType"}}</label>
+		<div class="form-fields">
+			<select name="system.type" data-dtype="String" id="weaknessTypeComboBox">
+				{{selectOptions system.weaknessTypes selected=system.type localize=true}}
+			</select>
+		</div>
 	</div>
+
+	{{#if (ne system.descriptionLangId (localize system.descriptionLangId))}}
+		<p><em>{{{localize system.descriptionLangId}}}</em></p>
+	{{/if}}
+
 
 	{{!-- Sheet Tab Navigation --}}
 	<nav class="sheet-tabs tabs" data-group="primary">
@@ -35,5 +38,5 @@
 			<p>{{{localize system.descriptionLangId}}}</p>
 		</div>
 	</section>
-</form>
+</section>
 

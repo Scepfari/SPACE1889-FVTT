@@ -24,6 +24,78 @@
 		"css/immersive.css" 
 	],
 	"scripts": [],
+	"documentTypes": {
+		"Actor": {
+			"character": {
+				"htmlFields": [ "biography", "notes.value", "notes.gmInfo" ]
+			},
+			"creature": {
+				"htmlFields": [ "notes.value", "notes.gmInfo" ]
+			},
+			"npc": {
+				"htmlFields": [ "biography", "notes.value", "notes.gmInfo" ]
+			},
+			"vehicle": {
+				"htmlFields": [ "notes.value", "notes.gmInfo" ]
+			}
+		},
+		"Item": {
+			"archetype": {
+				"htmlFields": [ "description" ]
+			},
+			"container": {
+				"htmlFields": [ "description" ]
+			},
+			"skill": {
+				"htmlFields": [ "description" ]
+			},
+			"item": {
+				"htmlFields": [ "description" ]
+			},
+			"extended_action": {
+				"htmlFields": [ "description" ]
+			},
+			"lightSource": {
+				"htmlFields": [ "description" ]
+			},
+			"motivation": {
+				"htmlFields": [ "description" ]
+			},
+			"ammunition": {
+				"htmlFields": [ "description" ]
+			},
+			"resource": {
+				"htmlFields": [ "description" ]
+			},
+			"armor": {
+				"htmlFields": [ "description" ]
+			},
+			"damage": {
+				"htmlFields": [ "description" ]
+			},
+			"weakness": {
+				"htmlFields": [ "description" ]
+			},
+			"vision": {
+				"htmlFields": [ "description" ]
+			},
+			"specialization": {
+				"htmlFields": [ "description" ]
+			},
+			"species": {
+				"htmlFields": [ "description" ]
+			},
+			"talent": {
+				"htmlFields": [ "description" ]
+			},
+			"weapon": {
+				"htmlFields": [ "description" ]
+			},
+			"currency": {
+				"htmlFields": [ "description" ]
+			}
+		}
+	},
 	"packs": [
 		{
 			"name": "fertigkeiten",

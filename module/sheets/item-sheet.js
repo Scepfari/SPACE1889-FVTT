@@ -5,40 +5,131 @@ import SPACE1889Helper from "../helpers/helper.js";
  * Extend the basic ItemSheet with some very simple modifications
  * @extends {ItemSheet}
  */
-export class Space1889ItemSheet extends foundry.appv1.sheets.ItemSheet {
+export class Space1889ItemSheet extends foundry.applications.api.HandlebarsApplicationMixin(
+	foundry.applications.sheets.ItemSheetV2,)
+{
 
-	/** @override */
-	static get defaultOptions() {
-		return foundry.utils.mergeObject(super.defaultOptions, {
-			classes: ["space1889", "sheet", "item"],
+	static DEFAULT_OPTIONS = {
+		tag: 'form',
+		form: {
+			submitOnChange: true,
+			closeOnSubmit: false
+		},
+		window: {
+			minimizable: true,
+			resizable: true
+		},
+		position: {
 			width: 500,
-			height: 550,
-			tabs: [{ navSelector: ".sheet-tabs", contentSelector: ".sheet-body", initial: "description" }]
-		});
+			height: 550
+		},
+		classes: ["space1889", "sheet", "item"],
+	};
+	get title()
+	{
+		return this.item.name;
 	}
 
+	static TABS = {
+		primary: {
+			tabs: [
+				//{ id: 'description', group: 'primary', label: 'SPACE1889.Description' },
+//				{ id: 'descLocalizeVersion', group: 'primary', label: 'SPACE1889.Description' },
+				//{ id: 'basic', group: 'primary', label: 'LIGHT.HeaderBasic' },
+				//{ id: 'animation', group: 'primary', label: 'LIGHT.HeaderAnimation' },
+				//{ id: 'advanced', group: 'primary', label: 'LIGHT.HeaderAdvanced' },
+			],
+			initial: 'description',
+		}
+	}
+
+
+	static PARTS = {
+		header: {
+			template: "systems/space1889/templates/item/parts/item-header.html"
+		},
+		//tabs: {
+		//	// Foundry-provided generic template
+		//	template: "templates/generic/tab-navigation.hbs",
+		//},
+		//description: {
+		//	template: 'systems/space1889/templates/item/parts/item-descriptionTab.html'
+		//},
+		//basic: {
+		//	template: 'systems/space1889/templates/item/parts/item-lightSource-basic-configuration.html'
+		//},
+		//animation: {
+		//	template: 'systems/space1889/templates/item/parts/item-lightSource-animation-configuration.html'
+		//},
+		//advanced: {
+		//	template: 'systems/space1889/templates/item/parts/item-lightSource-advanced-configuration.html'
+		//}
+	}
+
+
 	/** @override */
-	get template()
+	get space1889ItemTemplate()
 	{
 		if (!game.user.isGM && this.item.limited)
 			return "systems/space1889/templates/item/item-limited-sheet.html";
 
+		if (this.item.type === "lightSource" || this.item.type === "vision")
+			return "systems/space1889/templates/item/parts/item-emptyBase.html"
+
 		return `systems/space1889/templates/item/item-${this.item.type}-sheet.html`;
 	}
+
+	_configureRenderParts(options)
+	{
+		const parts = super._configureRenderParts(options);
+		if (!parts.details)
+			parts.details = { template: this.space1889ItemTemplate, scrollable: [''] };
+		return parts;
+	}
+
+	/**
+	* Returns if this sheet is only available in editMode?
+	* @type {boolean}
+	*/
+	static get onlyEdit()
+	{
+		return true;
+	}
+
+	static setupSheets()
+	{
+		foundry.documents.collections.Items.unregisterSheet('core', foundry.appv1.sheets.ItemSheet);
+		foundry.documents.collections.Items.registerSheet('space1889', Space1889ItemSheet, { makeDefault: true });
+
+		const sheets = [
+			{ sheetClass: LightSourceSheet, types: ['lightSource'] },
+			{ sheetClass: VisionSheet, types: ['vision'] }
+		];
+
+		sheets.forEach(({ sheetClass, types }) =>
+		{
+			foundry.documents.collections.Items.registerSheet('space1889', sheetClass, { makeDefault: true, types });
+		});
+		foundry.documents.collections.Items.unregisterSheet('space1889', Space1889ItemSheet, { types: sheets.map((x) => x.types).flat() });
+	}
+
 
 	/* -------------------------------------------- */
 
 	/** @override */
-	async getData(options) {
+	async _prepareContext(options) {
 		// Retrieve base data structure.
-		const context = await super.getData(options);
+		const context = await super._prepareContext(options);
+
+		context.editable = this.isEditable;
+		context.systemFields = this.document.system.schema?.fields;
 
 		// Use a safe clone of the item data for further operations.
-		const item = context.item;
+		const item = this.item;
 
 		// Retrieve the roll data for TinyMCE editors.
 		context.rollData = {};
-		let actor = this.object?.parent ?? null;
+		let actor = this.item?.parent ?? null;
 		if (actor) {
 			context.rollData = actor.getRollData();
 		}
@@ -46,6 +137,7 @@ export class Space1889ItemSheet extends foundry.appv1.sheets.ItemSheet {
 		// Add the actor's data to context.data for easier access, as well as flags.
 		context.system = item.system;
 		context.flags = item.flags;
+		context.item = item;
 
 		context.system['abilities'] = CONFIG.SPACE1889.abilities;
 
@@ -207,30 +299,84 @@ export class Space1889ItemSheet extends foundry.appv1.sheets.ItemSheet {
 			}
 		}
 
-		//TextEditor
-		context.enrichedDescription = await foundry.applications.ux.TextEditor.implementation.enrichHTML(this.object.system.description, { async: true });
+		if (item.type !== "language")
+		{
+			context.enrichedDescription =
+			await foundry.applications.ux.TextEditor.implementation.enrichHTML(
+				this.item.system.description,
+				{
+					// Whether to show secret blocks in the finished html
+					secrets: this.document.isOwner,
+					// Data to fill in for inline rolls
+					rollData: this.item.getRollData(),
+					// Relative UUID resolution
+					relativeTo: this.item,
+				},
+			);
+		}
 
+		context.tabs = this._prepareTabs("primary");
+
+		return context;
+	}
+
+	/**
+	 * Prepares data for rendering a specific part of the Item sheet.
+	 * Handles different parts like attributes, description, prerequisites, effects, etc.
+	 *
+	 * @param {string} partId - The ID of the part to prepare
+	 * @param {Object} context - The data object to prepare
+	 * @returns {Promise<Object>} The prepared context
+	 * @override
+	 */
+	async _preparePartContext(partId, context)
+	{
+		switch (partId)
+		{
+			case "header":
+				break;
+			case "description":
+				context.tab = context.tabs[partId];
+				// Enrich description info for display
+				// Enrichment turns text like `[[/r 1d20]]` into buttons
+				context.enrichedDescription =
+					await foundry.applications.ux.TextEditor.implementation.enrichHTML(
+						this.item.system.description,
+						{
+							// Whether to show secret blocks in the finished html
+							secrets: this.document.isOwner,
+							// Data to fill in for inline rolls
+							rollData: this.item.getRollData(),
+							// Relative UUID resolution
+							relativeTo: this.item,
+						},
+					);
+				break;
+		}
 		return context;
 	}
 
 	/* -------------------------------------------- */
 
 	/** @override */
-	activateListeners(html) {
-		super.activateListeners(html);
 
-		// Artwork
-		html.find('.artwork').mousedown(ev =>
+	async _onRender(context, options)
+	{
+		await super._onRender(context, options);
+		const html = $(this.element);
+
+
+		html.find('.artwork').on('mousedown', (ev) =>
 		{
 			if (ev.button == 2)
 				SPACE1889Helper.showArtwork(this.item, true)
 		});
 
 		// Everything below here is only needed if the sheet is editable
-		if (!this.isEditable) return;
+		if (!this.isEditable)
+			return;
 
-		// Roll handlers, click handlers, etc. would go here.
-		html.find('.increment-weapon-size-click').mousedown(ev =>
+		html.find('.increment-weapon-size-click').on('mousedown', (ev) =>
 		{
 			if (this.item.type == "weapon")
 			{
@@ -238,7 +384,8 @@ export class Space1889ItemSheet extends foundry.appv1.sheets.ItemSheet {
 				this.item.update({ 'system.size': newValue });
 			}
 		});
-		html.find('.id-lock-toggle').mousedown(ev =>
+
+		html.find('.id-lock-toggle').on('mousedown', (ev) =>
 		{
 			if (this.item.system.unlockIdForUser != undefined)
 			{
@@ -246,7 +393,8 @@ export class Space1889ItemSheet extends foundry.appv1.sheets.ItemSheet {
 				this.item.update({ 'system.unlockIdForUser': toggledValue });
 			}
 		});
-		html.find('.noSelection-toggle').mousedown(ev =>
+
+		html.find('.noSelection-toggle').on('mousedown', (ev) =>
 		{
 			if (this.item.system.noSelection != undefined)
 			{
@@ -254,7 +402,8 @@ export class Space1889ItemSheet extends foundry.appv1.sheets.ItemSheet {
 				this.item.update({ 'system.noSelection': toggledValue });
 			}
 		});
-		html.find('.create-new-id').mousedown(ev =>
+
+		html.find('.create-new-id').on('mousedown', (ev) =>
 		{
 			if (this.item.name != "")
 			{
@@ -263,7 +412,7 @@ export class Space1889ItemSheet extends foundry.appv1.sheets.ItemSheet {
 			}
 		});
 
-		html.find('.extendedRollUseSpezialisation-toggle').mousedown(ev =>
+		html.find('.extendedRollUseSpezialisation-toggle').on('mousedown', (ev) =>
 		{
 			if (this.item.type === "extended_action")
 			{
@@ -273,10 +422,96 @@ export class Space1889ItemSheet extends foundry.appv1.sheets.ItemSheet {
 		});
 
 		// Active Effect management
-		html.find(".effect-control").click(ev =>
+		html.find(".effect-control").on('click', (ev) =>
 		{
 			onManageActiveEffect(ev, this.item);
 		});
+	}
+}
 
+class LightSourceSheet extends Space1889ItemSheet
+{
+	static PARTS = {
+		header: {
+			template: "systems/space1889/templates/item/parts/item-header.html"
+		},
+		tabs: {
+			// Foundry-provided generic template
+			template: "templates/generic/tab-navigation.hbs",
+		},
+		details: {
+			template: 'systems/space1889/templates/item/parts/item-lightSource-details.html'
+		},
+		basic: {
+			template: 'systems/space1889/templates/item/parts/item-lightSource-basic-configuration.html'
+		},
+		animation: {
+			template: 'systems/space1889/templates/item/parts/item-lightSource-animation-configuration.html'
+		},
+		advanced: {
+			template: 'systems/space1889/templates/item/parts/item-lightSource-advanced-configuration.html'
+		}
+	}
+
+	static TABS = {
+		primary: {
+			tabs: [
+				{ id: 'details', group: 'primary', label: 'LIGHT.GeneralInformation' },
+				{ id: 'basic', group: 'primary', label: 'LIGHT.HeaderBasic', icon: 'fas fa-lightbulb' },
+				{ id: 'animation', group: 'primary', label: 'LIGHT.HeaderAnimation', icon: 'fas fa-play' },
+				{ id: 'advanced', group: 'primary', label: 'LIGHT.HeaderAdvanced', icon: 'fas fa-cogs' },
+			],
+			initial: 'details',
+		}
+	}
+
+	async _preparePartContext(partId, context)
+	{
+		//switch (partId)
+		//{
+		//	case "header":
+		//		break;
+		//	case "details":
+		//	case "basic":
+		//	case "animation":
+		//	case "advanced":
+		//		context.tab = context.tabs[partId];
+		//		break;
+		//}
+		return context;
+	}
+}
+
+
+class VisionSheet extends Space1889ItemSheet
+{
+	static PARTS = {
+		header: {
+			template: "systems/space1889/templates/item/parts/item-header.html"
+		},
+		tabs: {
+			// Foundry-provided generic template
+			template: "templates/generic/tab-navigation.hbs",
+		},
+		details: {
+			template: 'systems/space1889/templates/item/parts/item-vision-details.html'
+		},
+		basic: {
+			template: 'systems/space1889/templates/item/parts/item-vision-basic-configuration.html'
+		},
+		advanced: {
+			template: 'systems/space1889/templates/item/parts/item-vision-advanced-configuration.html'
+		}
+	}
+
+	static TABS = {
+		primary: {
+			tabs: [
+				{ id: 'details', group: 'primary', label: 'LIGHT.GeneralInformation' },
+				{ id: 'basic', group: 'primary', label: 'TOKEN.SightHeaderBasic', icon: 'fa-solid fa-eye' },
+				{ id: 'advanced', group: 'primary', label: 'TOKEN.SightHeaderAdvanced', icon: 'fas fa-cogs' },
+			],
+			initial: 'details',
+		}
 	}
 }

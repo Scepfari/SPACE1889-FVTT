@@ -901,7 +901,7 @@ export class Space1889ActorSheet extends foundry.appv1.sheets.ActorSheet {
 		
 		if (showDialog)
 		{
-			const titelPartOne = game.i18n.localize("ITEM.TypeExtended_action");
+			const titelPartOne = game.i18n.localize("TYPES.Item.extended_action");
 			const inputDesc = game.i18n.localize("SPACE1889.NumberOfModificationDice");
 			const diceDesc = game.i18n.localize("SPACE1889.ConfigDice");
 			const titel = item.system.label;
@@ -997,7 +997,7 @@ export class Space1889ActorSheet extends foundry.appv1.sheets.ActorSheet {
 					desc += item.system.description;
 
 				item.update({ 'system.attemptsMade': item.system.attemptsMade + 1, 'system.successes': newSuccess, "system.timestampLastTry": timestamp });
-				let messageContent = `<h3><strong>${item.name}</strong> <small>[${game.i18n.localize("ITEM.TypeExtended_action")}]</small></h3><div>${desc}</div>`;
+				let messageContent = `<h3><strong>${item.name}</strong> <small>[${game.i18n.localize("TYPES.Item.extended_action")}]</small></h3><div>${desc}</div>`;
 				const speaker = ChatMessage.getSpeaker({ actor: actor });
 
 				ChatMessage.create({
