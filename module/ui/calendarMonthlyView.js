@@ -104,7 +104,8 @@ export class CalendarMonthlyViewWidget extends foundry.applications.api.Handleba
 
 			const dayTimestamp = firstDayTimestamp + day * game.time.calendar.secondsPerDay();
 			const moonInfo = game.time.calendar.calculateMoonPhaseForDate(dayTimestamp);
-			const showMoon = moonInfo && (moonInfo.phaseIndex == 0 || moonInfo.phaseIndex == 4);
+			const showMoon = moonInfo &&
+				(moonInfo.phaseIndex == 0 || moonInfo.phaseIndex == 2 || moonInfo.phaseIndex == 4 || moonInfo.phaseIndex == 6);
 			// ToDo: Tooltip für Zeitpunkt von Neu- und Vollmond
 
 

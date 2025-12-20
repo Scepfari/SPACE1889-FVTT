@@ -44,7 +44,9 @@
 							{{#if hasMoon}}
 								<div class="moon-indicator">
 									{{#if (eq moonPhaseIndex 0)}}<i class="fas fa-circle moon-phase-new"></i>{{/if}}
+									{{#if (eq moonPhaseIndex 2)}}<i class="fa fa-adjust moon-phase-first-quarter"></i>{{/if}}
 									{{#if (eq moonPhaseIndex 4)}}<i class="fas fa-circle moon-phase-full"></i>{{/if}}
+									{{#if (eq moonPhaseIndex 6)}}<i class="fa fa-adjust fa-flip-horizontal moon-phase-last-quarter"></i>{{/if}}
 									<i class="{{moonIcon}}"></i>
 								</div>
 							{{/if}}
