@@ -11,36 +11,89 @@ import SPACE1889Vision from "../helpers/vision.js";
  * Extend the basic ActorSheet with some very simple modifications
  * @extends {ActorSheet}
  */
-export class Space1889ActorSheet extends foundry.appv1.sheets.ActorSheet {
-
-	/** @override */
-	static get defaultOptions() {
-		return foundry.utils.mergeObject(super.defaultOptions, {
-			classes: ["space1889", "sheet", "actor"],
-			template: "systems/space1889/templates/actor/actor-sheet.html",
+export class Space1889ActorSheet extends foundry.applications.api.HandlebarsApplicationMixin(
+	foundry.applications.sheets.ActorSheetV2)
+{ 
+	static DEFAULT_OPTIONS = {
+		tag: 'form',
+		form: {
+			submitOnChange: true,
+			closeOnSubmit: false
+		},
+		window: {
+			minimizable: true,
+			resizable: true
+		},
+		position: {
 			width: 500,
-			height: 620,
-			tabs: [{ navSelector: ".sheet-tabs", contentSelector: ".sheet-body", initial: "abilities" }]
-		});
+			height: 620
+		},
+		classes: ["space1889", "sheet", "actor"],
+		actions: {
+			itemCreate: this._onItemCreate,
+		}
+	};
+	get title()
+	{
+		return this.actor.name;
 	}
 
+
 	/** @override */
-	get template()
+	get space1889ActorTemplate()
 	{
 		if (!game.user.isGM && this.actor.limited)
 			return "systems/space1889/templates/actor/actor-limited-sheet.html";
 		return `systems/space1889/templates/actor/actor-${this.actor.type}-sheet.html`;
 	}
 
+	_configureRenderParts(options)
+	{
+		const parts = super._configureRenderParts(options);
+		if (!parts.details)
+			parts.details = { template: this.space1889ActorTemplate, scrollable: [''] };
+		return parts;
+	}
+
+
+	/**
+	* Returns if this sheet is only available in editMode?
+	* @type {boolean}
+	*/
+	static get onlyEdit()
+	{
+		return true;
+	}
+
+	static setupSheets()
+	{
+		foundry.documents.collections.Actors.unregisterSheet("core", foundry.appv1.sheets.ActorSheet);
+		foundry.documents.collections.Actors.registerSheet("space1889", Space1889ActorSheet, { makeDefault: true });
+
+		const sheets = [
+			{ sheetClass: Space1889CharacterSheet, types: ['character'] },
+			{ sheetClass: Space1889NpcSheet, types: ['npc'] },
+			{ sheetClass: Space1889CreatureSheet, types: ['creature'] },
+			{ sheetClass: Space1889VehicleSheet, types: ['vehicle'] },
+		];
+
+		sheets.forEach(({ sheetClass, types }) =>
+		{
+			foundry.documents.collections.Actors.registerSheet('space1889', sheetClass, { makeDefault: true, types });
+		});
+		foundry.documents.collections.Actors.unregisterSheet('space1889', Space1889ActorSheet, { types: sheets.map((x) => x.types).flat() });
+	}
+
+
 	/* -------------------------------------------- */
 
 	/** @override */
-	async getData(options) {
+	async _prepareContext(options) {
 		// Retrieve the data structure from the base sheet. You can inspect or log
 		// the context variable to see the structure, but some key properties for
 		// sheets are the actor object, the data object, whether or not it's
 		// editable, the items array, and the effects array.
-		const context = await super.getData(options);
+		const context = await super._prepareContext(options);
 
 		// Use a safe clone of the actor data for further operations.
 		const actor = this.actor.toObject(false);
@@ -74,16 +127,52 @@ export class Space1889ActorSheet extends foundry.appv1.sheets.ActorSheet {
 		}
 
 		// Add roll data for TinyMCE editors.
-		context.rollData = context.actor.getRollData();
+		context.rollData = this.actor.getRollData();
 
 		// Prepare active effects
 		context.effects = this.actor.effects;
 
 		//TextEditor
-		context.enrichedBiography = await foundry.applications.ux.TextEditor.implementation.enrichHTML(this.object.system.biography, { async: true });
-		context.enrichedDescription = await foundry.applications.ux.TextEditor.implementation.enrichHTML(this.object.system.description, {async: true});
-		context.enrichedNotes = await foundry.applications.ux.TextEditor.implementation.enrichHTML(this.object.system.notes.value, { async: true });
-		context.enrichedGmNotes = await foundry.applications.ux.TextEditor.implementation.enrichHTML(this.object.system.notes.gmInfo, { async: true });
+		context.enrichedBiography =
+			await foundry.applications.ux.TextEditor.implementation.enrichHTML(
+				this.actor.system.biography,
+				{
+					// Whether to show secret blocks in the finished html
+					secrets: this.document.isOwner,
+					// Data to fill in for inline rolls
+					rollData: this.actor.getRollData(),
+					// Relative UUID resolution
+					relativeTo: this.actor,
+				},
+			);
+		context.enrichedDescription =
+			await foundry.applications.ux.TextEditor.implementation.enrichHTML(
+				this.actor.system.description,
+				{
+					secrets: this.document.isOwner,
+					rollData: this.actor.getRollData(),
+					relativeTo: this.actor,
+				},
+			);
+		context.enrichedNotes =
+			await foundry.applications.ux.TextEditor.implementation.enrichHTML(
+				this.actor.system.notes.value,
+				{
+					secrets: this.document.isOwner,
+					rollData: this.actor.getRollData(),
+					relativeTo: this.actor,
+				},
+			);
+		context.enrichedGmNotes =
+			await foundry.applications.ux.TextEditor.implementation.enrichHTML(
+				this.actor.system.notes.gmInfo,
+				{
+					secrets: this.document.isOwner,
+					rollData: this.actor.getRollData(),
+					relativeTo: this.actor,
+				},
+			);
+
 		return context;
 	}
 
@@ -147,10 +236,10 @@ export class Space1889ActorSheet extends foundry.appv1.sheets.ActorSheet {
 	 */
 	_prepareItems(context) {
 
-		// Iterate through items, set default image
-		for (let i of context.items) {
-			i.img = i.img || DEFAULT_TOKEN;
-		}
+		//// Iterate through items, set default image
+		//for (let i of context.items) {
+		//	i.img = i.img || DEFAULT_TOKEN;
+		//}
 
 		let weaknessLeft = [];
 		let weaknessRight = [];
@@ -210,11 +299,11 @@ export class Space1889ActorSheet extends foundry.appv1.sheets.ActorSheet {
 
 	_prepareVehicleItems(context)
 	{
-		// Iterate through items, set default image
-		for (let i of context.items)
-		{
-			i.img = i.img || DEFAULT_TOKEN;
-		}
+		//// Iterate through items, set default image
+		//for (let i of context.items)
+		//{
+		//	i.img = i.img || DEFAULT_TOKEN;
+		//}
 		context.weapons = this.actor.system.weapons;
 		context.injuries = this.actor.system.injuries;
 	}
@@ -258,18 +347,20 @@ export class Space1889ActorSheet extends foundry.appv1.sheets.ActorSheet {
 	/* -------------------------------------------- */
 
 	/** @override */
-	activateListeners(html) {
-		super.activateListeners(html);
+	async _onRender(context, options)
+	{
+		await super._onRender(context, options);
+		const html = $(this.element);
 
 		// Artwork
-		html.find('.artwork').mousedown(ev =>
+		html.find('.artwork').on('mousedown', (ev) =>
 		{
 			if (ev.button == 2)
 				SPACE1889Helper.showArtwork(this.actor, true)
 		});
 
 		// Render the item sheet for viewing/editing prior to the editable check.
-		html.find('.item-edit').click(ev =>
+		html.find('.item-edit').click(event =>
 		{
 			event.preventDefault();
 			const idToEdit = event.currentTarget.closest("[data-item-id]")?.dataset.itemId;
@@ -292,14 +383,26 @@ export class Space1889ActorSheet extends foundry.appv1.sheets.ActorSheet {
 			return;
 
 		// Add Inventory Item
-		html.find('.item-create').click(this._onItemCreate.bind(this));
+		html.find('.item-create').on('click', (ev) =>
+		{
+			this._onItemCreate(ev);
+		});
 
 		// Delete Inventory Item
-		html.find('.item-delete').click(this._onItemDelete.bind(this));
-		html.find('.container-delete').click(this._onContainerDelete.bind(this));
+		html.find('.item-delete').on('click', (ev) =>
+		{
+			const itemId = this._getItemId(ev);
+			this._onItemDelete(ev, itemId);
+		});
+		html.find('.container-delete').on('click', (ev) =>
+		{
+			const itemId = this._getItemId(ev);
+			this._onContainerDelete.bind(ev, itemId);
+		});
 
 		// sub Skill update
-		html.find('.skill-level').change(async ev => {
+		html.find('.skill-level').on('change', async (ev) =>
+		{
 			const itemId = this._getItemId(ev);
 			const item = this.actor.items.get(itemId);
 			const newValue = Math.max( Math.min(5, Number(ev.target.value)), 0);
@@ -307,7 +410,8 @@ export class Space1889ActorSheet extends foundry.appv1.sheets.ActorSheet {
 			this.currentFocus = $(document.activeElement).closest('.row-section').attr('system-item-id');
 		});
 
-		html.find('.talent-level').change(async ev => {
+		html.find('.talent-level').on('change', async (ev) =>
+		{
 			const itemId = this._getItemId(ev);
 			const item = this.actor.items.get(itemId);
 			const newValue = Math.max( Math.min(item.system.level.max, Number(ev.target.value)), item.system.level.min);
@@ -316,7 +420,7 @@ export class Space1889ActorSheet extends foundry.appv1.sheets.ActorSheet {
 		//	this.currentFocus = $(document.activeElement); //.closest('.item-name').attr('data-item-id');
 		});
 
-		html.find('.increment-click').mousedown(ev =>
+		html.find('.increment-click').on('mousedown', (ev) =>
 		{
 			const itemId = this._getItemId(ev);
 			const item = this.actor.items.get(itemId);
@@ -371,7 +475,7 @@ export class Space1889ActorSheet extends foundry.appv1.sheets.ActorSheet {
 			}
 		});
 
-		html.find('.doExtendedRoll').mousedown(ev =>
+		html.find('.doExtendedRoll').on('mousedown', (ev) =>
 		{
 			const itemId = this._getItemId(ev);
 			const item = this.actor.items.get(itemId);
@@ -380,17 +484,17 @@ export class Space1889ActorSheet extends foundry.appv1.sheets.ActorSheet {
 			this._rollAndUpdateExtendedRolls(item, showDialog);
 		});
 
-		html.find('.doAnySkillRoll').mousedown(ev =>
+		html.find('.doAnySkillRoll').on('mousedown', (ev) =>
 		{
 			SPACE1889Helper.rollAnySkill(undefined, this.actor);
 		});
 
-		html.find('.effectBonus-click').mousedown(ev =>
+		html.find('.effectBonus-click').on('mousedown', (ev) =>
 		{
 			this._addRemoveTempTalentImprovement(ev);
 		});
 
-		html.find('.healingFactor-click').mousedown(ev =>
+		html.find('.healingFactor-click').on('mousedown', (ev) =>
 		{
 			const itemId = this._getItemId(ev);
 			const item = this.actor.items.get(itemId);
@@ -398,13 +502,13 @@ export class Space1889ActorSheet extends foundry.appv1.sheets.ActorSheet {
 			SPACE1889Healing.changeHealingFactor(this.actor, itemId, newHealingFactor);
 		});
 
-		html.find('.rerender-click').mousedown(ev =>
+		html.find('.rerender-click').on('mousedown', (ev) =>
 		{
 			this.actor.prepareDerivedData();
 			this.render();
 		});
 
-		html.find('.location-click').mousedown(ev =>
+		html.find('.location-click').on('mousedown', (ev) =>
 		{
 			const itemId = this._getItemId(ev);
 			const item = this.actor.items.get(itemId);
@@ -429,7 +533,7 @@ export class Space1889ActorSheet extends foundry.appv1.sheets.ActorSheet {
 
 		});
 
-		html.find('.light-emit-toggle-click').mousedown(ev =>
+		html.find('.light-emit-toggle-click').on('mousedown', (ev) =>
 		{
 			const itemId = this._getItemId(ev);
 			const item = this.actor.items.get(itemId);
@@ -443,7 +547,7 @@ export class Space1889ActorSheet extends foundry.appv1.sheets.ActorSheet {
 			}
 		});
 
-		html.find('.vision-toggle-click').mousedown(ev =>
+		html.find('.vision-toggle-click').on('mousedown', (ev) =>
 		{
 			const itemId = this._getItemId(ev);
 			const item = this.actor.items.get(itemId);
@@ -457,7 +561,7 @@ export class Space1889ActorSheet extends foundry.appv1.sheets.ActorSheet {
 			}
 		});
 
-		html.find('.lighthand-click').mousedown(ev =>
+		html.find('.lighthand-click').on('mousedown', (ev) =>
 		{
 			const itemId = this._getItemId(ev);
 			const item = this.actor.items.get(itemId);
@@ -465,21 +569,21 @@ export class Space1889ActorSheet extends foundry.appv1.sheets.ActorSheet {
 			SPACE1889Light.setLightSourceHand(item, this.actor, backward);
 		});
 
-		html.find('.lightEnergy-click').mousedown(ev =>
+		html.find('.lightEnergy-click').on('mousedown', (ev) =>
 		{
 			const itemId = this._getItemId(ev);
 			const item = this.actor.items.get(itemId);
 			SPACE1889Light.refillLightSource(item, this.actor);
 		});
 
-		html.find('.visionEnergy-click').mousedown(ev =>
+		html.find('.visionEnergy-click').on('mousedown', (ev) =>
 		{
 			const itemId = this._getItemId(ev);
 			const item = this.actor.items.get(itemId);
 			SPACE1889Vision.refillVision(item, this.actor);
 		});
 
-		html.find('.weaponhand-click').mousedown(ev =>
+		html.find('.weaponhand-click').on('mousedown', (ev) =>
 		{
 			const itemId = this._getItemId(ev);
 			const item = this.actor.items.get(itemId);
@@ -487,7 +591,7 @@ export class Space1889ActorSheet extends foundry.appv1.sheets.ActorSheet {
 			SPACE1889Helper.setWeaponHand(item, this.actor, backward);
 		});
 
-		html.find('.reload-click').mousedown(ev =>
+		html.find('.reload-click').on('mousedown', (ev) =>
 		{
 			const itemId = this._getItemId(ev);
 			const item = this.actor.items.get(itemId);
@@ -497,7 +601,7 @@ export class Space1889ActorSheet extends foundry.appv1.sheets.ActorSheet {
 				SPACE1889Helper.reloadWeapon(item, this.actor);
 		});
 
-		html.find('.swivelingRange-click').mousedown(ev =>
+		html.find('.swivelingRange-click').on('mousedown', (ev) =>
 		{
 			const itemId = this._getItemId(ev);
 			const item = this.actor.items.get(itemId);
@@ -519,51 +623,52 @@ export class Space1889ActorSheet extends foundry.appv1.sheets.ActorSheet {
 		const primaryMin = (isCharacter || isNpc) ? 1 : 0;
 		const primaryMax = isCharacter ? this.GetMaxPrimaryAttributeLevel() : undefined;
 
-		html.find('.increment-con-click').mousedown(ev =>
+		html.find('.increment-con-click').on('mousedown', (ev) =>
 		{
 			const newValue = this.incrementValue(ev, this.actor.system.abilities.con.value, primaryMin, primaryMax, true);
 			this.actor.update({ 'system.abilities.con.value': newValue });
 		});
 
-		html.find('.increment-dex-click').mousedown(ev =>
+		html.find('.increment-dex-click').on('mousedown', (ev) =>
 		{
 			const newValue = this.incrementValue(ev, this.actor.system.abilities.dex.value, primaryMin, primaryMax, true);
 			this.actor.update({ 'system.abilities.dex.value': newValue });
 		});
-		html.find('.increment-str-click').mousedown(ev =>
+		html.find('.increment-str-click').on('mousedown', (ev) =>
 		{
 			const newValue = this.incrementValue(ev, this.actor.system.abilities.str.value, primaryMin, primaryMax, true);
 			this.actor.update({ 'system.abilities.str.value': newValue });
 		});
-		html.find('.increment-cha-click').mousedown(ev =>
+		html.find('.increment-cha-click').on('mousedown', (ev) =>
 		{
 			const newValue = this.incrementValue(ev, this.actor.system.abilities.cha.value, primaryMin, primaryMax, true);
 			this.actor.update({ 'system.abilities.cha.value': newValue });
 		});
-		html.find('.increment-int-click').mousedown(ev =>
+		html.find('.increment-int-click').on('mousedown', (ev) =>
 		{
 			const newValue = this.incrementValue(ev, this.actor.system.abilities.int.value, primaryMin, primaryMax, true);
 			this.actor.update({ 'system.abilities.int.value': newValue });
 		});
-		html.find('.increment-wil-click').mousedown(ev =>
+		html.find('.increment-wil-click').on('mousedown', (ev) =>
 		{
 			const newValue = this.incrementValue(ev, this.actor.system.abilities.wil.value, primaryMin, primaryMax, true);
 			this.actor.update({ 'system.abilities.wil.value': newValue });
 		});
 
-		html.find('.increment-style-click').mousedown(ev =>
+		html.find('.increment-style-click').on('mousedown', (ev) =>
 		{
 			const newValue = this.incrementValue(ev, this.actor.system.style.value, 0, undefined);
 			this.actor.update({ 'system.style.value': newValue });
 		});
 
-		html.find('.increment-xp-click').mousedown(ev =>
+		html.find('.increment-xp-click').on('mousedown', (ev) =>
 		{
 			const newValue = this.incrementValue(ev, this.actor.system.attributes.xp.value, 0, undefined);
 			this.actor.update({ 'system.attributes.xp.value': newValue });
 		});
 
-        html.find('.ammo-selector').change(async(ev) => {
+		html.find('.ammo-selector').on('change', async (ev) => 
+		{
             ev.preventDefault()
 			const itemId = this._getItemId(ev);
 			const ammuId = $(ev.currentTarget).val();
@@ -575,150 +680,150 @@ export class Space1889ActorSheet extends foundry.appv1.sheets.ActorSheet {
 			await this.actor.updateEmbeddedDocuments("Item", [{ _id: itemId, "system.ammunition.currentItemId": ammuId }]);
         })
 
-		html.find('.increment-animalcompanionlevel-click').mousedown(ev =>
+		html.find('.increment-animalcompanionlevel-click').on('mousedown', (ev) =>
 		{
 			const newValue = this.incrementValue(ev, this.actor.system.animalCompanionLevel, 0, 5);
 			this.actor.update({ 'system.animalCompanionLevel': newValue });
 		});
 
-		html.find('.increment-creaturesize-click').mousedown(ev =>
+		html.find('.increment-creaturesize-click').on('mousedown', (ev) =>
 		{
 			const newValue = this.incrementValue(ev, this.actor.system.secondaries.size.value, -5, 20);
 			this.actor.update({ 'system.secondaries.size.value': newValue });
 		});
 
-		html.find('.increment-structure-max-click').mousedown(ev =>
+		html.find('.increment-structure-max-click').on('mousedown', (ev) =>
 		{
 			const newValue = this.incrementValue(ev, this.actor.system.health.max, 0, undefined);
 			this.actor.update({ 'system.health.max': newValue });
 		});
-		html.find('.increment-speed-max-click').mousedown(ev =>
+		html.find('.increment-speed-max-click').on('mousedown', (ev) =>
 		{
 			const newValue = this.incrementValue(ev, this.actor.system.speed.max, 0, undefined);
 			this.actor.update({ 'system.speed.max': newValue });
 		});
-		html.find('.increment-maneuverability-max-click').mousedown(ev =>
+		html.find('.increment-maneuverability-max-click').on('mousedown', (ev) =>
 		{
 			const newValue = this.incrementValue(ev, this.actor.system.maneuverability.max, -5, 5);
 			this.actor.update({ 'system.maneuverability.max': newValue });
 		});
-		html.find('.increment-passiveDefense-click').mousedown(ev =>
+		html.find('.increment-passiveDefense-click').on('mousedown', (ev) =>
 		{
 			const newValue = this.incrementValue(ev, this.actor.system.passiveDefense, 0, undefined);
 			this.actor.update({ 'system.passiveDefense': newValue });
 		});
-		html.find('.increment-vehicleSize-click').mousedown(ev =>
+		html.find('.increment-vehicleSize-click').on('mousedown', (ev) =>
 		{
 			const newValue = SPACE1889Helper.incrementVehicleSizeValue(ev, this.actor.system.size);
 			this.actor.update({ 'system.size': newValue });
 		});
 
-		html.find('.increment-captain-click').mousedown(ev =>
+		html.find('.increment-captain-click').on('mousedown', (ev) =>
 		{
 			const newValue = this.incrementValue(ev, this.actor.system.positions.captain.value, 0, undefined);
 			this.actor.update({ 'system.positions.captain.value': newValue });
 		});
-		html.find('.increment-copilot-click').mousedown(ev =>
+		html.find('.increment-copilot-click').on('mousedown', (ev) =>
 		{
 			const newValue = this.incrementValue(ev, this.actor.system.positions.copilot.value, 0, undefined);
 			this.actor.update({ 'system.positions.copilot.value': newValue });
 		});
-		html.find('.increment-gunner-click').mousedown(ev =>
+		html.find('.increment-gunner-click').on('mousedown', (ev) =>
 		{
 			const newValue = this.incrementValue(ev, this.actor.system.positions.gunner.value, 0, undefined);
 			this.actor.update({ 'system.positions.gunner.value': newValue });
 		});
-		html.find('.increment-signaler-click').mousedown(ev =>
+		html.find('.increment-signaler-click').on('mousedown', (ev) =>
 		{
 			const newValue = this.incrementValue(ev, this.actor.system.positions.signaler.value, 0, undefined);
 			this.actor.update({ 'system.positions.signaler.value': newValue });
 		});
-		html.find('.increment-lookout-click').mousedown(ev =>
+		html.find('.increment-lookout-click').on('mousedown', (ev) =>
 		{
 			const newValue = this.incrementValue(ev, this.actor.system.positions.lookout.value, 0, undefined);
 			this.actor.update({ 'system.positions.lookout.value': newValue });
 		});
-		html.find('.increment-mechanic-click').mousedown(ev =>
+		html.find('.increment-mechanic-click').on('mousedown', (ev) =>
 		{
 			const newValue = this.incrementValue(ev, this.actor.system.positions.mechanic.value, 0, undefined);
 			this.actor.update({ 'system.positions.mechanic.value': newValue });
 		});
-		html.find('.increment-medic-click').mousedown(ev =>
+		html.find('.increment-medic-click').on('mousedown', (ev) =>
 		{
 			const newValue = this.incrementValue(ev, this.actor.system.positions.medic.value, 0, undefined);
 			this.actor.update({ 'system.positions.medic.value': newValue });
 		});
-		html.find('.increment-crew-max-click').mousedown(ev =>
+		html.find('.increment-crew-max-click').on('mousedown', (ev) =>
 		{
 			const newValue = this.incrementValue(ev, this.actor.system.crew.max, 1, undefined);
 			this.actor.update({ 'system.crew.max': newValue });
 		});
-		html.find('.increment-crew-current-click').mousedown(ev =>
+		html.find('.increment-crew-current-click').on('mousedown', (ev) =>
 		{
 			const newValue = this.incrementValue(ev, this.actor.system.crew.value, 0, this.actor.system.crew.max);
 			this.actor.update({ 'system.crew.value': newValue });
 		});
-		html.find('.increment-passenger-max-click').mousedown(ev =>
+		html.find('.increment-passenger-max-click').on('mousedown', (ev) =>
 		{
 			const newValue = this.incrementValue(ev, this.actor.system.passenger.max, 0, undefined);
 			this.actor.update({ 'system.passenger.max': newValue });
 		});
-		html.find('.increment-passenger-current-click').mousedown(ev =>
+		html.find('.increment-passenger-current-click').on('mousedown', (ev) =>
 		{
 			const newValue = this.incrementValue(ev, this.actor.system.passenger.value, 0, this.actor.system.passenger.max);
 			this.actor.update({ 'system.passenger.value': newValue });
 		});
-		html.find('.increment-strengthTempoFactor-click').mousedown(ev =>
+		html.find('.increment-strengthTempoFactor-click').on('mousedown', (ev) =>
 		{
 			const newValue = this.incrementValue(ev, this.actor.system.strengthTempoFactor.value, 0, this.actor.system.strengthTempoFactor.max);
 			this.actor.update({ 'system.strengthTempoFactor.value': newValue });
 		});
-		html.find('.increment-vehicle-size-click').mousedown(ev =>
+		html.find('.increment-vehicle-size-click').on('mousedown', (ev) =>
 		{
 			const newValue = this.incrementValue(ev, this.actor.system.size, 0, undefined);
 			this.actor.update({ 'system.size': newValue });
 		});
-		html.find('.do-vehicle-captain-click').mousedown(ev =>
+		html.find('.do-vehicle-captain-click').on('mousedown', (ev) =>
 		{
 			this._doVehiclePositionClick(ev, 'captain');
 		});
-		html.find('.do-vehicle-pilot-click').mousedown(ev =>
+		html.find('.do-vehicle-pilot-click').on('mousedown', (ev) =>
 		{
 			this._doVehiclePositionClick(ev, 'pilot');
 		});
-		html.find('.do-vehicle-copilot-click').mousedown(ev =>
+		html.find('.do-vehicle-copilot-click').on('mousedown', (ev) =>
 		{
 			this._doVehiclePositionClick(ev, 'copilot');
 		});
-		html.find('.do-vehicle-gunner-click').mousedown(ev =>
+		html.find('.do-vehicle-gunner-click').on('mousedown', (ev) =>
 		{
 			this._doVehiclePositionClick(ev, 'gunner');
 		});
-		html.find('.do-vehicle-signaler-click').mousedown(ev =>
+		html.find('.do-vehicle-signaler-click').on('mousedown', (ev) =>
 		{
 			this._doVehiclePositionClick(ev, 'signaler');
 		});
-		html.find('.do-vehicle-lookout-click').mousedown(ev =>
+		html.find('.do-vehicle-lookout-click').on('mousedown', (ev) =>
 		{
 			this._doVehiclePositionClick(ev, 'lookout');
 		});
-		html.find('.do-vehicle-mechanic-click').mousedown(ev =>
+		html.find('.do-vehicle-mechanic-click').on('mousedown', (ev) =>
 		{
 			this._doVehiclePositionClick(ev, 'mechanic');
 		});
-		html.find('.do-vehicle-medic-click').mousedown(ev =>
+		html.find('.do-vehicle-medic-click').on('mousedown', (ev) =>
 		{
 			this._doVehiclePositionClick(ev, 'medic');
 		});
-		html.find('.do-pilot-maneuver-click').mousedown(ev =>
+		html.find('.do-pilot-maneuver-click').on('mousedown', (ev) =>
 		{
 			this._doVehicleMovementManeuverClick(ev);
 		});
-		html.find('.do-gunner-maneuver-click').mousedown(ev =>
+		html.find('.do-gunner-maneuver-click').on('mousedown', (ev) =>
 		{
 			this._doVehicleAttackManeuverClick(ev);
 		});
-		html.find('.roll-vehicle-attack-click').mousedown(ev =>
+		html.find('.roll-vehicle-attack-click').on('mousedown', (ev) =>
 		{
 			const itemId = this._getItemId(ev);
 			if (this.actor.type == 'vehicle')
@@ -726,12 +831,12 @@ export class Space1889ActorSheet extends foundry.appv1.sheets.ActorSheet {
 				SPACE1889RollHelper.rollManoeuver('Attack', this.actor, ev, itemId);
 			}
 		});
-		html.find('.roll-vehicle-defense-click').mousedown(ev =>
+		html.find('.roll-vehicle-defense-click').on('mousedown', (ev) =>
 		{
 			if (this.actor.type == 'vehicle')
 				SPACE1889RollHelper.rollManoeuver('defense', this.actor, ev);
 		});
-		html.find('.condition-toggle').mousedown(ev =>
+		html.find('.condition-toggle').on('mousedown', (ev) =>
 		{
 			const positionId = this._getDataId(ev);
 			const toggledValue = !this.actor.system.positions[positionId].staffed;
@@ -740,44 +845,44 @@ export class Space1889ActorSheet extends foundry.appv1.sheets.ActorSheet {
 			updateObject[key] = toggledValue;
 			this.actor.update(updateObject);
 		});
-		html.find('.carried-toggle').mousedown(ev =>
+		html.find('.carried-toggle').on('mousedown', (ev) =>
 		{
 			const itemId = this._getDataId(ev);
 			const toggledValue = !this.actor.items.get(itemId).system.carried;
 			this.actor.updateEmbeddedDocuments("Item", [{ _id: itemId, "system.carried": toggledValue }]);
 		});
-		html.find('.compressed-toggle').mousedown(ev =>
+		html.find('.compressed-toggle').on('mousedown', (ev) =>
 		{
 			const itemId = this._getDataId(ev);
 			const toggledValue = !this.actor.items.get(itemId).system.compressed;
 			this.actor.updateEmbeddedDocuments("Item", [{ _id: itemId, "system.compressed": toggledValue }]);
 		});
-		html.find('.open-compendium').mousedown(ev =>
+		html.find('.open-compendium').on('mousedown', (ev) =>
 		{
 			let packName = $(ev.currentTarget).attr("data-pack");
 			game.packs.get(packName).render(true);
 		});
-		html.find('.compressed-lights-toggle').mousedown(ev =>
+		html.find('.compressed-lights-toggle').on('mousedown', (ev) =>
 		{
 			const newValue = !this.actor.system.visualisation.compressedLightSources;
 			this.actor.update({ 'system.visualisation.compressedLightSources': newValue });
 		});
-		html.find('.compressed-vision-toggle').mousedown(ev =>
+		html.find('.compressed-vision-toggle').on('mousedown', (ev) =>
 		{
 			const newValue = !this.actor.system.visualisation.compressedVisions;
 			this.actor.update({ 'system.visualisation.compressedVisions': newValue });
 		});
-		html.find('.compressed-items-toggle').mousedown(ev =>
+		html.find('.compressed-items-toggle').on('mousedown', (ev) =>
 		{
 			const newValue = !this.actor.system.visualisation.compressedItems;
 			this.actor.update({ 'system.visualisation.compressedItems': newValue });
 		});
-		html.find('.compressed-ammunition-toggle').mousedown(ev =>
+		html.find('.compressed-ammunition-toggle').on('mousedown', (ev) =>
 		{
 			const newValue = !this.actor.system.visualisation.compressedAmmunition;
 			this.actor.update({ 'system.visualisation.compressedAmmunition': newValue });
 		});
-		html.find('.compressed-weapons-toggle').mousedown(ev =>
+		html.find('.compressed-weapons-toggle').on('mousedown', (ev) =>
 		{
 			const newValue = !this.actor.system.visualisation.compressedWeapons;
 			this.actor.update({ 'system.visualisation.compressedWeapons': newValue });
@@ -785,10 +890,14 @@ export class Space1889ActorSheet extends foundry.appv1.sheets.ActorSheet {
 
 
 		// Active Effect management
-		html.find(".effect-control").click(ev => onManageActiveEffect(ev, this.actor));
+		html.find(".effect-control").on('click', (ev) =>
+		{
+			onManageActiveEffect(ev, this.actor);
+		});
 
 		// Drag events for macros.
-		if (this.actor.isOwner) {
+		if (this.actor.isOwner) 
+		{
 			let handler = ev => this._onDragStart(ev);
 			html.find('li.item').each((i, li) => {
 				if (li.classList.contains("inventory-header")) return;
@@ -1201,7 +1310,7 @@ export class Space1889ActorSheet extends foundry.appv1.sheets.ActorSheet {
 		if (this.isItemDropAllowed(itemData))
 		{
 			// Create the owned item
-			return this._onDropItemCreate(itemData);
+			return super._onDropItem(event, data);
 		}
 		return false;
 	}
@@ -1758,7 +1867,7 @@ export class Space1889ActorSheet extends foundry.appv1.sheets.ActorSheet {
 			return undefined;
 
 		// Grab any data associated with this control.
-		const data = duplicate(header.dataset);
+		const data = foundry.utils.duplicate(header.dataset);
 		// Initialize a default name.
 		const name = CONFIG.SPACE1889.itemTypes.hasOwnProperty(type)
 			? `${game.i18n.localize(CONFIG.SPACE1889.itemTypes[type])} (${this.actor.items.size})`
@@ -1791,9 +1900,9 @@ export class Space1889ActorSheet extends foundry.appv1.sheets.ActorSheet {
 	 * @returns {Promise<Item5e>}  The promise for the updated parent Item which resolves after the application re-renders
 	 * @private
 	 */
-	async _onItemDelete(event) {
+	async _onItemDelete(event, idToDelete) {
 		event.preventDefault();
-		const idToDelete = event.currentTarget.closest("[data-item-id]")?.dataset.itemId;
+
 		if (!idToDelete)
 			return;
 
@@ -1804,16 +1913,13 @@ export class Space1889ActorSheet extends foundry.appv1.sheets.ActorSheet {
 		if (isInjury)
 			await SPACE1889Healing.refreshTheInjuryToBeHealed(this.actor)
 
-//		li.slideUp(200, () => this.render(false));
 		this.render();
 	}
 
-	async _onContainerDelete(event) {
+	async _onContainerDelete(event, idToDelete) {
 		event.preventDefault();
-		const idToDelete = event.currentTarget.closest("[data-item-id]")?.dataset.itemId;
 		if (!idToDelete)
 			return;
-
 
 		let updateData = [];
 		let lists = [this.actor.system.gear, this.actor.system.weapons, this.actor.system.ammunitions, this.actor.system.armors];
@@ -1928,4 +2034,155 @@ export class Space1889ActorSheet extends foundry.appv1.sheets.ActorSheet {
 
 }
 
+class Space1889CharacterSheet extends Space1889ActorSheet
+{
+	static PARTS = {
+		header: {
+			template: "systems/space1889/templates/actor/parts/character-header.html"
+		},
+		tabs: {
+			// Foundry-provided generic template
+			template: "templates/generic/tab-navigation.hbs",
+		},
+		details: {
+			template: 'systems/space1889/templates/actor/parts/character-tab-details.html'
+		},
+		skills: {
+			template: 'systems/space1889/templates/actor/parts/character-tab-skills.html'
+		},
+		talents: {
+			template: 'systems/space1889/templates/actor/parts/character-tab-talents.html'
+		},
+		items: {
+			template: 'systems/space1889/templates/actor/parts/character-tab-items.html'
+		},
+		weapons: {
+			template: 'systems/space1889/templates/actor/parts/character-tab-weapons.html'
+		},
+		bio: {
+			template: 'systems/space1889/templates/actor/parts/character-tab-bio.html'
+		}
+	}
 
+	static TABS = {
+		primary: {
+			tabs: [
+				{ id: 'details', group: 'primary', label: 'SPACE1889.AbilityPl' },
+				{ id: 'skills', group: 'primary', label: 'SPACE1889.SkillPl' },
+				{ id: 'talents', group: 'primary', label: 'SPACE1889.TalentPl' },
+				{ id: 'items', group: 'primary', label: 'SPACE1889.ItemPl' },
+				{ id: 'weapons', group: 'primary', label: 'SPACE1889.WeaponPl' },
+				{ id: 'bio', group: 'primary', label: 'SPACE1889.BiographyAbbr' },
+			],
+			initial: 'details',
+		}
+	}
+
+	//async _preparePartContext(partId, context)
+	//{
+	//	switch (partId)
+	//	{
+	//		case "header":
+	//			break;
+	//		case "details":
+	//		case "basic":
+	//		case "animation":
+	//		case "advanced":
+	//			context.tab = context.tabs[partId];
+	//			break;
+	//	}
+	//	return context;
+	//}
+}
+
+
+class Space1889NpcSheet extends Space1889ActorSheet
+{
+	static PARTS = {
+		header: {
+			template: "systems/space1889/templates/actor/parts/npc-header.html"
+		},
+		tabs: {
+			// Foundry-provided generic template
+			template: "templates/generic/tab-navigation.hbs",
+		},
+		details: {
+			template: 'systems/space1889/templates/actor/parts/npc-tab-details.html'
+		},
+		itemsAndWeapons: {
+			template: 'systems/space1889/templates/actor/parts/npc-tab-itemAndWeapons.html'
+		},
+		bio: {
+			template: 'systems/space1889/templates/actor/parts/npc-tab-bio.html'
+		}
+	}
+
+	static TABS = {
+		primary: {
+			tabs: [
+				{ id: 'details', group: 'primary', label: 'SPACE1889.AbilityPl' },
+				{ id: 'itemsAndWeapons', group: 'primary', label: 'SPACE1889.ItemsAndWeapons' },
+				{ id: 'bio', group: 'primary', label: 'SPACE1889.BiographyAbbr' },
+			],
+			initial: 'details',
+		}
+	}
+}
+
+class Space1889CreatureSheet extends Space1889ActorSheet
+{
+	static PARTS = {
+		header: {
+			template: "systems/space1889/templates/actor/parts/creature-header.html"
+		},
+		tabs: {
+			// Foundry-provided generic template
+			template: "templates/generic/tab-navigation.hbs",
+		},
+		details: {
+			template: 'systems/space1889/templates/actor/parts/creature-tab-details.html'
+		},
+		bio: {
+			template: 'systems/space1889/templates/actor/parts/creature-tab-bio.html'
+		}
+	}
+
+	static TABS = {
+		primary: {
+			tabs: [
+				{ id: 'details', group: 'primary', label: 'SPACE1889.AbilityPl' },
+				{ id: 'bio', group: 'primary', label: 'SPACE1889.BiographyAbbr' },
+			],
+			initial: 'details',
+		}
+	}
+}
+
+class Space1889VehicleSheet extends Space1889ActorSheet
+{
+	static PARTS = {
+		header: {
+			template: "systems/space1889/templates/actor/parts/vehicle-header.html"
+		},
+		tabs: {
+			// Foundry-provided generic template
+			template: "templates/generic/tab-navigation.hbs",
+		},
+		details: {
+			template: 'systems/space1889/templates/actor/parts/vehicle-tab-details.html'
+		},
+		bio: {
+			template: 'systems/space1889/templates/actor/parts/vehicle-tab-bio.html'
+		}
+	}
+
+	static TABS = {
+		primary: {
+			tabs: [
+				{ id: 'details', group: 'primary', label: 'SPACE1889.AbilityPl' },
+				{ id: 'bio', group: 'primary', label: 'SPACE1889.BiographyAbbr' },
+			],
+			initial: 'details',
+		}
+	}
+}

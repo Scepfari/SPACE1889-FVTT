@@ -3,15 +3,30 @@
 <div data-tooltip="{{localize "SPACE1889.GmNotesInfo"}}" style="max-height:18px">
 	<b>{{localize "SPACE1889.GmNotes"}}</b>
 </div>
-<div class="prosemirror" data-attr="system.notes.gmInfo" data-name="GmNotes">
-	{{editor enrichedGmNotes target="system.notes.gmInfo" button=true editable=editable engine="prosemirror"}}
+
+<div class="editor description" data-application-part="gmInfo">
+	{{#if editable}}
+		<prose-mirror name="system.notes.gmInfo" value="{{system.notes.gmInfo}}" toggled="true" 
+					  document-uuid="{{document.uuid}}" class="sized">
+			{{{ enrichedGmNotes }}}
+		</prose-mirror>
+	{{else}}
+		{{{ enrichedGmNotes }}}
+	{{/if}}
 </div>
 {{/if}}
 <hr>
 <div data-tooltip="{{localize "SPACE1889.PlayerNotesInfo"}}" style="max-height:18px">
 	<b>{{localize "SPACE1889.PlayerNotes"}}</b>
 </div>
-<div class="prosemirror" data-attr="system.notes.value" data-name="Notes">
-	{{editor enrichedNotes target="system.notes.value" button=true editable=editable engine="prosemirror"}}
+<div class="editor description" data-application-part="notes">
+	{{#if editable}}
+		<prose-mirror name="system.notes.value" value="{{system.notes.value}}" toggled="true" 
+					  document-uuid="{{document.uuid}}" class="sized">
+			{{{ enrichedNotes }}}
+		</prose-mirror>
+	{{else}}
+		{{{ enrichedNotes }}}
+	{{/if}}
 </div>
 <hr>

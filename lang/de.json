@@ -114,7 +114,9 @@
 	"SPACE1889.Calendar.GoToToday": "Gehe zum aktuellen Datum",
 	"SPACE1889.Calendar.CurrentDate": "Aktuelles Datum:",
 	"SPACE1889.Calendar.SelectDayClickToolTip": "<embed src='systems/space1889/icons/svg/mouseLeftClick.svg' class=\"space1889-ToolTipMouse\" /> : auswählen<br/> [Strg] + [Shift] + <embed src='systems/space1889/icons/svg/mouseLeftClick.svg' class=\"space1889-ToolTipMouse\" /> : Datum setzen",
-
+	
+	"SPACE1889.ImageTooltip": "<embed src='systems/space1889/icons/svg/mouseLeftClick.svg' class=\"space1889-ToolTipMouse\" /> : Bild ändern<br/><embed src='systems/space1889/icons/svg/mouseRightClick.svg' class=\"space1889-ToolTipMouse\" /> : Bild in einem eigenen Fenster öffnen",
+	
 	"SPACE1889.Gravity": "Schwerkraft",
 	"SPACE1889.HomeGravity": "Heimatschwerkraft",
 	"SPACE1889.HomeGravityAbbr": "Heimat SK",
@@ -216,6 +218,7 @@
 	"SPACE1889.Description": "Beschreibung",
 	"SPACE1889.Item": "Gegenstand",
 	"SPACE1889.ItemPl": "Gegenstände",
+	"SPACE1889.ItemsAndWeapons": "Gegenstände / Waffen",
 	"SPACE1889.Base": "Basis",
 	"SPACE1889.Level": "Stufe",
 	"SPACE1889.Rating": "Wert",

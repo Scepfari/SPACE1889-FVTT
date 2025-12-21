@@ -23,7 +23,7 @@
 	{{> "systems/space1889/templates/actor/parts/actor-sub-items-body.html"}}
 
 	{{#each system.containers as |container cid|}}
-	<li class="item flexrow items-header" data-item-id="{{container._id}}">
+	<li class="item flexrow items-header draggable" data-item-id="{{container._id}}">
 		<div data-tooltip="{{fullItemToolTipDescription container}}" data-tooltip-direction="RIGHT" class="item-image-small">
 			<img class="container-image-small" src="{{container.img}}" />
 		</div>
@@ -54,11 +54,11 @@
 	{{#if (eq container.system.compressed false)}}
 		{{#each ../system.gear as |item id|}}
 		{{#if (eq item.system.containerId container._id)}}
-			<li class="item row-section flexrow" data-item-id="{{item._id}}">
+			<li class="item row-section flexrow draggable" data-item-id="{{item._id}}">
 				<div data-tooltip="{{fullItemToolTipDescription item}}" data-tooltip-direction="RIGHT" class="item-name">
 					<img class="item-image-small-fix-ratio" src="{{item.img}}" />
 					<div  class="item-name-name">
-						<h4 for="" class="rollable" data-roll-type="item" data-label="{{item.name}}">{{item.system.label}}</h4>
+						<label for="" class="rollable" data-roll-type="item" data-label="{{item.name}}">{{item.system.label}}</label>
 					</div>
 				</div>
 				<div class="items-list item-max-with40px">

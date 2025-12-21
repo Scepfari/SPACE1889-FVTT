@@ -11,7 +11,7 @@
 	{{#each system.resources as |item id|}}
 		<li class="item flexrow" data-item-id="{{item._id}}">
 			<div class="item-name" data-tooltip="{{fullItemToolTipDescription item}}" data-tooltip-direction="RIGHT">
-				<h4 class="rollable" data-roll-type="item">{{item.system.label}} {{#if (eq item.system.isBase true)}} ({{localize "SPACE1889.BaseResource"}}) {{/if}}</h4>
+				<label class="rollable" data-roll-type="item">{{item.system.label}} {{#if (eq item.system.isBase true)}} ({{localize "SPACE1889.BaseResource"}}) {{/if}}</label>
 			</div>
 			<div class="item-max-with40px resource-label">
 				<a class="increment-click">{{item.system.level.value}}</a>

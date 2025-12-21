@@ -1,0 +1,74 @@
+<div class="tab {{tabs.details.cssClass}}" data-tab="details" data-group="{{tabs.details.group}}">
+	{{!-- Sheet Body --}}
+	<div class="sheet-body">
+		<li class="item flex-group-center flexrow">
+			<div class="resource">
+				<label class="resource-label">{{ localize "SPACE1889.Species" }}</label>
+				<select name="system.attributes.species.value" data-dtype="String">
+					{{selectOptions system.species selected=system.attributes.species.value valueAttr="key" labelAttr="label"}}
+				</select>
+			</div>
+			<div class="resource">
+				<label class="resource-label">{{ localize "SPACE1889.Archetype" }}</label>
+				<select name="system.attributes.archetype.value" data-dtype="String">
+					{{selectOptions system.archetypes selected=system.attributes.archetype.value valueAttr="key" labelAttr="label"}}
+				</select>
+			</div>
+			<div class="resource">
+				<label class="resource-label">{{ localize "SPACE1889.Motivation" }}</label>
+				<select name="system.attributes.motivation.value" data-dtype="String">
+					{{selectOptions system.motivations selected=system.attributes.motivation.value valueAttr="key" labelAttr="label"}}
+				</select>
+			</div>
+		</li>
+
+		<section class="grid grid-2col">
+			<div class="abilities flexcol items-list">
+				<div class="items-header-center">{{localize "SPACE1889.Abilities"}}</div>
+				<li class="item flexrow items-header">
+					<div class="item-name ">{{localize "SPACE1889.Name"}}</div>
+					<div data-tooltip='{{localize "SPACE1889.Base"}}' class="items-list item-max-with40px">{{localize "SPACE1889.Base"}}</div>
+					<div data-tooltip='{{localize "SPACE1889.TalentBonus"}}' class="items-list item-max-with40px">{{localize "SPACE1889.Mod"}}</div>
+					<div data-tooltip='{{localize "SPACE1889.Rating"}}' class="items-list item-max-with42px">{{localize "SPACE1889.Rating"}}</div>
+				</li>
+				{{#each system.abilities as |ability key|}}
+				<li class="flexrow">
+					<label for="system.abilities.{{key}}.value" class="rollable flexlarge align-left" data-roll-key="{{key}}" data-roll-type="actor" data-roll-diecount="{{ability.total}}" data-label="{{ability.label}}" data-tooltip="{{abilityToolTipDescription ../document key}}" data-tooltip-direction="RIGHT">{{ability.label}}</label>
+					<div class="item-max-with40px">
+						<a class="increment-{{key}}-click">{{ability.value}}</a>
+					</div>
+					<label data-tooltip='{{ability.bonusInfo}}' class="items-list item-max-with40px">{{ability.bonus}}</label>
+					<label class="items-list item-max-with42px resource-label">{{ability.total}}</label>
+				</li>
+				{{/each}}
+			</div>
+			<div class="secondaries flexcol items-list">
+				<div class="items-header-center">{{localize "SPACE1889.SecondaryAttributes"}}</div>
+				<li class="item flexrow items-header">
+					<div class="item-name ">{{localize "SPACE1889.Name"}}</div>
+					<div data-tooltip='{{localize "SPACE1889.Base"}}' class="items-list item-max-with40px">{{localize "SPACE1889.Base"}}</div>
+					<div data-tooltip='{{localize "SPACE1889.TalentBonus"}}' class="items-list item-max-with40px">{{localize "SPACE1889.Mod"}}</div>
+					<div data-tooltip='{{localize "SPACE1889.Rating"}}' class="items-list item-max-with40px">{{localize "SPACE1889.Rating"}}</div>
+				</li>
+				{{#each system.secondaries as |secondary key|}}
+				<li class="secondary flexrow">
+					<label for="system.secondaries.{{key}}.value" class="rollable flexlarge align-left" data-roll-key="{{key}}" data-roll-type="actor" data-roll-diecount="{{secondary.total}}" data-label="{{secondary.label}}" data-tooltip="{{secondaryToolTipDescription ../document key}}" data-tooltip-direction="LEFT">{{secondary.label}}</label>
+					<label class="items-list item-max-with40px">{{secondary.value}}</label>
+					<label data-tooltip='{{secondary.bonusInfo}}' class="items-list item-max-with40px">{{secondary.bonus}}</label>
+					<label class="items-list item-max-with40px resource-label">{{secondary.total}}</label>
+				</li>
+				{{/each}}
+			</div>
+		</section>
+		<div>
+			{{> "systems/space1889/templates/actor/parts/actor-weakness.html"}}
+		</div>
+		<div>
+			{{> "systems/space1889/templates/actor/parts/actor-language.html"}}
+		</div>
+		<div>
+			{{> "systems/space1889/templates/actor/parts/actor-sub-extended_actions.html"}}
+		</div>
+	</div>
+</div>
+

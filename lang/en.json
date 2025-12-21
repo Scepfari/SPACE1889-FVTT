@@ -115,6 +115,8 @@
 	"SPACE1889.Calendar.CurrentDate": "Current date:",
 	"SPACE1889.Calendar.SelectDayClickToolTip": "<embed src='systems/space1889/icons/svg/mouseLeftClick.svg' class=\"space1889-ToolTipMouse\" /> : select<br/> [Ctrl] + [Shift] + <embed src='systems/space1889/icons/svg/mouseLeftClick.svg' class=\"space1889-ToolTipMouse\" /> : set date",
 
+	"SPACE1889.ImageTooltip": "<embed src='systems/space1889/icons/svg/mouseLeftClick.svg' class=\"space1889-ToolTipMouse\" /> : change image<br/><embed src='systems/space1889/icons/svg/mouseRightClick.svg' class=\"space1889-ToolTipMouse\" /> : Open image in a separate window",
+
 	"SPACE1889.Gravity": "Gravity",
 	"SPACE1889.HomeGravity": "Home gravity",
 	"SPACE1889.HomeGravityAbbr": "Home G",
@@ -216,6 +218,7 @@
 	"SPACE1889.Description": "Description",
 	"SPACE1889.Item": "Item",
 	"SPACE1889.ItemPl": "Items",
+	"SPACE1889.ItemsAndWeapons": "Items/Weapons",
 	"SPACE1889.Base": "Base",
 	"SPACE1889.Level": "Level",
 	"SPACE1889.Rating": "Rating",

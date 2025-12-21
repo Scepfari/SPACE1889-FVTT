@@ -67,8 +67,7 @@ Hooks.once('init', async function() {
 	CONFIG.ui.hotbar = SPACE1889Hotbar;
 
 	// Register sheet application classes
-	foundry.documents.collections.Actors.unregisterSheet("core", foundry.appv1.sheets.ActorSheet);
-	foundry.documents.collections.Actors.registerSheet("space1889", Space1889ActorSheet, { makeDefault: true });
+	Space1889ActorSheet.setupSheets();
 	Space1889ItemSheet.setupSheets();
 
 	// Register System Settings
@@ -505,11 +504,6 @@ Handlebars.registerHelper('isNotTrusted', function (str)
 Handlebars.registerHelper('hasTokenConfigurePermission', function ()
 {
 	return SPACE1889Helper.hasTokenConfigurePermission(false);
-});
-
-Handlebars.registerHelper('isFvttV10', function (str)
-{
-	return SPACE1889Helper.isFoundryV10Running();
 });
 
 Handlebars.registerHelper('isGerman', function ()
