@@ -114,9 +114,9 @@
 	"SPACE1889.Calendar.GoToToday": "Gehe zum aktuellen Datum",
 	"SPACE1889.Calendar.CurrentDate": "Aktuelles Datum:",
 	"SPACE1889.Calendar.SelectDayClickToolTip": "<embed src='systems/space1889/icons/svg/mouseLeftClick.svg' class=\"space1889-ToolTipMouse\" /> : auswählen<br/> [Strg] + [Shift] + <embed src='systems/space1889/icons/svg/mouseLeftClick.svg' class=\"space1889-ToolTipMouse\" /> : Datum setzen",
-	
+
 	"SPACE1889.ImageTooltip": "<embed src='systems/space1889/icons/svg/mouseLeftClick.svg' class=\"space1889-ToolTipMouse\" /> : Bild ändern<br/><embed src='systems/space1889/icons/svg/mouseRightClick.svg' class=\"space1889-ToolTipMouse\" /> : Bild in einem eigenen Fenster öffnen",
-	
+
 	"SPACE1889.Gravity": "Schwerkraft",
 	"SPACE1889.HomeGravity": "Heimatschwerkraft",
 	"SPACE1889.HomeGravityAbbr": "Heimat SK",
@@ -256,6 +256,7 @@
 	"SPACE1889.PlayerNotes": "Spieler Notizen",
 	"SPACE1889.PlayerNotesInfo": "Auch Spieler mit beschränkten Zugriffsrechten können diese Notiz sehen und editieren.",
 	"SPACE1889.PlayerNotesLimited": "Die Notiz kann nur geändert werden wenn die Spielleitung im Spiel ist. \rSie ändert ausschließlich den Akteur, d.h. auch bei nicht verbunden Figuren wird der Akteur und nicht die Figur(=Token) geändert",
+	"SPACE1889.PlayerNotesEdit": "Notiz editieren",
 	"SPACE1889.GmNotes": "SL Notizen",
 	"SPACE1889.GmNotesInfo": "Diese Notiz bekommt nur die SL zu sehen, d.h. auch Spieler mit Besitzer Rechten sehen diese Information nicht.",
 	"SPACE1889.GmHealingOnly": "Nur die SL (oder die Zeit) kann das ändern",

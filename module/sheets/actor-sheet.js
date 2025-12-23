@@ -31,6 +31,7 @@ export class Space1889ActorSheet extends foundry.applications.api.HandlebarsAppl
 		classes: ["space1889", "sheet", "actor"],
 		actions: {
 			itemCreate: this._onItemCreate,
+			editForeignNotes: this._openKeepFieldEditpage,
 		}
 	};
 	get title()
@@ -38,6 +39,11 @@ export class Space1889ActorSheet extends foundry.applications.api.HandlebarsAppl
 		return this.actor.name;
 	}
 
+	static LIMITEDPARTS = {
+		header: {
+			template: 'systems/space1889/templates/actor/actor-limited-sheet.html',
+		},
+	}
 
 	/** @override */
 	get space1889ActorTemplate()
@@ -49,6 +55,9 @@ export class Space1889ActorSheet extends foundry.applications.api.HandlebarsAppl
 
 	_configureRenderParts(options)
 	{
+		if (this.constructor.LIMITEDPARTS && !game.user.isGM && this.actor.limited)
+			return foundry.utils.deepClone(this.constructor.LIMITEDPARTS);
+
 		const parts = super._configureRenderParts(options);
 		if (!parts.details)
 			parts.details = { template: this.space1889ActorTemplate, scrollable: [''] };
@@ -914,7 +923,8 @@ export class Space1889ActorSheet extends foundry.applications.api.HandlebarsAppl
                 const attr = k.dataset.attr
                 const name = k.dataset.name
                 $(k).find('.editor').append(`<a data-attr="${attr}" data-name="${name}" class="editor-edit"><i class="fas fa-edit"></i></a>`)
-                $(k).find('.editor-edit').click(ev => this._openKeepFieldEditpage(ev))
+				$(k)
+					.find('.editor-edit').on('click', (ev) => this._openKeepFieldEditpage(ev))
             }
         }
     }

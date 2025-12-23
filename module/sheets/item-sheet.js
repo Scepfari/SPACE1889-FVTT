@@ -66,6 +66,12 @@ export class Space1889ItemSheet extends foundry.applications.api.HandlebarsAppli
 		//}
 	}
 
+	static LIMITEDPARTS = {
+		header: {
+			template: "systems/space1889/templates/item/item-limited-sheet.html"
+		}
+	}
+
 
 	/** @override */
 	get space1889ItemTemplate()
@@ -81,6 +87,9 @@ export class Space1889ItemSheet extends foundry.applications.api.HandlebarsAppli
 
 	_configureRenderParts(options)
 	{
+		if (this.constructor.LIMITEDPARTS && !game.user.isGM && this.item.limited)
+			return foundry.utils.deepClone(this.constructor.LIMITEDPARTS);
+
 		const parts = super._configureRenderParts(options);
 		if (!parts.details)
 			parts.details = { template: this.space1889ItemTemplate, scrollable: [''] };

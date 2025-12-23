@@ -1,18 +1,22 @@
-<div class="{{cssClass}} {{actor.type}} flexcol" autocomplete="off">
-
+<form>
+<header class="sheet-header">
 	<div class="header-fields">
-		<h2 class="charname"><input name="name" type="text" value="{{actor.name}}" placeholder="Name" /></h2>
+		<h2 class="charname"><input name="name" type="text" value="{{document.name}}" placeholder="Name" /></h2>
 	</div>
 	<div style="width: 100%; margin-bottom:10px">
-		<img class="imit-profile-img artwork" src="{{actor.img}}" data-edit="img" data-tooltip="{{actor.name}}" style="object-fit: contain; width:95%; object-position:top" />
+		<img class="imit-profile-img artwork" src="{{document.img}}" data-tooltip="{{document.name}}" style="object-fit: contain; width:95%; object-position:top" />
 	</div>
-
-	<div data-tooltip="{{localize "SPACE1889.PlayerNotesLimited"}}" style="max-height:20px">
-		<b>{{localize "SPACE1889.PlayerNotes"}}</b>
-	</div>
-	<div class="keepFieldsEnabled" data-attr="system.notes.value" data-name="Notes" >
-		{{editor enrichedNotes target="system.notes.value" button=true owner=owner editable=editable engine="prosemirror"}}
-	</div>
-
+</header>
+<div>
+	<li class="item flex-group-left flexrow">
+		<div class="resource-label" data-tooltip="{{localize "SPACE1889.PlayerNotesLimited"}}">
+			{{localize "SPACE1889.PlayerNotes"}}
+		</div>
+	
+		<div class="resource-label keepFieldsEnabled" data-application-part="notes" data-attr="system.notes.value" data-name="Notes">
+			<a class="editor" data-tooltip="{{localize "SPACE1889.PlayerNotesEdit"}}"></a>
+		</div>
+	</li>
+	{{{ enrichedNotes }}}
 </div>
-
+</form>
