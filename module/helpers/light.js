@@ -20,7 +20,7 @@ export default class SPACE1889Light
 
 		for (const token of game.scenes.viewed.tokens)
 		{
-			if (token.actorLink && token.actor.type === "character")
+			if (token.actor.type === "vehicle" || (token.actorLink && token.actor.type === "character"))
 				continue;
 
 			for (const lightSource of token.actor.system.lightSources)

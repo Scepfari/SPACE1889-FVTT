@@ -822,6 +822,46 @@ font-size: 12px;
 	bottom: 0;
 }
 
+.fa-mouseLeftClick {
+	position: relative;
+	width: 20px;
+	height: 18px;
+	top: 2px;
+}
+
+.fa-mouseLeftClick:before {
+	content: '';
+	background-image: url('../icons/svg/mouseLeftClick.svg');
+	background-size: contain;
+	background-repeat: no-repeat;
+	background-position: center;
+	position: absolute;
+	left: 0;
+	right: 0;
+	top: 2px;
+	bottom: 0;
+}
+
+.fa-mouseRightClick {
+	position: relative;
+	width: 20px;
+	height: 18px;
+	top: 2px;
+}
+
+.fa-mouseRightClick:before {
+	content: '';
+	background-image: url('../icons/svg/mouseRightClick.svg');
+	background-size: contain;
+	background-repeat: no-repeat;
+	background-position: center;
+	position: absolute;
+	left: 0;
+	right: 0;
+	top: 2px;
+	bottom: 0;
+}
+
 #pause img {
 	content: url('../icons/spacepause.webp');
 	height: 150px;

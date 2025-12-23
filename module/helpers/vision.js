@@ -21,7 +21,7 @@ export default class SPACE1889Vision
 
 		for (const token of game.scenes.viewed.tokens)
 		{
-			if (token.actorLink && token.actor.type === "character")
+			if (token.actor.type === "vehicle" || (token.actorLink && token.actor.type === "character"))
 				continue;
 
 			for (const vision of token.actor.system.visions)
