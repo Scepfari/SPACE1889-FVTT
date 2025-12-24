@@ -1997,7 +1997,7 @@ export class Space1889Actor extends Actor
 		const type = game.i18n.localize("SPACE1889.PreConTypePrimary");
 
 		const composition =
-			`<h4 ${headerClass}><strong>${name}</strong> <small>[${type}]</small></h4><div class="${textClass}">${desc}</div>`;
+			`<h5 ${headerClass}><strong>${name}</strong> <small>[${type}]</small></h5><div class="${textClass}">${desc}</div>`;
 		return composition;
 	}
 
@@ -2012,10 +2012,10 @@ export class Space1889Actor extends Actor
 		let moveExtra = "";
 
 		if (key === "move")
-			moveExtra = `<h4 ${headerClass}>${this.system.secondaries.move.inSiUnits}</h4>`;
+			moveExtra = `<h5 ${headerClass}>${this.system.secondaries.move.inSiUnits}</h5>`;
 
 		const composition =
-			`<h4 ${headerClass}><strong>${name}</strong> <small>[${type}]</small></h4>${moveExtra}<div class="${textClass}">${desc}</div>`;
+			`<h5 ${headerClass}><strong>${name}</strong> <small>[${type}]</small></h5>${moveExtra}<div class="${textClass}">${desc}</div>`;
 		return composition;
 	}
 
@@ -2340,65 +2340,64 @@ export class Space1889Actor extends Actor
 				$("#anzahlDerWuerfel")[0].value = attributValue;
 			}
 
-			let dialogue = foundry.applications.api.DialogV2.wait(
-				{
-					window: { title: `${actorName}: ${titleName}` },
-					position: { width: 315 },
-					content: `
-						<form>
-						<h5 style="margin-top: 0px; margin-bottom: 0px">${attributeName}: ${baseValue}</h5>
-						${checkbox}
+			new foundry.applications.api.DialogV2(
+			{
+				window: { title: `${actorName}: ${titleName}` },
+				position: { width: 315 },
+				content: `
+					<form>
+					<h5 style="margin-top: 0px; margin-bottom: 0px">${attributeName}: ${baseValue}</h5>
+					${checkbox}
 
 
-						<div style="display: grid; grid-template-columns: 50%  50%; grid-template-rows: 100%;">
-							<div style="margin-top:4px; margin-left: 5px">${modifierLabel}:</div> 
-							<div>
-								<input style="max-width: 110px; text-align: center" type="number" class="modInput" id="modifier" value = "0">
-							</div>
+					<div style="display: grid; grid-template-columns: 50%  50%; grid-template-rows: 100%;">
+						<div style="margin-top:4px; margin-left: 5px">${modifierLabel}:</div> 
+						<div>
+							<input style="max-width: 110px; text-align: center" type="number" class="modInput" id="modifier" value = "0">
 						</div>
-						<h5 style="margin-top: 0px; margin-bottom: 0px">
-							<div style="display: grid; grid-template-columns: 50%  50%;">
-								<div style="margin-top:14px; margin-left: 5px">${labelNumberOfDice}:</div> 
-								<div>
-									<input style="max-width: 110px; text-align: center" id="anzahlDerWuerfel" value="10" disabled="true" visible="false">
-								<div>
-							</div>
-						</h5>
-						<hr>
-						<div><select id="choices" name="choices">${chatOptions}</select></div>
-						</form>`,
-					buttons: [
-						{
-							action: 'ok',
-							icon: '',
-							label: game.i18n.localize("SPACE1889.Go"),
-							default: true,
-							callback: (event, button, dialog) => 
-							{
-								const mod = parseInt(button.form.elements.modifier.value);
-								const single = button.form.elements.singlePrimaryAttribute.checked;
-								const chatoption = button.form.elements.choices.value;
-								attributValue = getDiceCount(single, mod, deduction);
-
-								ChatMessage.create(getChatData(attributValue, mod, chatoption), {});
-							}
-						},
-						{
-							action: 'abbruch',
-							label: game.i18n.localize("SPACE1889.Cancel"),
-							callback: () => { ui.notifications.info(game.i18n.localize("SPACE1889.CancelRoll")) },
-							icon: `<i class="fas fa-times"></i>`
-						}
-					],
-					form: { closeOnSbmit: false },
-					render: (_event, _dialog) =>
+					</div>
+					<h5 style="margin-top: 0px; margin-bottom: 0px">
+						<div style="display: grid; grid-template-columns: 50%  50%;">
+							<div style="margin-top:14px; margin-left: 5px">${labelNumberOfDice}:</div> 
+							<div>
+								<input style="max-width: 110px; text-align: center" id="anzahlDerWuerfel" value="10" disabled="true" visible="false">
+							<div>
+						</div>
+					</h5>
+					<hr>
+					<div><select id="choices" name="choices">${chatOptions}</select></div>
+					</form>`,
+				buttons: [
 					{
-						recalc();
-						document.getElementsByClassName('singlePrimaryAttribute')[0].addEventListener("change", recalc, false);
-						document.getElementsByClassName('modInput')[0].addEventListener("change", recalc, false);
+						action: 'ok',
+						icon: '',
+						label: game.i18n.localize("SPACE1889.Go"),
+						default: true,
+						callback: (event, button, dialog) => 
+						{
+							const mod = parseInt(button.form.elements.modifier.value);
+							const single = button.form.elements.singlePrimaryAttribute.checked;
+							const chatoption = button.form.elements.choices.value;
+							attributValue = getDiceCount(single, mod, deduction);
+
+							ChatMessage.create(getChatData(attributValue, mod, chatoption), {});
+						}
+					},
+					{
+						action: 'abbruch',
+						label: game.i18n.localize("SPACE1889.Cancel"),
+						callback: () => { ui.notifications.info(game.i18n.localize("SPACE1889.CancelRoll")) },
+						icon: `<i class="fas fa-times"></i>`
 					}
-				});
-			dialogue.render(true)
+				],
+				form: { closeOnSbmit: false },
+				render: (_event, _dialog) =>
+				{
+					recalc();
+					document.getElementsByClassName('singlePrimaryAttribute')[0].addEventListener("change", recalc, false);
+					document.getElementsByClassName('modInput')[0].addEventListener("change", recalc, false);
+				}
+			}).render({ force: true });
 		}
 		else
 		{

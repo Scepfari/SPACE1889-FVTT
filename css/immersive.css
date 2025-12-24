@@ -1,10 +1,31 @@
 @import url("https://fonts.googleapis.com/css2?family=Times:wght@400;700&display=swap");
 
+.space1889-immersive {
+	font-family: 'Times New Roman', Times, serif;
+}
+
+.space1889-immersive .chat-message button {
+	font-family: 'Times New Roman', Times, serif;
+}
+
+.space1889-immersive .main button {
+	font-family: 'Times New Roman', Times, serif;
+		
+}
+
+.space1889-immersive .settings-sidebar button, a.button {
+	font-family: 'Times New Roman', Times, serif;
+}
+
 .space1889-immersive .window-app {
 	font-family: 'Times New Roman', Times, serif;
 }
 
 .space1889-immersive .window-content {
+	font-family: 'Times New Roman', Times, serif;
+}
+	
+.space1889-immersive .standard-form button{
 	font-family: 'Times New Roman', Times, serif;
 }
 
@@ -37,7 +58,7 @@
 	font-family: 'Times New Roman', Times, serif;
 }
 
-.space1889-immersive body.system-space1889, .space1889-immersive .sidebar-tab button, .space1889-immersive .sidebar-tab .window-content, .space1889-immersive .sidebar-tab .encounters, .space1889-immersive .sidebar-tab .directory-list .folder, .space1889-immersive .sidebar-tab .chat-message, .space1889-immersive .sidebar-tab .message {
+.space1889-immersive body.system-space1889, .space1889-immersive .sidebar-tab .window-content, .space1889-immersive .sidebar-tab .encounters, .space1889-immersive .sidebar-tab .directory-list .folder, .space1889-immersive .sidebar-tab .chat-message, .space1889-immersive .sidebar-tab .message {
 	font-family: 'Times New Roman', Times, serif;
 }
 
@@ -164,11 +185,10 @@
 	margin-left: 15%;
 }
 
-.space1889-immersive .window-app .window-header {
+.space1889-immersive .window-header {
 	background-image: url("../icons/backgrounds/headerLeft.webp"), url("../icons/backgrounds/headerRight.webp");
-	background-size: 40px 100%, 40px 100%;
+	background-size: 35px 100%, 30px 100%;
 	background-repeat: no-repeat;
-	border-radius: 5px;
 	z-index: -1;
 	background-position: left 0px, right 0px;
 	padding-right: 16px;
@@ -183,4 +203,8 @@
 	border-image-outset: 0px;
 	padding: 3px;
 	margin: 0px;
+}
+
+.space1889-immersive .window-app, .application{
+	--header-height: 26;
 }
