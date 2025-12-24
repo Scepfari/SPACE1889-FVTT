@@ -1302,7 +1302,18 @@ h5,
 h6 {
 	margin: 0.25rem 0 0.25rem;
 	line-height: 1;
+	font-family: var(--font-serif);
 }
+
+body {
+	--font-h1: var(--font-serif);
+	--font-h2: var(--font-serif);
+	--font-h3: var(--font-serif);
+	--font-h4: var(--font-serif);
+	--font-h5: var(--font-serif);
+	--font-h6: var(--font-serif);
+}
+
 
 #ui-left{
 	--control-size:35

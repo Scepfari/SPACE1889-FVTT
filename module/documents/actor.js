@@ -1997,7 +1997,7 @@ export class Space1889Actor extends Actor
 		const type = game.i18n.localize("SPACE1889.PreConTypePrimary");
 
 		const composition =
-			`<h3 ${headerClass}><strong>${name}</strong> <small>[${type}]</small></h3><div class="${textClass}">${desc}</div>`;
+			`<h4 ${headerClass}><strong>${name}</strong> <small>[${type}]</small></h4><div class="${textClass}">${desc}</div>`;
 		return composition;
 	}
 
@@ -2012,10 +2012,10 @@ export class Space1889Actor extends Actor
 		let moveExtra = "";
 
 		if (key === "move")
-			moveExtra = `<h3 ${headerClass}>${this.system.secondaries.move.inSiUnits}</h3>`;
+			moveExtra = `<h4 ${headerClass}>${this.system.secondaries.move.inSiUnits}</h4>`;
 
 		const composition =
-			`<h3 ${headerClass}><strong>${name}</strong> <small>[${type}]</small></h3>${moveExtra}<div class="${textClass}">${desc}</div>`;
+			`<h4 ${headerClass}><strong>${name}</strong> <small>[${type}]</small></h4>${moveExtra}<div class="${textClass}">${desc}</div>`;
 		return composition;
 	}
 
@@ -2028,7 +2028,7 @@ export class Space1889Actor extends Actor
 		const name = game.i18n.localize("SPACE1889." + key);
 
 		const composition =
-			`<h3 ${headerClass}><strong>${name}</strong></h3><div class="${textClass}">${desc}</div>`;
+			`<h4 ${headerClass}><strong>${name}</strong></h4><div class="${textClass}">${desc}</div>`;
 		return composition;
 	}
 
@@ -2036,16 +2036,13 @@ export class Space1889Actor extends Actor
 	{
 		const speaker = ChatMessage.getSpeaker({ actor: this.actor });
 		const rollMode = game.settings.get('core', 'rollMode');
-		let label = `<h2><strong>${name}</strong></h2>`;
-
 		const langId = this.getLangId(key) + "Desc";
 
-		let desc = game.i18n.localize(langId) ?? langId;
+		let desc = `<h5><strong>${name}</strong></h5><p>${game.i18n.localize(langId) ?? langId}</p>`;
 
 		ChatMessage.create({
 			speaker: speaker,
 			rollMode: rollMode,
-			flavor: label,
 			whisper: whisper ? [game.user.id] : [],
 			content: desc ?? ''
 		});
@@ -2443,7 +2440,7 @@ export class Space1889Actor extends Actor
 				attribNameAddition = ` (${wert} ${baseValue})`;
 
 			const anzahl = Math.max(0, wurfelAnzahl);
-			let messageContent = `<div><h2><strong>${attributeName}</strong>${attribNameAddition}</h2></div>`;
+			let messageContent = `<div><h4><strong>${attributeName}</strong>${attribNameAddition}</h4></div>`;
 			const dieType = SPACE1889RollHelper.getDieType();
 			messageContent += `${info} <b>[[${anzahl}${dieType}]] von <a data-tooltip="${tooltipInfo}"> ${wurfelAnzahl}</a></b> <br>`;
 

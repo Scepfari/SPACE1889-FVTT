@@ -49,9 +49,9 @@
 	font-family: 'Times New Roman', Times, serif;
 }
 
-.space1889-immersive button {
+/*.space1889-immersive button {
 	font-family: 'Times New Roman', Times, serif;
-}
+}*/
 
 .space1889-immersive #tah-character-name {
 	font-family: 'Times New Roman', Times, serif;
@@ -117,7 +117,7 @@
 	background-position: center 0px
 }
 
-.space1889-immersive #hotbar {
+/*.space1889-immersive #hotbar {
 	position: relative;
 	left: 10px;
 	top: -3px;
@@ -146,7 +146,7 @@
 	position: absolute;
 	left: -8px;
 	bottom: -11px;
-}
+}*/
 
 .space1889-immersive .actor form {
 	border-color: black;
@@ -180,7 +180,7 @@
 	border-width: 8px;
 	border-image: url('../icons/backgrounds/border.webp') 8 8 8 8;
 	border-image-repeat: stretch;
-	border-image-outset: 3px;
+	border-image-outset: 0px;
 	padding: 3px;
 	margin: 0px;
 }

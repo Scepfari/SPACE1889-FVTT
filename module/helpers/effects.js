@@ -98,7 +98,7 @@ export function getEffectInfoText(effect, forChat = false)
 		desc += effect.description;
 
 	const composition =
-		`<h3 ${headerClass}><strong>${name}</strong> <small>[${type}]</small></h3><div class="${textClass}">${desc}</div>`;
+		`<h4 ${headerClass}><strong>${name}</strong> <small>[${type}]</small></h4><div class="${textClass}">${desc}</div>`;
 	return composition;
 }
 

@@ -553,7 +553,7 @@ export default class SPACE1889RollHelper
 
 			let abbrDamageType = item.system.damageTypeDisplay ? "(" + item.system.damageTypeDisplay + ")" : "";
 
-			let messageContent = `<div><h2>${item.system.label} ${abbrDamageType}</h2></div>`;
+			let messageContent = `<div><h4>${item.system.label} ${abbrDamageType}</h4></div>`;
 
 			if (item.system.ammunition?.name)
 				messageContent += `<small>${item.system.ammunition.name}</small><br>`;
@@ -622,7 +622,7 @@ export default class SPACE1889RollHelper
 			messageContent = this.getAttackChatContent(actor, item, rollWithHtml, targetIds, useWeaponChatInfo, extraInfo, isAttackTalent, specialAttack);
 		else
 		{
-			const titel = firstAid === "stabilizing" ? game.i18n.localize("SPACE1889.ChatStabilizing") : `<h2>${item.system.label}</h2>`
+			const titel = firstAid === "stabilizing" ? game.i18n.localize("SPACE1889.ChatStabilizing") : `<h4>${item.system.label}</h4>`
 			messageContent = `<div>${titel}</div>`;
 			if (extraInfo.length > 0)
 				messageContent += `${extraInfo} <br>`;
@@ -709,9 +709,9 @@ export default class SPACE1889RollHelper
 		else if (specialAttack === "trip")
 			specialAttackName = game.i18n.localize("SPACE1889.CombatManoeuversTrip");
 
-		let messageContent = "<div><h2>";
+		let messageContent = "<div><h4>";
 		messageContent += specialAttackName !== "" ? specialAttackName : `${item.system.label} ${abbrDamageType}`;
-		messageContent += "</h2></div>";
+		messageContent += "</h4></div>";
 
 		if (item?.system?.ammunition?.name)
 			messageContent += `<small>${item.system.ammunition.name}</small><br>`;
@@ -1173,7 +1173,7 @@ export default class SPACE1889RollHelper
 		const titel = isVirtualDamage ?
 			game.i18n.format("SPACE1889.ChatInfoVirtualDamage", { damage: dmg.toString() }) :
 			game.i18n.format("SPACE1889.ChatInfoDamage", { damage: (!usePercentage ? dmg.toString() : Math.round(100 * dmg / maxHealth).toString() + "%"), damageType: dmgTypeLabel });
-		let messageContent = `<div><h2>${titel}</h2></div>`;
+		let messageContent = `<div><h4>${titel}</h4></div>`;
 		messageContent += `${info}`;
 
 		let effectIds = [];
@@ -1528,7 +1528,7 @@ export default class SPACE1889RollHelper
 						const realAnzahl = Math.max(0, anzahl);
 						const grund = manoeuvreAndName;
 
-						let messageContent = `<div><h2>${grund}</h2></div>`;
+						let messageContent = `<div><h4>${grund}</h4></div>`;
 						messageContent += `<p>${diceInfo}</p>`;
 						messageContent += `<b>[[${realAnzahl}${dieType}]] von ${anzahl}</b> <br>`;
 						let chatData =
@@ -1571,7 +1571,7 @@ export default class SPACE1889RollHelper
 		const manoeuvreName = game.i18n.localize(CONFIG.SPACE1889.vehicleManoeuvres[key]);
 		const infoKey = CONFIG.SPACE1889.vehicleManoeuvres[key];
 		const desc = game.i18n.localize( infoKey + "Desc");
-		const label = `<h2><strong>${manoeuvreName}</strong></h2>`;
+		const label = `<h4><strong>${manoeuvreName}</strong></h4>`;
 		ChatMessage.create({
 			speaker: speaker,
 			rollMode: rollMode,
@@ -1844,7 +1844,7 @@ export default class SPACE1889RollHelper
 				SPACE1889Helper.addEffect(target.actor, { name: "totalDefense", rounds: 1 });
 		}
 
-		let content = `<div><h2>${title}</h2></div>` + additionalChatContent + rollWithHtml.html;
+		let content = `<div><h4>${title}</h4></div>` + additionalChatContent + rollWithHtml.html;
 
 		
 		const chatData =
@@ -2098,7 +2098,7 @@ export default class SPACE1889RollHelper
 			info += "<b>" + game.i18n.localize("SPACE1889.StrikeEffect") + ":</b> <br>" + trefferInfo;
 
 		const titel = game.i18n.format("SPACE1889.ChatInfoVirtualDamage", { damage: virtualDamage.toString() });
-		let messageContent = `<div><h2>${titel}</h2></div>`;
+		let messageContent = `<div><h4>${titel}</h4></div>`;
 		messageContent += `${info}`;
 		let chatData =
 		{
@@ -2353,7 +2353,7 @@ export default class SPACE1889RollHelper
 			info += ` <b>${game.i18n.localize("SPACE1889.None")}</b><br>${trefferInfo}`;
 
 		const titel = game.i18n.format("SPACE1889.ChatInfoVirtualDamage", { damage: virtualDamage.toString() });
-		let messageContent = `<div><h2>${titel}</h2></div>`;
+		let messageContent = `<div><h4>${titel}</h4></div>`;
 		messageContent += `${info}`;
 		let chatData =
 		{
@@ -2395,7 +2395,7 @@ export default class SPACE1889RollHelper
 			info += ` <b>${game.i18n.localize("SPACE1889.None")}</b> ${trefferInfo}`;
 
 		const titel = game.i18n.format("SPACE1889.ChatInfoVirtualDamage", { damage: virtualDamage.toString() });
-		let messageContent = `<div><h2>${titel}</h2></div>`;
+		let messageContent = `<div><h4>${titel}</h4></div>`;
 		messageContent += `${info}`;
 		let chatData =
 		{
@@ -2553,7 +2553,7 @@ export default class SPACE1889RollHelper
 		const titel = virtualDamage > 0
 			? game.i18n.localize("SPACE1889.DisarmSuccess")
 			: game.i18n.localize("SPACE1889.DisarmFail");
-		let messageContent = `<div><h2>${titel}</h2></div>`;
+		let messageContent = `<div><h4>${titel}</h4></div>`;
 		messageContent += `${info}`;
 		let chatData =
 		{

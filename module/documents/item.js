@@ -747,10 +747,10 @@ export class Space1889Item extends Item {
 	{
 		const headerClass = forChat ? "" : "class=\"itemTooltipH3\"";
 		const textClass = forChat ? "" : "itemTooltip";
-		const second = secondHeader === "" ? "" : `<h3 ${headerClass}>${secondHeader}</h3>`;
+		const second = secondHeader === "" ? "" : `<h5 ${headerClass}>${secondHeader}</h5>`;
 
 		const composition =
-			`${image}<h3 ${headerClass}><strong>${name}</strong> <small>[${type}]</small></h3>${second}<div class="${textClass}">${desc}</div>`;
+			`${image}<h5 ${headerClass}><strong>${name}</strong> <small>[${type}]</small></h5>${second}<div class="${textClass}">${desc}</div>`;
 		return composition;
 	}
 }

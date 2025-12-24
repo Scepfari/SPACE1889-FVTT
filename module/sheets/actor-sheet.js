@@ -1116,7 +1116,7 @@ export class Space1889ActorSheet extends foundry.applications.api.HandlebarsAppl
 					desc += item.system.description;
 
 				item.update({ 'system.attemptsMade': item.system.attemptsMade + 1, 'system.successes': newSuccess, "system.timestampLastTry": timestamp });
-				let messageContent = `<h3><strong>${item.name}</strong> <small>[${game.i18n.localize("TYPES.Item.extended_action")}]</small></h3><div>${desc}</div>`;
+				let messageContent = `<h4><strong>${item.name}</strong> <small>[${game.i18n.localize("TYPES.Item.extended_action")}]</small></h4><div>${desc}</div>`;
 				const speaker = ChatMessage.getSpeaker({ actor: actor });
 
 				ChatMessage.create({
