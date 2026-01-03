@@ -955,6 +955,8 @@ font-size: 12px;
 	-ms-flex-align: center;
 	align-items: center;
 	margin: 1px 1px 5px 1px;
+	width: 30px;
+	height: 30px;
 }
 
 .space1889-menu-window-header {

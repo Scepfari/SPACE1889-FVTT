@@ -234,26 +234,29 @@ export class Space1889Menu extends foundry.applications.api.HandlebarsApplicatio
 
 	_onRender(context, options)
 	{
-		this.element.querySelector("button[name=showImage]").addEventListener("click", function ()
+		if (game.user.isGM)
 		{
-			SPACE1889Helper.filePickerImageToChat()
-		});
-		this.element.querySelector("button[name=showGmScreen]").addEventListener("click", function ()
-		{
-			SPACE1889Helper.showGmScreen()
-		});
-		this.element.querySelector("button[name=npcsDrawWeapon]").addEventListener("click", function ()
-		{
-			SPACE1889Helper.npcsDrawWeaponsWithDialog()
-		});
-		this.element.querySelector("button[name=hideNames]").addEventListener("click", function ()
-		{
-			SPACE1889Helper.hideNameOfNonCharactersWithDialog()
-		});
-		this.element.querySelector("button[name=showTokenNameAndBar]").addEventListener("click", function ()
-		{
-			SPACE1889Helper.showTokenNameAndBarWithDialog()
-		});
+			this.element.querySelector("button[name=showImage]")?.addEventListener("click", function ()
+			{
+				SPACE1889Helper.filePickerImageToChat()
+			});
+			this.element.querySelector("button[name=showGmScreen]")?.addEventListener("click", function ()
+			{
+				SPACE1889Helper.showGmScreen()
+			});
+			this.element.querySelector("button[name=npcsDrawWeapon]")?.addEventListener("click", function ()
+			{
+				SPACE1889Helper.npcsDrawWeaponsWithDialog()
+			});
+			this.element.querySelector("button[name=hideNames]")?.addEventListener("click", function ()
+			{
+				SPACE1889Helper.hideNameOfNonCharactersWithDialog()
+			});
+			this.element.querySelector("button[name=showTokenNameAndBar]")?.addEventListener("click", function ()
+			{
+				SPACE1889Helper.showTokenNameAndBarWithDialog()
+			});
+		}
 		this.element.querySelector("button[name=showHelp]").addEventListener("click", function ()
 		{
 			SPACE1889Helper.showHelpJournal()
