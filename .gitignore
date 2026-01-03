@@ -11,3 +11,7 @@ npm-debug.log
 jsconfig.json
 foundry
 Folder.DotSettings.user
+
+# packs
+packs/*/LOG
+packs/*/*.log
