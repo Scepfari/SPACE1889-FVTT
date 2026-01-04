@@ -257,6 +257,8 @@ export class Space1889Translation
 
 	static async updateFolderNames(currentLanguage)
 	{
+		const restoreKeys = await this.setSpaceCompendiumLockState(false);
+
 		const packIds = this.getCompendiumKeys();
 
 		for (const packId of packIds)
@@ -277,7 +279,7 @@ export class Space1889Translation
 
 		}
 
-
+		await this.setSpaceCompendiumLockState(true, restoreKeys);
 
 		//if (!foundry.utils.isNewerVersion(game.version, '10.999'))
 		//	return;
