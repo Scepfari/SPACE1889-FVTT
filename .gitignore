@@ -16,3 +16,4 @@ Folder.DotSettings.user
 packs/*/LOG
 packs/*/LOG.old
 packs/*/*.log
+packs/*/lost/
