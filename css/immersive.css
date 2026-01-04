@@ -29,6 +29,10 @@
 	font-family: 'Times New Roman', Times, serif;
 }
 
+.space1889-immersive button.icon, a.button.icon {
+		font-family: var(--font-awesome);
+}
+
 .space1889-immersive .chat-message {
 	font-family: 'Times New Roman', Times, serif;
 }
@@ -85,18 +89,23 @@
 	font-family: 'Times New Roman', Times, serif;
 }
 
-.space1889-immersive #players:after {
-	background-image: url("../icons/backgrounds/space1889PlayerBotT.webp");
-	background-size: 100% 15px;
-	background-repeat: no-repeat;
-	content: "";
-	height: 15px;
-	width: 215px;
-	position: absolute;
-	left: 3px;
-	bottom: 4px;
-	z-index: -1;
-}
+	/*.space1889-immersive #players #players-active:after {
+		background-image: url("../icons/backgrounds/space1889PlayerBotT.webp");
+		background-size: 100% 15px;
+		background-repeat: no-repeat;
+		content: "";
+		height: 15px;
+		width: 214px;
+		position: absolute;
+		left: 8px;
+		bottom: 12px;*/
+		/*	left: -2px;*/
+		/*		right: -2px;
+		bottom: -5px;
+		top: calc(100% -2px);*/
+		/*z-index: -1;
+		background-position: center 100%;
+	}
 
 .space1889-immersive #players h3 {
 	border: none;
@@ -104,19 +113,24 @@
 	overflow: visible
 }
 
-.space1889-immersive #players h3:before {
-	background-image: url("../icons/backgrounds/space1889PlayerHeadT.webp"),url("../icons/backgrounds/space1889PlayerMidT.webp");
-	background-size: 100% 30px,100% calc(100% - 30px);
+.space1889-immersive #players #players-active:before {
+	background-image: url("../icons/backgrounds/space1889PlayerHeadT.webp");
+	background-size: 100% 30px;
 	background-repeat: no-repeat;
 	content: "";
 	position: absolute;
-	left: -15px;
+	width: 214px;
+	height: 15px;
+	top: calc(100% - 40px);*/
+/*	bottom: 30px;*/
+	/*left: 8px;*/
+/*	left: 8px;
 	right: -5px;
-	bottom: 0px;
-	top: -20px;
-	z-index: -1;
-	background-position: center 0px,center 30px
-}
+	bottom: calc(100% - 5px);
+	top: -25px;*/
+	/*z-index: -1;
+	background-position: center 0px;
+}*/
 
 .space1889-immersive #players #player-list {
 	border: none;
@@ -124,19 +138,24 @@
 	overflow: visible
 }
 
-.space1889-immersive #players #player-list:before {
+/*.space1889-immersive #players #player-active {
+	border: none;
+	box-shadow: none;
 	background-image: url("../icons/backgrounds/space1889PlayerMidT.webp");
 	background-size: 100% 50px;
 	background-repeat: repeat-y;
 	content: "";
-	position: absolute;
-	left: -12px;
-	right: -2px;
+	position: relative;
+	width: 214px;
+	top: -25px;*/
+/*	height: 40px;*/
+	/*left: 8px;*/
+/*	right: -2px;
 	bottom: 5px;
-	top: -3px;
-	z-index: -1;
-	background-position: center 0px
-}
+	top: -3px;*/
+	/*z-index: -1;*/
+/*	background-position: center 0px*/
+/*}*/
 
 /*.space1889-immersive #hotbar {
 	position: relative;

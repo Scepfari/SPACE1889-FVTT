@@ -144,8 +144,7 @@ export class Space1889Migration
 	static async updateWeaponTwoHanded(actorList)
 	{
 		const spez = ["armbrust", "bogen", "gewehr", "schrotgewehr", "speere"];
-		const pack = game.packs.get("space1889.waffen");
-		let packWeapons = await pack.getDocuments();
+		let packWeapons = await SPACE1889Helper.getPackItemsFromFolder("space1889.ausrustung", "eCWp8f1yb90AJvM8")
 
 		for (const actor of actorList)
 		{

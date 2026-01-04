@@ -1095,11 +1095,9 @@ export default class SPACE1889Helper
 		if (!actorList || actorList.length == 0)
 			return;
 	
-		const pack = game.packs.get("space1889.waffen");
-		let packWeapons = await pack.getDocuments();
+		let packWeapons = await SPACE1889Helper.getPackItemsFromFolder("space1889.ausrustung", "eCWp8f1yb90AJvM8")
 
-		const muPack = game.packs.get("space1889.munition");
-		const packAmmunition = await muPack.getDocuments();
+		const packAmmunition = await SPACE1889Helper.getPackItemsFromFolder("space1889.ausrustung", "YV0RkjySg2zfkPuI")
 
 		for (const actor of actorList)
 		{
@@ -2441,8 +2439,7 @@ export default class SPACE1889Helper
 
 	static async getSortedSkillIdsWithLocalizedName(withSkillGroups = true, withEmptyElement = false, shortGroupNameAttachment = false)
 	{
-		let pack = game.packs.get("space1889.fertigkeiten");
-		let packDocs = await pack.getDocuments();
+		let packDocs = await SPACE1889Helper.getPackItemsFromFolder("space1889.charaktermerkmale", "PQcq8W9wotfKFWOf")
 
 		// um lokale Fertigkeiten erweitern
 		let local = game.items.filter((x) => x.type === "skill");
@@ -2489,8 +2486,8 @@ export default class SPACE1889Helper
 		if (!skillSpaceId)
 			return [];
 
-		let pack = game.packs.get("space1889.spezialisierungen");
-		let packDocs = await pack.getDocuments();
+		let packDocs = await SPACE1889Helper.getPackItemsFromFolder("space1889.charaktermerkmale", "daqWjLZKN0LVolN0");
+
 		let selection = packDocs.filter((x) => x.system.underlyingSkillId === skillSpaceId);
 
 		// um lokale Spezialisierungen erweitern
@@ -2514,8 +2511,7 @@ export default class SPACE1889Helper
 
 	static async getSortedSpecializations()
 	{
-		let pack = game.packs.get("space1889.spezialisierungen");
-		let packDocs = await pack.getDocuments();
+		let packDocs = await SPACE1889Helper.getPackItemsFromFolder("space1889.charaktermerkmale", "daqWjLZKN0LVolN0");
 
 		// um lokale Spezialisierungen erweitern
 		let local = game.items.filter((x) => x.type === "specialization");
@@ -2538,8 +2534,7 @@ export default class SPACE1889Helper
 
 	static async getSortedTalents(withEmptyElement = false)
 	{
-		let pack = game.packs.get("space1889.talente");
-		let packDocs = await pack.getDocuments();
+		let packDocs = await this.getPackItemsFromFolder("space1889.charaktermerkmale", "JELbjvpvG4vQTRU6")
 
 		// um lokale Talente erweitern
 		let local = game.items.filter((x) => x.type === "talent");
@@ -2565,8 +2560,7 @@ export default class SPACE1889Helper
 
 	static async getSortedWeaknesses(withEmptyElement = false)
 	{
-		let pack = game.packs.get("space1889.schwachen");
-		let packDocs = await pack.getDocuments();
+		let packDocs = await SPACE1889Helper.getPackItemsFromFolder("space1889.charaktermerkmale", "TPvH5YQ3iztXQ7jF");
 
 		// um lokale Schwäche erweitern
 		let local = game.items.filter((x) => x.type === "weakness");
@@ -2588,6 +2582,22 @@ export default class SPACE1889Helper
 			weaknessList.splice(0, 0, { key: "", label: "-" });
 		}
 		return weaknessList;
+	}
+
+	static async getPackItemsFromFolder(packKey, folderId)
+	{
+		let pack = game.packs.get(packKey);
+		const folder = pack.folders.get(folderId);
+		let items = [];
+		const folderContent = folder?.contents;
+
+		for (const element of folderContent)
+		{
+			const item = await pack.getDocument(element._id);
+			if (item)
+				items.push(item);
+		}
+		return items;
 	}
 
 	static getSortedTalentBonusTypes()

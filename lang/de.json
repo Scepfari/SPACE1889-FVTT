@@ -45,6 +45,7 @@
 	"TYPES.Item.visionPl": "Sichtverbesserungen",
 	"TYPES.Item.lightSource": "Lichtquelle",
 	"TYPES.Item.lightSourcePl": "Lichtquellen",
+	"TYPES.JournalEntryPage.space1889calendar": "Kalendereintrag",
 
 	"CONTROLS.Space1889Menu": "SPACE 1889 Menü",
 	"CONTROLS.Space1889MenuToggle": "Menü Sichtbarkeit umschalten",
@@ -3263,6 +3264,11 @@
 	"SPACE1889.MajorCover": "Weitgehende Deckung",
 	"SPACE1889.FullCover": "Volle Deckung",
 
+	"SPACE1889.CompendiumMacros": "Makros",
+	"SPACE1889.CompendiumMacroWurf": "SPACE 1889 Wurf",
+	"SPACE1889.CompendiumHelp": "Hilfe",
+	"SPACE1889.CompendiumGmInfo": "SL Informationen",
+
 	"SPACE1889.CompendiumFolderNameSkill": "Fertigkeiten",
 	"SPACE1889.CompendiumFolderNameResource": "Ressourcen",
 	"SPACE1889.CompendiumFolderNameArmor": "Rüstungen",
@@ -3274,6 +3280,8 @@
 	"SPACE1889.CompendiumFolderNameAmmunition": "Munition",
 	"SPACE1889.CompendiumFolderNameWeaponVehicle": "Waffen für Fahrzeuge",
 	"SPACE1889.CompendiumFolderNameItem": "Gegenstände",
+	"SPACE1889.CompendiumFolderNameLightAndVision": "Licht und Sicht",
+	"SPACE1889.CompendiumFolderNameContainer": "Behälter",
 	"SPACE1889.CompendiumFolderNameEarthMoney": "Geld-Erde",
 	"SPACE1889.CompendiumFolderNameMartianMoney": "Geld-Mars",
 	"SPACE1889.CompendiumFolderNameExampleCharacter": "Beispielcharaktere",

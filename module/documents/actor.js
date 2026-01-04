@@ -30,8 +30,8 @@ export class Space1889Actor extends Actor
 
 		if (actor.type === "character" || actor.type === "npc")
 		{
-			let resourcePack = game.packs.get("space1889.ressourcen");
-			let resources = await resourcePack.getDocuments();
+			let resources = await SPACE1889Helper.getPackItemsFromFolder("space1889.charaktermerkmale", "BnDW0s7p77BlkNkO")
+
 			let toAddItems = [];
 			for (let item of resources)
 			{
@@ -45,8 +45,8 @@ export class Space1889Actor extends Actor
 
 		if (actor.type === "creature" && actor.items.size == 0)
 		{
-			let skillPack = game.packs.get("space1889.fertigkeiten");
-			let skills = await skillPack.getDocuments();
+			let skills = await SPACE1889Helper.getPackItemsFromFolder("space1889.charaktermerkmale", "PQcq8W9wotfKFWOf")
+
 			let toAddItems = [];
 			for (let item of skills)
 			{

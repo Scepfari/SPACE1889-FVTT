@@ -45,6 +45,7 @@
 	"TYPES.Item.visionPl": "Vision improvements",
 	"TYPES.Item.lightSource": "Light source",
 	"TYPES.Item.lightSourcePl": "Light sources",
+	"TYPES.JournalEntryPage.space1889calendar": "Calendar Entry",
 
 	"CONTROLS.Space1889Menu": "SPACE 1889 Menu",
 	"CONTROLS.Space1889MenuToggle": "Toggle visibility menu",
@@ -3263,6 +3264,11 @@
 	"SPACE1889.MajorCover": "Major cover",
 	"SPACE1889.FullCover": "Full cover",
 
+	"SPACE1889.CompendiumMacros": "Macros",
+	"SPACE1889.CompendiumMacroWurf": "SPACE 1889 Roll",
+	"SPACE1889.CompendiumHelp": "Help",
+	"SPACE1889.CompendiumGmInfo": "GM Info",
+
 	"SPACE1889.CompendiumFolderNameSkill": "Skills",
 	"SPACE1889.CompendiumFolderNameResource": "Resources",
 	"SPACE1889.CompendiumFolderNameArmor": "Armors",
@@ -3274,6 +3280,8 @@
 	"SPACE1889.CompendiumFolderNameAmmunition": "Ammunition",
 	"SPACE1889.CompendiumFolderNameWeaponVehicle": "Vehicle Weapons",
 	"SPACE1889.CompendiumFolderNameItem": "Items",
+	"SPACE1889.CompendiumFolderNameLightAndVision": "Light and Vision",
+	"SPACE1889.CompendiumFolderNameContainer": "Container",
 	"SPACE1889.CompendiumFolderNameEarthMoney": "Earth Money",
 	"SPACE1889.CompendiumFolderNameMartianMoney": "Martian Money",
 	"SPACE1889.CompendiumFolderNameExampleCharacter": "Example Characters",
