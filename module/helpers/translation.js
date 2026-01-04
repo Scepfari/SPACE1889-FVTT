@@ -194,7 +194,12 @@ export class Space1889Translation
 				}
 				const newName = game.i18n.localize(langId);
 				if (newName != "" && newName != langId)
-					await item.update({ "name": newName });
+				{
+					if (isActor)
+						await item.update({ "name": newName });
+					else
+						await item.update({ "name": newName, "system.id": item.system.id });
+				}
 				else
 				{
 					console.log("Missing translation data for id: " + langId + " (current name: " + item.name + ")");
