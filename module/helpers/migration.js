@@ -22,7 +22,7 @@ export class Space1889Migration
 		if (game.user.isGM)
 		{
 			await this.migrateEffectsForFoundryV11(lastUsedVersion, lastUsedFoundryVersion);
-
+			await this.migrateSimpleCalendar(lastUsedVersion, lastUsedFoundryVersion);
 			await game.settings.set("space1889", "lastUsedFoundryVersion", game.version);
 		}		
 	}
@@ -267,6 +267,25 @@ export class Space1889Migration
 			}
 			if (updateData.length > 0)
 				await actor.updateEmbeddedDocuments("ActiveEffect", updateData);
+		}
+	}
+
+	static async migrateSimpleCalendar(lastUsedVersion, lastUsedFoundryVersion)
+	{
+		const migrationVersion = "3.0.0"; //13.341
+		if (!game.user.isGM || !foundry.utils.isNewerVersion(migrationVersion, lastUsedVersion) || !foundry.utils.isNewerVersion("13.336", lastUsedFoundryVersion))
+			return;
+
+		const zeroInfo = game.settings.get("space1889", "yearZero").split("|");
+		const isYearZeroSet = (String(zeroInfo[0]).toLowerCase() === 'true');
+		const yearZero = isYearZeroSet ? Number(zeroInfo[1]) : 1970;
+		if (!isYearZeroSet)
+		{
+			// SimpleCalendar wurde vermutlich nicht verwendet, daher defaults setzen
+			const yearZeroInfo = "true|" + yearZero.toString();
+			game.settings.set("space1889", "yearZero", yearZeroInfo);
+			if (game.time.worldTime == 0)
+				game.time.advance(-2556057600); // back to 1.1.1889 
 		}
 	}
 

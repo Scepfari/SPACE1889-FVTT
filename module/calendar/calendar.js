@@ -60,7 +60,7 @@ export class SPACE1889WorldCalendar extends foundry.data.CalendarData
 			dayOfWeek += 7;
 
 		const zeroInfo = game.settings.get("space1889", "yearZero").split("|");
-		const isYearZeroSet = Boolean(zeroInfo[0]);
+		const isYearZeroSet = (String(zeroInfo[0]).toLowerCase() === 'true');
 		const yearZero = isYearZeroSet ? Number(zeroInfo[1]) : 1970;
 		let year = yearZero;
 		let daysInYear = 0;
