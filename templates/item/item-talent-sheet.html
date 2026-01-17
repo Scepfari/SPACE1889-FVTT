@@ -253,7 +253,7 @@
 		{{#if (eq system.bonusTargetType 'health')}}
 		<div class="resource">
 			<select name="system.bonusTarget" data-dtype="String">
-				{{selectOptions system.emptyEntry selected=system.bonusTarget valueAttr="key" labelAttr="label"}}
+				{{selectOptions system.healthType selected=system.bonusTarget valueAttr="key" labelAttr="label"}}
 			</select>
 		</div>
 		{{/if}}

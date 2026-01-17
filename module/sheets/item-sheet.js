@@ -171,6 +171,7 @@ export class Space1889ItemSheet extends foundry.applications.api.HandlebarsAppli
 			context.system['weaknesses'] = await SPACE1889Helper.getSortedWeaknesses();
 			context.system['skillGroups'] = SPACE1889Helper.getSortedSkillGroups();
 			context.system['emptyEntry'] = [{ key: "", label: "" }];
+			context.system['healthType'] = [{ key: "max", label: game.i18n.localize("SPACE1889.Max") }];
 			context.system['bonusTypes'] = SPACE1889Helper.getSortedTalentBonusTypes();
 			context.system['senseTypes'] = SPACE1889Helper.getSortedSenseTypes();
 			context.system['specializations'] = context.system.bonusTargetType === "specialization"
