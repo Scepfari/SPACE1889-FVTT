@@ -1,5 +1,4 @@
 {
-	"name": "space1889",
 	"id": "space1889",
 	"title": "Space 1889",
 	"description": "The SPACE 1889 Ubiquity system for FoundryVTT!",
@@ -202,12 +201,10 @@
 	],
 	"background": "systems/space1889/icons/Space1889Background.jpg",
 	"socket": true,
-	"gridDistance": 1.5,
-	"gridUnits": "m",
-	"grid" : {
+	"grid": {
 		"distance": 1.5,
-		"units": "m" 
-	}, 
+		"units": "m"
+	},
 	"primaryTokenAttribute": "health",
 	"url": "https://github.com/Scepfari/SPACE1889-FVTT",
 	"manifest": "https://github.com/Scepfari/SPACE1889-FVTT/releases/latest/download/system.json",

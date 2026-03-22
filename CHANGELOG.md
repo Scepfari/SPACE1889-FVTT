@@ -1,5 +1,17 @@
 # Changelog 
 
+## Marsianische Dunkle Zeiten
+
+### v3.0.0
+- Unterstützung von Foundry V13 
+- V12 und älter bleibt auf Version 2.3.6 und wird nicht mehr weitergepflegt
+- Effekte für Fertigkeiten und Spezialisierungen (analog zu denen der Talente), um z.B. das Level zu modifizieren ohne die EP Kosten zu beeinflussen.
+- Kampagnen Effekt für Fertigkeiten und Spezialisierungen, also für das erste Level ohne EP zu verbrauchen, alle weiteren Steigerungen dann regulär oder über Effekte
+- Umstellung auf App V2 
+- Einbau eines systemeigenen Kalenders, Zeitsteuerung und Monatsansicht (Dank an den DSA Entwickler Plushtoast für die Inspiration) 
+- Kompendium Umstellung auf leveldb und Umstruckturierung der Verzeichnisse
+ 
+
 ## Mondreich
 
 ### v2.3.6
