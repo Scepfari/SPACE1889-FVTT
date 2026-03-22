@@ -163,8 +163,17 @@ export class SPACE1889WorldCalendar extends foundry.data.CalendarData
 
 	static formatTimeDateFromTimeStamp(timestamp)
 	{
-		const dateComponents = this.timeToComponents(timestamp);
+		const dateComponents = game.time.calendar.timeToComponents(timestamp);
 		return this.formatTimeDate(dateComponents);
+	}
+
+	static formatLongDateFromTimeStamp(timestamp)
+	{
+		if (timestamp === undefined)
+			return game.i18n.localize("SPACE1889.Calendar.invalidTimeStamp");
+
+		const dateComponents = game.time.calendar.timeToComponents(timestamp);
+		return this.formatLongDate(dateComponents);
 	}
 
 	static formatTimeDate(date)
@@ -183,6 +192,15 @@ export class SPACE1889WorldCalendar extends foundry.data.CalendarData
 		let text = dayOfTheWeek + ", " + (date.dayOfMonth + 1).toString() + ". " + monthName + " " + date.year.toString() +
 			" - " + date.hour.toString() + ":" + (date.minute < 10 ? "0" : "") + date.minute.toString() +
 			":" + (date.second < 10 ? "0" : "") + date.second.toString();
+		return text;
+	}
+
+	static formatLongDate(date)
+	{
+		const dayOfTheWeek = game.i18n.localize(game.time.calendar.days.values[date.dayOfWeek].name);
+		const monthName = game.i18n.localize(game.time.calendar.months.values[date.month].name);
+
+		let text = dayOfTheWeek + ", " + (date.dayOfMonth + 1).toString() + ". " + monthName + " " + date.year.toString();
 		return text;
 	}
 

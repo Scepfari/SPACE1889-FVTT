@@ -17,7 +17,7 @@ export class CalendarMonthlyViewWidget extends foundry.applications.api.Handleba
 			title: 'SPACE1889.Calendar.MonthlyView',
 			icon: 'fa-solid fa-calendar',
 			//minimizable: false,
-			resizable: false
+			resizable: true
 		},
 		position: {
 			width: 400,

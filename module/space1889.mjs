@@ -50,6 +50,7 @@ Hooks.once('init', async function() {
 		combat: SPACE1889Combat,
 		healing: SPACE1889Healing,
 		time: SPACE1889Time,
+		calendar: SPACE1889WorldCalendar,
 		apps: {
 			CalendarMonthlyViewWidget,
 			CalendarWidget: new CalendarWidget()
@@ -474,6 +475,11 @@ Handlebars.registerHelper('doubleCheck', function (firstLeft, fistRight, secondL
 Handlebars.registerHelper('formatTime', function (gameTime)
 {
 	return SPACE1889Time.formatTimeDate(SPACE1889Time.getTimeAndDate(gameTime));
+});
+
+Handlebars.registerHelper('formatLongDate', function (gameTime)
+{
+	return SPACE1889WorldCalendar.formatLongDateFromTimeStamp(gameTime);
 });
 
 Handlebars.registerHelper('formatEffectDuration', function (effectDuration)

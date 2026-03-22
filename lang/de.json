@@ -115,6 +115,18 @@
 	"SPACE1889.Calendar.GoToToday": "Gehe zum aktuellen Datum",
 	"SPACE1889.Calendar.CurrentDate": "Aktuelles Datum:",
 	"SPACE1889.Calendar.SelectDayClickToolTip": "<i class=\"fas fa-mouseLeftClick\"></i> : auswählen<br/> [Strg] + [Shift] + <i class=\"fas fa-mouseLeftClick\"></i> : Datum setzen",
+	"SPACE1889.Calendar.categorie.general": " - ",
+	"SPACE1889.Calendar.categorie.holidays": "Feiertag",
+	"SPACE1889.Calendar.categorie.event": "Jahrestag",
+	"SPACE1889.Calendar.categorie.story": "Handlung",
+	"SPACE1889.Calendar.journalFields.calendarInfo": "Kalenderinformation",
+	"SPACE1889.Calendar.journalFields.title": "Name",
+	"SPACE1889.Calendar.journalFields.content": "Beschreibung",
+	"SPACE1889.Calendar.journalFields.from": "von",
+	"SPACE1889.Calendar.journalFields.to": "bis",
+	"SPACE1889.Calendar.journalFields.category": "Kategorie",
+	"SPACE1889.Calendar.journalFields.recurring": "Wiederkehrendes Ereignis",
+	"SPACE1889.Calendar.invalidTimeStamp": "Der Zeitstempel ist ungültig",
 
 	"SPACE1889.ImageTooltip": "<i class=\"fas fa-mouseLeftClick\"></i> : Bild ändern<br/><i class=\"fas fa-mouseRightClick\"></i> : Bild in einem eigenen Fenster öffnen",
 

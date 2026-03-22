@@ -1117,6 +1117,10 @@ font-size: 12px;
 	transition: opacity .15s ease-in-out
 }
 
+.space1889CalendarWidget .shiftToRight {
+	left: 100%;
+}
+
 .center {
 	text-align: center
 }
