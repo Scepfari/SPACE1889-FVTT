@@ -1272,11 +1272,16 @@ font-size: 12px;
 	text-shadow: 0 0 2px hsla(0,0%,100%,.8);
 }
 
-	.space1889CalendarMonthlyView .calendar-grid .calendar-day .moon-indicator .moon-phase-last-quarter {
-		color: #333 !important;
-		text-shadow: 0 0 rgba(255, 255, 255, 0.9);
-		filter: drop-shadow(0 0 1px rgba(255, 255, 255, 0.9));
-	}
+.space1889CalendarMonthlyView .calendar-grid .calendar-day .moon-indicator .moon-phase-last-quarter {
+	color: #333 !important;
+	text-shadow: 0 0 rgba(255, 255, 255, 0.9);
+	filter: drop-shadow(0 0 1px rgba(255, 255, 255, 0.9));
+}
+
+.marginauto{
+	margin: 5px auto 5px;
+	display: block;
+}
 
 /*foundry werte überschreiben*/
 .window-content {
