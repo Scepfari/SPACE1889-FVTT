@@ -1293,6 +1293,7 @@ export class Space1889ActorSheet extends foundry.applications.api.HandlebarsAppl
 				targetContainerId = (target.type == "container" ? target._id : target.system.containerId);
 		}
 
+		itemData.id = item._id;
 		if (itemData.system.containerId != targetContainerId)
 		{
 			if (item.type === "lightSource" && item.system.isActive)
