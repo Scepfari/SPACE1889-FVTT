@@ -1,5 +1,7 @@
 import { SPACE1889WorldCalendar } from "../calendar/calendar.js";
 import { SPACE1889CalendarConfig } from '../calendar/calendarConfig.js';
+import SPACE1889Helper from "../helpers/helper.js";
+import SPACE1889Time from "../helpers/time.js";
 export class CalendarMonthlyViewWidget extends foundry.applications.api.HandlebarsApplicationMixin(foundry.applications.api.ApplicationV2) {
 
 	constructor(parent)
@@ -223,7 +225,7 @@ export class CalendarMonthlyViewWidget extends foundry.applications.api.Handleba
 	async _onSelectDate(event, _target)
 	{
 		//		const calendarDay = target.closest('.calendar-day');
-		const setDate = game.user?.isGM && event.ctrlKey && event.shiftKey;
+		const setDate = event.ctrlKey && event.shiftKey;
 		const selectedDay = _target.dataset.day - 1;
 		const components = game.time.calendar.timeToComponents(this.parent.calendarViewDate);
 		const delta = selectedDay - components.dayOfMonth;
@@ -233,7 +235,7 @@ export class CalendarMonthlyViewWidget extends foundry.applications.api.Handleba
 		if (setDate)
 		{
 			const offset = newTimestamp - game.time.worldTime;
-			game.time.advance(offset);
+			SPACE1889Time.changeDate(offset);
 		}
 		this.render(true);
 	}

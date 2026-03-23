@@ -1,5 +1,8 @@
 import { SPACE1889WorldCalendar } from "../calendar/calendar.js";
+import SPACE1889Helper from "../helpers/helper.js";
+import SPACE1889Time from "../helpers/time.js";
 import { CalendarMonthlyViewWidget } from './calendarMonthlyView.js';
+
 export class CalendarWidget extends foundry.applications.api.HandlebarsApplicationMixin(foundry.applications.api.ApplicationV2) {
 	static SECONDS_PER_HOUR = 3600;
 	static SECONDS_PER_DAY = 24 * this.SECONDS_PER_HOUR;
@@ -67,7 +70,7 @@ export class CalendarWidget extends foundry.applications.api.HandlebarsApplicati
 		else if (ev.shiftKey && ev.ctrlKey)
 			seconds = 30;
 
-		game.time.advance(seconds * factor);
+		SPACE1889Time.changeDate(seconds * factor);
 	}
 
 	static forward(ev, target)
@@ -81,7 +84,7 @@ export class CalendarWidget extends foundry.applications.api.HandlebarsApplicati
 		else if (ev.shiftKey && ev.ctrlKey)
 			seconds = 1800;
 
-		game.time.advance(seconds * factor);
+		SPACE1889Time.changeDate(seconds * factor);
 	}
 
 	static fastForward(ev, target)
@@ -95,7 +98,7 @@ export class CalendarWidget extends foundry.applications.api.HandlebarsApplicati
 		else if (ev.shiftKey && ev.ctrlKey)
 			seconds = this.constructor.SECONDS_PER_DAY;
 
-		game.time.advance(seconds * factor);
+		SPACE1889Time.changeDate(seconds * factor);
 	}
 
 	async _onRender(context, options)
@@ -105,7 +108,7 @@ export class CalendarWidget extends foundry.applications.api.HandlebarsApplicati
 		if (this.calendarMonthlyView)
 			this.calendarMonthlyView.render();
 
-		if (!game.user.isGM)
+		if (!SPACE1889Helper.hasUserTimeControl())
 			return;
 
 		this._setupDragHandlers();
@@ -210,6 +213,6 @@ export class CalendarWidget extends foundry.applications.api.HandlebarsApplicati
 		const advanceTime = Math.floor(newSeconds - currentSeconds);
 		if (advanceTime === 0) return;
 
-		game.time.advance(advanceTime);
+		SPACE1889Time.changeDate(advanceTime);
 	}
 }

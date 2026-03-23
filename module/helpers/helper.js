@@ -1349,6 +1349,12 @@ export default class SPACE1889Helper
 		return game.i18n.localize(langId);
 	}
 
+	static hasUserTimeControl()
+	{
+		const accepptTrusted = game.settings.get("space1889", "trustedPlayerCanChangeTime");
+		return game.user.isGM || (accepptTrusted && game.user.isTrusted);
+	}
+
 	static hasTokenConfigurePermission(displayNotificationOnFail = true)
 	{
 		if (game.user.hasPermission("TOKEN_CONFIGURE"))

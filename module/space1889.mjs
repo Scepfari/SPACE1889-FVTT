@@ -507,6 +507,11 @@ Handlebars.registerHelper('isNotTrusted', function (str)
 	return !game.user.isTrusted;
 });
 
+Handlebars.registerHelper('hasTimeControl', function (str)
+{
+	return SPACE1889Helper.hasUserTimeControl();
+});
+
 Handlebars.registerHelper('hasTokenConfigurePermission', function ()
 {
 	return SPACE1889Helper.hasTokenConfigurePermission(false);
@@ -686,6 +691,12 @@ Hooks.once("ready", async function() {
 				case "addLightSource":
 					{
 						SPACE1889Light.createLightSourceOnScene(data.payload.tokenId, data.payload.lightSourceId, data.payload.sceneId);
+					}
+					break;
+				case "changeTime":
+					{
+						if (game.settings.get("space1889", "trustedPlayerCanChangeTime"))
+							game.time.advance(data.timeData.offsetInSeconds);
 					}
 					break;
 				default:

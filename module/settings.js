@@ -176,6 +176,17 @@ export const registerSystemSettings = function ()
 			type: String
 		});
 
+	game.settings.register("space1889", "trustedPlayerCanChangeTime",
+	{
+		name: "SPACE1889.ConfigTrustedPlayerCanChangeTime",
+		hint: "SPACE1889.ConfigTrustedPlayerCanChangeTimeInfo",
+		scope: "world",
+		config: true,
+		default: true,
+		type: Boolean,
+		requiresReload: true
+	});
+
 	game.settings.register("space1889", "combatAutoTokenSelect",
 	{
 		name: "SPACE1889.ConfigUseCombatAutoTokenSelect",

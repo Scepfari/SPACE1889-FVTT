@@ -8,7 +8,7 @@
 			<span class="timeIndicator">{{dateString}}</span>
 			<div class="slideIndicator"></div>
 		</div>
-		{{#if isGM}}
+		{{#if (hasTimeControl)}}
 			<button type='button' class='visibilitynone noBorder ui-control space1889-WidgetTimeButton' data-tooltip='SPACE1889.Calendar.smallForward' data-action='smallForward'><img src="systems/space1889/icons/svg/smallForward.svg" class="space1889-TimeButtonIcon" /></button>
 			<button type='button' class='visibilitynone noBorder ui-control space1889-WidgetTimeButton' data-tooltip='SPACE1889.Calendar.forward' data-action='forward'><img src="systems/space1889/icons/svg/forward.svg" class="space1889-TimeButtonIcon" /></button>
 			<button type='button' class='visibilitynone noBorder ui-control space1889-WidgetTimeButton' data-tooltip='SPACE1889.Calendar.fastForward' data-action='fastForward'><img src="systems/space1889/icons/svg/fastForward.svg" class="space1889-TimeButtonIcon" /></button>

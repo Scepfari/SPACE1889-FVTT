@@ -3152,6 +3152,8 @@
 	"SPACE1889.ConfigHideInitiativeRollsInChatInfo": "Prevents the display of initiative rolls in the chat, for all players as well as the GM",
 	"SPACE1889.ConfigNoDeductionsInExtendedActions": "No deductions in Extended Actions",
 	"SPACE1889.ConfigNoDeductionsInExtendedActionsInfo": "If the Difficulty Rating is not reached on a roll for a Extended Action, the difference is not subtracted from the number of already accumulated successes. The option only sets the default, GM and trusted players can set the behavior for each extended action separately",
+	"SPACE1889.ConfigTrustedPlayerCanChangeTime": "Time control for trusted players",
+	"SPACE1889.ConfigTrustedPlayerCanChangeTimeInfo": "Trusted players are allowed to change the \"In-game\" time and date",
 
 	"SPACE1889.HeroLevelPechvogel": "Unlucky Fellow",
 	"SPACE1889.HeroLevelDurchschnittsbuerger": "Everyman",

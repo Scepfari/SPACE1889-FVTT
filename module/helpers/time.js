@@ -159,7 +159,19 @@ export default class SPACE1889Time
 
 	static changeDate(offsetInSeconds)
 	{
-		game.time.advance(offsetInSeconds);
+		if (game.user.isGM)
+			game.time.advance(offsetInSeconds);
+		else if (SPACE1889Helper.hasUserTimeControl())
+		{
+			game.socket.emit("system.space1889", {
+				type: "changeTime",
+				timeData: {
+					offsetInSeconds: offsetInSeconds
+				}
+			});
+		}
+		else
+			ui.notifications.info(game.i18n.format("SPACE1889.CanNotSetTime", { seconds: offsetInSeconds }));
 	}
 
 	static #dateTimeChanged()
