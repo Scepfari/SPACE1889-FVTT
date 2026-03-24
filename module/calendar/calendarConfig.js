@@ -53,14 +53,14 @@ export const SPACE1889CalendarConfig = {
 	},
 	moon: {
 		phases: [
-			{ name: 'New Moon', length: 1, lightAdjust: 0 },
-			{ name: 'Waxing Crescent', length: 6.3826475, lightAdjust: 0.25 },
-			{ name: 'First Quarter', length: 1, lightAdjust: 0.5 },
-			{ name: 'Waxing Gibbous', length: 6.3826475, lightAdjust: 0.75 },
-			{ name: 'Full Moon', length: 1, lightAdjust: 1 },
-			{ name: 'Waning Gibbous', length: 6.3826475,  lightAdjust: 0.75 },
-			{ name: 'Last Quarter', length: 1,  lightAdjust: 0.5 },
-			{ name: 'Waning Crescent', length: 6.3826475, lightAdjust: 0.25 },
+			{ name: 'New Moon', length: 1, lightAdjust: 0, langId: "SPACE1889.Calendar.Moon.NewMoon"},
+			{ name: 'Waxing Crescent', length: 6.3826475, lightAdjust: 0.25, langId: "SPACE1889.Calendar.Moon.WaxingCrescent" },
+			{ name: 'First Quarter', length: 1, lightAdjust: 0.5, langId: "SPACE1889.Calendar.Moon.FirstQuarter" },
+			{ name: 'Waxing Gibbous', length: 6.3826475, lightAdjust: 0.75, langId: "SPACE1889.Calendar.Moon.WaxingGibbous" },
+			{ name: 'Full Moon', length: 1, lightAdjust: 1, langId: "SPACE1889.Calendar.Moon.FullMoon" },
+			{ name: 'Waning Gibbous', length: 6.3826475,  lightAdjust: 0.75, langId: "SPACE1889.Calendar.Moon.WaningGibbous" },
+			{ name: 'Last Quarter', length: 1,  lightAdjust: 0.5, langId: "SPACE1889.Calendar.Moon.LastQuarter" },
+			{ name: 'Waning Crescent', length: 6.3826475, lightAdjust: 0.25, langId: "SPACE1889.Calendar.Moon.WaningCrescent" },
 		],
 		"cycleLength": 29.53059, // in days
 		"cycleLengthInSeconds": 2551442.976, 

@@ -127,6 +127,14 @@
 	"SPACE1889.Calendar.journalFields.category": "Category",
 	"SPACE1889.Calendar.journalFields.recurring": "Recurring event",
 	"SPACE1889.Calendar.invalidTimeStamp": "Invalid time stamp",
+	"SPACE1889.Calendar.Moon.NewMoon": "New Moon",
+	"SPACE1889.Calendar.Moon.WaxingCrescent": "Waxing Crescent",
+	"SPACE1889.Calendar.Moon.FirstQuarter": "First Quarter",
+	"SPACE1889.Calendar.Moon.WaxingGibbous": "Waxing Gibbous",
+	"SPACE1889.Calendar.Moon.FullMoon": "FullMoon",
+	"SPACE1889.Calendar.Moon.WaningGibbous": "Waning Gibbous",
+	"SPACE1889.Calendar.Moon.LastQuarter": "Last Quarter",
+	"SPACE1889.Calendar.Moon.WaningCrescent": "Waning Crescent",
 
 	"SPACE1889.ImageTooltip": "<i class=\"fas fa-mouseLeftClick\"></i> : change image<br/><i class=\"fas fa-mouseRightClick\"></i> : Open image in a separate window",
 

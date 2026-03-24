@@ -42,7 +42,8 @@ export class CalendarWidget extends foundry.applications.api.HandlebarsApplicati
 
 		data.components = components;
 		data.dateString = SPACE1889WorldCalendar.formatLongTimeDate(components);
-		data.dateTooltip = game.i18n.localize(game.time.calendar.months.values[components.month].name);
+		const moonInfo = game.time.calendar.calculateMoonPhaseForDate(game.time.worldTime);
+		data.dateTooltip = game.i18n.format("SPACE1889.Calendar.Moon.Info", { moonphase: game.i18n.localize(moonInfo.phase.langId), phaseday: moonInfo.phaseDay }) ;
 		data.autoDarknessEnabled = game.settings.get('space1889', 'darknessByDayTime');
 		data.isGM = game.user.isGM;
 		data.dayProgress = Math.round(secondsInDay / this.constructor.SECONDS_PER_DAY * 100);

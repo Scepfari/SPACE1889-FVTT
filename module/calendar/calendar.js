@@ -246,6 +246,7 @@ export class SPACE1889WorldCalendar extends foundry.data.CalendarData
 		return {
 			phase: currentPhase,
 			phaseIndex: currentPhaseIndex,
+			phaseDay: daysIntoPhase
 		};
 	}
 
