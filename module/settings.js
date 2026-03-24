@@ -152,7 +152,7 @@ export const registerSystemSettings = function ()
 			hint: "space1889 version",
 			scope: "world",
 			config: false,
-			default: "0.7.4",
+			default: "0.0.0",
 			type: String
 		});
 

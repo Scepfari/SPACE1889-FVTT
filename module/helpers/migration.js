@@ -7,21 +7,25 @@ export class Space1889Migration
 		const currentVersion = game.system.version;
 		const lastUsedVersion = game.settings.get("space1889", "lastUsedSystemVersion");
 		const lastUsedFoundryVersion = game.settings.get("space1889", "lastUsedFoundryVersion");
+		const isNewWorld = lastUsedVersion == "0.0.0";
 
 		if (foundry.utils.isNewerVersion(currentVersion, lastUsedVersion) && game.user.isGM)
 		{
-			await this.fixEisenschaedel(lastUsedVersion);
-			await this.fixVolleAbwehr(lastUsedVersion);
-			await this.ammunitionIntroduction(lastUsedVersion);
-			await this.weaponTwoHandedIntroduction(lastUsedVersion);
-			await this.containerIntroduction(lastUsedVersion);
-			await this.damageRework(lastUsedVersion);
-			await this.updateTalentSkillGroup(lastUsedVersion);
+			if (!isNewWorld)
+			{
+				await this.fixEisenschaedel(lastUsedVersion);
+				await this.fixVolleAbwehr(lastUsedVersion);
+				await this.ammunitionIntroduction(lastUsedVersion);
+				await this.weaponTwoHandedIntroduction(lastUsedVersion);
+				await this.containerIntroduction(lastUsedVersion);
+				await this.damageRework(lastUsedVersion);
+				await this.updateTalentSkillGroup(lastUsedVersion);
+			}
 			await game.settings.set("space1889", "lastUsedSystemVersion", currentVersion);
 		}
 		if (game.user.isGM)
 		{
-			await this.migrateEffectsForFoundryV11(lastUsedVersion, lastUsedFoundryVersion);
+			await this.migrateEffectsForFoundryV11(lastUsedVersion, lastUsedFoundryVersion, isNewWorld);
 			await this.migrateSimpleCalendar(lastUsedVersion, lastUsedFoundryVersion);
 			await game.settings.set("space1889", "lastUsedFoundryVersion", game.version);
 		}		
@@ -245,9 +249,9 @@ export class Space1889Migration
 		}
 	}	
 
-	static async migrateEffectsForFoundryV11(lastUsedVersion, lastUsedFoundryVersion)
+	static async migrateEffectsForFoundryV11(lastUsedVersion, lastUsedFoundryVersion, isNewWorld)
 	{
-		if (SPACE1889Helper.isFoundryV10Running())
+		if (SPACE1889Helper.isFoundryV10Running() || isNewWorld)
 			return;
 
 		const lastNonFixVersion = "2.0.0";
