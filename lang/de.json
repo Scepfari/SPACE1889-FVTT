@@ -135,7 +135,7 @@
 	"SPACE1889.Calendar.Moon.WaningGibbous": "abnehmender Dreiviertelmond",
 	"SPACE1889.Calendar.Moon.LastQuarter": "abnehmender Halbmond",
 	"SPACE1889.Calendar.Moon.WaningCrescent": "abnehmende Sichel",
-	"SPACE1889.Calendar.Moon.Info": "Erdmond: {moonphase} (Tag {phaseday})",
+	"SPACE1889.Calendar.Moon.Info": "Luna: {moonphase} (Phasentag {phaseday})",
 
 	"SPACE1889.ImageTooltip": "<i class=\"fas fa-mouseLeftClick\"></i> : Bild ändern<br/><i class=\"fas fa-mouseRightClick\"></i> : Bild in einem eigenen Fenster öffnen",
 

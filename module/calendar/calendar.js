@@ -210,7 +210,7 @@ export class SPACE1889WorldCalendar extends foundry.data.CalendarData
 		return 86400;
 	}
 
-	calculateMoonPhaseForDate(dateTimestamp)
+	calculateMoonPhaseForDate(dateTimestamp, useExactTime = false)
 	{
 		if (game.time.calendar.constructor.name != "SPACE1889WorldCalendar")
 			return {};
@@ -221,8 +221,17 @@ export class SPACE1889WorldCalendar extends foundry.data.CalendarData
 			moon.firstNewMoonTimestampBasedOnZeroYear1970 :
 			this.componentsToTime(moon.firstNewMoon);
 
+		let timestamp = dateTimestamp;
+		if (!useExactTime)
+		{
+			let components = this.timeToComponents(dateTimestamp);
+			components.second = 59;
+			components.minute = 59;
+			components.hour = 23;
+			timestamp = this.componentsToTime(components);
+		}
 
-		const delta = dateTimestamp - referenceDate;
+		const delta = timestamp - referenceDate;
 		const adjustedSeconds = delta >= 0
 			? delta
 			: delta +

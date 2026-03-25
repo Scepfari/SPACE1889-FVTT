@@ -135,6 +135,7 @@
 	"SPACE1889.Calendar.Moon.WaningGibbous": "Waning Gibbous",
 	"SPACE1889.Calendar.Moon.LastQuarter": "Last Quarter",
 	"SPACE1889.Calendar.Moon.WaningCrescent": "Waning Crescent",
+	"SPACE1889.Calendar.Moon.Info": "Luna: {moonphase} (phase day {phaseday})",
 
 	"SPACE1889.ImageTooltip": "<i class=\"fas fa-mouseLeftClick\"></i> : change image<br/><i class=\"fas fa-mouseRightClick\"></i> : Open image in a separate window",
 

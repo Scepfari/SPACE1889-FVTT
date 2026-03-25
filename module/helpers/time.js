@@ -114,13 +114,13 @@ export default class SPACE1889Time
 		return { year: year, month: month, day: day, hour: hour, minute: minute, second: second };
 	}
 
-	static dateStringToTimestamp(datestring, format)
+	static dateStringToTimestamp(datestring, format, overrideYearZero = false, modifiedYearZero = 1970)
 	{
 		if (this.isCalendarEnabled())
 		{
 			const theDate = this.stringToDate(datestring, format)
 			const secondsPerDay = game.time.calendar.secondsPerDay();
-			const yearZero = SPACE1889CalendarConfig.years.yearZero;
+			const yearZero = overrideYearZero ? SPACE1889CalendarConfig.years.yearZero : modifiedYearZero;
 			let totalDays = 0;
 
 			if (theDate.year >= yearZero)
