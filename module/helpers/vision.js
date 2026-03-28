@@ -19,6 +19,9 @@ export default class SPACE1889Vision
 			}
 		}
 
+		if (!game.scenes.viewed)
+			return;
+
 		for (const token of game.scenes.viewed.tokens)
 		{
 			if (token.actor.type === "vehicle" || (token.actorLink && token.actor.type === "character"))
@@ -70,7 +73,7 @@ export default class SPACE1889Vision
 
 		if (token)
 			this._resetTokenVision(token, actor?.prototypeToken);
-		else
+		else if (game.scenes.viewed)
 		{
 			const tokens = game.scenes.viewed.tokens.filter(e => e.actorId === actor.id);
 			for (let tok of tokens)
@@ -110,11 +113,14 @@ export default class SPACE1889Vision
 			"system.emissionStartTimestamp": 0
 		});
 
-		let tokens = game.scenes.viewed.tokens.filter(e => e.actorId === actor.id);
-		for (let token of tokens)
+		if (game.scenes.viewed)
 		{
-			if (token)
-				this._resetTokenVision(token, game.actors.get(actor._id)?.prototypeToken);
+			let tokens = game.scenes.viewed.tokens.filter(e => e.actorId === actor.id);
+			for (let token of tokens)
+			{
+				if (token)
+					this._resetTokenVision(token, game.actors.get(actor._id)?.prototypeToken);
+			}
 		}
 
 		const timeAsString = SPACE1889Time.isCalendarEnabled() ? SPACE1889Time.getCurrentTimeDateString() : "";
@@ -185,10 +191,13 @@ export default class SPACE1889Vision
 		else
 			await visionItem.update({ "system.isActive": true });
 
-		let tokens = game.scenes.viewed.tokens.filter(e => e.actorId === actor.id);
-		for (let token of tokens)
+		if (game.scenes.viewed)
 		{
-			await this._setTokenVision(visionItem, token);
+			let tokens = game.scenes.viewed.tokens.filter(e => e.actorId === actor.id);
+			for (let token of tokens)
+			{
+				await this._setTokenVision(visionItem, token);
+			}
 		}
 
 		const timeAsString = SPACE1889Time.isCalendarEnabled() ? SPACE1889Time.getCurrentTimeDateString() : "";
@@ -259,7 +268,7 @@ export default class SPACE1889Vision
 
 	static async redoTokenVision(event)
 	{
-		if (!SPACE1889Helper.hasTokenConfigurePermission())
+		if (!SPACE1889Helper.hasTokenConfigurePermission() || !game.scenes.viewed)
 			return;
 
 		const resetVision = event?.shiftKey && event?.ctrlKey;

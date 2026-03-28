@@ -18,6 +18,9 @@ export default class SPACE1889Light
 			}
 		}
 
+		if (!game.scenes.viewed)
+			return;
+
 		for (const token of game.scenes.viewed.tokens)
 		{
 			if (token.actor.type === "vehicle" || (token.actorLink && token.actor.type === "character"))
@@ -94,7 +97,7 @@ export default class SPACE1889Light
 
 		if (token)
 			this._resetTokenLight(token, actor?.prototypeToken);
-		else
+		else if (game.scenes.viewed != undefined)
 		{
 			const tokens = game.scenes.viewed.tokens.filter(e => e.actorId === actor.id);
 			for (let tok of tokens)
@@ -134,11 +137,14 @@ export default class SPACE1889Light
 			"system.emissionStartTimestamp": 0
 		});
 
-		let tokens = game.scenes.viewed.tokens.filter(e => e.actorId === actor.id);
-		for (let token of tokens)
+		if (game.scenes.viewed != undefined)
 		{
-			if (token)
-				this._resetTokenLight(token, game.actors.get(actor._id)?.prototypeToken);
+			let tokens = game.scenes.viewed.tokens.filter(e => e.actorId === actor.id);
+			for (let token of tokens)
+			{
+				if (token)
+					this._resetTokenLight(token, game.actors.get(actor._id)?.prototypeToken);
+			}
 		}
 
 		const timeAsString = SPACE1889Time.isCalendarEnabled() ? SPACE1889Time.getCurrentTimeDateString() : "";
@@ -268,10 +274,13 @@ export default class SPACE1889Light
 		else
 			await lightSource.update({ "system.isActive": true });
 
-		let tokens = game.scenes.viewed.tokens.filter(e => e.actorId === actor.id);
-		for (let token of tokens)
+		if (game.scenes.viewed != undefined)
 		{
-			await this._setTokenLight(lightSource, token);
+			let tokens = game.scenes.viewed.tokens.filter(e => e.actorId === actor.id);
+			for (let token of tokens)
+			{
+				await this._setTokenLight(lightSource, token);
+			}
 		}
 
 		const timeAsString = SPACE1889Time.isCalendarEnabled() ? SPACE1889Time.getCurrentTimeDateString() : "";
@@ -484,7 +493,7 @@ export default class SPACE1889Light
 		{
 			if (game.user.isGM)
 			{
-				await this.createLightSourceOnScene(tokenDocument.id, item.id, game.scenes.viewed.id);
+				await this.createLightSourceOnScene(tokenDocument.id, item.id, game.scenes.viewed?.id);
 			}
 			else
 			{
@@ -492,7 +501,7 @@ export default class SPACE1889Light
 					type: "addLightSource",
 					payload: {
 						tokenId: tokenDocument.id,
-						sceneId: game.scenes.viewed.id,
+						sceneId: game.scenes.viewed?.id,
 						lightSourceId: item.id
 					}
 				});
@@ -570,6 +579,9 @@ export default class SPACE1889Light
 			
 		});
 
+		if (!game.scenes.viewed)
+			return;
+
 		const tokens = game.scenes.viewed.tokens.filter(e => e.actorId === actor.id);
 		for (let token of tokens)
 		{
@@ -599,7 +611,7 @@ export default class SPACE1889Light
 
 	static async redoTokenLight(event)
 	{
-		if (!SPACE1889Helper.hasTokenConfigurePermission())
+		if (!SPACE1889Helper.hasTokenConfigurePermission() || !game.scenes.viewed)
 			return;
 
 		const resetLight = event?.shiftKey && event?.ctrlKey;
