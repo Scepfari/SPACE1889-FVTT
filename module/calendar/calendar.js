@@ -5,10 +5,56 @@ export class SPACE1889WorldCalendar extends foundry.data.CalendarData
 	static init()
 	{
 		CONFIG.time.worldCalendarConfig = SPACE1889CalendarConfig;
+		const yearZero = SPACE1889WorldCalendar.getYearZero();
+		const firstWeekday = SPACE1889WorldCalendar.calcFirstWeekdayOfYear(yearZero);
+		CONFIG.time.worldCalendarConfig.years.yearZero = yearZero;
+		CONFIG.time.worldCalendarConfig.years.firstWeekday = firstWeekday;
 		CONFIG.time.worldCalendarClass = this;
 	}
 
-	isLeapYear(year)
+	static getYearZero()
+	{
+		const zeroInfo = game.settings.get("space1889", "yearZero").split("|");
+		const isYearZeroSet = (String(zeroInfo[0]).toLowerCase() === 'true');
+		const yearZero = isYearZeroSet ? Number(zeroInfo[1]) : 1970;
+		return yearZero;
+	}
+
+	static calcFirstWeekdayOfYear(theYear)
+	{
+		if (theYear == 1970)
+			return 3; // SPACE1889CalendarConfig.years.firstWeekday;
+		if (theYear == 1889)
+			return 1;
+
+		const baseYear = SPACE1889CalendarConfig.years.yearZero;
+		const day = SPACE1889CalendarConfig.years.firstWeekday;
+		let dayOffset = 0;
+		let firstWeekday = 0;
+
+		if (baseYear < theYear)
+		{
+			dayOffset = day;
+			for (let year = baseYear; year < theYear; ++year)
+			{
+				dayOffset += SPACE1889WorldCalendar.isLeapYear(year) ? 2 : 1;
+			}
+			firstWeekday = dayOffset % 7;
+		}
+		else
+		{
+			for (let year = theYear; year < baseYear; ++year)
+			{
+				dayOffset  += SPACE1889WorldCalendar.isLeapYear(year) ? 2 : 1;
+			}
+			firstWeekday = day - (dayOffset  % 7);
+			if (firstWeekday < 0)
+				firstWeekday += 7;
+		}
+		return firstWeekday;
+	}
+
+	static isLeapYear(year)
 	{
 		return (year % 4 === 0 && year % 100 !== 0) || (year % 400 === 0);
 	}
@@ -16,7 +62,7 @@ export class SPACE1889WorldCalendar extends foundry.data.CalendarData
 	daysInMonth(monthIndex, year)
 	{
 		const days = [31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31];
-		if (monthIndex === 1 && this.isLeapYear(year))
+		if (monthIndex === 1 && SPACE1889WorldCalendar.isLeapYear(year))
 		{
 			return 29;
 		}
@@ -25,7 +71,7 @@ export class SPACE1889WorldCalendar extends foundry.data.CalendarData
 
 	dayCountInYear(year)
 	{
-		return this.isLeapYear(year) ? 366 : 365;
+		return SPACE1889WorldCalendar.isLeapYear(year) ? 366 : 365;
 	}
 
 	getSeason(month, dayOfMonth)
@@ -51,18 +97,14 @@ export class SPACE1889WorldCalendar extends foundry.data.CalendarData
 			secondsInDay += secondsPerDay;
 			days -= 1;
 		}
-
-		const firstWeekday = SPACE1889CalendarConfig.years.firstWeekday; // 1.1.1970 war ein Donnerstag
-		// const firstWeekday = 1; // 1.1.1889 war ein Dienstag
+		
+		const firstWeekday = CONFIG.time.worldCalendarConfig.years.firstWeekday; // // 1.1.1889 war ein Dienstag => firstWeekday = 1
 		const totalWeekdays = days + firstWeekday;
 		let dayOfWeek = totalWeekdays % 7; //this.days.values.length;
 		if (dayOfWeek < 0)
 			dayOfWeek += 7;
 
-		const zeroInfo = game.settings.get("space1889", "yearZero").split("|");
-		const isYearZeroSet = (String(zeroInfo[0]).toLowerCase() === 'true');
-		const yearZero = isYearZeroSet ? Number(zeroInfo[1]) : 1970;
-		let year = yearZero;
+		let year = SPACE1889WorldCalendar.getYearZero();
 		let daysInYear = 0;
 
 		if (days >= 0)
@@ -109,8 +151,6 @@ export class SPACE1889WorldCalendar extends foundry.data.CalendarData
 		}
 
 		let dayOfMonth = days;
-		let leapYear = this.isLeapYear(year)
-
 		let season = this.getSeason(month, dayOfMonth);
 
 		const day = days;
@@ -123,7 +163,7 @@ export class SPACE1889WorldCalendar extends foundry.data.CalendarData
 			dayOfMonth: dayOfMonth,
 			dayOfWeek: dayOfWeek,
 			hour: hour,
-			leapYear: this.isLeapYear(year),
+			leapYear: SPACE1889WorldCalendar.isLeapYear(year),
 			minute: minute,
 			month: month,
 			season: season,
@@ -135,7 +175,7 @@ export class SPACE1889WorldCalendar extends foundry.data.CalendarData
 	componentsToTime(components)
 	{
 		const secondsPerDay = this.secondsPerDay();
-		const yearZero = SPACE1889CalendarConfig.years.yearZero;
+		const yearZero = SPACE1889WorldCalendar.getYearZero();
 		let totalDays = 0;
 
 		if (components.year >= yearZero)
@@ -301,7 +341,7 @@ export class SPACE1889WorldCalendar extends foundry.data.CalendarData
 	{
 		const leapDayTreshold = 31 + 28;
 		const data = SPACE1889WorldCalendar.prototype.timeToComponents(timestamp);
-		const isNextYearALeapYear = SPACE1889WorldCalendar.prototype.isLeapYear(data.year + 1);
+		const isNextYearALeapYear = SPACE1889WorldCalendar.isLeapYear(data.year + 1);
 
 		let offset = SPACE1889CalendarConfig.days.daysPerYear;
 		if (data.isLeapYear && data.day < leapDayTreshold)
@@ -317,7 +357,7 @@ export class SPACE1889WorldCalendar extends foundry.data.CalendarData
 	{
 		const leapDayTreshold = 31 + 28;
 		const data = SPACE1889WorldCalendar.prototype.timeToComponents(timestamp);
-		const isPrevYearALeapYear = SPACE1889WorldCalendar.prototype.isLeapYear(data.year - 1);
+		const isPrevYearALeapYear = SPACE1889WorldCalendar.isLeapYear(data.year - 1);
 
 		let offset = SPACE1889CalendarConfig.days.daysPerYear;
 		if (data.isLeapYear && data.day >= leapDayTreshold)

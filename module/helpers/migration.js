@@ -8,6 +8,7 @@ export class Space1889Migration
 		const lastUsedVersion = game.settings.get("space1889", "lastUsedSystemVersion");
 		const lastUsedFoundryVersion = game.settings.get("space1889", "lastUsedFoundryVersion");
 		const isNewWorld = lastUsedVersion == "0.0.0";
+		let refreshCalendar = false;
 
 		if (foundry.utils.isNewerVersion(currentVersion, lastUsedVersion) && game.user.isGM)
 		{
@@ -26,9 +27,10 @@ export class Space1889Migration
 		if (game.user.isGM)
 		{
 			await this.migrateEffectsForFoundryV11(lastUsedVersion, lastUsedFoundryVersion, isNewWorld);
-			await this.migrateSimpleCalendar(lastUsedVersion, lastUsedFoundryVersion);
+			refreshCalendar = await this.migrateSimpleCalendar(lastUsedVersion, lastUsedFoundryVersion);
 			await game.settings.set("space1889", "lastUsedFoundryVersion", game.version);
-		}		
+		}
+		return refreshCalendar;
 	}
 
 	static async fixVolleAbwehr(lastUsedVersion)
@@ -278,19 +280,18 @@ export class Space1889Migration
 	{
 		const migrationVersion = "3.0.0"; //13.341
 		if (!game.user.isGM || !foundry.utils.isNewerVersion(migrationVersion, lastUsedVersion) || !foundry.utils.isNewerVersion("13.336", lastUsedFoundryVersion))
-			return;
+			return false;
 
 		const zeroInfo = game.settings.get("space1889", "yearZero").split("|");
 		const isYearZeroSet = (String(zeroInfo[0]).toLowerCase() === 'true');
-		const yearZero = isYearZeroSet ? Number(zeroInfo[1]) : 1970;
+		const yearZero = isYearZeroSet ? Number(zeroInfo[1]) : 1889;
 		if (!isYearZeroSet)
 		{
 			// SimpleCalendar wurde vermutlich nicht verwendet, daher defaults setzen
 			const yearZeroInfo = "true|" + yearZero.toString();
 			game.settings.set("space1889", "yearZero", yearZeroInfo);
-			if (game.time.worldTime == 0)
-				game.time.advance(-2556057600); // back to 1.1.1889 
 		}
+		return true;
 	}
 
 	static async showNewVersionInfo(noCheck = false)

@@ -5,8 +5,8 @@ export const SPACE1889CalendarConfig = {
 	name: "Gregorian",
 	description: "The Gregorian calendar with some simplifications regarding seasonal timing.",
 	years: {
-		yearZero: 1970,
-		firstWeekday: 3,
+		yearZero: 1889,
+		firstWeekday: 1,
 		leapYear: {
 			leapStart: 8,
 			leapInterval: 4

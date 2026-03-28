@@ -625,7 +625,7 @@ Hooks.once("ready", async function() {
 	Hooks.on("hotbarDrop", (bar, data, slot) => createItemMacro(data, slot));
 
 	await Space1889Translation.runInitTranslationAction();
-	await Space1889Migration.runInitMigrationAction();
+	const refreshCalendar = await Space1889Migration.runInitMigrationAction();
 	Space1889Migration.showNewVersionInfo();
 	// refresh Vehicle Data
 	game.actors.forEach((values, keys) =>
@@ -703,6 +703,13 @@ Hooks.once("ready", async function() {
 					console.warn(`Unhandled socket data type ${data.type}`);
 			}
 		});
+	}
+
+	if (refreshCalendar)
+	{
+		await new Promise(r => setTimeout(r, 500));
+		CONFIG.time.worldCalendarClass.init();
+		game.space1889.apps.CalendarWidget.render(true);
 	}
 });
 
