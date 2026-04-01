@@ -16,7 +16,9 @@ export class SPACE1889WorldCalendar extends foundry.data.CalendarData
 	{
 		const zeroInfo = game.settings.get("space1889", "yearZero").split("|");
 		const isYearZeroSet = (String(zeroInfo[0]).toLowerCase() === 'true');
-		const yearZero = isYearZeroSet ? Number(zeroInfo[1]) : 1970;
+		let yearZero = isYearZeroSet ? Number(zeroInfo[1]) : 1889;
+		if (Number.isNaN(yearZero))
+			yearZero = 1889;
 		return yearZero;
 	}
 
