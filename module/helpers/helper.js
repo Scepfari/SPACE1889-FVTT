@@ -1990,7 +1990,7 @@ export default class SPACE1889Helper
 
 	static doGravityChangeReaktion(changeInfo)
 	{
-		const spaceMenu = Object.values(ui.windows).find((app) => app instanceof Space1889Menu);
+		const spaceMenu = foundry.applications.instances.get("space1889-menu");
 		if (spaceMenu)
 			spaceMenu.render();
 
@@ -2019,15 +2019,16 @@ export default class SPACE1889Helper
 
 	static refreshAllOpenCharacterSheets(doDataUpdate = true)
 	{
-		for (let app of Object.values(ui.windows))
+		foundry.applications.instances.forEach((app, key) =>
 		{
-			if (app instanceof Space1889ActorSheet && app.actor)
+			if (app instanceof Space1889ActorSheet)
 			{
 				if (doDataUpdate)
 					app.actor.prepareDerivedData();
 				app.render();
+
 			}
-		}
+		});
 	}
 
 

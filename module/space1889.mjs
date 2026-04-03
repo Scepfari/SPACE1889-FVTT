@@ -406,40 +406,6 @@ Hooks.on("space1889GravityChanged", (changeInfo) =>
 		SPACE1889Helper.doGravityChangeReaktion(changeInfo);
 });
 
-Hooks.on('renderSceneControls', (sceneControls, html, options) =>
-{
-	if (game.release.generation <= 12)
-	{
-		const tooltip = game.i18n.localize("CONTROLS.Space1889Menu");
-
-		const spaceControl = $(`<li class="scene-control" role="tab" data-tooltip="${tooltip}"><i class="fas fa-space1889"></i></li>`);
-		spaceControl.on('click', () =>
-		{
-			const presetMenu = Object.values(ui.windows).find((app) => app instanceof Space1889Menu);
-			if (presetMenu)
-			{
-				presetMenu.close();
-				return;
-			}
-
-			const savedPos = game.settings.get("space1889", "menuPosition").split("|");
-			let savedLeft = Number(savedPos[0]);
-			let savedTop = Number(savedPos[1]);
-			if (savedLeft < 0 || savedTop < 0)
-			{
-				savedLeft = spaceControl.position().left + (2 * spaceControl.width());
-				savedTop = spaceControl.position().top;
-			}
-
-			new Space1889Menu({
-				left: savedLeft,
-				top: savedTop
-			}).render(true);
-		});
-		html.find('.control-tools').find('.scene-control').last().after(spaceControl);
-	}
-});
-
 /* -------------------------------------------- */
 /*  Handlebars Helpers                          */
 /* -------------------------------------------- */

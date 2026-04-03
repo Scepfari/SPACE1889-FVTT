@@ -25,7 +25,7 @@
 	grid-column: span 2 / span 2;
 	grid-template-columns: repeat(2, minmax(0, 1fr));
 	gap: 10px;
-	margin: 10px 0;
+	margin: 5px 0;
 	padding: 0;
 }
 
@@ -297,8 +297,8 @@
 	-webkit-box-pack: start;
 	-ms-flex-pack: start;
 	justify-content: flex-start;
-	margin-bottom: 10px;
-	min-height: 105px;
+	margin-bottom: 5px;
+	min-height: 108px;
 }
 
 .space1889 .sheet-header .profile-img {
