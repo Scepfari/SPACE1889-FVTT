@@ -7,7 +7,19 @@ export const registerSystemSettings = function ()
     for(let key of Object.keys(styles)){
 		styles[key] = game.i18n.localize(styles[key]);
     }
-    game.settings.register("space1889", "globalStyle",
+
+	game.settings.register("space1889", "trustedPlayerCanChangeTime",
+	{
+		name: "SPACE1889.ConfigTrustedPlayerCanChangeTime",
+		hint: "SPACE1889.ConfigTrustedPlayerCanChangeTimeInfo",
+		scope: "world",
+		config: true,
+		default: true,
+		type: Boolean,
+		requiresReload: true
+	});
+
+	game.settings.register("space1889", "globalStyle",
         {
             name: "SPACE1889.ConfigGlobalStyle",
             hint: "SPACE1889.ConfigGlobalStyleInfo",
@@ -176,17 +188,6 @@ export const registerSystemSettings = function ()
 			default: "9.28",
 			type: String
 		});
-
-	game.settings.register("space1889", "trustedPlayerCanChangeTime",
-	{
-		name: "SPACE1889.ConfigTrustedPlayerCanChangeTime",
-		hint: "SPACE1889.ConfigTrustedPlayerCanChangeTimeInfo",
-		scope: "world",
-		config: true,
-		default: true,
-		type: Boolean,
-		requiresReload: true
-	});
 
 	game.settings.register("space1889", "combatAutoTokenSelect",
 	{
