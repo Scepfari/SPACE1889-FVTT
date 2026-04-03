@@ -44,7 +44,7 @@ export class CalendarWidget extends foundry.applications.api.HandlebarsApplicati
 		data.dateString = SPACE1889WorldCalendar.formatLongTimeDate(components);
 		const moonInfo = game.time.calendar.calculateMoonPhaseForDate(game.time.worldTime);
 		data.dateTooltip = game.i18n.format("SPACE1889.Calendar.Moon.Info", { moonphase: game.i18n.localize(moonInfo.phase.langId), phaseday: Math.floor(moonInfo.phaseDay) + 1 });
-		data.autoDarknessEnabled = game.settings.get('space1889', 'darknessByDayTime');
+		data.autoDarknessEnabled = game.settings.get('space1889', 'calendarDayTimes').darknessByDayTime;
 		data.isGM = game.user.isGM;
 		data.dayProgress = Math.round(secondsInDay / this.constructor.SECONDS_PER_DAY * 100);
 		data.calendarViewDate = game.time.worldTime;
@@ -117,10 +117,14 @@ export class CalendarWidget extends foundry.applications.api.HandlebarsApplicati
 
 	static async toggleAutoLight(ev, target)
 	{
-		const darknessByDayTime = !game.settings.get('space1889', 'darknessByDayTime');
-		await game.settings.set('space1889', 'darknessByDayTime', darknessByDayTime);
-		target.classList.toggle('fa-toggle-on', darknessByDayTime);
-		target.classList.toggle('fa-toggle-off', !darknessByDayTime);
+		let dayTimeSettings = game.settings.get('space1889', 'calendarDayTimes');
+		dayTimeSettings.darknessByDayTime = !dayTimeSettings.darknessByDayTime
+		await game.settings.set('space1889', 'calendarDayTimes', dayTimeSettings);
+		target.classList.toggle('fa-toggle-on', dayTimeSettings.darknessByDayTime);
+		target.classList.toggle('fa-toggle-off', !dayTimeSettings.darknessByDayTime);
+
+		if (dayTimeSettings.darknessByDayTime)
+			SPACE1889Time.refreshLightLevel();
 	}
 
 	static async openCalendar(ev, target)

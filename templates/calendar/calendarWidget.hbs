@@ -1,7 +1,7 @@
 <div>
 	<div class='flexrow calendar-widget-content'>
 		{{#if isGM}}
-			<button type='button' class='visibilitynone noBorder ui-control icon fas fa-toggle-{{ifThen autoLightEnabled 'on' 'off'}}' data-tooltip='SPACE1889.Calendar.lightByDayTimeHint' data-action='toggleAutoLight'></button>
+			<button type='button' class='visibilitynone noBorder ui-control icon fas fa-toggle-{{ifThen autoDarknessEnabled 'on' 'off'}}' data-tooltip='SPACE1889.Calendar.lightByDayTimeHint' data-action='toggleAutoLight'></button>
 		{{/if}}
 		<button type='button' class='visibilitynone noBorder ui-control space1889-WidgetTimeButton' data-tooltip='SPACE1889.Calendar.openCalendar' data-action='openCalendar'><i class="fa fa-calendar-alt" aria-hidden="true"></i></button>
 		<div data-tooltip='{{dateTooltip}}' class='center button dayProgress noBorder ui-control' style='--p:{{dayProgress}}%;width:auto;background:{{dayTimeBackground.gradient}};color:{{dayTimeBackground.textColor}}' data-action='edit'>

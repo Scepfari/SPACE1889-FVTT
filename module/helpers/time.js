@@ -157,10 +157,13 @@ export default class SPACE1889Time
 		return date.getTime();
 	}
 
-	static changeDate(offsetInSeconds)
+	static async changeDate(offsetInSeconds)
 	{
 		if (game.user.isGM)
-			game.time.advance(offsetInSeconds);
+		{
+			await game.time.advance(offsetInSeconds);
+			this.refreshLightLevel();
+		}
 		else if (SPACE1889Helper.hasUserTimeControl())
 		{
 			game.socket.emit("system.space1889", {
@@ -172,6 +175,89 @@ export default class SPACE1889Time
 		}
 		else
 			ui.notifications.info(game.i18n.format("SPACE1889.CanNotSetTime", { seconds: offsetInSeconds }));
+	}
+
+	static refreshLightLevel()
+	{
+		const dayTimes = game.settings.get('space1889', 'calendarDayTimes');
+		if (!dayTimes.darknessByDayTime)
+			return;
+
+		const components = game.time.calendar.timeToComponents(game.time.worldTime);
+		const lightLevel = this.calcLightLevel(components, dayTimes);
+		if (canvas.scene)
+		{
+			canvas.scene.update(
+				{ 'environment.darknessLevel': Math.clamp(lightLevel, 0, 1) }, { animateDarkness: 500 }
+			)
+		}
+	}
+
+	static calcLightLevel(components, dayTimes)
+	{
+		const time = components.hour + (components.minute * 60 + components.second) / 3600;
+
+		let min = 0;
+		let max = 0;
+		let minLevel = 0;
+		let maxLevel = 0;
+		let phaseTime = 0;
+
+		if (time < dayTimes.dawn - 1 || time >= dayTimes.night)
+			return dayTimes.adjustLevels.night;
+		else if (time == dayTimes.dawn)
+			return dayTimes.adjustLevels.dawn;
+		else if (time == dayTimes.morning)
+			return dayTimes.adjustLevels.morning;
+		else if (time >= dayTimes.noon && time <= dayTimes.afternoon)
+			return dayTimes.adjustLevels.noon;
+		else if (time == dayTimes.sunset)
+			return dayTimes.adjustLevels.sunset;
+		else if (time < dayTimes.dawn)
+		{
+			minLevel = dayTimes.adjustLevels.night;
+			maxLevel = dayTimes.adjustLevels.dawn;
+			min = Math.max(0, dayTimes.dawn - 1);
+			max = dayTimes.dawn;
+		}
+		else if (time > dayTimes.dawn && time < dayTimes.morning)
+		{
+			minLevel = dayTimes.adjustLevels.dawn;
+			maxLevel = dayTimes.adjustLevels.morning;
+			min = dayTimes.dawn;
+			max = dayTimes.morning;
+		}
+		else if (time > dayTimes.morning && time < dayTimes.noon)
+		{
+			minLevel = dayTimes.adjustLevels.morning;
+			maxLevel = dayTimes.adjustLevels.noon;
+			min = dayTimes.morning;
+			max = dayTimes.noon;
+		}
+		else if (time > dayTimes.afternoon && time < dayTimes.sunset)
+		{
+			minLevel = dayTimes.adjustLevels.afternoon;
+			maxLevel = dayTimes.adjustLevels.sunset;
+			min = dayTimes.afternoon;
+			max = dayTimes.sunset;
+		}
+		else if (time > dayTimes.sunset && time < dayTimes.night)
+		{
+			minLevel = dayTimes.adjustLevels.sunset;
+			maxLevel = dayTimes.adjustLevels.night;
+			min = dayTimes.sunset;
+			max = dayTimes.night;
+		}
+
+		if (minLevel == maxLevel || min == max)
+			return minLevel;
+
+		const levelRange = maxLevel - minLevel;
+		const timeRange = max - min;
+		const timeDelta = time - min;
+
+		const factor = timeDelta / timeRange;
+		return Math.clamp(minLevel + (factor * levelRange), 0, 1);
 	}
 
 	static #dateTimeChanged()

@@ -696,7 +696,7 @@ Hooks.once("ready", async function() {
 				case "changeTime":
 					{
 						if (game.settings.get("space1889", "trustedPlayerCanChangeTime"))
-							game.time.advance(data.timeData.offsetInSeconds);
+							SPACE1889Time.changeDate(data.timeData.offsetInSeconds);
 					}
 					break;
 				default:

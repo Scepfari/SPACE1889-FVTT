@@ -296,16 +296,31 @@ export const registerSystemSettings = function ()
 			type: String
 		});
 
-	game.settings.register("space1889", "darknessByDayTime",
+	game.settings.register("space1889", "calendarDayTimes",
 	    {
-		    name: "darkness by day time",
+		    name: "day time settings",
 		    hint: "Darkness influence in scene configuration",
 		    scope: "world",
 		    config: false,
-		    default: "",
-		    type: Boolean
+			default: {
+				"darknessByDayTime": false,
+				"dawn": 6,
+				"morning": 7,
+				"noon": 11,
+				"afternoon": 16,
+				"sunset": 20,
+				"night": 21,
+				"adjustLevels": {
+					"dawn": 0.55,
+					"morning": 0.2,
+					"noon": 0,
+					"afternoon": 0,
+					"sunset": 0.55,
+					"night": 0.95
+				}
+			},
+		    type: Object
 		});
-
 
 	const menus = {
 		calendar: {
