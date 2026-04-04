@@ -441,9 +441,11 @@ export class Space1889Item extends Item {
 				if (this.system.level.max > 1)
 					desc += this._addLine("SPACE1889.Level", this.system.level.value, "", desc.length > 0);
 
-				desc += game.i18n.localize(this.system.descriptionLangId);
-				if (desc === this.system.descriptionLangId && this.system.description !== "")
+				const localizedDesc = game.i18n.localize(this.system.descriptionLangId);
+				if (localizedDesc === this.system.descriptionLangId && this.system.description !== "")
 					desc = this.system.description;
+				else
+					desc += localizedDesc;
 
 				let secondHeader = "";
 				if (this.system.showDetail)
