@@ -253,7 +253,7 @@ export class Space1889Migration
 
 	static async migrateEffectsForFoundryV11(lastUsedVersion, lastUsedFoundryVersion, isNewWorld)
 	{
-		if (SPACE1889Helper.isFoundryV10Running() || isNewWorld)
+		if (isNewWorld)
 			return;
 
 		const lastNonFixVersion = "2.0.0";

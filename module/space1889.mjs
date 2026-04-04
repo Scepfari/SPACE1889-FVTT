@@ -94,8 +94,7 @@ Hooks.once('init', async function() {
 	CleanHeader.default();
 	CleanHeader.handlePopout();
 
-	if (!SPACE1889Helper.isFoundryV10Running())
-		CONFIG.ActiveEffect.legacyTransferral = false;
+	CONFIG.ActiveEffect.legacyTransferral = false;
 
 	SPACE1889WorldCalendar.init();
 
@@ -107,11 +106,8 @@ Hooks.on("ready", async function ()
 	let indent = game.settings.get("space1889", "subfolder-indent");
 	document.documentElement.style.setProperty('--space1889-indent', `${indent}px`);
 
-	if (!SPACE1889Helper.isFoundryV10Running())
-	{
-		document.documentElement.style.setProperty('--space1889-hotbar2path', 'url(../icons/backgrounds/hotbar2v11.webp)');
-		document.documentElement.style.setProperty('--space1889-hotbar2width', '631px');
-	}
+	document.documentElement.style.setProperty('--space1889-hotbar2path', 'url(../icons/backgrounds/hotbar2v11.webp)');
+	document.documentElement.style.setProperty('--space1889-hotbar2width', '631px');
 
 	SPACE1889Time.connectHooks();
 
@@ -341,12 +337,6 @@ Hooks.on("renderChatMessageHTML", (app, html, msg) =>
 
 });
 
-Hooks.on("canvasInit", function ()
-{
-	if (game.release.generation < 12)
-		SquareGrid.prototype.measureDistances = DistanceMeasuring.measureDistances;
-});
-
 Hooks.on("updateCombat", function () 
 {
 	if (game.combat)
@@ -497,7 +487,7 @@ Handlebars.registerHelper('getEffectImagePath', function (effect)
 {
 	if (effect)
 	{
-		return game.release.generation >= 12 ? effect.img : effect.icon;
+		return effect.img;
 	}
 	return "";
 });

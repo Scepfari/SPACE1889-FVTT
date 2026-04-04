@@ -254,7 +254,7 @@ export default class SPACE1889RollHelper
 
 	static getActiveEffectStates(actor)
 	{
-		return SPACE1889Helper.isFoundryV10Running() ? this.getActiveEffectStatesByFlag(actor) : this.getActiveEffectStatesByStatuses(actor);
+		return this.getActiveEffectStatesByStatuses(actor);
 	}
 
 	static getActiveEffectStatesByFlag(actor)
@@ -290,19 +290,10 @@ export default class SPACE1889RollHelper
 
 	static hasActiveEffectState(effect, statusId)
 	{
-		if (SPACE1889Helper.isFoundryV10Running())
+		for (let id of effect.statuses)
 		{
-			const id = effect.flags?.core?.statusId;
-			if (id && statusId === id)
+			if (id === statusId)
 				return true;
-		}
-		else
-		{
-			for (let id of effect.statuses)
-			{
-				if (id === statusId)
-					return true;
-			}
 		}
 		return false;
 	}
@@ -1759,7 +1750,7 @@ export default class SPACE1889RollHelper
 	static async createInlineRollWithHtml(diceCount, probeName = "", tooltipInfo = "")
 	{
 		let r = new Roll(diceCount.toString() + game.settings.get("space1889", "dice"));
-		await (game.release.generation < 12 ? r.evaluate({ async: true }) : r.evaluate());
+		await r.evaluate();
 		const htmlAn = await r.toAnchor();
 		let outerHtml = htmlAn.outerHTML;
 		const index = outerHtml.indexOf('class=""');
@@ -1878,7 +1869,7 @@ export default class SPACE1889RollHelper
 			if (extraDice > 0)
 			{
 				let r = new Roll("1" + game.settings.get("space1889", "dice"));
-				await (game.release.generation < 12 ? r.evaluate({ async: true }) : r.evaluate());
+				await r.evaluate();
 				sizeMod += factor * r.total;
 			}
 			const damageAmount = Math.max(0, data.areaDamage + sizeMod);

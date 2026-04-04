@@ -16,30 +16,17 @@ export function onManageActiveEffect(event, owner) {
 		case "create":
 			const gameRound = game.combat ? game.combat.round : 0;
 			const gameTurn = game.combat ? game.combat.turn : 0;
-			if (SPACE1889Helper.isFoundryV10Running())
-				return owner.createEmbeddedDocuments("ActiveEffect", [{
-					label: game.i18n.localize("SPACE1889.EffectNew"),
-					icon: "icons/svg/aura.svg",
-					origin: owner.uuid,
-					"duration.rounds": 1,
-					"duration.seconds": 6,
-					"duration.startRound": gameRound,
-					"duration.startTurn": gameTurn,
-					"duration.startTime": game.time.worldTime,
-					disabled: li.dataset.effectType === "inactive"
-				}]);
-			else
-				return owner.createEmbeddedDocuments("ActiveEffect", [{
-					name: game.i18n.localize("SPACE1889.EffectNew"),
-					icon: "icons/svg/aura.svg",
-					origin: owner.uuid,
-					"duration.rounds": 1,
-					"duration.seconds": 6,
-					"duration.startRound": gameRound,
-					"duration.startTurn": gameTurn,
-					"duration.startTime": game.time.worldTime,
-					disabled: li.dataset.effectType === "inactive"
-				}]);
+			return owner.createEmbeddedDocuments("ActiveEffect", [{
+				name: game.i18n.localize("SPACE1889.EffectNew"),
+				icon: "icons/svg/aura.svg",
+				origin: owner.uuid,
+				"duration.rounds": 1,
+				"duration.seconds": 6,
+				"duration.startRound": gameRound,
+				"duration.startTurn": gameTurn,
+				"duration.startTime": game.time.worldTime,
+				disabled: li.dataset.effectType === "inactive"
+			}]);
 		case "edit":
 			return effect.sheet.render(true);
 		case "delete":
@@ -51,29 +38,19 @@ export function onManageActiveEffect(event, owner) {
 
 export function getEffectInfoText(effect, forChat = false)
 {
-	const isV10 = SPACE1889Helper.isFoundryV10Running();
 	const headerClass = forChat ? "" : "class=\"itemTooltipH3\"";
 	const textClass = forChat ? "" : "itemTooltip";
-	const name = isV10 ? effect.label : effect.name;;
+	const name = effect.name;;
 	const type = game.i18n.localize("SPACE1889.Effect");
 	let desc = "";
 
-	if (isV10)
+	for (let id of effect.statuses)
 	{
-		const statusId = effect.flags?.core?.statusId;
-		if (SPACE1889.effectsDescription.hasOwnProperty(statusId))
-			desc += `<p>${game.i18n.localize(SPACE1889.effectsDescription[statusId])}</p>`;
-	}
-	else
-	{
-		for (let id of effect.statuses)
-		{
-			if (SPACE1889.effectsDescription.hasOwnProperty(id))
-				desc += `<p>${game.i18n.localize(SPACE1889.effectsDescription[id])}</p>`;
-		}
+		if (SPACE1889.effectsDescription.hasOwnProperty(id))
+			desc += `<p>${game.i18n.localize(SPACE1889.effectsDescription[id])}</p>`;
 	}
 
-	const effectImage = game.release.generation >= 12 ? effect.img : effect.icon;
+	const effectImage = effect.img;
 	desc += forChat ? SPACE1889Helper.getItemChatImageHtml(effectImage, true) : SPACE1889Helper.getItemChatImageHtml(effectImage, true, 150);
 
 	if (effect.disabled)

@@ -938,11 +938,6 @@ export class Space1889ActorSheet extends foundry.applications.api.HandlebarsAppl
 
 	_addRemoveTempTalentImprovement(ev)
 	{
-		if (SPACE1889Helper.isFoundryV10Running())
-		{
-			ui.notifications.info(game.i18n.localize("SPACE1889.NotSupportedInFoundryV10"));
-			return;
-		}
 		const itemId = this._getItemId(ev);
 		const item = this.actor.items.get(itemId);
 		if (item.type == "talent")

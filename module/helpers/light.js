@@ -593,7 +593,7 @@ export default class SPACE1889Light
 	static async createFreeInlineRollWithHtml(rollTerm, titel="", tooltipInfo = "")
 	{
 		let roll = new Roll(rollTerm);
-		await (game.release.generation < 12 ? roll.evaluate({ async: true }) : roll.evaluate());
+		await roll.evaluate();
 		const htmlAn = await roll.toAnchor();
 		let outerHtml = htmlAn.outerHTML;
 		const index = outerHtml.indexOf('class=""');

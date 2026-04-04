@@ -402,7 +402,7 @@ export default class SPACE1889Helper
 			{ combat: game.combat._id, rounds: effect.rounds, seconds: 6 * effect.rounds, startRound: 0, startTime: game.time.worldTime, startTurn: 0 } :
 			{ seconds: 6, startTime: game.time.worldTime };
 
-		return this.isFoundryV10Running() ? this.getFlagEffectData(effect, duration) : this.getStatusesEffectData(effect, duration);
+		return this.getStatusesEffectData(effect, duration);
 	}
 
 	static getFlagEffectData(effect, duration)
@@ -2197,11 +2197,6 @@ export default class SPACE1889Helper
 			return true;
 
 		return false;
-	}
-
-	static isFoundryV10Running()
-	{
-		return game.release.generation === 10;
 	}
 
 	static getCombatTurnsInSeconds(combatTurns)
