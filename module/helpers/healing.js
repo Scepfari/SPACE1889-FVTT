@@ -466,7 +466,7 @@ export default class SPACE1889Healing
 
 		if (actor.system.healing.currentHealingDamageId == injury.id)
 		{
-			actor.prepareData();
+			actor.prepareDerivedData();
 			return;
 		}
 
