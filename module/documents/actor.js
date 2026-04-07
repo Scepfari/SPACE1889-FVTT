@@ -2006,6 +2006,17 @@ export class Space1889Actor extends Actor
 		// Process additional NPC data here.
 	}
 
+	canDoUseItem(item)
+	{
+		if (!item)
+			return false;
+
+		const container = this.system.containers.find(e => e._id == item.system.containerId);
+		if (container && !(container.system.portable && container.system.carried))
+			return false;
+		return true;
+	}
+
 	getAbilityInfoText(key, forChat = false)
 	{
 		const headerClass = forChat ? "" : "class=\"itemTooltipH3\"";

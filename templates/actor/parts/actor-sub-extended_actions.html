@@ -2,6 +2,20 @@
 	<li class="item flexrow items-header">
 		<div class="item-name">
 			{{localize "TYPES.Item.extended_actionPl"}}&#160;
+			{{#if system.visualisation.compressedExtendedActions}}
+			<a class="compressed-extendedActions-toggle" data-tooltip="{{localize 'SPACE1889.ContainerExpand'}}" data-tooltip-direction="DOWN"><i class="fal fa-expand-arrows-alt"></i></a>
+			{{else}}
+			<a class="compressed-extendedActions-toggle" data-tooltip="{{localize 'SPACE1889.ContainerCompress'}}" data-tooltip-direction="DOWN"><i class="fal fa-compress-arrows-alt" ></i></a>
+			&#160;
+			{{#if system.visualisation.filterExtendedAction}}
+				<a class="fa-stack filter-extendedAction-toggle" data-tooltip="{{localize 'SPACE1889.ItemsDisableFilter'}}" data-tooltip-direction="DOWN">
+					<i class="fa fa-filter fa-stack-1x"></i>
+					<i class="fa fa-ban fa-stack-1x"></i>
+				</a>
+			{{else}}
+				<a class="filter-extendedAction-toggle" data-tooltip="{{localize 'SPACE1889.ItemsFilter'}}" data-tooltip-direction="DOWN"><i class="fal fa-filter"></i></a>
+			{{/if}}
+			{{/if}}
 		</div>
 		<div data-tooltip='{{localize "SPACE1889.AttemptsMade"}}' class="items-list item-max-with60px">{{localize "SPACE1889.AttemptsMadeAbbr"}}</div>
 		<div data-tooltip='{{localize "SPACE1889.TimeInterval"}}' class="items-list item-max-with75px">{{localize "SPACE1889.TimeInterval"}}</div>
@@ -10,7 +24,9 @@
 			<a class="item-control item-create item-max-with50px" data-tooltip='{{localize "SPACE1889.CreateItem"}}' data-type="extended_action"><i class="fas fa-plus"></i> Add</a>
 		</div>
 	</li>
+	{{#if (not system.visualisation.compressedExtendedActions)}}
 	{{#each system.extendedRolls as | item |}}
+	{{#if (not (and ../system.visualisation.filterExtendedAction (eq item.system.successes item.system.totalNumberOfSuccesses)))}}
 	<li class="item row-section flexrow" data-item-id="{{item._id}}">
 		<div class="item-name">
 			<div class="item-image-small">
@@ -32,6 +48,7 @@
 			<a class="item-control item-delete" data-tooltip='{{localize "SPACE1889.DeleteItemWithName" name=item.system.label}}'><i class="fas fa-trash"></i></a>
 		</div>
 	</li>
+	{{/if}}
 	{{/each}}
-
+	{{/if}}
 </ol>

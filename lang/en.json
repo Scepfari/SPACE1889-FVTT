@@ -1411,6 +1411,8 @@
 	"SPACE1889.ContainerExpand": "expand",
 	"SPACE1889.ContainerCompress": "compress",
 	"SPACE1889.OpenCompendium": "open compendium",
+	"SPACE1889.ItemsFilter": "Apply filter",
+	"SPACE1889.ItemsDisableFilter": "Turn off filter",
 
 	"SPACE1889.Language": "Language",
 	"SPACE1889.LanguagePl": "Languages",

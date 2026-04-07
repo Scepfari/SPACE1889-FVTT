@@ -1,7 +1,23 @@
 {{#if system.armors}}
 <ol class="items-list ">
 	<li class="item flexrow items-header-height40">
-		<div class="item-name item-height50px">{{localize "SPACE1889.ArmorPl"}}</div>
+		<div class="item-name item-height50px">{{localize "SPACE1889.ArmorPl"}}&#160;
+			<a class="open-compendium" data-tooltip="{{localize 'SPACE1889.OpenCompendium'}}" data-pack="space1889.ausrustung"><i class="far fa-external-link-square"></i></a>&ensp;
+			{{#if system.visualisation.compressedArmors}}
+				<a class="compressed-armors-toggle" data-tooltip="{{localize 'SPACE1889.ContainerExpand'}}" data-tooltip-direction="DOWN"><i class="fal fa-expand-arrows-alt"></i></a>
+			{{else}}
+				<a class="compressed-armors-toggle" data-tooltip="{{localize 'SPACE1889.ContainerCompress'}}" data-tooltip-direction="DOWN"><i class="fal fa-compress-arrows-alt" ></i></a>
+				&#160;
+				{{#if system.visualisation.filterArmors}}
+					<a class="fa-stack filter-armors-toggle" data-tooltip="{{localize 'SPACE1889.ItemsDisableFilter'}}" data-tooltip-direction="DOWN">
+						<i class="fa fa-filter fa-stack-1x"></i>
+						<i class="fa fa-ban fa-stack-1x"></i>
+					</a>
+				{{else}}
+					<a class="filter-armors-toggle" data-tooltip="{{localize 'SPACE1889.ItemsFilter'}}" data-tooltip-direction="DOWN"><i class="fal fa-filter"></i></a>
+				{{/if}}
+			{{/if}}
+		</div>
 		<div data-tooltip='{{localize "SPACE1889.DefenseBonus"}}' class="items-name item-max-with60px">{{localize "SPACE1889.DefenseBonus"}}</div>
 		<div data-tooltip='{{localize "SPACE1889.DexPenalty"}}' class="items-name item-max-with40px ">{{localize "SPACE1889.DexPenalty"}}</div>
 		<div data-tooltip='{{localize "SPACE1889.Weight"}}  {{localize "SPACE1889.Mod"}}' class="items-name item-max-with60px ">{{localize "SPACE1889.Weight"}}</div>
@@ -10,7 +26,9 @@
 			<a class="item-control item-create item-max-with50px" data-tooltip='{{localize "SPACE1889.CreateItem"}}' data-type="armor"><i class="fas fa-plus"></i> Add</a>
 		</div>
 	</li>
+	{{#if (not system.visualisation.compressedArmors)}}
 	{{#each system.armors as |item id|}}
+	{{#if (or (not ../system.visualisation.filterArmors) (canDoUseItem item ../document))}}
 	<li class="item row-section flexrow" data-item-id="{{item._id}}">
 		<div class="item-name" data-tooltip="{{fullItemToolTipDescription item}}" data-tooltip-direction="RIGHT">
 			<label for="" class="rollable" data-roll-type="item" data-label="{{item.name}}">{{item.system.label}}</label>
@@ -26,7 +44,8 @@
 			<a class="item-control item-delete" data-tooltip='{{localize "SPACE1889.DeleteItemWithName" name=item.system.label}}'><i class="fas fa-trash"></i></a>
 		</div>
 	</li>
+	{{/if}}
 	{{/each}}
-
+	{{/if}}
 </ol>
 {{/if}}

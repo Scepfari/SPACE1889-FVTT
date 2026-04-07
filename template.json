@@ -111,7 +111,12 @@
 					"compressedExtendedActions": false,
 					"compressedLightSources": false,
 					"compressedVisions": false,
-					"compressedDamage": false
+					"compressedDamage": false,
+					"filterWeapons": false,
+					"filterAmmunition": false,
+					"filterArmors": false,
+					"filterDamage": false,
+					"filterExtendedAction": false
 				}
 			}
 		},

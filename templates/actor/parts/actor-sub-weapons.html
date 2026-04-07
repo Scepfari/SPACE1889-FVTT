@@ -1,12 +1,21 @@
 <ol class="items-list">
 	<li class="item flexrow items-header">
 		<div class="item-name">
-			{{localize "SPACE1889.Name"}}&#160;
+			{{localize "TYPES.Item.weaponPl"}}&#160;
 			<a class="open-compendium" data-tooltip="{{localize 'SPACE1889.OpenCompendium'}}" data-pack="space1889.ausrustung"><i class="far fa-external-link-square"></i></a>&ensp;
 			{{#if system.visualisation.compressedWeapons}}
 			<a class="compressed-weapons-toggle" data-tooltip="{{localize 'SPACE1889.ContainerExpand'}}" data-tooltip-direction="DOWN"><i class="fal fa-expand-arrows-alt"></i></a>
 			{{else}}
 			<a class="compressed-weapons-toggle" data-tooltip="{{localize 'SPACE1889.ContainerCompress'}}" data-tooltip-direction="DOWN"><i class="fal fa-compress-arrows-alt" ></i></a>
+			&#160;
+			{{#if system.visualisation.filterWeapons}}
+				<a class="fa-stack filter-weapons-toggle" data-tooltip="{{localize 'SPACE1889.ItemsDisableFilter'}}" data-tooltip-direction="DOWN">
+					<i class="fa fa-filter fa-stack-1x"></i>
+					<i class="fa fa-ban fa-stack-1x"></i>
+				</a>
+			{{else}}
+				<a class="filter-weapons-toggle" data-tooltip="{{localize 'SPACE1889.ItemsFilter'}}" data-tooltip-direction="DOWN"><i class="fal fa-filter"></i></a>
+			{{/if}}
 			{{/if}}
 		</div>
 		<div data-tooltip='{{localize "SPACE1889.Damage"}}' class="items-list item-max-with30px">{{localize "SPACE1889.DamageAbbr"}}</div>
@@ -22,6 +31,8 @@
 	</li>
 	{{#if (not system.visualisation.compressedWeapons)}}
 	{{#each system.weapons as | item |}}
+	{{#if (or (not ../system.visualisation.filterWeapons) (canDoUseItem item ../document))}}
+
 	<li class="item row-section flexrow" data-item-id="{{item._id}}">
 		<div class="item-name">
 			<div class="item-image-small">
@@ -71,6 +82,7 @@
 			<a class="item-control item-delete" data-tooltip='{{localize "SPACE1889.DeleteItemWithName" name=item.system.label}}'><i class="fas fa-trash"></i></a>
 		</div>
 	</li>
+	{{/if}}
 	{{/each}}
 	{{/if}}
 

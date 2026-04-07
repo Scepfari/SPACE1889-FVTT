@@ -1411,6 +1411,8 @@
 	"SPACE1889.ContainerExpand": "aufklappen",
 	"SPACE1889.ContainerCompress": "einklappen",
 	"SPACE1889.OpenCompendium": "Kompendium öffnen",
+	"SPACE1889.ItemsFilter": "Filter anwenden",
+	"SPACE1889.ItemsDisableFilter": "Filter abschalten",
 
 	"SPACE1889.Language": "Sprache",
 	"SPACE1889.LanguagePl": "Sprachen",

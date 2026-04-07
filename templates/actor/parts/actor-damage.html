@@ -2,7 +2,17 @@
 <ol class="items-list">
 	<li class="item flexrow items-header">
 		<div class="item-name">{{localize "SPACE1889.InjuryPl"}}&#160;
-			<a class="rerender-click" data-tooltip="{{localize "SPACE1889.RefreshHealingTime"}}"> <i class="fa fa-medkit" aria-hidden="true"></i></a></div>
+			<a class="rerender-click" data-tooltip="{{localize "SPACE1889.RefreshHealingTime"}}"> <i class="fa fa-medkit" aria-hidden="true"></i></a>
+			&#160;
+			{{#if system.visualisation.filterDamage}}
+				<a class="fa-stack filter-damage-toggle" data-tooltip="{{localize 'SPACE1889.ItemsDisableFilter'}}" data-tooltip-direction="DOWN">
+					<i class="fa fa-filter fa-stack-1x"></i>
+					<i class="fa fa-ban fa-stack-1x"></i>
+				</a>
+			{{else}}
+				<a class="filter-damage-toggle" data-tooltip="{{localize 'SPACE1889.ItemsFilter'}}" data-tooltip-direction="DOWN"><i class="fal fa-filter"></i></a>
+			{{/if}}
+		</div>
 		<div data-tooltip='{{localize "SPACE1889.DataOfTheEvent"}}' class="items-list item-max-with75px">{{localize "SPACE1889.DataOfTheEventAbbr"}}</div>
 		<div data-tooltip='{{localize "SPACE1889.Damage"}}' class="items-list item-max-with60px">{{localize "SPACE1889.Damage"}}</div>
 		<div data-tooltip='{{localize "SPACE1889.HealingFactor"}}' class="items-list item-max-with40px">{{localize "SPACE1889.HealingFactorAbbr"}}</div>
@@ -13,6 +23,7 @@
 		</div>
 	</li>
 	{{#each system.injuries as |item id|}}
+	{{#if (not (and ../system.visualisation.filterDamage (eq item.system.remainingDamage 0)))}}
 	<li class="item row-section flexrow" data-item-id="{{item._id}}">
 		<div data-tooltip='{{item.system.tooltipInfo}}' data-tooltip-direction="RIGHT" class="item-name">{{item.name}}</div>
 		<label data-tooltip='{{item.system.tooltipInfo}}' data-tooltip-direction="LEFT" class="items-list item-max-with75px">{{item.system.dataOfTheEvent}}</label>
@@ -29,6 +40,7 @@
 			<a class="item-control item-delete" data-tooltip="{{localize 'SPACE1889.DeleteItem'}}"><i class="fas fa-trash"></i></a>
 		</div>
 	</li>
+	{{/if}}
 	{{/each}}
 
 </ol>

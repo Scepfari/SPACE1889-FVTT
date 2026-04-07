@@ -644,6 +644,15 @@ Handlebars.registerHelper('remainingEmissionEnergySymbol', function (item)
 
 });
 
+Handlebars.registerHelper('canDoUseItem', function (item, actor) 
+{
+	if (!item || !actor)
+		return false;
+
+	return actor.canDoUseItem(item);
+
+});
+
 /* -------------------------------------------- */
 /*  Ready Hook                                  */
 /* -------------------------------------------- */

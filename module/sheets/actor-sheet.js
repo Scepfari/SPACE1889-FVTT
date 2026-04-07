@@ -896,7 +896,42 @@ export class Space1889ActorSheet extends foundry.applications.api.HandlebarsAppl
 			const newValue = !this.actor.system.visualisation.compressedWeapons;
 			this.actor.update({ 'system.visualisation.compressedWeapons': newValue });
 		});
-
+		html.find('.compressed-armors-toggle').on('mousedown', (ev) =>
+		{
+			const newValue = !this.actor.system.visualisation.compressedArmors;
+			this.actor.update({ 'system.visualisation.compressedArmors': newValue });
+		});
+		html.find('.compressed-extendedActions-toggle').on('mousedown', (ev) =>
+		{
+			const newValue = !this.actor.system.visualisation.compressedExtendedActions;
+			this.actor.update({ 'system.visualisation.compressedExtendedActions': newValue });
+		});
+		html.find('.filter-weapons-toggle').on('mousedown', (ev) =>
+		{
+			const newValue = !this.actor.system.visualisation.filterWeapons;
+			this.actor.update({ 'system.visualisation.filterWeapons': newValue });
+		});
+		html.find('.filter-extendedAction-toggle').on('mousedown', (ev) =>
+		{
+			const newValue = !this.actor.system.visualisation.filterExtendedAction;
+			this.actor.update({ 'system.visualisation.filterExtendedAction': newValue });
+		});
+		html.find('.filter-ammunition-toggle').on('mousedown', (ev) =>
+		{
+			const newValue = !this.actor.system.visualisation.filterAmmunition;
+			this.actor.update({ 'system.visualisation.filterAmmunition': newValue });
+		});
+		html.find('.filter-armors-toggle').on('mousedown', (ev) =>
+		{
+			const newValue = !this.actor.system.visualisation.filterArmors;
+			this.actor.update({ 'system.visualisation.filterArmors': newValue });
+		});
+		html.find('.filter-damage-toggle').on('mousedown', (ev) =>
+		{
+			const newValue = !this.actor.system.visualisation.filterDamage;
+			this.actor.update({ 'system.visualisation.filterDamage': newValue });
+		});
+		
 
 		// Active Effect management
 		html.find(".effect-control").on('click', (ev) =>
