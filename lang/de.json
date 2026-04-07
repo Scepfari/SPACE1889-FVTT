@@ -137,6 +137,13 @@
 	"SPACE1889.Calendar.Moon.WaningCrescent": "abnehmende Sichel",
 	"SPACE1889.Calendar.Moon.Info": "Luna: {moonphase} (Phasentag {phaseday})",
 
+	"SPACE1889.TokenMenu.ConvertToNPC": "In NSC umwandeln",
+	"SPACE1889.TokenMenu.ConvertToPC": "In SC umwandeln",
+	"SPACE1889.TokenMenu.InvalidActor": "ungültiger Akteur",
+	"SPACE1889.TokenMenu.NoPrototypeTokenSheetClass": "Es ist keine Prototyp-Token-Sheet-Klasse registriert.",
+	"SPACE1889.TokenMenu.ConvertToNpcInfo": "<em>{name}</em> wurde in einen NSC umgewandelt",
+	"SPACE1889.TokenMenu.ConvertToPcInfo": "<em>{name}</em> wurde in einen Spieler Charakter umgewandelt",
+
 	"SPACE1889.ImageTooltip": "<i class=\"fas fa-mouseLeftClick\"></i> : Bild ändern<br/><i class=\"fas fa-mouseRightClick\"></i> : Bild in einem eigenen Fenster öffnen",
 
 	"SPACE1889.Gravity": "Schwerkraft",

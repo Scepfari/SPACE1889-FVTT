@@ -390,6 +390,78 @@ Hooks.on("renderPause", () => {
 	$("#pause figcaption").attr("class", "pause-space1889");
 });
 
+Hooks.on("getActorContextOptions", (app, menu) =>
+{
+	if (app instanceof foundry.applications.sidebar.apps.Compendium)
+		return;
+
+	menu.splice(0, 0,
+			{
+			name: game.i18n?.localize?.("TOKEN.TitlePrototype") ?? "Prototype Token...",
+			icon: '<i class="fa-solid fa-user-gear"></i>',
+			condition: li =>
+			{
+				const id = li?.dataset?.entryId || li?.dataset?.documentId;
+				const actor = id && game.actors?.get(id);
+				return !!actor && (game.user?.isGM || actor.isOwner);
+			},
+			callback: li =>
+			{
+				const id = li?.dataset?.entryId || li?.dataset?.documentId;
+				const actor = id && game.actors?.get(id);
+				if (!actor)
+					return ui.notifications?.warn(game.i18n.localize("SPACE1889.TokenMenu.InvalidActor."));
+				const Sheet = CONFIG?.Token?.prototypeSheetClass;
+				if (!Sheet)
+					return ui.notifications?.error(game.i18n.localize("SPACE1889.TokenMenu.NoPrototypeTokenSheetClass"));
+				new Sheet({ prototype: actor.prototypeToken }).render({ force: true });
+			}
+		});
+
+	menu.push(
+	{
+		name: game.i18n?.localize("SPACE1889.TokenMenu.ConvertToNPC") ?? "Convert to NPC...",
+		icon: '<i class="fa-solid fa-user-tag"></i>',
+		condition: li =>
+		{
+			const id = li?.dataset?.entryId || li?.dataset?.documentId;
+			const actor = id && game.actors?.get(id);
+			return !!actor && actor.type === "character" && (game.user?.isGM);
+		},
+		callback: li =>
+		{
+			const id = li?.dataset?.entryId || li?.dataset?.documentId;
+			const actor = id && game.actors?.get(id);
+			if (!actor)
+				return ui.notifications?.warn(game.i18n.localize("SPACE1889.TokenMenu.InvalidActor."));
+
+			actor.update({ type: 'npc', system : actor.system }, {recursive : false});
+			ui.notifications?.warn(game.i18n.format("SPACE1889.TokenMenu.ConvertToNpcInfo", { name: actor.name }));
+		}
+	},
+	{
+		name: game.i18n?.localize("SPACE1889.TokenMenu.ConvertToPC") ?? "Convert to PC...",
+		icon: '<i class="fa-solid fa-user-tag"></i>',
+		condition: li =>
+		{
+			const id = li?.dataset?.entryId || li?.dataset?.documentId;
+			const actor = id && game.actors?.get(id);
+			return !!actor && actor.type === "npc" && (game.user?.isGM);
+		},
+		callback: li =>
+		{
+			const id = li?.dataset?.entryId || li?.dataset?.documentId;
+			const actor = id && game.actors?.get(id);
+			if (!actor)
+				return ui.notifications?.warn(game.i18n.localize("SPACE1889.TokenMenu.InvalidActor."));
+
+			actor.update({ type: 'character', system : actor.system }, {recursive : false});
+			ui.notifications?.warn(game.i18n.format("SPACE1889.TokenMenu.ConvertToPcInfo", { name: actor.name }));
+		}
+	});
+});
+
+
 Hooks.on("space1889GravityChanged", (changeInfo) =>
 {
 	if (changeInfo && changeInfo.key && changeInfo.gravity)

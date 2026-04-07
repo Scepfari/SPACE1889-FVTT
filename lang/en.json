@@ -137,6 +137,13 @@
 	"SPACE1889.Calendar.Moon.WaningCrescent": "Waning Crescent",
 	"SPACE1889.Calendar.Moon.Info": "Luna: {moonphase} (phase day {phaseday})",
 
+	"SPACE1889.TokenMenu.ConvertToNPC": "Convert to NPC",
+	"SPACE1889.TokenMenu.ConvertToPC": "Convert to PC",
+	"SPACE1889.TokenMenu.InvalidActor": "invalid actor",
+	"SPACE1889.TokenMenu.NoPrototypeTokenSheetClass": "No prototype token sheet class registered.",
+	"SPACE1889.TokenMenu.ConvertToNpcInfo": "{name} has been converted into an NPC",
+	"SPACE1889.TokenMenu.ConvertToPcInfo": "{name} has been converted into a player character",
+
 	"SPACE1889.ImageTooltip": "<i class=\"fas fa-mouseLeftClick\"></i> : change image<br/><i class=\"fas fa-mouseRightClick\"></i> : Open image in a separate window",
 
 	"SPACE1889.Gravity": "Gravity",
