@@ -1753,8 +1753,11 @@ export class Space1889Actor extends Actor
 			if (item.type === "skill")
 			{
 				xp += this.CalcPartialSum(item.system.level) * 2;
-				if (item.system.noEpFirstLevel && item.system.level >= 1)
-					xp -= 2;
+				if (item.system.noEpFirstLevel && item.system.level >= 1 && item.system.noEpLevels > 0)
+				{
+					const noEpLevels = Math.min(item.system.noEpLevels, item.system.level);
+					xp -= this.CalcPartialSum(noEpLevels) * 2
+				}
 			}
 			else if (item.type === "specialization")
 			{
@@ -1762,18 +1765,25 @@ export class Space1889Actor extends Actor
 					xp += this.CalcPartialSum(item.system.level);
 				else
 					xp += item.system.level * 3;
-				if (item.system.noEpFirstLevel)
-					xp -= houseRoule ? 1 : 3;
+				if (item.system.noEpFirstLevel && item.system.noEpLevels > 0)
+				{
+					const noEpLevels = Math.min(item.system.noEpLevels, item.system.level);
+					xp -= houseRoule ? this.CalcPartialSum(noEpLevels) : (noEpLevels * 3);
+				}
+					
 			}
 			else if (item.type === "talent")
 			{
-				if (!item.system.noEp)
+				if (!(item.system.noEp && item.system.noEpLevels > 0))
 					xp += item.system.level.value * baseXp;
+				else
+				{
+					const noCostLevels = Math.max(0, item.system.noEpLevels);
+					xp += (Math.max(0, item.system.level.value - noCostLevels)) * baseXp;
+				}
 			}
 			else if (item.type == "resource")
 			{
-				if (item.system.noEp)
-					continue;
 				if (item.system.isBase)
 				{
 					if (item.system.level.value >= 1)
@@ -1791,6 +1801,15 @@ export class Space1889Actor extends Actor
 						xp += 7;
 					else
 						xp += (item.system.level.value * baseXp);
+				}
+
+				if (item.system.noEp && item.system.noEpLevels > 0 && item.system.level.value > 0)
+				{
+					const noCostLevels = Math.min(item.system.level.value, item.system.noEpLevels);
+					const firstLevel = item.system.isBase ? 8 : baseXp;
+					xp -= firstLevel;
+					if (noCostLevels > 1)
+						xp -= (noCostLevels - 1) * baseXp
 				}
 			}
 		}

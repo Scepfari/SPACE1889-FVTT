@@ -424,11 +424,21 @@ export class Space1889Item extends Item {
 		{
 			const type = this._getTypeText();
 
-			if (this.type === "skill" || this.type === "specialization" || this.type === "weakness")
+			if (this.type === "skill" || this.type === "specialization")
 			{
-				let desc = game.i18n.localize(this.system.descriptionLangId);
-				if (desc === this.system.descriptionLangId && this.system.description !== "")
-					desc = this.system.description;
+				let desc = "";
+				if (this.system.noEpFirstLevel && this.system.noEpLevels > 0)
+				{
+					const noEpLevels = Math.min(this.system.level.value, this.system.noEpLevels);
+					const shareOfEffect = game.i18n.format("SPACE1889.NoEpCampaingnShareOfEffect", { part: noEpLevels, level: this.system.level.value });
+					desc += `<p><em><strong>${game.i18n.localize("SPACE1889.IsCampaingnEffect")} (${shareOfEffect})</strong></em> [${game.i18n.localize("SPACE1889.Source")}: ${this.system.noEpSource}]</p>`;
+				}						
+
+				let localizedDesc = game.i18n.localize(this.system.descriptionLangId);
+				if (localizedDesc === this.system.descriptionLangId && this.system.description !== "")
+					desc += this.system.description;
+				else
+					desc += localizedDesc;
 
 				const fullDesc = this._ComposeHtmlTextInfo("", this.name, type, desc, forChat);
 				return fullDesc;
@@ -436,16 +446,27 @@ export class Space1889Item extends Item {
 
 			if (this.type === "talent")
 			{
-				let desc = this.system.noEp ? `<em><strong>${game.i18n.localize("SPACE1889.IsCampaingnEffect")}</strong></em> [${game.i18n.localize("SPACE1889.Source")}: ${this.system.noEpSource}]` : "";
+				let desc = "";
+				if (this.system.noEp && this.system.noEpLevels > 0)
+				{
+					const noEpLevels = Math.min(this.system.level.value, this.system.noEpLevels);
+					const shareOfEffect = game.i18n.format("SPACE1889.NoEpCampaingnShareOfEffect", { part: noEpLevels, level: this.system.level.value });
+					desc += `<em><strong>${game.i18n.localize("SPACE1889.IsCampaingnEffect")} (${shareOfEffect})</strong></em> [${game.i18n.localize("SPACE1889.Source")}: ${this.system.noEpSource}]`;
+				}
 
 				if (this.system.level.max > 1)
 					desc += this._addLine("SPACE1889.Level", this.system.level.value, "", desc.length > 0);
 
 				const localizedDesc = game.i18n.localize(this.system.descriptionLangId);
-				if (localizedDesc === this.system.descriptionLangId && this.system.description !== "")
-					desc = this.system.description;
-				else
+				if (localizedDesc !== this.system.descriptionLangId)
 					desc += localizedDesc;
+
+				if (this.system.description !== "")
+				{
+					if (localizedDesc !== this.system.descriptionLangId)
+						desc += `<br><em><strong>${game.i18n.localize("SPACE1889.FurtherDescription")}:</strong></em>`;
+					desc += this.system.description;
+				}
 
 				let secondHeader = "";
 				if (this.system.showDetail)
@@ -458,8 +479,12 @@ export class Space1889Item extends Item {
 			if (this.type === "resource")
 			{
 				let desc = "<p>" + this._addLine("SPACE1889.Level", this.system.level.value, "", false);
-				if (this.system.noEp)
-					desc += `<br>${game.i18n.localize("SPACE1889.IsCampaingnEffect")}`;
+				if (this.system.noEp && this.system.noEpLevels > 0)
+				{
+					const noEpLevels = Math.min(this.system.level.value, this.system.noEpLevels);
+					const shareOfEffect = game.i18n.format("SPACE1889.NoEpCampaingnShareOfEffect", { part: noEpLevels, level: this.system.level.value });
+					desc += `<br><em><strong>${game.i18n.localize("SPACE1889.IsCampaingnEffect")} (${shareOfEffect})</strong></em> [${game.i18n.localize("SPACE1889.Source")}: ${this.system.noEpSource}]`;
+				}
 
 				desc += "</p>";
 				if (this.system.description !== "")
@@ -470,6 +495,16 @@ export class Space1889Item extends Item {
 					desc += idDesc;
 
 				const fullDesc = this._ComposeHtmlTextInfo("", this.system.label, type, desc, forChat);
+				return fullDesc;
+			}
+
+			if (this.type === "weakness")
+			{
+				let desc = game.i18n.localize(this.system.descriptionLangId);
+				if (desc === this.system.descriptionLangId && this.system.description !== "")
+					desc = this.system.description;
+
+				const fullDesc = this._ComposeHtmlTextInfo("", this.name, type, desc, forChat);
 				return fullDesc;
 			}
 
