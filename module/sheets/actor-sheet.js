@@ -537,6 +537,17 @@ export class Space1889ActorSheet extends foundry.applications.api.HandlebarsAppl
 				ui.notifications.info(game.i18n.localize("SPACE1889.CanNotMoveActivateVision"));
 				return;
 			}
+			if (item.type === "weapon" && item.system.usedHands != "none")
+			{
+				ui.notifications.info(game.i18n.format("SPACE1889.WeaponCanNotMoveReadyForActionWeapon", { name: item.name }));
+				return;
+			}
+			if (item.type === "shield" && item.system.usedHands != "none")
+			{
+				ui.notifications.info(game.i18n.format("SPACE1889.WeaponCanNotMoveReadyForActionShield", { name: item.name }));
+				return;
+			}
+
 			const newId = this.incrementLocation(ev, item.system.containerId, this.actor);
 			item.update({ 'system.containerId': newId });
 

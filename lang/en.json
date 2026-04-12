@@ -548,6 +548,8 @@
 	"SPACE1889.WeaponCanNotUsedIsNotReady": "To use the weapon {weapon} it must be ready for combat and this is only possible when you hold it in your hands.",
 	"SPACE1889.WeaponDrawReady": "{name} readies the weapon {weapon}",
 	"SPACE1889.WeaponIsAlreadyReady": "{name} is already ready with weapon {weapon}",
+	"SPACE1889.WeaponCanNotMoveReadyForActionWeapon": "The ready-to-use weapon <em>{name}</em> cannot be stowed in containers or storage locations whilst it is being held.",
+	"SPACE1889.WeaponCanNotMoveReadyForActionShield": "The equipped shield <em>{name}</em> cannot be stowed in containers or storage locations whilst it is being held.",
 	"SPACE1889.TokensSelectedOnly": "selected tokens only",
 	"SPACE1889.SelectedOnly": "selected only",
 	"SPACE1889.HideTokenNamesSelectedOnly": "<p>Should the renaming only be applied to the selected characters or to all characters in the active scene?</p><p>Info: Characters to which the players have rights are not renamed.</p>",

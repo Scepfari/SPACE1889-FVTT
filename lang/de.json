@@ -548,6 +548,8 @@
 	"SPACE1889.WeaponCanNotUsedIsNotReady": "Um die Waffe {weapon} einzusetzen muss sie Kampfbereit sein und das geht nur wenn man sie in den Händen hält.",
 	"SPACE1889.WeaponDrawReady": "{name} macht die Waffe {weapon} bereit",
 	"SPACE1889.WeaponIsAlreadyReady": "{name} ist schon bereit mit Waffe {weapon}",
+	"SPACE1889.WeaponCanNotMoveReadyForActionWeapon": "Die Waffe <em>{name}</em> kann nicht in Behälter oder Lagerorte verstaut werden, solange sie kampfbereit in der Hand ruht.",
+	"SPACE1889.WeaponCanNotMoveReadyForActionShield": "Das ausgerüstete Schild <em>{name}</em> kann nicht in Behälter oder Lagerorte verstaut werden, solange es verteidigungsbereit in der Hand gehalten wird.",
 	"SPACE1889.TokensSelectedOnly": "nur ausgewählte Figuren",
 	"SPACE1889.SelectedOnly": "nur ausgewählte",
 	"SPACE1889.HideTokenNamesSelectedOnly": "<p>Soll die Umbenennung nur auf die ausgewählten Figuren angewendet werden, oder auf alle Figuren der aktiven Szene?</p><p>Info: Figuren an denen die Spieler Rechte haben, werden nicht umbenannt.</p>",
