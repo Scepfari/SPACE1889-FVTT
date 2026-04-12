@@ -28,6 +28,7 @@ export class Space1889Migration
 		{
 			await this.migrateEffectsForFoundryV11(lastUsedVersion, lastUsedFoundryVersion, isNewWorld);
 			refreshCalendar = await this.migrateSimpleCalendar(lastUsedVersion, lastUsedFoundryVersion);
+			await this.migrateNoEpLevels(lastUsedVersion, isNewWorld);
 			await game.settings.set("space1889", "lastUsedFoundryVersion", game.version);
 		}
 		return refreshCalendar;
@@ -292,6 +293,50 @@ export class Space1889Migration
 			game.settings.set("space1889", "yearZero", yearZeroInfo);
 		}
 		return true;
+	}
+
+	static async migrateNoEpLevels(lastUsedVersion, isNewWorld)
+	{
+		if (isNewWorld)
+			return;
+
+		const lastNonFixVersion = "3.0.0";
+		if (!game.user.isGM || (foundry.utils.isNewerVersion(lastUsedVersion, lastNonFixVersion)))
+			return;
+
+		let actorList = [];
+		// nur relevant für sc und nsc die mit den Token verlinkt sind (also nicht nur in einer Szene existieren)
+		for (let actor of game.actors)
+		{
+			if (actor.type !== "character" && actor.type !== "npc")
+				continue;
+
+			if (!actor.prototypeToken.actorLink)
+				continue;
+
+			actorList.push(actor);
+		}
+
+		for (let actor of actorList)
+		{
+			let updateData = [];
+			for (let item of actor.items)
+			{
+				if (item.type != "talent" && item.type != "resource")
+					continue;
+
+				if (item.system.level.value <= 1 || !item.system?.noEp)
+					continue;
+
+				updateData.push({ _id: item._id, "system.noEpLevels": item.system.level.value });
+			}
+
+			if (updateData.length > 0)
+			{
+				await actor.updateEmbeddedDocuments("Item", updateData);
+				console.log("migrate noEpLevels for talents and resources for: " + actor.name + "(id=" + actor._id + ")");
+			}
+		}
 	}
 
 	static async showNewVersionInfo(noCheck = false)
