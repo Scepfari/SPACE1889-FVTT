@@ -1160,7 +1160,7 @@ export class Space1889Actor extends Actor
 
 			if (item.system.containerId == null)
 			{
-				if (item.type == "shield" && item.usedHands == "none")
+				if (item.type == "shield" && item.system?.usedHands == "none")
 					continue;
 					
 				defenseBonus += item.system.defenseBonus;
