@@ -2,8 +2,26 @@
 
 ## Marsianische Dunkle Zeiten
 
+### v3.0.1
+- Zwei Erweiterungen des Akteur Kontext Menüs: Direkter Zugang zum Prototyp Token und die Möglichkeit einen NSC in SC bzw. einen SC in NSC umzuwandeln
+- Charaktermerkmale mit Kampagnen Effekt (Talente, Fertigkeiten, Spezialisierungen, Ressourcen) haben jetzt ein zusätzlichen Parameter für die Stufe des Kampagnen Effektes, d.h. über diesen wird angegeben wie viele Stufen des Merkmals von dem Effekt bezüglich der EP Kosten abgedeckt wird.
+- Charakterbogen UI Verbesserungen: Filteroptionen
+  - Waffen : Wegfiltern aller nicht verwendbarer Waffen, also jener die nicht beim Charakter sind
+  - Munition: Wegfiltern aller Munitionsarten, die der Charakter nicht dabei hat
+  - Rüstungen: Wegfiltern aller Rüstungen, die der Charakter nicht dabei hat
+  - Verletzungen: Wegfiltern aller schon verheilten Verletzungen
+  - Langfristige Proben: Wegfiltern aller schon erledigten langfristigen Proben
+- Neuer Gegenstandstyp "Schild": 
+  - neue Nahkampf Spezialisierung "Schilde" 
+  - Schilde liefern nur einen Abwehrbonus wenn sie in der Hand gehalten werden
+  - Schilde lassen sich auch als Nahkampfwaffe verwenden
+  - Das Parade Manöver ist auch mit einem Schild möglich
+- Bugfix: Parade beachtet die Abzüge der Nebenhand nicht ([#27](https://github.com/Scepfari/SPACE1889-FVTT/issues/27))
+- Bugfix: Ausgerüstete(= gehaltene) Waffen lassen sich in Lager/Behälter verschieben ([#28](https://github.com/Scepfari/SPACE1889-FVTT/issues/28))
+- Bugfix: Darstellungsprobleme bei Talenten mit Kampagnen Effekt ([#29](https://github.com/Scepfari/SPACE1889-FVTT/issues/29))
+
 ### v3.0.0
-- Unterstützung von Foundry V13 
+- Unterstützung von Foundry V13 <br>Ein wirklich aufwendiger Prozess der mich ein dreiviertel Jahr beschäftigt hat und vermutlich auch nicht fehlerfrei über die Bühne ging. Daher wenn ihr Fehler, verloren gegangene Funktionen oder fehlende Funktionalität findet, lasst sie mich wissen. Am besten über einen Bugeintrag auf GitHub (https://github.com/Scepfari/SPACE1889-FVTT/issues). Der Link findet sich auch in den Spieleinstellungen unter dem Knopf "SPACE 1889 Fehler melden"
 - V12 und älter bleibt auf Version 2.3.6 und wird nicht mehr weitergepflegt
 - Effekte für Fertigkeiten und Spezialisierungen (analog zu denen der Talente), um z.B. das Level zu modifizieren ohne die EP Kosten zu beeinflussen.
 - Kampagnen Effekt für Fertigkeiten und Spezialisierungen, also für das erste Level ohne EP zu verbrauchen, alle weiteren Steigerungen dann regulär oder über Effekte
