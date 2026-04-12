@@ -738,7 +738,7 @@ export class Space1889Actor extends Actor
 				shield.system.sizeMod = sizeMod;
 				shield.system.skillRating = this.getSkillLevel(actor, shield.system.skillId, shield.system.specializationId);
 				const attackBonusFromDamage = shield.system.damage;
-				let offhandMod = ((actor.type == "character" || actor.type == "npc") && shield.system.usedHands == "offHand" && SPACE1889Helper.getTalentLevel(this, "beidhaendig") == 0) ? -2 : 0;
+				let offhandMod = this.getOffhandModificator(actor.type, shield);
 				shield.system.attack = Math.max(0, attackBonusFromDamage + shield.system.skillRating + shield.system.sizeMod + offhandMod);
 				shield.system.attackAverage = (Math.floor(shield.system.attack / 2)).toString() + (shield.system.attack % 2 == 0 ? "" : "+");
 			}
@@ -830,7 +830,7 @@ export class Space1889Actor extends Actor
 				weapon.system.skillRating = this.getSkillLevel(actor, weapon.system.skillId, weapon.system.specializationId);
 				const attackBonusFromDamage = (weapon.system.isAreaDamage && actor.type != 'vehicle') ? 0 : weapon.system.damage;
 				const ammoBonus = weapon.system.ammunition?.damageMod ? weapon.system.ammunition.damageMod : 0;
-				let offhandMod = ((actor.type == "character" || actor.type == "npc") && weapon.system.usedHands == "offHand" && SPACE1889Helper.getTalentLevel(this, "beidhaendig") == 0) ? -2 : 0;
+				let offhandMod = this.getOffhandModificator(actor.type, weapon);
 				weapon.system.attack = Math.max(0, attackBonusFromDamage + weapon.system.skillRating + weapon.system.sizeMod + ammoBonus + offhandMod);
 				weapon.system.attackAverage = (Math.floor(weapon.system.attack / 2)).toString() + (weapon.system.attack % 2 == 0 ? "" : "+");
 			}
@@ -1317,6 +1317,17 @@ export class Space1889Actor extends Actor
 		return statusIds.includes("stun");
 	}
 
+	getOffhandModificator(actorType, weapon)
+	{
+		if (actorType !== "character" && actorType !== "npc")
+			return 0;
+
+		if (weapon?.system?.usedHands !== "offHand")
+			return 0;
+
+		return (SPACE1889Helper.getTalentLevel(this, "beidhaendig") == 0) ? -2 : 0;
+	}
+
 	CalcAndSetBlockData(actor)
 	{
 		if (this.HasNoActiveDefense(actor))
@@ -1397,9 +1408,11 @@ export class Space1889Actor extends Actor
 		{
 			if (weapon.system.usedHands == "none")
 				continue;
-			if (weapon.system.skillId == id && weapon.system.skillRating > skillRating)
+
+			const resultSkillRating = weapon.system.skillRating + this.getOffhandModificator(actor.type, weapon);
+			if (weapon.system.skillId == id && resultSkillRating > skillRating)
 			{
-				skillRating = weapon.system.skillRating;
+				skillRating = resultSkillRating;
 				riposteDamageType = weapon.system.ammunition?.damageType ? weapon.system.ammunition.damageType : weapon.system.damageType;
 			}
 		}
@@ -1407,9 +1420,10 @@ export class Space1889Actor extends Actor
 		{
 			if (shield.system.usedHands == "none")
 				continue;
-			if (shield.system.skillId == id && shield.system.skillRating > skillRating)
+			const resultSkillRating = shield.system.skillRating + this.getOffhandModificator(actor.type, shield);
+			if (shield.system.skillId == id && resultSkillRating > skillRating)
 			{
-				skillRating = shield.system.skillRating;
+				skillRating = resultSkillRating;
 				riposteDamageType = shield.system.damageType;
 			}
 		}
