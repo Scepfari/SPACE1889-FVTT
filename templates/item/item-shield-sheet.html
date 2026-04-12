@@ -1,0 +1,83 @@
+<section class="{{cssClass}}" autocomplete="off">
+
+	<li class="item flexrow items-header">
+		<label class="resource-label">{{localize "SPACE1889.DefenseBonus"}}</label>
+		<label class="resource-label">{{localize "SPACE1889.DexPenalty"}}</label>
+		<label class="resource-label">{{localize "SPACE1889.StrengthThreshold"}}</label>
+	</li>
+	<li class="item flex-group-center flexrow">
+		<div class="resource-content flex-center flex-between">
+			<input type="text" name="system.defenseBonus" value="{{system.defenseBonus}}" data-dtype="Number"/>
+		</div>
+		<div class="resource-content flex-center flex-between">
+			<input type="text" name="system.dexPenalty" value="{{system.dexPenalty}}" data-dtype="Number"/>
+		</div>
+		<div class="resource-content flex-center flex-between">
+			<input type="text" name="system.strengthThreshold" value="{{system.strengthThreshold}}" data-dtype="Number"/>
+		</div>
+	</li>
+
+	<li class="item flexrow items-header">
+		<label class="resource-label">{{localize "SPACE1889.Weight"}}[kg]</label>
+		<label class="resource-label">{{localize "SPACE1889.Price"}}</label>
+	</li>
+	<li class="item flex-group-center flexrow">
+		<div class="resource-content flex-center flex-between">
+			<input type="number" min="0" step="0.001" name="system.weight" value="{{system.weight}}" data-dtype="Number"/>
+		</div>
+		<div class="resource-content flex-center flex-between">
+			<input type="text" name="system.price" value="{{system.price}}"/>
+		</div>
+	</li>
+	<hr />
+	<h3>{{localize  "SPACE1889.CombatAbilities" }}</h3>
+
+	<li class="item flexrow items-header">
+		<label class="resource-label">{{ localize "SPACE1889.CombatSkill" }} </label>
+		<label class="resource-label">{{ localize "SPACE1889.CombatSpecialization" }}</label>
+	</li>
+	<li class="item flex-group-center flexrow">
+		<div class="resource">
+			<input type="text" name="dummy" value="{{localize "SPACE1889.SkillNahkampf"}}" disabled />
+		</div>
+		<div class="resource">
+			<select name="system.specializationId" data-dtype="String">
+				{{selectOptions system.specializations selected=system.specializationId valueAttr="key" labelAttr="label"}}
+			</select>
+		</div>
+	</li>
+
+	<li class="item flexrow items-header">
+		<label class="resource-label">{{ localize "SPACE1889.Damage"}}</label>
+		<label class="resource-label">{{ localize "SPACE1889.DamageType"}}</label>
+	</li>
+	<li class="item flex-group-center flexrow">
+		<div class="resource">
+			<input type="text" name="system.damage" value="{{system.damage}}" data-dtype="Number" />
+		</div>
+		<div class="resource">
+			<select name="system.damageType" data-dtype="String">
+				{{selectOptions system.damageTypes selected=system.damageType localize=true}}
+			</select>
+		</div>
+	</li>
+
+
+	{{#if system.locationLong}}
+	<hr>
+	<div class="resource">
+		<label class="resource-label">{{ localize "SPACE1889.StorageLocation" }}</label>
+		<label>{{system.locationLong}}</label>
+	</div>
+	<hr>
+	{{/if}}
+
+	{{#if (ne system.descriptionLangId (localize system.descriptionLangId))}}
+		<hr />
+		<p>{{{localize system.descriptionLangId}}}</p>
+		<hr />
+	{{/if}}
+
+	{{> "systems/space1889/templates/item/parts/item-description.html"}}
+
+</section>

@@ -901,6 +901,11 @@ export class Space1889ActorSheet extends foundry.applications.api.HandlebarsAppl
 			const newValue = !this.actor.system.visualisation.compressedArmors;
 			this.actor.update({ 'system.visualisation.compressedArmors': newValue });
 		});
+		html.find('.compressed-shields-toggle').on('mousedown', (ev) =>
+		{
+			const newValue = !this.actor.system.visualisation.compressedShields;
+			this.actor.update({ 'system.visualisation.compressedShields': newValue });
+		});
 		html.find('.compressed-extendedActions-toggle').on('mousedown', (ev) =>
 		{
 			const newValue = !this.actor.system.visualisation.compressedExtendedActions;
@@ -925,6 +930,11 @@ export class Space1889ActorSheet extends foundry.applications.api.HandlebarsAppl
 		{
 			const newValue = !this.actor.system.visualisation.filterArmors;
 			this.actor.update({ 'system.visualisation.filterArmors': newValue });
+		});
+		html.find('.filter-shields-toggle').on('mousedown', (ev) =>
+		{
+			const newValue = !this.actor.system.visualisation.filterShields;
+			this.actor.update({ 'system.visualisation.filterShields': newValue });
 		});
 		html.find('.filter-damage-toggle').on('mousedown', (ev) =>
 		{
@@ -1385,6 +1395,14 @@ export class Space1889ActorSheet extends foundry.applications.api.HandlebarsAppl
 				ui.notifications.error(game.i18n.format("SPACE1889.canNotBeAdded", { item: item.name }))
 				return false;
 			}	
+		}
+		if (item.type == "shield")
+		{
+			if (item.system.strengthThreshold > actor.system.abilities["str"].total)
+			{
+				ui.notifications.error(game.i18n.format("SPACE1889.canNotBeAdded", { item: item.name }))
+				return false;
+			}			
 		}
 		if (item.type == "specialization")
 		{

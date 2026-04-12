@@ -97,6 +97,12 @@ export class Space1889Item extends Item {
 				if (item.img == "icons/svg/item-bag.svg")
 					item.img = "icons/svg/shield.svg";
 			}
+			else if (item.type == "shield" && item.system.id !== "")
+			{
+				this.setLangIdAndLabel(item, "Shield", true);
+				if (item.img == "icons/svg/item-bag.svg")
+					item.img = "icons/svg/shield.svg";
+			}
 			else if (item.type == "item")
 			{
 				this.setLangIdAndLabel(item, "Item", true);
@@ -534,6 +540,30 @@ export class Space1889Item extends Item {
 				desc += this._addLine("SPACE1889.StrengthThreshold", this.system.strengthThreshold);
 				desc += this._addLine("SPACE1889.Weight", this.system.weight, "kg");
 				desc += this._addLine("SPACE1889.Price", this.system.price);
+
+				const image = this._getImageIfNotDefault(forChat);
+				const fullDesc = this._ComposeHtmlTextInfo(image, this.name, type, desc, forChat);
+				return fullDesc;
+			}
+
+			if (this.type === "shield")
+			{
+				let desc = game.i18n.localize(this.system.descriptionLangId);
+				if (desc === this.system.descriptionLangId)
+					desc = "";
+				if (this.system.description !== "")
+					desc += (desc === "" ? "" : "<br>") + this.system.description;
+
+				desc += this._addLine("SPACE1889.DefenseBonus", this.system.defenseBonus, "", desc !== "");
+				desc += this._addLine("SPACE1889.DexPenalty", this.system.dexPenalty);
+				desc += this._addLine("SPACE1889.StrengthThreshold", this.system.strengthThreshold);
+				desc += this._addLine("SPACE1889.Weight", this.system.weight, "kg");
+				desc += this._addLine("SPACE1889.Price", this.system.price);
+
+				if (this.system.specializationId !== "none")
+					desc += this._addLineFromToIds("SPACE1889.CombatSpecialization", CONFIG.SPACE1889.combatSpecializations[this.system.specializationId], true);
+
+				desc += this._addLine("SPACE1889.Damage", (this.system.damage).toString(),  this.system.damageTypeDisplay, desc.length > 0);
 
 				const image = this._getImageIfNotDefault(forChat);
 				const fullDesc = this._ComposeHtmlTextInfo(image, this.name, type, desc, forChat);

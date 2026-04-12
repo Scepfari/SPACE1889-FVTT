@@ -32,7 +32,7 @@ export default class SPACE1889RollHelper
 
 	static rollItem(item, actor, dieCount, showDialog)
 	{
-		if (item.type == "weapon" || item.isAttackTalent())
+		if (item.type == "weapon" || item.type == "shield" || item.isAttackTalent())
 		{
 			if (!SPACE1889Combat.IsActorParticipantOfTheActiveEncounter(actor, true))
 				return;
@@ -111,7 +111,7 @@ export default class SPACE1889RollHelper
 			return item.system.rating;
 		if (item.type == 'specialization')
 			return item.system.rating;
-		if (item.type == 'weapon')
+		if (item.type == 'weapon' || item.type == 'shield')
 			return item.system.attack;
 		if (item.type == 'talent' && item.system.isRollable)
 			return this.getTalentDieCount(item, actor);
@@ -198,9 +198,9 @@ export default class SPACE1889RollHelper
 	*/
 	static rollSpecial(item, actor, dieCount, showDialog)
 	{
-		if (item.type == "weapon" || item.type == "skill" || item.type == "specialization")
+		if (item.type == "weapon" || item.type == "shield" || item.type == "skill" || item.type == "specialization")
 		{
-			if (item.type == "weapon" && showDialog && (actor.type == "character" || actor.type == "npc"))
+			if ((item.type == "weapon" || item.type == "shield") && showDialog && (actor.type == "character" || actor.type == "npc"))
 			{
 				if (!this.canActAndUseWeapon(item, actor))
 					return;
@@ -210,7 +210,7 @@ export default class SPACE1889RollHelper
 			}
 
 			let attackString = "";
-			if (item.type == "weapon")
+			if (item.type == "weapon" || item.type == "shield")
 			{
 				if (actor.type == "vehicle")
 					attackString = item.system.vehicleInfo + '<br>'; 
@@ -341,7 +341,7 @@ export default class SPACE1889RollHelper
 		if (this.canNotAttack(actor, true))
 			return false;
 
-		const isWeapon = item.type == "weapon";
+		const isWeapon = item.type == "weapon" || item.type == "shield";
 
 		if (isWeapon && !SPACE1889Helper.isWeaponReady(item, actor))
 		{
@@ -370,7 +370,7 @@ export default class SPACE1889RollHelper
 		if (!this.canActAndUseWeapon(item, actor))
 			return;
 
-		const isWeapon = item.type == "weapon";
+		const isWeapon = item.type == "weapon" || item.type == "shield";
 
 		const extraInfo = withExtraInfo ? game.i18n.localize(item.system.infoLangId) : "";
 		let toolTipInfo = "";
@@ -382,7 +382,7 @@ export default class SPACE1889RollHelper
 		const talentWeapon = isAttackTalent ? SPACE1889RollHelper.getWeaponFromTalent(actor, item) : null;
 
 		const targetId = game.user.targets.first() ? game.user.targets.first().id : "";
-		let addAutoDefense = game.settings.get("space1889", "combatSupport") && (item.type == 'weapon' || isAttackTalent);
+		let addAutoDefense = game.settings.get("space1889", "combatSupport") && (item.type == 'weapon' || item.type == 'shield' || isAttackTalent);
 		let firstAidText = "";
 		let defaultMod = 0;
 		let firstAid = (item.type == "specialization" && item.system.id == "ersteHilfe") ? "firstAid" : "";
@@ -609,7 +609,7 @@ export default class SPACE1889RollHelper
 		let messageContent = "";
 		const speaker = ChatMessage.getSpeaker({ actor: actor });
 
-		if (item?.type === 'weapon' || isAttackTalent || specialAttack !== "")
+		if (item?.type === 'weapon' || item?.type === 'shield' || isAttackTalent || specialAttack !== "")
 			messageContent = this.getAttackChatContent(actor, item, rollWithHtml, targetIds, useWeaponChatInfo, extraInfo, isAttackTalent, specialAttack);
 		else
 		{
@@ -673,7 +673,7 @@ export default class SPACE1889RollHelper
 
 	static getAttackChatContent(actor, item, rollWithHtml, targetIds, useWeaponChatInfo, extraInfo="", isAttackTalent, specialAttack="")
 	{
-		const addAutoDefense = game.settings.get("space1889", "combatSupport") && (item?.type === 'weapon' || isAttackTalent || specialAttack !== "");
+		const addAutoDefense = game.settings.get("space1889", "combatSupport") && (item?.type === 'weapon' || item?.type === 'shield' || isAttackTalent || specialAttack !== "");
 		let weapon = undefined;
 		let weaponSkill = "";
 		let weaponDamageType = "";
@@ -688,6 +688,12 @@ export default class SPACE1889RollHelper
 			effect = weapon.system.effect;
 			effectDurationCT = weapon.system.effectDurationCombatTurns;
 			effectOnly = weapon.system.effectOnly;
+		}
+		if (item?.type === "weapon" || item?.type === "shield")
+		{
+			weapon = item;
+			weaponSkill = weapon.system.skillId;
+			weaponDamageType = weapon.system.damageType;
 		}
 
 		let abbrDamageType = item?.system?.damageTypeDisplay ? "(" + item.system.damageTypeDisplay + ")" : "";
@@ -853,6 +859,8 @@ export default class SPACE1889RollHelper
 			case "container":
 				return item.img != "icons/svg/item-bag.svg";
 			case "armor":
+				return item.img != "icons/svg/shield.svg";
+			case "shield":
 				return item.img != "icons/svg/shield.svg";
 			case "weapon":
 				return item.img != "icons/svg/sword.svg";

@@ -243,6 +243,12 @@ export class Space1889ItemSheet extends foundry.applications.api.HandlebarsAppli
 			context.system['itemUseTypes'] = CONFIG.SPACE1889.itemUseTypes;
 			context.system['lightSourceHands'] = CONFIG.SPACE1889.lightSourceHands;
 		}
+		else if (item.type === "shield")
+		{
+			context.system['damageTypes'] = CONFIG.SPACE1889.damageTypes;
+			context.system['damageTypeAbbr'] = CONFIG.SPACE1889.damageTypeAbbreviations;
+			context.system['specializations'] = await SPACE1889Helper.getSortedSpecializationsFromSkill(context.system.skillId);
+		}
 
 		if (item.type == "weapon")
 		{
@@ -251,7 +257,7 @@ export class Space1889ItemSheet extends foundry.applications.api.HandlebarsAppli
 			context.system['weaponMountSpots'] = CONFIG.SPACE1889.weaponMountSpots;
 		}
 
-		if (item.type == "armor" || item.type == "item")
+		if (item.type == "armor" || item.type === "shield" || item.type == "item")
 		{
 			context.system['storageLocations'] = CONFIG.SPACE1889.storageLocations;
 			context.system['storageLocationsAbbr'] = CONFIG.SPACE1889.storageLocationAbbreviations;

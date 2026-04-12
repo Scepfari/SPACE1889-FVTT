@@ -382,6 +382,7 @@ export class Space1889Actor extends Actor
 		const weapons = [];
 		const ammunitions = [];
 		const armors = [];
+		const shields = [];
 		const gear = [];
 		const resources = [];
 		const weakness = [];
@@ -414,6 +415,8 @@ export class Space1889Actor extends Actor
 				ammunitions.push(item);
 			else if (item.type === 'armor')
 				armors.push(item);
+			else if (item.type === 'shield')
+				shields.push(item);
 			else if (item.type === 'item')
 				gear.push(item);
 			else if (item.type === 'vision')
@@ -453,12 +456,14 @@ export class Space1889Actor extends Actor
 		SPACE1889Helper.sortBySortFlag(containers);
 		SPACE1889Helper.sortBySortFlag(money);
 		SPACE1889Helper.sortBySortFlag(armors);
+		SPACE1889Helper.sortBySortFlag(shields);
 
 		actor.system.talents = talents;
 		actor.system.skills = skills;
 		actor.system.speciSkills = speciSkills;
 		actor.system.injuries = injuries;
 		actor.system.armors = armors;
+		actor.system.shields = shields;
 		actor.system.gear = gear;
 		actor.system.resources = resources;
 		actor.system.weakness = weakness;
@@ -491,6 +496,7 @@ export class Space1889Actor extends Actor
 
 		this.calcAndSetSkillsAndSpecializations(actor)
 
+		this.prepareShields(actor, shields);
 		this.prepareAmmunition(ammunitions, actor);
 		this.prepareWeapons(actor, weapons);
 		actor.system.weapons = weapons;
@@ -552,7 +558,7 @@ export class Space1889Actor extends Actor
 		}
 		else
 		{
-			const lists = [armors, gear];
+			const lists = [armors, gear, shields];
 
 			for (const list of lists)
 			{
@@ -713,6 +719,41 @@ export class Space1889Actor extends Actor
 			}
 		}
 		return { name: game.i18n.localize("SPACE1889.StorageLocationKoerper"), shortName: game.i18n.localize("SPACE1889.StorageLocationKoerperAbbr") };
+	}
+
+	prepareShields(actor, shields)
+	{
+		let sizeMod = (-1) * actor.system.secondaries.size.total;
+		for (let shield of shields)
+		{
+			if (shield.system.skillId == "none")
+			{
+				shield.system.sizeMod = "-";
+				shield.system.skillRating = "-";
+				shield.system.attack = shield.system.damage;
+				shield.system.attackAverage = (Math.floor(shield.system.attack / 2)).toString() + (shield.system.attack % 2 == 0 ? "" : "+");
+			}
+			else
+			{
+				shield.system.sizeMod = sizeMod;
+				shield.system.skillRating = this.getSkillLevel(actor, shield.system.skillId, shield.system.specializationId);
+				const attackBonusFromDamage = shield.system.damage;
+				let offhandMod = ((actor.type == "character" || actor.type == "npc") && shield.system.usedHands == "offHand" && SPACE1889Helper.getTalentLevel(this, "beidhaendig") == 0) ? -2 : 0;
+				shield.system.attack = Math.max(0, attackBonusFromDamage + shield.system.skillRating + shield.system.sizeMod + offhandMod);
+				shield.system.attackAverage = (Math.floor(shield.system.attack / 2)).toString() + (shield.system.attack % 2 == 0 ? "" : "+");
+			}
+			shield.system.damageTypeDisplay = game.i18n.localize(CONFIG.SPACE1889.damageTypeAbbreviations[shield.system.damageType]);
+			if (!SPACE1889Helper.isCreature(actor))
+			{
+				const locationNames = this.getLocation(actor, shield.system.containerId);
+				shield.system.locationDisplay = locationNames.shortName;
+				shield.system.locationDisplayLong = locationNames.name;
+				shield.system.usedHandsInfo = game.i18n.localize(CONFIG.SPACE1889.weaponHand[shield.system.usedHands]);
+				shield.system.usedHandsIcon = game.i18n.localize(CONFIG.SPACE1889.weaponHandIcon[shield.system.usedHands]);
+			}
+		}
+
+		//SPACE1889Helper.sortBySortFlag(shields);
 	}
 
 	prepareAmmunition(ammunitions, actor)
@@ -1114,11 +1155,14 @@ export class Space1889Actor extends Actor
 		let defenseBonus = 0;
 		for (let item of items)
 		{
-			if (item.type != "armor")
+			if (item.type != "armor" && item.type != "shield")
 				continue;
 
 			if (item.system.containerId == null)
 			{
+				if (item.type == "shield" && item.usedHands == "none")
+					continue;
+					
 				defenseBonus += item.system.defenseBonus;
 				dexMalus += item.system.dexPenalty;
 			}
@@ -1359,6 +1403,16 @@ export class Space1889Actor extends Actor
 				riposteDamageType = weapon.system.ammunition?.damageType ? weapon.system.ammunition.damageType : weapon.system.damageType;
 			}
 		}
+		for (let shield of actor.system.shields)
+		{
+			if (shield.system.usedHands == "none")
+				continue;
+			if (shield.system.skillId == id && shield.system.skillRating > skillRating)
+			{
+				skillRating = shield.system.skillRating;
+				riposteDamageType = shield.system.damageType;
+			}
+		}
 
 		const noWeapon = skillRating == 0;
 		let instinctive = false;
@@ -1491,7 +1545,10 @@ export class Space1889Actor extends Actor
 						load += item.system.weight * item.system.quantity;
 				}
 			}
-			const nonQuantityLists = [actor.system.armors, actor.system.weapons];
+			let nonQuantityLists = [actor.system.armors, actor.system.weapons];
+			if (actor.system?.shields && actor.system.shields.length > 0)
+				nonQuantityLists.push(actor.system.shields);
+
 			for (let liste of nonQuantityLists)
 			{
 				for (let item of liste)
@@ -1576,7 +1633,7 @@ export class Space1889Actor extends Actor
 				itemWeight = item.system.weight * item.system.quantity;
 			else if (item.type == "weapon" && item.system.skillId == "geschuetze" && item.system.location == 'mounted')
 				continue;
-			else if (item.type == "weapon" || item.type == "armor")
+			else if (item.type == "weapon" || item.type == "armor" || item.type == "shield")
 				itemWeight = item.system.weight;
 			else
 				continue;

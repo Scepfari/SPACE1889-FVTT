@@ -1,0 +1,65 @@
+{{#if system.shields}}
+<ol class="items-list ">
+	<li class="item flexrow items-header-height40">
+		<div class="item-name item-height50px">{{localize "TYPES.Item.shieldPl"}}&#160;
+			<a class="open-compendium" data-tooltip="{{localize 'SPACE1889.OpenCompendium'}}" data-pack="space1889.ausrustung"><i class="far fa-external-link-square"></i></a>&ensp;
+			{{#if system.visualisation.compressedShields}}
+				<a class="compressed-shields-toggle" data-tooltip="{{localize 'SPACE1889.ContainerExpand'}}" data-tooltip-direction="DOWN"><i class="fal fa-expand-arrows-alt"></i></a>
+			{{else}}
+				<a class="compressed-shields-toggle" data-tooltip="{{localize 'SPACE1889.ContainerCompress'}}" data-tooltip-direction="DOWN"><i class="fal fa-compress-arrows-alt" ></i></a>
+				&#160;
+				{{#if system.visualisation.filterShields}}
+					<a class="fa-stack filter-shields-toggle" data-tooltip="{{localize 'SPACE1889.ItemsDisableFilter'}}" data-tooltip-direction="DOWN">
+						<i class="fa fa-filter fa-stack-1x"></i>
+						<i class="fa fa-ban fa-stack-1x"></i>
+					</a>
+				{{else}}
+					<a class="filter-shields-toggle" data-tooltip="{{localize 'SPACE1889.ItemsFilter'}}" data-tooltip-direction="DOWN"><i class="fal fa-filter"></i></a>
+				{{/if}}
+			{{/if}}
+		</div>
+		<div data-tooltip='{{localize "SPACE1889.DefenseBonus"}}' class="items-name item-max-with60px">{{localize "SPACE1889.DefenseBonus"}}</div>
+		<div data-tooltip='{{localize "SPACE1889.DexPenalty"}}' class="items-name item-max-with40px ">{{localize "SPACE1889.DexPenalty"}}</div>
+		<div data-tooltip='{{localize "SPACE1889.Damage"}}' class="items-list item-max-with30px">{{localize "SPACE1889.DamageAbbr"}}</div>
+		<div data-tooltip='{{localize "SPACE1889.Modifier"}}' class="items-list item-max-with30px">{{localize "SPACE1889.Mod"}}</div>
+		<div data-tooltip='{{localize "SPACE1889.AttackValue"}}' class="items-list item-max-with40px">{{localize "SPACE1889.Rating"}}</div>		
+		<div data-tooltip='{{localize "SPACE1889.WeaponReady"}}' class="items-list item-max-with30px">{{localize "SPACE1889.WeaponReadyAbbr"}} </div>
+		<div data-tooltip='{{localize "SPACE1889.StorageLocation"}}' class="items-name item-max-with40px ">{{localize "SPACE1889.StorageLocation"}}</div>
+		<div class="item-controls item-max-with50px">
+			<a class="item-control item-create item-max-with50px" data-tooltip='{{localize "SPACE1889.CreateItem"}}' data-type="shield"><i class="fas fa-plus"></i> Add</a>
+		</div>
+	</li>
+	{{#if (not system.visualisation.compressedShields)}}
+	{{#each system.shields as |item id|}}
+	{{#if (or (not ../system.visualisation.filterShields) (canDoUseItem item ../document))}}
+	<li class="item row-section flexrow" data-item-id="{{item._id}}">
+		<div class="item-name">
+			<div class="item-image-small">
+				<a class="rollable" data-roll-type="item" data-roll-diecount="{{item.system.attack}}"><img src="../../icons/svg/dice-target.svg" data-tooltip="{{item.system.label}} Probe" width="18" height="18" /></a>
+			</div>
+			<div class="item-name-name" data-tooltip="{{fullItemToolTipDescription item}}" data-tooltip-direction="RIGHT">
+				<label for="" class="rollable" data-roll-type="item" data-label="{{item.system.label}}">{{item.system.label}}</label>
+			</div>
+		</div>
+		<label class="items-list item-max-with60px">{{item.system.defenseBonus}}</label>
+		<label class="items-list item-max-with40px">{{item.system.dexPenalty}}</label>
+
+		<label class="items-list item-max-with30px">{{item.system.damage}} {{item.system.damageTypeDisplay}}</label>
+		<label class="items-list item-max-with30px">{{item.system.skillRating}}</label>
+		<label class="items-list resource-label item-max-with40px">{{item.system.attack}} {{item.system.damageTypeDisplay}}</label>
+		<div data-tooltip='{{item.system.usedHandsInfo}}' class="items-list item-max-with30px">
+			<a class="weaponhand-click"><i class="{{item.system.usedHandsIcon}}"></i></a>
+		</div>
+		<div class="items-list item-max-with40px">
+			<a data-tooltip='{{item.system.locationLong}}' class="location-click">{{item.system.display}}</a>
+		</div>
+		<div class="item-controls item-max-with50px">
+			<a class="item-control item-edit" data-tooltip='{{localize "SPACE1889.EditItemWithName" name=item.system.label}}'><i class="fas fa-edit"></i></a>
+			<a class="item-control item-delete" data-tooltip='{{localize "SPACE1889.DeleteItemWithName" name=item.system.label}}'><i class="fas fa-trash"></i></a>
+		</div>
+	</li>
+	{{/if}}
+	{{/each}}
+	{{/if}}
+</ol>
+{{/if}}

@@ -652,7 +652,7 @@ export default class SPACE1889Helper
 
 	static async setWeaponHand(weapon, actor, backward, silent = false)
 	{
-		if (!weapon || !actor || weapon.type != "weapon")
+		if (!weapon || !actor || (weapon.type != "weapon" && weapon.type != "shield"))
 			return;
 
 		if (weapon.system.containerId != null)
@@ -683,9 +683,10 @@ export default class SPACE1889Helper
 		let title = "";
 		let isWaffenlos = weapon.system.skillId == "waffenlos";
 
+		const isShield = weapon.type == "shield";
 		if (newHand == "none")
 		{
-			title = game.i18n.localize("SPACE1889.WeaponUnReadyWeapon");
+			title = game.i18n.localize(isShield ? "SPACE1889.WeaponUnReadyShield" : "SPACE1889.WeaponUnReadyWeapon");
 			if (isWaffenlos)
 				desc = game.i18n.format("SPACE1889.WeaponDrawBrawl", { weapon: weapon.name });
 			else
@@ -695,7 +696,7 @@ export default class SPACE1889Helper
 		}
 		else
 		{
-			title = game.i18n.localize("SPACE1889.WeaponReadyWeapon");
+			title = game.i18n.localize(isShield ? "SPACE1889.WeaponReadyShield" : "SPACE1889.WeaponReadyWeapon");
 			const handname = game.i18n.localize(CONFIG.SPACE1889.weaponHand[newHand]);
 			if (isWaffenlos)
 			{
@@ -732,24 +733,33 @@ export default class SPACE1889Helper
 	{
 		let primaryHand = [];
 		let offHand = [];
-		for (const weapon of actor?.system?.weapons)
+		let lists = [actor?.system?.weapons, actor?.system?.shields]
+
+		for (const list of lists)
 		{
-			if (weapon.system.usedHands === "bothHands")
+			for (const weapon of list)
 			{
-				primaryHand.push(weapon._id);
-				offHand.push(weapon._id);
+				if (weapon.system.usedHands === "bothHands")
+				{
+					primaryHand.push(weapon._id);
+					offHand.push(weapon._id);
+				}
+				else if (weapon.system.usedHands === "primaryHand")
+					primaryHand.push(weapon._id);
+				else if (weapon.system.usedHands === "offHand")
+					offHand.push(weapon._id);
 			}
-			else if (weapon.system.usedHands === "primaryHand")
-				primaryHand.push(weapon._id);
-			else if (weapon.system.usedHands === "offHand")
-				offHand.push(weapon._id);
 		}
 		return { primary: primaryHand, off: offHand };
 	}
 
 	static getWeapon(actor, weaponId)
 	{
-		return actor?.system?.weapons?.find(e => e.id == weaponId);
+		let weapon = actor?.system?.weapons?.find(e => e.id == weaponId);
+		if (weapon)
+			return weapon;
+
+		return actor?.system?.shields?.find(e => e.id == weaponId);
 	}
 
 	static getNextValidHandPosition(weapon, actor, backwardDirection)
