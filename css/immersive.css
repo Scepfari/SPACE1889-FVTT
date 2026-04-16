@@ -204,14 +204,24 @@
 	margin-left: 15%;
 }
 
-.space1889-immersive .window-header {
-	background-image: url("../icons/backgrounds/headerLeft.webp"), url("../icons/backgrounds/headerRight.webp");
-	background-size: 35px 100%, 30px 100%;
-	background-repeat: no-repeat;
-	z-index: -1;
-	background-position: left 0px, right 0px;
-	padding-right: 16px;
-}
+	.space1889-immersive .application:not(.minimized, .sidebar-popout) .window-header {
+		background-image: url("../icons/backgrounds/headerLeft.webp"), url("../icons/backgrounds/headerRight.webp");
+		background-size: 33px 100%, 33px 100%;
+		background-repeat: no-repeat;
+		z-index: -1;
+		background-position: left 0px, right 0px;
+		padding-right: 16px;
+		--header-height: 26;
+	}
+
+	.space1889-immersive .window-header {
+		background-image: url("../icons/backgrounds/headerLeft.webp"), url("../icons/backgrounds/headerRight.webp");
+		background-size: 46px 100%, 46px 100%;
+		background-repeat: no-repeat;
+		z-index: -1;
+		background-position: left 0px, right 0px;
+		padding-right: 16px;
+	}
 
 .space1889-immersive .journal-entry-pages {
 	border-color: black;
@@ -224,6 +234,3 @@
 	margin: 0px;
 }
 
-.space1889-immersive .window-app, .application{
-	--header-height: 26;
-}
