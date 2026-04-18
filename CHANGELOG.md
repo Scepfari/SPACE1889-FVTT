@@ -2,6 +2,10 @@
 
 ## Marsianische Dunkle Zeiten
 
+### v3.0.2
+- Bugfix: Fenster lassen sich nicht richtig minimieren ([#30](https://github.com/Scepfari/SPACE1889-FVTT/issues/30))
+- Bugfix: fehlende (2px hohe) Kopfzeile bei dem herausgelösten Nachrichtenfenster ([#31](https://github.com/Scepfari/SPACE1889-FVTT/issues/31))
+
 ### v3.0.1
 - Zwei Erweiterungen des Akteur Kontext Menüs: Direkter Zugang zum Prototyp Token und die Möglichkeit einen NSC in SC bzw. einen SC in NSC umzuwandeln
 - Charaktermerkmale mit Kampagnen Effekt (Talente, Fertigkeiten, Spezialisierungen, Ressourcen) haben jetzt ein zusätzlichen Parameter für die Stufe des Kampagnen Effektes, d.h. über diesen wird angegeben wie viele Stufen des Merkmals von dem Effekt bezüglich der EP Kosten abgedeckt wird.
