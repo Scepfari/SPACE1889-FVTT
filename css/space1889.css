@@ -1097,6 +1097,7 @@ font-size: 12px;
 	font-size: 16px;
 	padding: 2px;
 	border-radius: 5px;
+	background-color: black;
 	cursor: var(--cursor-pointer)
 }
 
