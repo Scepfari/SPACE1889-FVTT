@@ -56,7 +56,7 @@ export function getEffectInfoText(effect, forChat = false)
 	if (effect.disabled)
 		desc += `<p><strong>${game.i18n.localize("SPACE1889.EffectDeactivated")}</strong></p>`;
 
-	desc += `<p>${game.i18n.localize("SPACE1889.EffectStartTime")}: ${SPACE1889Time.formatEffectDuration(effect.duration)}</p>`;
+	desc += `<p>${game.i18n.localize("SPACE1889.EffectStartTime")}: ${SPACE1889Time.formatEffectDuration(effect.start, effect.duration)}</p>`;
 	desc += `<p>${game.i18n.localize("SPACE1889.EffectDuration")}: ${effect.duration.label}</p>`;
 
 	if (effect.changes.length > 0)

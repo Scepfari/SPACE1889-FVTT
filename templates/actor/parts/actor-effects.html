@@ -18,7 +18,7 @@
 			<img class="item-image-small" src="{{getEffectImagePath effect}}" />
 				<label>{{effect.name}}</label>
 		</div>
-		<div class="items-list item-max-with100px">{{formatEffectDuration effect.duration}}</div>
+		<div class="items-list item-max-with100px">{{formatEffectDuration effect.start effect.duration}}</div>
 		<div class="items-list item-max-with100px">{{effect.duration.label}}</div>
 		<div class="item-controls item-max-with50px">
 			<a name="effectControl" class="effect-control" data-action="edit" data-tooltip="{{localize 'SPACE1889.EffectEdit'}}">

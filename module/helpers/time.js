@@ -61,15 +61,26 @@ export default class SPACE1889Time
 		return this.formatTimeDate(this.getCurrentTimeAndDate());
 	}
 
-	static formatEffectDuration(effectDuration)
+	static formatEffectDuration(effectStart, effectDuration)
 	{
 		const canDoDate = this.isCalendarEnabled();
-		const date = canDoDate ? this.formatTimeDate(this.getTimeAndDate(effectDuration.startTime)) : "";
 		let roundInfo = "";
+		let date = "";
 
-		if (effectDuration.startRound > 0 || effectDuration.startTurn > 0)
-			roundInfo = game.i18n.format("SPACE1889.EffectRoundTurnInfo", { round: effectDuration.startRound, turn: effectDuration.startTurn });
-
+		if (game.release.generation < 14)
+		{
+			if (canDoDate)
+				date = this.formatTimeDate(this.getTimeAndDate(effectDuration.startTime));
+			if (effectDuration.startRound > 0 || effectDuration.startTurn > 0)
+				roundInfo = game.i18n.format("SPACE1889.EffectRoundTurnInfo", { round: effectDuration.startRound, turn: effectDuration.startTurn });
+		}
+		else
+		{
+			if (canDoDate)
+				date = this.formatTimeDate(this.getTimeAndDate(effectStart.time));
+			if (effectStart.round > 0 || effectStart.turn > 0)
+				roundInfo = game.i18n.format("SPACE1889.EffectRoundTurnInfo", { round: effectStart.round, turn: effectStart.turn });
+		}
 		return date + (date != "" && roundInfo != "" ? "\r\n " : "") + roundInfo;
 	}
 

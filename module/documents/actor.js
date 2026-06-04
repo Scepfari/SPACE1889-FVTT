@@ -79,6 +79,12 @@ export class Space1889Actor extends Actor
 	{
 		// Data modifications in this step occur before processing embedded
 		// documents or derived data.
+
+		super.prepareBaseData(); // resets _completedActiveEffectPhases via _clearData()
+		if (game.release.generation >= 14)
+		{
+			this.overrides ??= {};
+		}
 	}
 
 	/**

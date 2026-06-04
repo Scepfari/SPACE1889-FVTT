@@ -27,6 +27,12 @@ export default class SPACE1889Vision
 			if (token.actor.type === "vehicle" || (token.actorLink && token.actor.type === "character"))
 				continue;
 
+			if (!token.actor.system?.visions)
+				token.actor.prepareDerivedData(); // fill actor data
+
+			if (!token.actor.system?.visions)
+				continue;
+
 			for (const vision of token.actor.system.visions)
 			{
 				this._checkAndDeactivateVisionByTime(currentTimeStamp, vision, token.actor, token);

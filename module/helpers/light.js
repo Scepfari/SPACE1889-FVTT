@@ -26,6 +26,12 @@ export default class SPACE1889Light
 			if (token.actor.type === "vehicle" || (token.actorLink && token.actor.type === "character"))
 				continue;
 
+			if (!token.actor.system?.lightSources)
+				token.actor.prepareDerivedData(); // fill actor data
+
+			if (!token.actor.system?.lightSources)
+				continue;
+
 			for (const lightSource of token.actor.system.lightSources)
 			{
 				this._checkAndDeactivateLightSourceByTime(currentTimeStamp, lightSource, token.actor, token);

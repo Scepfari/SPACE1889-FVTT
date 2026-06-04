@@ -733,6 +733,13 @@ export default class SPACE1889Helper
 	{
 		let primaryHand = [];
 		let offHand = [];
+
+		if (actor.system?.weapons == undefined)
+			actor.prepareDerivedData();
+
+		if (actor.system?.weapons == undefined || actor?.system?.shields == undefined)
+			return { primary: primaryHand, off: offHand };
+
 		let lists = [actor?.system?.weapons, actor?.system?.shields]
 
 		for (const list of lists)

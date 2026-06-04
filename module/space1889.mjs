@@ -94,7 +94,8 @@ Hooks.once('init', async function() {
 	CleanHeader.default();
 	CleanHeader.handlePopout();
 
-	CONFIG.ActiveEffect.legacyTransferral = false;
+	if (game.release.generation < 14)
+		CONFIG.ActiveEffect.legacyTransferral = false;
 
 	SPACE1889WorldCalendar.init();
 
@@ -378,11 +379,11 @@ Hooks.on('preUpdateToken', (token, update, options, userId) => {
 		(!game.user.isGM || game.settings.get("space1889", "useTokenMovementLimiterForGM") ))
 	{
 		let allow = SPACE1889Helper.canTokenMove(token, true);
-        if (!allow) {
-            delete update.x;
-            delete update.y;
-        }
-    }
+		if (!allow) {
+			delete update.x;
+			delete update.y;
+		}
+	}
 });
 
 Hooks.on("renderPause", () => {
@@ -395,70 +396,140 @@ Hooks.on("getActorContextOptions", (app, menu) =>
 	if (app instanceof foundry.applications.sidebar.apps.Compendium)
 		return;
 
-	menu.splice(0, 0,
+	if (game.release.generation < 14)
+	{
+		menu.splice(0, 0,
 			{
-			name: game.i18n?.localize?.("TOKEN.TitlePrototype") ?? "Prototype Token...",
-			icon: '<i class="fa-solid fa-user-gear"></i>',
-			condition: li =>
+				name: game.i18n?.localize?.("TOKEN.TitlePrototype") ?? "Prototype Token...",
+				icon: '<i class="fa-solid fa-user-gear"></i>',
+				condition: li =>
+				{
+					const id = li?.dataset?.entryId || li?.dataset?.documentId;
+					const actor = id && game.actors?.get(id);
+					return !!actor && (game.user?.isGM || actor.isOwner);
+				},
+				callback: li =>
+				{
+					const id = li?.dataset?.entryId || li?.dataset?.documentId;
+					const actor = id && game.actors?.get(id);
+					if (!actor)
+						return ui.notifications?.warn(game.i18n.localize("SPACE1889.TokenMenu.InvalidActor."));
+					const Sheet = CONFIG?.Token?.prototypeSheetClass;
+					if (!Sheet)
+						return ui.notifications?.error(game.i18n.localize("SPACE1889.TokenMenu.NoPrototypeTokenSheetClass"));
+					new Sheet({ prototype: actor.prototypeToken }).render({ force: true });
+				}
+			});
+
+		menu.push(
 			{
-				const id = li?.dataset?.entryId || li?.dataset?.documentId;
-				const actor = id && game.actors?.get(id);
-				return !!actor && (game.user?.isGM || actor.isOwner);
+				name: game.i18n?.localize("SPACE1889.TokenMenu.ConvertToNPC") ?? "Convert to NPC...",
+				icon: '<i class="fa-solid fa-user-tag"></i>',
+				condition: li =>
+				{
+					const id = li?.dataset?.entryId || li?.dataset?.documentId;
+					const actor = id && game.actors?.get(id);
+					return !!actor && actor.type === "character" && (game.user?.isGM);
+				},
+				callback: li =>
+				{
+					const id = li?.dataset?.entryId || li?.dataset?.documentId;
+					const actor = id && game.actors?.get(id);
+					if (!actor)
+						return ui.notifications?.warn(game.i18n.localize("SPACE1889.TokenMenu.InvalidActor."));
+
+					actor.update({ type: 'npc', system: actor.system }, { recursive: false });
+					ui.notifications?.warn(game.i18n.format("SPACE1889.TokenMenu.ConvertToNpcInfo", { name: actor.name }));
+				}
 			},
-			callback: li =>
 			{
-				const id = li?.dataset?.entryId || li?.dataset?.documentId;
-				const actor = id && game.actors?.get(id);
-				if (!actor)
-					return ui.notifications?.warn(game.i18n.localize("SPACE1889.TokenMenu.InvalidActor."));
-				const Sheet = CONFIG?.Token?.prototypeSheetClass;
-				if (!Sheet)
-					return ui.notifications?.error(game.i18n.localize("SPACE1889.TokenMenu.NoPrototypeTokenSheetClass"));
-				new Sheet({ prototype: actor.prototypeToken }).render({ force: true });
-			}
-		});
+				name: game.i18n?.localize("SPACE1889.TokenMenu.ConvertToPC") ?? "Convert to PC...",
+				icon: '<i class="fa-solid fa-user-tag"></i>',
+				condition: li =>
+				{
+					const id = li?.dataset?.entryId || li?.dataset?.documentId;
+					const actor = id && game.actors?.get(id);
+					return !!actor && actor.type === "npc" && (game.user?.isGM);
+				},
+				callback: li =>
+				{
+					const id = li?.dataset?.entryId || li?.dataset?.documentId;
+					const actor = id && game.actors?.get(id);
+					if (!actor)
+						return ui.notifications?.warn(game.i18n.localize("SPACE1889.TokenMenu.InvalidActor."));
 
-	menu.push(
+					actor.update({ type: 'character', system: actor.system }, { recursive: false });
+					ui.notifications?.warn(game.i18n.format("SPACE1889.TokenMenu.ConvertToPcInfo", { name: actor.name }));
+				}
+			});
+	}
+	else
 	{
-		name: game.i18n?.localize("SPACE1889.TokenMenu.ConvertToNPC") ?? "Convert to NPC...",
-		icon: '<i class="fa-solid fa-user-tag"></i>',
-		condition: li =>
-		{
-			const id = li?.dataset?.entryId || li?.dataset?.documentId;
-			const actor = id && game.actors?.get(id);
-			return !!actor && actor.type === "character" && (game.user?.isGM);
-		},
-		callback: li =>
-		{
-			const id = li?.dataset?.entryId || li?.dataset?.documentId;
-			const actor = id && game.actors?.get(id);
-			if (!actor)
-				return ui.notifications?.warn(game.i18n.localize("SPACE1889.TokenMenu.InvalidActor."));
+		menu.splice(0, 0,
+			{
+				label: game.i18n?.localize?.("TOKEN.TitlePrototype") ?? "Prototype Token...",
+				icon: '<i class="fa-solid fa-user-gear"></i>',
+				visible: li =>
+				{
+					const id = li?.dataset?.entryId || li?.dataset?.documentId;
+					const actor = id && game.actors?.get(id);
+					return !!actor && (game.user?.isGM || actor.isOwner);
+				},
+				callback: li =>
+				{
+					const id = li?.dataset?.entryId || li?.dataset?.documentId;
+					const actor = id && game.actors?.get(id);
+					if (!actor)
+						return ui.notifications?.warn(game.i18n.localize("SPACE1889.TokenMenu.InvalidActor."));
+					const Sheet = CONFIG?.Token?.prototypeSheetClass;
+					if (!Sheet)
+						return ui.notifications?.error(game.i18n.localize("SPACE1889.TokenMenu.NoPrototypeTokenSheetClass"));
+					new Sheet({ prototype: actor.prototypeToken }).render({ force: true });
+				}
+			});
 
-			actor.update({ type: 'npc', system : actor.system }, {recursive : false});
-			ui.notifications?.warn(game.i18n.format("SPACE1889.TokenMenu.ConvertToNpcInfo", { name: actor.name }));
-		}
-	},
-	{
-		name: game.i18n?.localize("SPACE1889.TokenMenu.ConvertToPC") ?? "Convert to PC...",
-		icon: '<i class="fa-solid fa-user-tag"></i>',
-		condition: li =>
-		{
-			const id = li?.dataset?.entryId || li?.dataset?.documentId;
-			const actor = id && game.actors?.get(id);
-			return !!actor && actor.type === "npc" && (game.user?.isGM);
-		},
-		callback: li =>
-		{
-			const id = li?.dataset?.entryId || li?.dataset?.documentId;
-			const actor = id && game.actors?.get(id);
-			if (!actor)
-				return ui.notifications?.warn(game.i18n.localize("SPACE1889.TokenMenu.InvalidActor."));
+		menu.push(
+			{
+				label: game.i18n?.localize("SPACE1889.TokenMenu.ConvertToNPC") ?? "Convert to NPC...",
+				icon: '<i class="fa-solid fa-user-tag"></i>',
+				visible: li =>
+				{
+					const id = li?.dataset?.entryId || li?.dataset?.documentId;
+					const actor = id && game.actors?.get(id);
+					return !!actor && actor.type === "character" && (game.user?.isGM);
+				},
+				callback: li =>
+				{
+					const id = li?.dataset?.entryId || li?.dataset?.documentId;
+					const actor = id && game.actors?.get(id);
+					if (!actor)
+						return ui.notifications?.warn(game.i18n.localize("SPACE1889.TokenMenu.InvalidActor."));
 
-			actor.update({ type: 'character', system : actor.system }, {recursive : false});
-			ui.notifications?.warn(game.i18n.format("SPACE1889.TokenMenu.ConvertToPcInfo", { name: actor.name }));
-		}
-	});
+					actor.update({ type: 'npc', system: actor.system }, { recursive: false });
+					ui.notifications?.warn(game.i18n.format("SPACE1889.TokenMenu.ConvertToNpcInfo", { name: actor.name }));
+				}
+			},
+			{
+				label: game.i18n?.localize("SPACE1889.TokenMenu.ConvertToPC") ?? "Convert to PC...",
+				icon: '<i class="fa-solid fa-user-tag"></i>',
+				visible: li =>
+				{
+					const id = li?.dataset?.entryId || li?.dataset?.documentId;
+					const actor = id && game.actors?.get(id);
+					return !!actor && actor.type === "npc" && (game.user?.isGM);
+				},
+				callback: li =>
+				{
+					const id = li?.dataset?.entryId || li?.dataset?.documentId;
+					const actor = id && game.actors?.get(id);
+					if (!actor)
+						return ui.notifications?.warn(game.i18n.localize("SPACE1889.TokenMenu.InvalidActor."));
+
+					actor.update({ type: 'character', system: actor.system }, { recursive: false });
+					ui.notifications?.warn(game.i18n.format("SPACE1889.TokenMenu.ConvertToPcInfo", { name: actor.name }));
+				}
+			});
+	}
 });
 
 
@@ -510,9 +581,9 @@ Handlebars.registerHelper('formatLongDate', function (gameTime)
 	return SPACE1889WorldCalendar.formatLongDateFromTimeStamp(gameTime);
 });
 
-Handlebars.registerHelper('formatEffectDuration', function (effectDuration)
+Handlebars.registerHelper('formatEffectDuration', function (effectStart, effectDuration)
 {
-	return SPACE1889Time.formatEffectDuration(effectDuration);
+	return SPACE1889Time.formatEffectDuration(effectStart, effectDuration);
 });
 
 Handlebars.registerHelper('formatNumber', function (number, decimal)
