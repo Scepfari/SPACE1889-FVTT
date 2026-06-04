@@ -4,10 +4,9 @@ import SPACE1889Helper from "../helpers/helper.js";
 import SPACE1889Time from "../helpers/time.js";
 export class CalendarMonthlyViewWidget extends foundry.applications.api.HandlebarsApplicationMixin(foundry.applications.api.ApplicationV2) {
 
-	constructor(parent)
+	constructor()
 	{
 		super();
-		this.parent = parent;
 	}
 
 	static DEFAULT_OPTIONS = {
@@ -46,7 +45,7 @@ export class CalendarMonthlyViewWidget extends foundry.applications.api.Handleba
 	async _prepareContext(_options = {})
 	{
 		const data = await super._prepareContext(_options);
-		const viewDateTimestamp = this.parent.getCalendarViewDate();
+		const viewDateTimestamp = this.getWidget()?.getCalendarViewDate();
 		const components = game.time.calendar.timeToComponents(viewDateTimestamp);
 		data.viewDate = components;
 		data.viewDate.timestamp = viewDateTimestamp;
@@ -59,6 +58,12 @@ export class CalendarMonthlyViewWidget extends foundry.applications.api.Handleba
 		}));
 		return data;
 	}
+
+	getWidget()
+	{
+		return game.space1889.apps.CalendarWidget;
+	}
+
 	/**
 	 * Generate calendar month data with day grid and note indicators
 	 */
@@ -179,7 +184,7 @@ export class CalendarMonthlyViewWidget extends foundry.applications.api.Handleba
 	async _onGoToToday(event, _target)
 	{
 		event.preventDefault();
-		this.parent.setCalendarViewDate(game.time.worldTime);
+		this.getWidget()?.setCalendarViewDate(game.time.worldTime);
 		this.render(true);
 	}
 
@@ -189,8 +194,8 @@ export class CalendarMonthlyViewWidget extends foundry.applications.api.Handleba
 	 */
 	async _onPreviousMonth(event, _target) {
 		event.preventDefault();
-		const newTimestamp = SPACE1889WorldCalendar.decreaseTimeByOneMonth(this.parent.calendarViewDate);
-		this.parent.setCalendarViewDate(newTimestamp);
+		const newTimestamp = SPACE1889WorldCalendar.decreaseTimeByOneMonth(this.getWidget()?.calendarViewDate);
+		this.getWidget()?.setCalendarViewDate(newTimestamp);
 		this.render(true);
 	}
 	/**
@@ -198,8 +203,8 @@ export class CalendarMonthlyViewWidget extends foundry.applications.api.Handleba
 	 */
 	async _onNextMonth(event, _target) {
 		event.preventDefault();
-		const newTimestamp = SPACE1889WorldCalendar.increaseTimeByOneMonth(this.parent.calendarViewDate);
-		this.parent.setCalendarViewDate(newTimestamp);
+		const newTimestamp = SPACE1889WorldCalendar.increaseTimeByOneMonth(this.getWidget()?.calendarViewDate);
+		this.getWidget()?.setCalendarViewDate(newTimestamp);
 		this.render(true);
 	}
 	/**
@@ -208,8 +213,8 @@ export class CalendarMonthlyViewWidget extends foundry.applications.api.Handleba
 	async _onPreviousYear(event, _target)
 	{
 		event.preventDefault();
-		const newTimestamp = SPACE1889WorldCalendar.decreaseTimeByOneYear(this.parent.calendarViewDate);
-		this.parent.setCalendarViewDate(newTimestamp);
+		const newTimestamp = SPACE1889WorldCalendar.decreaseTimeByOneYear(this.getWidget()?.calendarViewDate);
+		this.getWidget()?.setCalendarViewDate(newTimestamp);
 		this.render(true);
 	}
 	/**
@@ -217,8 +222,8 @@ export class CalendarMonthlyViewWidget extends foundry.applications.api.Handleba
 	 */
 	async _onNextYear(event, _target) {
 		event.preventDefault();
-		const newTimestamp = SPACE1889WorldCalendar.increaseTimeByOneYear(this.parent.calendarViewDate);
-		this.parent.setCalendarViewDate(newTimestamp);
+		const newTimestamp = SPACE1889WorldCalendar.increaseTimeByOneYear(this.getWidget()?.calendarViewDate);
+		this.getWidget()?.setCalendarViewDate(newTimestamp);
 		this.render(true);
 	}
 
@@ -227,11 +232,11 @@ export class CalendarMonthlyViewWidget extends foundry.applications.api.Handleba
 		//		const calendarDay = target.closest('.calendar-day');
 		const setDate = event.ctrlKey && event.shiftKey;
 		const selectedDay = _target.dataset.day - 1;
-		const components = game.time.calendar.timeToComponents(this.parent.calendarViewDate);
+		const components = game.time.calendar.timeToComponents(this.getWidget()?.calendarViewDate);
 		const delta = selectedDay - components.dayOfMonth;
 		const delteInSeconds = delta * game.time.calendar.secondsPerDay();
-		const newTimestamp = this.parent.calendarViewDate + delteInSeconds;
-		this.parent.setCalendarViewDate(newTimestamp);
+		const newTimestamp = this.getWidget()?.calendarViewDate + delteInSeconds;
+		this.getWidget()?.setCalendarViewDate(newTimestamp);
 		if (setDate)
 		{
 			const offset = newTimestamp - game.time.worldTime;
@@ -246,7 +251,7 @@ export class CalendarMonthlyViewWidget extends foundry.applications.api.Handleba
 	 */
 	async _onGoToToday(event, _target) {
 		event.preventDefault();
-		this.parent.setCalendarViewDate(game.time.worldTime);
+		this.getWidget()?.setCalendarViewDate(game.time.worldTime);
 		this.render();
 	}
 
@@ -255,7 +260,7 @@ export class CalendarMonthlyViewWidget extends foundry.applications.api.Handleba
      */
     async close(options = {}) {
 		// Clear active instance if this is it
-		this.parent?.onCoseCalendar();
+		this.getWidget()?.onCoseCalendar();
         return super.close(options);
     }
 

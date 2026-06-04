@@ -132,7 +132,7 @@ export class CalendarWidget extends foundry.applications.api.HandlebarsApplicati
 		this.calendarViewDate = game.time.worldTime;
 
 		if (!this.calendarMonthlyView)
-			this.calendarMonthlyView = new CalendarMonthlyViewWidget(this);
+			this.calendarMonthlyView = new CalendarMonthlyViewWidget();
 		this.calendarMonthlyView.render(true);
 	}
 
