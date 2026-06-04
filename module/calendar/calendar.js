@@ -88,6 +88,36 @@ export class SPACE1889WorldCalendar extends foundry.data.CalendarData
 		return season === -1 ? 3 : season;
 	}
 
+	/**
+	* Compute elapsed time between two timestamps/components.
+	* Use the parent relative decomposition here so duration labels
+	* (like Active Effect timers) do not inherit world year zero.
+	*/
+	difference(endTime, startTime)
+	{
+		startTime ??= game.time.worldTime;
+		if (typeof startTime === "object")
+			startTime = this.componentsToTime(startTime);
+		if (typeof endTime === "object")
+			endTime = this.componentsToTime(endTime);
+		const delta = endTime - startTime;
+		return super.timeToComponents(delta);
+	}
+
+	/**
+	* Use the parent relative decomposition here so start time labels
+	* (like Active Effect start time) do not inherit world year zero.
+	*/
+	format(time = game.time.worldTime, formatter = "timestamp", options = {})
+	{
+		if (formatter === 'ago' && typeof time === "number")
+		{
+			let timeComponents = super.timeToComponents(time);
+			return super.format(timeComponents, formatter, options);
+		}
+		return super.format(time, formatter, options);
+	}
+
 	timeToComponents(timestamp = 0)
 	{
 		const secondsPerDay = this.secondsPerDay();
