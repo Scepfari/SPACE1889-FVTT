@@ -968,8 +968,8 @@ export class Space1889Actor extends Actor
 			{
 				shield.derived.sizeMod = "-";
 				shield.derived.skillRating = "-";
-				shield.system.attack = shield.system.damage;
-				shield.system.attackAverage = (Math.floor(shield.system.attack / 2)).toString() + (shield.system.attack % 2 == 0 ? "" : "+");
+				shield.derived.attack = shield.system.damage;
+				shield.derived.attackAverage = (Math.floor(shield.derived.attack / 2)).toString() + (shield.derived.attack % 2 == 0 ? "" : "+");
 			}
 			else
 			{
@@ -977,8 +977,8 @@ export class Space1889Actor extends Actor
 				shield.derived.skillRating = this.getSkillLevel(actor, shield.system.skillId, shield.system.specializationId);
 				const attackBonusFromDamage = shield.system.damage;
 				let offhandMod = this.getOffhandModificator(actor.type, shield);
-				shield.system.attack = Math.max(0, attackBonusFromDamage + shield.derived.skillRating + shield.derived.sizeMod + offhandMod);
-				shield.system.attackAverage = (Math.floor(shield.system.attack / 2)).toString() + (shield.system.attack % 2 == 0 ? "" : "+");
+				shield.derived.attack = Math.max(0, attackBonusFromDamage + shield.derived.skillRating + shield.derived.sizeMod + offhandMod);
+				shield.derived.attackAverage = (Math.floor(shield.derived.attack / 2)).toString() + (shield.derived.attack % 2 == 0 ? "" : "+");
 			}
 		}
 
