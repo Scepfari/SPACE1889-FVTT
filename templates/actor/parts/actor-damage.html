@@ -1,4 +1,4 @@
-{{#if system.injuries}}
+{{#if derived.injuries}}
 <ol class="items-list">
 	<li class="item flexrow items-header">
 		<div class="item-name">{{localize "SPACE1889.InjuryPl"}}&#160;
@@ -22,18 +22,18 @@
 			<a class="item-control item-create item-max-with50px damage-lethal" data-tooltip='{{localize "SPACE1889.CreateItem"}}' data-type="damage"><i class="fas fa-plus"></i> Add</a>
 		</div>
 	</li>
-	{{#each system.injuries as |item id|}}
+    {{#each derived.injuries as |item id|}}
 	{{#if (not (and ../system.visualisation.filterDamage (eq item.system.remainingDamage 0)))}}
 	<li class="item row-section flexrow" data-item-id="{{item._id}}">
-		<div data-tooltip='{{item.system.tooltipInfo}}' data-tooltip-direction="RIGHT" class="item-name">{{item.name}}</div>
-		<label data-tooltip='{{item.system.tooltipInfo}}' data-tooltip-direction="LEFT" class="items-list item-max-with75px">{{item.system.dataOfTheEvent}}</label>
+		<div data-tooltip='{{item.derived.tooltipInfo}}' data-tooltip-direction="RIGHT" class="item-name">{{item.name}}</div>
+		<label data-tooltip='{{item.derived.tooltipInfo}}' data-tooltip-direction="LEFT" class="items-list item-max-with75px">{{item.system.dataOfTheEvent}}</label>
 		<div class="resource-label items-list item-max-with60px">
 			<a class="increment-click items-list item-max-with60px">{{item.system.remainingDamage}} {{item.system.damageTypeDisplay}}</a>
 		</div>
 		<div class="items-list item-max-with40px">
 			<a class="healingFactor-click items-list item-max-with40px">{{item.system.healingFactor}}</a>
 		</div>
-		<label class="items-list item-max-with60px">{{item.system.healingDuration}}</label>
+		<label class="items-list item-max-with60px">{{item.derived.healingDuration}}</label>
 		<label class="items-list resource-label item-max-with60px">{{item.system.timeToNextCure}}</label>
 		<div class="item-controls item-max-with50px">
 			<a class="item-control item-edit" data-tooltip="{{localize 'SPACE1889.EditItem'}}"><i class="fas fa-edit"></i></a>

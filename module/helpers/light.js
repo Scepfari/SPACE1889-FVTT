@@ -12,7 +12,7 @@ export default class SPACE1889Light
 		const list = game.actors.filter(e => e.type === "character");
 		for (const actor of list)
 		{
-			for (const lightSource of actor.system.lightSources)
+			for (const lightSource of actor.lightSources)
 			{
 				this._checkAndDeactivateLightSourceByTime(currentTimeStamp, lightSource, actor, undefined);
 			}
@@ -32,7 +32,7 @@ export default class SPACE1889Light
 			if (!token.actor.system?.lightSources)
 				continue;
 
-			for (const lightSource of token.actor.system.lightSources)
+			for (const lightSource of token.actor.lightSources)
 			{
 				this._checkAndDeactivateLightSourceByTime(currentTimeStamp, lightSource, token.actor, token);
 			}
@@ -113,7 +113,7 @@ export default class SPACE1889Light
 		}
 
 		const timeAsString = SPACE1889Time.isCalendarEnabled() ? SPACE1889Time.formatTimeDate(SPACE1889Time.getTimeAndDate(emissionEndTimeStamp)) : "";
-		const messageContent = game.i18n.format("SPACE1889.LightGoesOut", { "lightSource": lightSource.system.label, "name": token ? token.name : actor.name, "time": timeAsString });
+		const messageContent = game.i18n.format("SPACE1889.LightGoesOut", { "lightSource": lightSource.derived.label, "name": token ? token.name : actor.name, "time": timeAsString });
 		let chatData =
 		{
 			user: game.user.id,
@@ -128,7 +128,7 @@ export default class SPACE1889Light
 	{
 		if (SPACE1889Time.isCalendarEnabled() && !lightSource.system.interruptible)
 		{
-			ui.notifications.info(game.i18n.format("SPACE1889.CanNotDeActivateLightSource", { "name": lightSource.system.label }));
+			ui.notifications.info(game.i18n.format("SPACE1889.CanNotDeActivateLightSource", { "name": lightSource.derived.label }));
 			return;
 		}
 
@@ -154,7 +154,7 @@ export default class SPACE1889Light
 		}
 
 		const timeAsString = SPACE1889Time.isCalendarEnabled() ? SPACE1889Time.getCurrentTimeDateString() : "";
-		const messageContent = game.i18n.format("SPACE1889.LightSwitchOff", { "lightSource": lightSource.system.label, "name": actor.name, "time": timeAsString });
+		const messageContent = game.i18n.format("SPACE1889.LightSwitchOff", { "lightSource": lightSource.derived.label, "name": actor.name, "time": timeAsString });
 		let chatData =
 		{
 			user: game.user.id,
@@ -259,7 +259,7 @@ export default class SPACE1889Light
 	{
 		if (lightSource.system.quantity < 1)
 		{
-			ui.notifications.info(game.i18n.format("SPACE1889.CanNotActivateLightNoItem", { "name": lightSource.system.label }));
+			ui.notifications.info(game.i18n.format("SPACE1889.CanNotActivateLightNoItem", { "name": lightSource.derived.label }));
 			return;
 		}
 		if (lightSource.system.requiredHands > 0 && lightSource.system.usedHands === "none")
@@ -290,7 +290,7 @@ export default class SPACE1889Light
 		}
 
 		const timeAsString = SPACE1889Time.isCalendarEnabled() ? SPACE1889Time.getCurrentTimeDateString() : "";
-		const messageContent = game.i18n.format("SPACE1889.LightGoesOn", { "lightSource": lightSource.system.label, "name": actor.name, "time": timeAsString });
+		const messageContent = game.i18n.format("SPACE1889.LightGoesOn", { "lightSource": lightSource.derived.label, "name": actor.name, "time": timeAsString });
 		let chatData =
 		{
 			user: game.user.id,
@@ -336,7 +336,7 @@ export default class SPACE1889Light
 		let offUsed = false;
 		let offId = undefined;
 
-		for (let ls of actor.system.lightSources)
+		for (let ls of actor.lightSources)
 		{
 			if (ls.type === "lightSource" && ls.system.requiredHands > 0)
 			{
@@ -423,13 +423,13 @@ export default class SPACE1889Light
 
 		if (lightSource.system.itemUseType === "consumables" || this.isPermanentlyUsable(lightSource))
 		{
-			ui.notifications.info(game.i18n.format("SPACE1889.LightCanNotRecharge", { "name": lightSource.system.label }));
+			ui.notifications.info(game.i18n.format("SPACE1889.LightCanNotRecharge", { "name": lightSource.derived.label }));
 			return;
 		}
 
 		if (lightSource.system.isActive)
 		{
-			ui.notifications.info(game.i18n.format("SPACE1889.LightCanNotRechargeDuringOperation", { "name": lightSource.system.label }));
+			ui.notifications.info(game.i18n.format("SPACE1889.LightCanNotRechargeDuringOperation", { "name": lightSource.derived.label }));
 			return;
 		}
 
@@ -446,7 +446,7 @@ export default class SPACE1889Light
 			user: game.user.id,
 			speaker: ChatMessage.getSpeaker({ actor: actor }),
 			whisper: [],
-			content: game.i18n.format("SPACE1889.LightRecharge", { "name": lightSource.system.label })
+			content: game.i18n.format("SPACE1889.LightRecharge", { "name": lightSource.derived.label })
 		};
 		await ChatMessage.create(chatData, {});
 	}
@@ -646,10 +646,10 @@ export default class SPACE1889Light
 
 	static _getActiveLightSource(actor)
 	{
-		if (!actor || !actor.system || !actor.system.lightSources)
+		if (!actor || !actor.system || !actor.lightSources)
 			return undefined;
 
-		for (const ls of actor.system.lightSources)
+		for (const ls of actor.lightSources)
 		{
 			if (ls.system.isActive)
 				return ls;

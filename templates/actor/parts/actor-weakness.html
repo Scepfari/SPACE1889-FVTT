@@ -11,27 +11,27 @@
 
 	<div style="display: grid; grid-template-columns: 49% 2% 49%;">
 		<div class="left flexcol" style="grid-column: 1 / span 1">
-			{{#each system.weaknessLeft as |item id|}}
+            {{#each derived.weaknessLeft as |item id|}}
 			<li class="item flexrow" data-item-id="{{item._id}}">
 				<div class="item-name" data-tooltip="{{fullItemToolTipDescription item}}" data-tooltip-direction="RIGHT">
-					<label class="rollable" data-roll-type="item">{{item.system.label}}</label>
+					<label class="rollable" data-roll-type="item">{{item.derived.label}}</label>
 				</div>
 				<div class="item-controls item-max-with50px">
-					<a class="item-control item-edit" data-tooltip='{{localize "SPACE1889.EditItemWithName" name=item.system.label}}'><i class="fas fa-edit"></i></a>
-					<a class="item-control item-delete" data-tooltip='{{localize "SPACE1889.DeleteItemWithName" name=item.system.label}}'><i class="fas fa-trash"></i></a>
+					<a class="item-control item-edit" data-tooltip='{{localize "SPACE1889.EditItemWithName" name=item.derived.label}}'><i class="fas fa-edit"></i></a>
+					<a class="item-control item-delete" data-tooltip='{{localize "SPACE1889.DeleteItemWithName" name=item.derived.label}}'><i class="fas fa-trash"></i></a>
 				</div>
 			</li>
 		{{/each}}
 		</div>
 		<div class="right flexcol" style="grid-column: 3 / span 1">
-			{{#each system.weaknessRight as |item id|}}
+            {{#each derived.weaknessRight as |item id|}}
 			<li class="item flexrow" data-item-id="{{item._id}}">
 				<div class="item-name" data-tooltip="{{fullItemToolTipDescription item}}" data-tooltip-direction="LEFT">
-					<label class="rollable" data-roll-type="item">{{item.system.label}}</label>
+					<label class="rollable" data-roll-type="item">{{item.derived.label}}</label>
 				</div>
 				<div class="item-controls item-max-with50px">
-					<a class="item-control item-edit" data-tooltip='{{localize "SPACE1889.EditItemWithName" name=item.system.label}}'><i class="fas fa-edit"></i></a>
-					<a class="item-control item-delete" data-tooltip='{{localize "SPACE1889.DeleteItemWithName" name=item.system.label}}'><i class="fas fa-trash"></i></a>
+					<a class="item-control item-edit" data-tooltip='{{localize "SPACE1889.EditItemWithName" name=item.derived.label}}'><i class="fas fa-edit"></i></a>
+					<a class="item-control item-delete" data-tooltip='{{localize "SPACE1889.DeleteItemWithName" name=item.derived.label}}'><i class="fas fa-trash"></i></a>
 				</div>
 			</li>
 		{{/each}}

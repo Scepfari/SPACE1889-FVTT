@@ -1,4 +1,4 @@
-{{#if system.resources}}
+{{#if derived.resources}}
 <ol class="items-list">
 	<li class="item flexrow items-header">
 		<div class="item-name">{{localize "SPACE1889.ResourcePl"}}</div>
@@ -8,19 +8,19 @@
 			<a class="item-control item-create item-max-with75px" data-tooltip="{{localize 'SPACE1889.CreateItem'}}" data-type="resource"><i class="fas fa-plus"></i>Add</a>
 		</div>
 	</li>
-	{{#each system.resources as |item id|}}
+    {{#each derived.resources as |item id|}}
 		<li class="item flexrow" data-item-id="{{item._id}}">
 			<div class="item-name" data-tooltip="{{fullItemToolTipDescription item}}" data-tooltip-direction="RIGHT">
-				<label class="rollable" data-roll-type="item">{{item.system.label}} {{#if (eq item.system.isBase true)}} ({{localize "SPACE1889.BaseResource"}}) {{/if}}</label>
+				<label class="rollable" data-roll-type="item">{{item.derived.label}} {{#if (eq item.system.isBase true)}} ({{localize "SPACE1889.BaseResource"}}) {{/if}}</label>
 			</div>
 			<div class="item-max-with40px resource-label">
 				<a class="increment-click">{{item.system.level.value}}</a>
 			</div>
 			<label class="items-list item-max-with40px">{{item.system.level.max}}</label>
 			<div class="item-controls item-max-with75px">
-				<a class="item-control item-edit" data-tooltip='{{localize "SPACE1889.EditItemWithName" name=item.system.label}}'><i class="fas fa-edit"></i></a>
+				<a class="item-control item-edit" data-tooltip='{{localize "SPACE1889.EditItemWithName" name=item.derived.label}}'><i class="fas fa-edit"></i></a>
 				{{#if (eq item.system.isBase false)}}
-				<a class="item-control item-delete" data-tooltip='{{localize "SPACE1889.DeleteItemWithName" name=item.system.label}}'><i class="fas fa-trash"></i></a>
+				<a class="item-control item-delete" data-tooltip='{{localize "SPACE1889.DeleteItemWithName" name=item.derived.label}}'><i class="fas fa-trash"></i></a>
 				{{else}}
 				<span> <i class="fa-solid fa-trash" style="color:darkgrey"></i></span>
 				{{/if}}

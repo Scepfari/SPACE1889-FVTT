@@ -9,9 +9,9 @@
 					<div data-tooltip='{{localize "SPACE1889.TalentBonus"}}' class="items-list item-max-with40px">{{localize "SPACE1889.Mod"}}</div>
 					<div data-tooltip='{{localize "SPACE1889.Rating"}}' class="items-list item-max-with42px">{{localize "SPACE1889.Rating"}}</div>
 				</li>
-				{{#each system.abilities as |ability key|}}
+				{{#each derived.abilities as |ability key|}}
 				<li class="flexrow">
-					<label for="system.abilities.{{key}}.value" class="rollable flexlarge align-left" data-roll-key="{{key}}" data-roll-type="actor" data-roll-diecount="{{ability.total}}" data-label="{{ability.label}}" data-tooltip="{{abilityToolTipDescription ../document key}}" data-tooltip-direction="RIGHT">{{ability.label}}</label>
+					<label for="derived.abilities.{{key}}.value" class="rollable flexlarge align-left" data-roll-key="{{key}}" data-roll-type="actor" data-roll-diecount="{{ability.total}}" data-label="{{ability.label}}" data-tooltip="{{abilityToolTipDescription ../document key}}" data-tooltip-direction="RIGHT">{{ability.label}}</label>
 					<div class="item-max-with40px">
 						<a class="increment-{{key}}-click">{{ability.value}}</a>
 					</div>
@@ -29,22 +29,22 @@
 					<div data-tooltip='{{localize "SPACE1889.Rating"}}' class="items-list item-max-with60px">{{localize "SPACE1889.Rating"}}</div>
 				</li>
 				<li class="flexrow">
-					<label class="align-left" data-tooltip='{{secondaryToolTipDescription document "size"}}' data-tooltip-direction="LEFT">{{system.secondaries.size.label}}</label>
+					<label class="align-left" data-tooltip='{{secondaryToolTipDescription document "size"}}' data-tooltip-direction="LEFT">{{derived.secondaries.size.label}}</label>
 					<div class="item-max-with40px">
-						<a class="increment-creaturesize-click">{{system.secondaries.size.value}}</a>
+						<a class="increment-creaturesize-click">{{derived.secondaries.size.value}}</a>
 					</div>
-					<label data-tooltip='{{system.secondaries.size.bonusInfo}}' class="items-list item-max-with40px">{{system.secondaries.size.bonus}}</label>
-					<label class="items-list item-max-with60px resource-label">{{system.secondaries.size.total}}</label>
+					<label data-tooltip='{{derived.secondaries.size.bonusInfo}}' class="items-list item-max-with40px">{{derived.secondaries.size.bonus}}</label>
+					<label class="items-list item-max-with60px resource-label">{{derived.secondaries.size.total}}</label>
 				</li>
 				<li class="flexrow">
-					<label for="system.secondaries.move.value" class="rollable align-left" data-roll-key="move" data-roll-type="actor" data-roll-diecount="{{system.secondaries.move.total}}" data-label="{{system.secondaries.move.label}}" data-tooltip='{{secondaryToolTipDescription document "move"}}' data-tooltip-direction="LEFT">{{system.secondaries.move.label}}</label>
+					<label for="system.secondaries.move.value" class="rollable align-left" data-roll-key="move" data-roll-type="actor" data-roll-diecount="{{derived.secondaries.move.total}}" data-label="{{derived.secondaries.move.label}}" data-tooltip='{{secondaryToolTipDescription document "move"}}' data-tooltip-direction="LEFT">{{derived.secondaries.move.label}}</label>
 					<div class="item-max-with40px">
 						<a class="increment-creaturesize-click">{{system.secondaries.move.value}}</a>
 					</div>
-					<label data-tooltip='{{system.secondaries.move.bonusInfo}}' class="items-list item-max-with40px">{{system.secondaries.move.bonus}}</label>
-					<label class="items-list item-max-with60px resource-label">{{system.secondaries.move.display}}</label>
+					<label data-tooltip='{{derived.secondaries.move.bonusInfo}}' class="items-list item-max-with40px">{{derived.secondaries.move.bonus}}</label>
+					<label class="items-list item-max-with60px resource-label">{{derived.secondaries.move.display}}</label>
 				</li>
-				{{#each system.secondaries as |secondary key|}}
+				{{#each derived.secondaries as |secondary key|}}
 				{{#if (ne key 'size')}}
 				{{#if (ne key 'move')}}
 				<li class="secondary flexrow">

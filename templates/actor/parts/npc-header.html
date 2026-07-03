@@ -49,9 +49,9 @@
 				<div class="item-max-with40px">{{system.powerEquivalentInXp}}</div>
 			</li>
 		</div>
-		{{#if (ne system.load.dexAndMoveMalus 0)}}
+        {{#if (ne derived.load.dexAndMoveMalus 0)}}
 		<div class="resource flex-group-center">
-			<i class="fas fa-weight-hanging fa-beat" data-tooltip="{{localize "SPACE1889.Overloaded"}}! <br/> {{localize system.load.bodyAndBackpackLoadConsequence}}"></i>
+            <i class="fas fa-weight-hanging fa-beat" data-tooltip="{{localize "SPACE1889.Overloaded"}}! <br/> {{localize derived.load.bodyAndBackpackLoadConsequence}}"></i>
 		</div>
 		{{/if}}
 	</div>

@@ -147,6 +147,7 @@ export class Space1889ItemSheet extends foundry.applications.api.HandlebarsAppli
 		context.system = item.system;
 		context.flags = item.flags;
 		context.item = item;
+		context.derived = item.derived ?? {};
 
 		context.system['abilities'] = CONFIG.SPACE1889.abilities;
 
@@ -272,7 +273,7 @@ export class Space1889ItemSheet extends foundry.applications.api.HandlebarsAppli
 				? await SPACE1889Helper.getSortedSpecializationsFromSkill(context.system.skillOrAttributeId)
 				: [];
 
-			let updateData = context.system.saveData;
+			let updateData = context.derived.saveData;
 
 			if (context.system.typeKey === "skill")
 			{
@@ -403,10 +404,10 @@ export class Space1889ItemSheet extends foundry.applications.api.HandlebarsAppli
 
 		html.find('.id-lock-toggle').on('mousedown', (ev) =>
 		{
-			if (this.item.system.unlockIdForUser != undefined)
+			if (this.item.derived.unlockIdForUser != undefined)
 			{
-				const toggledValue = !this.item.system.unlockIdForUser;
-				this.item.update({ 'system.unlockIdForUser': toggledValue });
+				this.item.derived.unlockIdForUser = !this.item.derived.unlockIdForUser;
+				this.render();
 			}
 		});
 

@@ -1,6 +1,8 @@
 // Import document classes.
 import { Space1889Actor } from "./documents/actor.js";
 import { Space1889Item } from "./documents/item.js";
+import { SPACE1889_ACTOR_DATA_MODELS } from "./data/actor-models.js";
+import { SPACE1889_ITEM_DATA_MODELS } from "./data/item-models.js";
 // Import sheet classes.
 import { Space1889ActorSheet } from "./sheets/actor-sheet.js";
 import { Space1889ItemSheet } from "./sheets/item-sheet.js";
@@ -63,6 +65,10 @@ Hooks.once('init', async function() {
 	// Define custom Document classes
 	CONFIG.Actor.documentClass = Space1889Actor;
 	CONFIG.Item.documentClass = Space1889Item;
+	CONFIG.Actor.dataModels ??= {};
+	CONFIG.Item.dataModels ??= {};
+	Object.assign(CONFIG.Actor.dataModels, SPACE1889_ACTOR_DATA_MODELS);
+	Object.assign(CONFIG.Item.dataModels, SPACE1889_ITEM_DATA_MODELS);
 	CONFIG.Combat.documentClass = Space1889Combat;
 	CONFIG.Combatant.documentClass = Space1889Combatant;
 	CONFIG.ui.hotbar = SPACE1889Hotbar;
@@ -874,7 +880,7 @@ function rollItemMacro(itemName) {
 		return item.rollSpecial(item.system.rating, true);
 
 	if (item.type === "weapon")
-		return item.rollSpecial(item.system.attack, true);
+		return item.rollSpecial(item.derived.attack, true);
 
 	// Trigger the item roll
 	return item.roll();

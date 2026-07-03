@@ -123,8 +123,8 @@ export default class SPACE1889Combat
 			return 0;
 
 		let decuctionReduction = this._getTalentDeductionReduction2_4_8(SPACE1889Helper.getTalentLevel(actor, "rundumschlag"));
-		if (actor.system.secondaries.size.total > 0)
-			decuctionReduction += actor.system.secondaries.size.total;
+		if (actor.derived.secondaries.size.total > 0)
+			decuctionReduction += actor.derived.secondaries.size.total;
 
 		let deduction = targets.size * (-2);
 		const distanceList = this._getMinSumDistance(targets).distanceList;
@@ -474,8 +474,8 @@ export default class SPACE1889Combat
 		const baseDauerfeuer = 3 + autofeuerBoost;
 		const baseVollerAngriff = 2;
 
-		let baseValue = weapon ? weapon.system.attack : 10;
-		const damageType = weapon ? weapon.system.damageTypeDisplay : "unbekannter Schadenstyp";
+		let baseValue = weapon ? weapon.derived.attack : 10;
+		const damageType = weapon ? weapon.derived.damageTypeDisplay : "unbekannter Schadenstyp";
 		const waffenName = weapon ? weapon.name : "Waffe XY";
 
 
@@ -831,7 +831,7 @@ export default class SPACE1889Combat
 
 		let baseBlock = defBlockInfo ? defBlockInfo.diceCount : 0;
 		let blockToolTip = defBlockInfo ? defBlockInfo.info : ""; 
-		const instinctiveBlock = defBlockInfo && actor.system.block ? actor.system.block.instinctive : false;
+		const instinctiveBlock = defBlockInfo ? actor.block.instinctive : false;
 		const canDoBlock = defBlockInfo ? defBlockInfo.canDo : false;
 
 		let baseDodge = defDodgeInfo ? defDodgeInfo.diceCount : 0;
@@ -849,10 +849,10 @@ export default class SPACE1889Combat
 		let opposedToolTip = defOpposedInfo ? defOpposedInfo.info : "";
 		const hideText = ' hidden="true" ';
 
-		let base = Math.max(0, actor.system.secondaries.defense.total + multiDefenseMalus);
+		let base = Math.max(0, actor.derived.secondaries.defense.total + multiDefenseMalus);
 
-		const activeDefense = Math.max(0, multiDefenseMalus + actor.system.secondaries.defense.activeTotal);
-		const passiveDefense = Math.max(0, multiDefenseMalus + actor.system.secondaries.defense.passiveTotal);
+		const activeDefense = Math.max(0, multiDefenseMalus + actor.derived.secondaries.defense.activeTotal);
+		const passiveDefense = Math.max(0, multiDefenseMalus + actor.derived.secondaries.defense.passiveTotal);
 		let totalDefense = totalInfo?.canDo ? totalInfo.diceCount : 0;
 
 		const disableBlockInHtlmText = canDoBlock ? "" : `disabled="true"`;
@@ -1085,7 +1085,7 @@ export default class SPACE1889Combat
 
 		if (defenseType === 'onlyPassive')
 		{
-			const dice = Math.max(0, actor.system.secondaries.defense.passiveTotal + multiDefenseMalus);
+			const dice = Math.max(0, actor.derived.secondaries.defense.passiveTotal + multiDefenseMalus);
 			return { defenseType: resultantDefenseType, riposteDamageType: resultRiposteDamageType, diceCount: dice, multiDefenseMalus: multiDefenseMalus, blockInfo: null, parryInfo: null, dodgeInfo: null, totalInfo: null, additionalChatContent: chatContent };
 		}
 
@@ -1098,11 +1098,11 @@ export default class SPACE1889Combat
 		const statusIds = SPACE1889RollHelper.getActiveEffectStates(actor);
 		const isTotalDefense = statusIds.find(element => element === "totalDefense") !== undefined;
 
-		let diceCount = Math.max(0, actor.system.secondaries.defense.total + multiDefenseMalus);
+		let diceCount = Math.max(0, actor.derived.secondaries.defense.total + multiDefenseMalus);
 
 		if (defenseType.substring(0,10) === 'onlyActive')
 		{
-			diceCount = Math.max(0, actor.system.secondaries.defense.activeTotal + multiDefenseMalus);
+			diceCount = Math.max(0, actor.derived.secondaries.defense.activeTotal + multiDefenseMalus);
 		}
 		if (compaInfo.canDo)
 			diceCount = compaInfo.diceCount;
@@ -1140,7 +1140,7 @@ export default class SPACE1889Combat
 
 	static getBlockData(actor, defenseType, attackCombatSkillId, hasAttackActionForDefense, multiDefenseMalus)
 	{
-		let isInstinctive = actor.system.block ? actor.system.block.instinctive : false;
+		let isInstinctive = actor.block.instinctive;
 
 		if (defenseType === 'onlyPassive' || actor.HasNoActiveDefense(actor) || !this.isActorTypeValidForBlockParryDodge(actor.type))
 			return { canDo: false, diceCount: 0, instinctive: isInstinctive, defenseType: defenseType, info: game.i18n.localize("SPACE1889.CanNotBlockNoActiveDefence") };
@@ -1155,7 +1155,7 @@ export default class SPACE1889Combat
 		let info = game.i18n.localize("SPACE1889.CanNotBlockThisAttackType");
 		let blockValue = 0;
 		let resultantDefenseType = defenseType;
-		const baseBlockValue = activeOnly ? actor.system.block.value - actor.system.secondaries.defense.passiveTotal : actor.system.block.value;
+		const baseBlockValue = activeOnly ? actor.block.value - actor.derived.secondaries.defense.passiveTotal : actor.block.value;
 		let canDoBlock = false;
 
 		if (attackCombatSkillId === "nahkampf")
@@ -1217,7 +1217,7 @@ export default class SPACE1889Combat
 			}
 		}
 
-		if (canDoBlock && actor.system.block.riposte && (attackCombatSkillId === "waffenlos" || attackCombatSkillId === "nahkampf"))
+		if (canDoBlock && actor.block.riposte && (attackCombatSkillId === "waffenlos" || attackCombatSkillId === "nahkampf"))
 			resultantDefenseType += "Riposte";
 
 		return { canDo: canDoBlock, diceCount: Math.max(0, blockValue + multiDefenseMalus), instinctive: isInstinctive, defenseType: resultantDefenseType, riposteDamageType: "nonLethal", info: info };
@@ -1225,7 +1225,7 @@ export default class SPACE1889Combat
 
 	static getParryData(actor, defenseType, attackCombatSkillId, hasAttackActionForDefense, multiDefenseMalus)
 	{
-		let isInstinctive = actor.system.parry ? actor.system.parry.instinctive : false;
+		let isInstinctive = actor.parry.instinctive;
 		const talentName = game.i18n.localize("SPACE1889.Parry");
 
 		if (defenseType === 'onlyPassive' || actor.HasNoActiveDefense(actor) || !this.isActorTypeValidForBlockParryDodge(actor.type))
@@ -1241,7 +1241,7 @@ export default class SPACE1889Combat
 		let info = game.i18n.localize("SPACE1889.CanNotBlockThisAttackType");
 		let parryValue = 0;
 		let resultantDefenseType = defenseType;
-		const baseParryValue = activeOnly ? actor.system.parry.value - actor.system.secondaries.defense.passiveTotal : actor.system.parry.value;
+		const baseParryValue = activeOnly ? actor.parry.value - actor.derived.secondaries.space1889.defense.passiveTotal : actor.parry.value;
 		let canDoParry = false;
 
 		if (attackCombatSkillId === "nahkampf" || attackCombatSkillId === "waffenlos")
@@ -1254,16 +1254,16 @@ export default class SPACE1889Combat
 				info = game.i18n.localize("SPACE1889.ParryMelee");
 
 			resultantDefenseType = activeOnly ? "onlyActiveParry" : "Parry";
-			if (actor.system.parry.riposte)
+			if (actor.parry.riposte)
 				resultantDefenseType += "Riposte";
 		}
 		
-		return { canDo: canDoParry, diceCount: Math.max(0, parryValue + multiDefenseMalus), instinctive: isInstinctive, defenseType: resultantDefenseType, riposteDamageType: actor.system.parry.riposteDamageType, info: info };
+		return { canDo: canDoParry, diceCount: Math.max(0, parryValue + multiDefenseMalus), instinctive: isInstinctive, defenseType: resultantDefenseType, riposteDamageType: actor.parry.riposteDamageType, info: info };
 	}
 
 	static getEvasionData(actor, defenseType, attackCombatSkillId, hasAttackActionForDefense, multiDefenseMalus)
 	{
-		let isInstinctive = actor.system.evasion ? actor.system.evasion.instinctive : false;
+		let isInstinctive = actor.evasion.instinctive;
 		const talentName = game.i18n.localize("SPACE1889.Evasion");
 
 		if (defenseType === 'onlyPassive' || actor.HasNoActiveDefense(actor) || !this.isActorTypeValidForBlockParryDodge(actor.type))
@@ -1279,7 +1279,7 @@ export default class SPACE1889Combat
 		let info = game.i18n.localize("SPACE1889.CanNotBlockThisAttackType");
 		let dodgeValue = 0;
 		let resultantDefenseType = defenseType;
-		const baseDodgeValue = activeOnly ? actor.system.evasion.value - actor.system.secondaries.defense.passiveTotal : actor.system.evasion.value;
+		const baseDodgeValue = activeOnly ? actor.evasion.value - actor.derived.secondaries.defense.passiveTotal : actor.evasion.value;
 		let canDoDodge = false;
 
 		if (['geschuetze', 'primitiverFernkampf', 'schusswaffen', 'sportlichkeit'].includes(attackCombatSkillId))
@@ -1339,12 +1339,12 @@ export default class SPACE1889Combat
 		if (melee > brawl)
 		{
 			diceCount = melee; 
-			const name = meleeWeapon ? meleeWeapon.system.label : "";
+			const name = meleeWeapon ? meleeWeapon.derived.label : "";
 			info = game.i18n.format("SPACE1889.OpposedMeleeRoll", { name: name });
 			opposedSkillName = game.i18n.localize("SPACE1889.SkillNahkampf");
-			const speci = actor.system.speciSkills.find(e => e.system.id === meleeWeapon?.system?.specializationId);
+			const speci = actor.speciSkills.find(e => e.system.id === meleeWeapon?.system?.specializationId);
 			if (speci)
-				opposedSkillName += ` (${speci.system.label})`;
+				opposedSkillName += ` (${speci.derived.label})`;
 		}
 		else
 		{
@@ -1365,8 +1365,8 @@ export default class SPACE1889Combat
 
 		const totalDefenseBonus = actor.getTotalDefenseBonus(actor);
 		let diceCount = defenseType.indexOf("onlyActive") < 0 ?
-			Math.max(0, multiDefenseMalus + actor.system.secondaries.defense.totalDefense) :
-			Math.max(0, multiDefenseMalus + actor.system.secondaries.defense.activeTotal + totalDefenseBonus);
+			Math.max(0, multiDefenseMalus + actor.derived.secondaries.defense.totalDefense) :
+			Math.max(0, multiDefenseMalus + actor.derived.secondaries.defense.activeTotal + totalDefenseBonus);
 
 		if (compaInfo.canDo)
 			diceCount = compaInfo.diceCount + totalDefenseBonus;
@@ -1511,7 +1511,7 @@ export default class SPACE1889Combat
 							</div>
 							<div ${showNormalSecondOpt ? "" : hideText}>
 								<input type="radio" id="secondNormal" name="type" class="secondNormal" value="S" ${secondNormalSelected}>
-								<label for="secondNormal" data-tooltip="${data?.weapon?.system?.label}">${normalSecondOptName}</label><br>
+								<label for="secondNormal" data-tooltip="${data?.weapon?.derived?.label}">${normalSecondOptName}</label><br>
 							</div></div>
 						</fieldset>
 
@@ -1587,7 +1587,7 @@ export default class SPACE1889Combat
 			if (button.form.elements.secondNormal.checked || button.form.elements.totalAttackSecOpt.checked)
 			{
 				manoeuver = "disarmWithWeapon";
-				chatInfo = game.i18n.format("SPACE1889.DisarmWithWeapon", { weapon: weapon.system.label });
+				chatInfo = game.i18n.format("SPACE1889.DisarmWithWeapon", { weapon: weapon.derived.label });
 			}
 
 			let titelInfo = attackName.length > 0 ? attackName + " " : "";

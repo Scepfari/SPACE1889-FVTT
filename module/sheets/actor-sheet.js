@@ -106,9 +106,11 @@ export class Space1889ActorSheet extends foundry.applications.api.HandlebarsAppl
 
 		// Use a safe clone of the actor data for further operations.
 		const actor = this.actor.toObject(false);
+		const derivedSpace1889 = foundry.utils.deepClone(this.actor.derived ?? {});
 
 		// Add the actor's data to context.data for easier access, as well as flags.
 		context.system = actor.system;
+		context.derived = derivedSpace1889;
 		context.flags = actor.flags;
 
 		// Prepare character data and items.
@@ -222,18 +224,14 @@ export class Space1889ActorSheet extends foundry.applications.api.HandlebarsAppl
 
 	_prepareAttributes(context)
 	{
-		let primaereAttribute = [];
-
-		for (let [k, v] of Object.entries(context.system.abilities)) 
+		for (let [k, v] of Object.entries(context.derived.abilities)) 
 		{
-			primaereAttribute.push(k);
 			v.label = game.i18n.localize(CONFIG.SPACE1889.abilities[k]) ?? k;
 		}
-		for (let [key, element] of Object.entries(context.system.secondaries)) 
+		for (let [key, element] of Object.entries(context.derived.secondaries)) 
 		{
 			element.label = game.i18n.localize(CONFIG.SPACE1889.secondaries[key]) ?? key;
 		}
-		context.system['primaereAttribute'] = primaereAttribute;
 	}
 
 	/**
@@ -252,57 +250,40 @@ export class Space1889ActorSheet extends foundry.applications.api.HandlebarsAppl
 
 		let weaknessLeft = [];
 		let weaknessRight = [];
-		for (let i = 0; i < this.actor.system.weakness.length; ++i)
+		for (let i = 0; i < this.actor.weakness.length; ++i)
 		{
 			if (i%2 == 0)
-				weaknessLeft.push(this.actor.system.weakness[i]);
+				weaknessLeft.push(this.actor.weakness[i]);
 			else 
-				weaknessRight.push(this.actor.system.weakness[i]);
+				weaknessRight.push(this.actor.weakness[i]);
 		}
 
 		let languageLeft = [];
 		let languageRight = [];
-		for (let i = 0; i < this.actor.system.language.length; ++i)
+		for (let i = 0; i < this.actor.language.length; ++i)
 		{
 			if (i%2 == 0)
-				languageLeft.push(this.actor.system.language[i]);
+				languageLeft.push(this.actor.language[i]);
 			else 
-				languageRight.push(this.actor.system.language[i]);
-		}
-
-		for (let lightSource of this.actor.system.gear)
-		{
-			if (lightSource.type === "lightSource")
-			{
-				if (lightSource.system.requiredHands > 0)
-				{
-					lightSource.system.usedHandsIcon = CONFIG.SPACE1889.weaponHandIcon[lightSource.system.usedHands];
-					lightSource.system.usedHandsInfo = game.i18n.localize(CONFIG.SPACE1889.weaponHand[lightSource.system.usedHands]);
-				}
-				else
-				{
-					lightSource.system.usedHandsIcon = "far fa-thumb-tack";
-					lightSource.system.usedHandsInfo = game.i18n.localize("SPACE1889.Ready");
-				}
-			}
+				languageRight.push(this.actor.language[i]);
 		}
 
 		// Assign and return
-		context.system.gear = this.actor.system.gear;
-		context.system.talents = this.actor.system.talents;
-		context.system.skills = this.actor.system.skills;
-		context.system.speciSkills = this.actor.system.speciSkills;
-		context.system.resources = this.actor.system.resources;
-		context.system.weapons = this.actor.system.weapons;
-		context.system.armors = this.actor.system.armors;
-		context.system.weakness = this.actor.system.weakness;
-		context.system.weaknessLeft = weaknessLeft;
-		context.system.weaknessRight = weaknessRight;
-		context.system.language = this.actor.system.language;
-		context.system.languageLeft = languageLeft;
-		context.system.languageRight = languageRight;
-		context.system.injuries = this.actor.system.injuries;
-		context.system.money = this.actor.system.money;
+		context.derived.gear = this.actor.gear;
+		context.derived.talents = this.actor.talents;
+		context.derived.skills = this.actor.skills;
+		context.derived.speciSkills = this.actor.speciSkills;
+		context.derived.resources = this.actor.resources;
+		context.derived.weapons = this.actor.weapons;
+		context.derived.armors = this.actor.armors;
+		context.derived.weakness = this.actor.weakness;
+		context.derived.weaknessLeft = weaknessLeft;
+		context.derived.weaknessRight = weaknessRight;
+		context.derived.language = this.actor.language;
+		context.derived.languageLeft = languageLeft;
+		context.derived.languageRight = languageRight;
+		context.derived.injuries = this.actor.injuries;
+		context.derived.money = this.actor.money;
 	}
 
 
@@ -313,8 +294,10 @@ export class Space1889ActorSheet extends foundry.applications.api.HandlebarsAppl
 		//{
 		//	i.img = i.img || DEFAULT_TOKEN;
 		//}
-		context.weapons = this.actor.system.weapons;
-		context.injuries = this.actor.system.injuries;
+		context.derived.weapons = this.actor.weapons;
+		context.derived.injuries = this.actor.injuries;
+		context.weapons = this.actor.weapons;
+		context.injuries = this.actor.injuries;
 	}
 
 	GetMaxSkillLevel()
@@ -693,7 +676,7 @@ export class Space1889ActorSheet extends foundry.applications.api.HandlebarsAppl
 			const itemId = this._getItemId(ev);
 			const ammuId = $(ev.currentTarget).val();
 
-			const weapon = this.actor.system.weapons.find(e => e._id == itemId);
+			const weapon = this.actor.weapons.find(e => e._id == itemId);
 			if (weapon && weapon.system.ammunition.remainingRounds > 0)
 				SPACE1889Helper.unloadWeapon(weapon, this.actor);
 
@@ -1010,7 +993,7 @@ export class Space1889ActorSheet extends foundry.applications.api.HandlebarsAppl
 
 				return;
 			}
-			if (item.system.level.total == item.system.level.max)
+			if (item.derived.level.total == item.system.level.max)
 			{
 				ui.notifications.info(game.i18n.localize("SPACE1889.TalentEffectBoostNotPossible"));
 				return;
@@ -1051,15 +1034,15 @@ export class Space1889ActorSheet extends foundry.applications.api.HandlebarsAppl
 
 		let diceCount = 0;
 		if (item.system.typeKey === "primary")
-			diceCount = 2 * this.actor.system.abilities[item.system.skillOrAttributeId].total;
+			diceCount = 2 * this.actor.derived.abilities[item.system.skillOrAttributeId].total;
 		else if (item.system.typeKey === "secondary")
-			diceCount = this.actor.system.secondaries[item.system.skillOrAttributeId].total;
+			diceCount = this.actor.derived.secondaries[item.system.skillOrAttributeId].total;
 		else if (item.system.typeKey === "skill")
 		{
 			diceCount = this.actor.getSkillLevel(this.actor, item.system.skillOrAttributeId, "", item.system.skillGroupId);
 			if (item.system.useSpezialisation)
 			{
-				const spez = this.actor.system.speciSkills?.find(t => t.system.id === item.system.spezialisationId);
+				const spez = this.actor.speciSkills?.find(t => t.system.id === item.system.spezialisationId);
 				if (spez && spez.system.underlyingSkillId === item.system.skillOrAttributeId)
 					diceCount = spez.system.rating;
 			}
@@ -1074,7 +1057,7 @@ export class Space1889ActorSheet extends foundry.applications.api.HandlebarsAppl
 			const titelPartOne = game.i18n.localize("TYPES.Item.extended_action");
 			const inputDesc = game.i18n.localize("SPACE1889.NumberOfModificationDice");
 			const diceDesc = game.i18n.localize("SPACE1889.ConfigDice");
-			const titel = item.system.label;
+			const titel = item.derived.label;
 			const actor = this.actor;
 
 			let check = canDoAutoSuccess ? "<hr>" : "";
@@ -1140,16 +1123,16 @@ export class Space1889ActorSheet extends foundry.applications.api.HandlebarsAppl
 				let desc = "";
 				if (item.system.typeKey === "skill" && item.system.useSpezialisation)
 				{
-					const fullName = `${item.system.spezialisationLabel} (${item.system.skillOrAttributeLabel})`;
+					const fullName = `${item.system.spezialisationLabel} (${item.derived.skillOrAttributeLabel})`;
 					desc += item.getTextLine("SPACE1889.Probe", fullName, "", false);
 				}
 				else if (item.system.typeKey === "skill" && item.system.skillGroupId !== "" && CONFIG.SPACE1889.skillGroups.hasOwnProperty(item.system.skillGroupId))
 				{
-					const fullName = `${item.system.skillOrAttributeLabel} (${game.i18n.localize(CONFIG.SPACE1889.skillGroups[item.system.skillGroupId])})`;
+					const fullName = `${item.derived.skillOrAttributeLabel} (${game.i18n.localize(CONFIG.SPACE1889.skillGroups[item.system.skillGroupId])})`;
 					desc += item._addLine("SPACE1889.Probe", fullName, "", false);
 				}
 				else
-					desc += item.getTextLine("SPACE1889.Probe", item.system.skillOrAttributeLabel, "", false);
+					desc += item.getTextLine("SPACE1889.Probe", item.derived.skillOrAttributeLabel, "", false);
 
 				desc += item.getTextLine("SPACE1889.DifficultyRating", item.system.difficultyRating);
 				desc += item.getTextLine("SPACE1889.AttemptsMade", item.system.attemptsMade + 1);
@@ -1401,7 +1384,7 @@ export class Space1889ActorSheet extends foundry.applications.api.HandlebarsAppl
 					return false;
 				}
 			}
-			else if (item.system.strengthThreshold > actor.system.abilities["str"].total)
+			else if (item.system.strengthThreshold > actor.derived.abilities["str"].total)
 			{
 				ui.notifications.error(game.i18n.format("SPACE1889.canNotBeAdded", { item: item.name }))
 				return false;
@@ -1409,7 +1392,7 @@ export class Space1889ActorSheet extends foundry.applications.api.HandlebarsAppl
 		}
 		if (item.type == "shield")
 		{
-			if (item.system.strengthThreshold > actor.system.abilities["str"].total)
+			if (item.system.strengthThreshold > actor.derived.abilities["str"].total)
 			{
 				ui.notifications.error(game.i18n.format("SPACE1889.canNotBeAdded", { item: item.name }))
 				return false;
@@ -1448,9 +1431,9 @@ export class Space1889ActorSheet extends foundry.applications.api.HandlebarsAppl
 		let optionen = '';
 		let actor = this.actor;
 
-		for (let itemElement of actor.system.skills)
+		for (let itemElement of actor.skills)
 		{
-			optionen += '<option value="' + itemElement.system.id + '" selected="selected">' + itemElement.system.label + '</option>';
+			optionen += '<option value="' + itemElement.system.id + '" selected="selected">' + itemElement.derived.label + '</option>';
 		}
 
 		let talentName = item.name;
@@ -1490,7 +1473,7 @@ export class Space1889ActorSheet extends foundry.applications.api.HandlebarsAppl
 			],
 			submit: result =>
 			{
-				let newTalent = actor.system.talents.findLast(e => e.system.id == item.system.id && e.system.bonusTarget == "");
+				let newTalent = actor.talents.findLast(e => e.system.id == item.system.id && e.system.bonusTarget == "");
 				if (newTalent != undefined)
 				{
 					if (result === "yes" && selectedOption) 
@@ -1501,7 +1484,7 @@ export class Space1889ActorSheet extends foundry.applications.api.HandlebarsAppl
 					else
 					{
 						actor.deleteEmbeddedDocuments("Item", [newTalent._id]);
-						ui.notifications.info(game.i18n.format("SPACE1889.ChatInfoUndoAddTalent", { talentName: newTalent.system.label,  name: actor.name }));
+						ui.notifications.info(game.i18n.format("SPACE1889.ChatInfoUndoAddTalent", { talentName: newTalent.derived.label,  name: actor.name }));
 					}
 				}
 			}
@@ -1555,7 +1538,7 @@ export class Space1889ActorSheet extends foundry.applications.api.HandlebarsAppl
 			],
 			submit: result =>
 			{
-				let newTalent = actor.system.talents.findLast(e => e.system.id === "geschaerfterSinn" && e.system.bonusTarget == "");
+				let newTalent = actor.talents.findLast(e => e.system.id === "geschaerfterSinn" && e.system.bonusTarget == "");
 				if (newTalent != undefined)
 				{
 					if (result === "yes" && selectedOption) 
@@ -1566,7 +1549,7 @@ export class Space1889ActorSheet extends foundry.applications.api.HandlebarsAppl
 					else
 					{
 						actor.deleteEmbeddedDocuments("Item", [newTalent._id]);
-						ui.notifications.info(game.i18n.format("SPACE1889.ChatInfoUndoAddTalent", { talentName: newTalent.system.label, name: actor.name }));
+						ui.notifications.info(game.i18n.format("SPACE1889.ChatInfoUndoAddTalent", { talentName: newTalent.derived.label, name: actor.name }));
 					}
 				}
 			}
@@ -1628,7 +1611,7 @@ export class Space1889ActorSheet extends foundry.applications.api.HandlebarsAppl
 			],
 			submit: result =>
 			{
-				let newTalent = actor.system.talents.findLast(e => e.system.id === "schwerkraftadaption" && e.system.bonusTarget === "");
+				let newTalent = actor.talents.findLast(e => e.system.id === "schwerkraftadaption" && e.system.bonusTarget === "");
 				if (newTalent != undefined)
 				{
 					if (result === "yes" && selectedOption) 
@@ -1639,7 +1622,7 @@ export class Space1889ActorSheet extends foundry.applications.api.HandlebarsAppl
 					else
 					{
 						actor.deleteEmbeddedDocuments("Item", [newTalent._id]);
-						ui.notifications.info(game.i18n.format("SPACE1889.ChatInfoUndoAddTalent", { talentName: newTalent.system.label, name: actor.name }));
+						ui.notifications.info(game.i18n.format("SPACE1889.ChatInfoUndoAddTalent", { talentName: newTalent.derived.label, name: actor.name }));
 					}
 				}
 			}
@@ -1668,12 +1651,12 @@ export class Space1889ActorSheet extends foundry.applications.api.HandlebarsAppl
 		}
 		else if (type == "primary")
 		{
-			if (threshold <= actor.system.abilities[id].total)
+			if (threshold <= actor.derived.abilities[id].total)
 				return true;
 		}
 		else if (type == "secondary")
 		{
-			if (threshold <= actor.system.secondaries[id].total)
+			if (threshold <= actor.derived.secondaries[id].total)
 				return true;
 		}
 		else if (type == "skill" && id == "nichtkampffertigkeit")
@@ -1865,25 +1848,25 @@ export class Space1889ActorSheet extends foundry.applications.api.HandlebarsAppl
 	 */
 	incrementLocation(ev, currentId, actor)
 	{
-		if (actor.system.containers.length == 0)
+		if (actor.containers.length == 0)
 			return null;
 
 		const backward = ev.button == 2;
 		if (currentId == null)
 		{
-			return backward ? actor.system.containers[actor.system.containers.length - 1].id : actor.system.containers[0].id;
+			return backward ? actor.containers[actor.containers.length - 1].id : actor.containers[0].id;
 		}
 
 		let pre = null;
 		let post = null;
-		const length = actor.system.containers.length;
+		const length = actor.containers.length;
 		for (let i = 0; i < length; ++i)
 		{
-			const container = actor.system.containers[i];
+			const container = actor.containers[i];
 			if (container._id == currentId)
 			{
 				if (i + 1 < length)
-					post = actor.system.containers[i + 1]._id;
+					post = actor.containers[i + 1]._id;
 				break;
 			}
 			else
@@ -1992,10 +1975,10 @@ export class Space1889ActorSheet extends foundry.applications.api.HandlebarsAppl
 			return;
 
 		let updateData = [];
-		let lists = [this.actor.system.gear, this.actor.system.weapons, this.actor.system.ammunitions, this.actor.system.armors];
+		let lists = [this.actor.gear, this.actor.weapons, this.actor.ammunitions, this.actor.armors];
 		for (let list of lists)
 		{
-			for (let item of this.actor.system.gear)
+			for (let item of this.actor.gear)
 			{
 				if (item.system.containerId == idToDelete)
 					updateData.push({ _id: item._id, "system.containerId": null });

@@ -76,7 +76,7 @@
 				</div>
 				<div class="resource flex-group-center" data-tooltip="{{localize "SPACE1889.ClickToRoll"}}">
 					<a class="resource-label roll-vehicle-defense-click" data-label='{{localize "SPACE1889.SecondaryAttributeDef"}}'>{{localize "SPACE1889.SecondaryAttributeDef"}}: </a>
-					<label class="items-list item-max-with60px">{{system.secondaries.defense.total}}</label>
+					<label class="items-list item-max-with60px">{{derived.secondaries.defense.total}}</label>
 				</div>
 			</li>
 
@@ -90,7 +90,7 @@
 				<div data-tooltip='{{localize "SPACE1889.Rating"}}' class="items-list item-max-with42px">{{localize "SPACE1889.Rating"}}</div>
 				<div class="items-list item-max-with20px"></div>
 			</li>
-			{{#each system.positions as |position key|}}
+			{{#each derived.positions as |position key|}}
 			<li class="item row-section flexrow">
 				<label for="system.positions.{{key}}.value" class="rollable item-name" data-roll-key="{{key}}" data-roll-type="actor" data-roll-diecount="{{position.total}}" data-label="{{position.label}}">{{position.label}}</label>
 

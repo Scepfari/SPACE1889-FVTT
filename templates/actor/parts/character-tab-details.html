@@ -31,7 +31,7 @@
 					<div data-tooltip='{{localize "SPACE1889.TalentBonus"}}' class="items-list item-max-with40px">{{localize "SPACE1889.Mod"}}</div>
 					<div data-tooltip='{{localize "SPACE1889.Rating"}}' class="items-list item-max-with42px">{{localize "SPACE1889.Rating"}}</div>
 				</li>
-				{{#each system.abilities as |ability key|}}
+				{{#each derived.abilities as |ability key|}}
 				<li class="flexrow">
 					<label for="system.abilities.{{key}}.value" class="rollable flexlarge align-left" data-roll-key="{{key}}" data-roll-type="actor" data-roll-diecount="{{ability.total}}" data-label="{{ability.label}}" data-tooltip="{{abilityToolTipDescription ../document key}}" data-tooltip-direction="RIGHT">{{ability.label}}</label>
 					<div class="item-max-with40px">
@@ -50,7 +50,7 @@
 					<div data-tooltip='{{localize "SPACE1889.TalentBonus"}}' class="items-list item-max-with40px">{{localize "SPACE1889.Mod"}}</div>
 					<div data-tooltip='{{localize "SPACE1889.Rating"}}' class="items-list item-max-with40px">{{localize "SPACE1889.Rating"}}</div>
 				</li>
-				{{#each system.secondaries as |secondary key|}}
+				{{#each derived.secondaries as |secondary key|}}
 				<li class="secondary flexrow">
 					<label for="system.secondaries.{{key}}.value" class="rollable flexlarge align-left" data-roll-key="{{key}}" data-roll-type="actor" data-roll-diecount="{{secondary.total}}" data-label="{{secondary.label}}" data-tooltip="{{secondaryToolTipDescription ../document key}}" data-tooltip-direction="LEFT">{{secondary.label}}</label>
 					<label class="items-list item-max-with40px">{{secondary.value}}</label>

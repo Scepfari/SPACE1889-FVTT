@@ -13,7 +13,7 @@ export default class SPACE1889Vision
 		const list = game.actors.filter(e => e.type === "character");
 		for (const actor of list)
 		{
-			for (const vision of actor.system.visions)
+			for (const vision of actor.visions)
 			{
 				this._checkAndDeactivateVisionByTime(currentTimeStamp, vision, actor, undefined);
 			}
@@ -33,7 +33,7 @@ export default class SPACE1889Vision
 			if (!token.actor.system?.visions)
 				continue;
 
-			for (const vision of token.actor.system.visions)
+			for (const vision of token.actor.visions)
 			{
 				this._checkAndDeactivateVisionByTime(currentTimeStamp, vision, token.actor, token);
 			}
@@ -89,7 +89,7 @@ export default class SPACE1889Vision
 		}
 
 		const timeAsString = SPACE1889Time.isCalendarEnabled() ? SPACE1889Time.formatTimeDate(SPACE1889Time.getTimeAndDate(emissionEndTimeStamp)) : "";
-		const messageContent = game.i18n.format("SPACE1889.VisionFades", { "vision": visionItem.system.label, "name": token ? token.name : actor.name, "time": timeAsString });
+		const messageContent = game.i18n.format("SPACE1889.VisionFades", { "vision": visionItem.derived.label, "name": token ? token.name : actor.name, "time": timeAsString });
 		let chatData =
 		{
 			user: game.user.id,
@@ -104,7 +104,7 @@ export default class SPACE1889Vision
 	{
 		if (SPACE1889Time.isCalendarEnabled() && !visionItem.system.interruptible)
 		{
-			ui.notifications.info(game.i18n.format("SPACE1889.CanNotDeActivateVision", { "name": visionItem.system.label }));
+			ui.notifications.info(game.i18n.format("SPACE1889.CanNotDeActivateVision", { "name": visionItem.derived.label }));
 			return;
 		}
 
@@ -130,7 +130,7 @@ export default class SPACE1889Vision
 		}
 
 		const timeAsString = SPACE1889Time.isCalendarEnabled() ? SPACE1889Time.getCurrentTimeDateString() : "";
-		const messageContent = game.i18n.format("SPACE1889.VisionSwitchOff", { "vision": visionItem.system.label, "name": actor.name, "time": timeAsString });
+		const messageContent = game.i18n.format("SPACE1889.VisionSwitchOff", { "vision": visionItem.derived.label, "name": actor.name, "time": timeAsString });
 		let chatData =
 		{
 			user: game.user.id,
@@ -181,7 +181,7 @@ export default class SPACE1889Vision
 	{
 		if (visionItem.system.quantity < 1)
 		{
-			ui.notifications.info(game.i18n.format("SPACE1889.CanNotActivateVisionNoItem", { "name": visionItem.system.label }));
+			ui.notifications.info(game.i18n.format("SPACE1889.CanNotActivateVisionNoItem", { "name": visionItem.derived.label }));
 			return;
 		}
 		if (!SPACE1889Light.isPermanentlyUsable(visionItem) && visionItem.system.usedDuration >= visionItem.system.duration)
@@ -207,7 +207,7 @@ export default class SPACE1889Vision
 		}
 
 		const timeAsString = SPACE1889Time.isCalendarEnabled() ? SPACE1889Time.getCurrentTimeDateString() : "";
-		const messageContent = game.i18n.format("SPACE1889.VisionBegins", { "vision": visionItem.system.label, "name": actor.name, "time": timeAsString });
+		const messageContent = game.i18n.format("SPACE1889.VisionBegins", { "vision": visionItem.derived.label, "name": actor.name, "time": timeAsString });
 		let chatData =
 		{
 			user: game.user.id,
@@ -244,13 +244,13 @@ export default class SPACE1889Vision
 
 		if (visionItem.system.itemUseType === "consumables" || SPACE1889Light.isPermanentlyUsable(visionItem))
 		{
-			ui.notifications.info(game.i18n.format("SPACE1889.VisionCanNotRecharge", { "name": visionItem.system.label }));
+			ui.notifications.info(game.i18n.format("SPACE1889.VisionCanNotRecharge", { "name": visionItem.derived.label }));
 			return;
 		}
 
 		if (visionItem.system.isActive)
 		{
-			ui.notifications.info(game.i18n.format("SPACE1889.VisionCanNotRechargeDuringOperation", { "name": visionItem.system.label }));
+			ui.notifications.info(game.i18n.format("SPACE1889.VisionCanNotRechargeDuringOperation", { "name": visionItem.derived.label }));
 			return;
 		}
 
@@ -267,7 +267,7 @@ export default class SPACE1889Vision
 			user: game.user.id,
 			speaker: ChatMessage.getSpeaker({ actor: actor }),
 			whisper: [],
-			content: game.i18n.format("SPACE1889.VisionRecharge", { "name": visionItem.system.label })
+			content: game.i18n.format("SPACE1889.VisionRecharge", { "name": visionItem.derived.label })
 		};
 		await ChatMessage.create(chatData, {});
 	}
@@ -303,10 +303,10 @@ export default class SPACE1889Vision
 
 	static _getActiveVision(actor)
 	{
-		if (!actor || !actor.system || !actor.system.visions)
+		if (!actor || !actor.system || !actor.visions)
 			return undefined;
 
-		for (const vision of actor.system.visions)
+		for (const vision of actor.visions)
 		{
 			if (vision.system.isActive)
 				return vision;

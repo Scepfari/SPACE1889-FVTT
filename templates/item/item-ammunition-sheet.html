@@ -61,15 +61,15 @@
 			<input type="text" name="system.price" value="{{system.price}}" />
 		</div>
 		<div class="resource-content flex-center flex-between">
-			{{#if system.locationDisplayLong}}
-			<label>{{system.locationDisplayLong}}</label>
+			{{#if system.locationLong}}
+			<label>{{system.locationLong}}</label>
 			{{/if}}
 		</div>
 	</li>
 
-	{{#if (ne system.descriptionLangId (localize system.descriptionLangId))}}
+	{{#if (ne derived.descriptionLangId (localize derived.descriptionLangId))}}
 		<hr />
-		<p>{{{localize system.descriptionLangId}}}</p>
+		<p>{{{localize derived.descriptionLangId}}}</p>
 		<hr />
 	{{/if}}
 

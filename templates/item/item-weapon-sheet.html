@@ -76,7 +76,7 @@
 		<div class="resource">
 			<input type="text" name="system.effectDurationCombatTurns" value="{{system.effectDurationCombatTurns}}" data-dtype="Number" />
 		</div>
-		<label class="label">{{system.effectDuration}}</label>
+		<label class="label">{{derived.effectDuration}}</label>
 		<div class="resource-content flex-center flex-between">
 			<input type="checkbox" name="system.effectOnly" {{checked system.effectOnly}} />
 		</div>
@@ -158,8 +158,8 @@
 		</select>
 		{{else}}
 		<div class="resource-content flex-center flex-between">
-			{{#if system.locationDisplayLong}}
-			<label>{{system.locationDisplayLong}}</label>
+			{{#if system.locationLong}}
+			<label>{{system.locationLong}}</label>
 			{{/if}}
 		</div>
 		{{/if}}

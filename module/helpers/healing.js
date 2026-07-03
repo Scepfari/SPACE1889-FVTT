@@ -64,7 +64,7 @@ export default class SPACE1889Healing
 		let nonLethalInjuries = [];
 		let lethalInjuries = [];
 
-		for (let injury of actor.system.injuries)
+		for (let injury of actor.injuries)
 		{
 			if (!SPACE1889Time.isLessThenOneHour(injury.system.eventTimestamp, timestamp))
 				continue;
@@ -337,7 +337,7 @@ export default class SPACE1889Healing
 
 	static findInjuryToHeal(actor, overrideStartHealingTimeStamp = Infinity)
 	{
-		if (!actor || SPACE1889Helper.isDead(actor))
+		if (!actor || SPACE1889Helper.isDead(actor) || actor.system.type == "vehicle")
 			return undefined;
 
 		const injuryInHealingId = actor.system.healing.currentHealingDamageId;
@@ -345,7 +345,7 @@ export default class SPACE1889Healing
 		let wantedInjury = undefined;
 		const healingStartTimeStamp = overrideStartHealingTimeStamp == Infinity ? actor.system.healing.startOfHealingTimeStamp : overrideStartHealingTimeStamp;
 
-		for (const injury of actor.system.injuries)
+		for (const injury of actor.injuries)
 		{
 			if (injury.system.remainingDamage == 0 || injury.system.damageType != "nonLethal")
 				continue;
@@ -362,7 +362,7 @@ export default class SPACE1889Healing
 		if (minTime < Infinity && wantedInjury != undefined)
 			return wantedInjury;
 
-		for (const injury of actor.system.injuries)
+		for (const injury of actor.injuries)
 		{
 			if (injury.system.remainingDamage == 0 || injury.system.damageType == "nonLethal")
 				continue;
@@ -665,7 +665,7 @@ export default class SPACE1889Healing
 
 		const damage = SPACE1889Helper.getDamageTuple(actor);
 		const penalty = Math.min(actor.system.health.max - damage.lethal, 0);
-		const dice = (2 * actor.system.abilities.con.total) + penalty;
+		const dice = (2 * actor.derived.abilities.con.total) + penalty;
 
 		let messageContent = game.i18n.localize("SPACE1889.ChatStabilizing");
 		const info = game.i18n.localize("SPACE1889.ChatReflexiveBodyRoll");

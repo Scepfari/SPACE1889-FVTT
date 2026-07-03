@@ -2,6 +2,8 @@
 		<img class="profile-img artwork" src="{{item.img}}" data-edit="img" data-tooltip="SPACE1889.ImageTooltip" data-action="editImage"/>
 		<div class="header-fields">
 			<h2 class="charname"><input name="name" type="text" value="{{item.name}}" placeholder="Name" /></h2>
+			{{#if (ne item.type 'extended_action')}}
 			{{> "systems/space1889/templates/item/item-sub-id.html"}}
+			{{/if}}
 		</div>
 	</header>

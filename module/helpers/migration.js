@@ -26,6 +26,7 @@ export class Space1889Migration
 		}
 		if (game.user.isGM)
 		{
+			await this.migrateDataModelSchemaCompatibility();
 			await this.migrateEffectsForFoundryV11(lastUsedVersion, lastUsedFoundryVersion, isNewWorld);
 			refreshCalendar = await this.migrateSimpleCalendar(lastUsedVersion, lastUsedFoundryVersion);
 			await this.migrateNoEpLevels(lastUsedVersion, isNewWorld);
@@ -155,7 +156,7 @@ export class Space1889Migration
 
 		for (const actor of actorList)
 		{
-			for (const weapon of actor.system.weapons)
+			for (const weapon of actor.weapons)
 			{
 				if (weapon.system.skillId == "geschuetze" || spez.indexOf(weapon.system.specializationId) >= 0)
 					await this.setWeaponToTwoHanded(weapon, actor);
@@ -186,7 +187,7 @@ export class Space1889Migration
 
 	static async setRemainingRoundsToMaxCapacity(actor, packWeapons)
 	{
-		for (let weapon of actor.system.weapons)
+		for (let weapon of actor.weapons)
 		{
 			if (!weapon.system.isRangeWeapon)
 				continue;
@@ -231,11 +232,11 @@ export class Space1889Migration
 		let actorList = this.getAllActorsWithoutVehicleAndCreature();
 		for (let actor of actorList)
 		{
-			if (!actor.system.talents || actor.system.talents.length == 0)
+			if (!actor.talents || actor.talents.length == 0)
 				continue;
 
 			let updateData = [];
-			for (let talent of actor.system.talents)
+			for (let talent of actor.talents)
 			{
 				if (talent.system.preconditionType === "skill" && talent.system.isGroup)
 				{
@@ -251,6 +252,108 @@ export class Space1889Migration
 			}
 		}
 	}	
+
+	static async migrateDataModelSchemaCompatibility()
+	{
+		if (!game.user.isGM)
+			return;
+
+		for (const actor of this.getUniqueActors())
+		{
+			const actorUpdate = this.getActorDataModelUpdate(actor);
+			if (actorUpdate)
+			{
+				await actor.update(actorUpdate);
+				console.log(`SPACE 1889 DataModel migration - updated actor ${actor.name} (${actor.id})`);
+			}
+
+			const embeddedUpdates = [];
+			for (const item of actor.items)
+			{
+				const itemUpdate = this.getItemDataModelUpdate(item);
+				if (itemUpdate)
+					embeddedUpdates.push({ _id: item.id, ...itemUpdate });
+			}
+
+			if (embeddedUpdates.length > 0)
+			{
+				await actor.updateEmbeddedDocuments("Item", embeddedUpdates);
+				console.log(`SPACE 1889 DataModel migration - updated ${embeddedUpdates.length} embedded items for ${actor.name} (${actor.id})`);
+			}
+		}
+
+		for (const item of game.items)
+		{
+			const itemUpdate = this.getItemDataModelUpdate(item);
+			if (itemUpdate)
+			{
+				await item.update(itemUpdate);
+				console.log(`SPACE 1889 DataModel migration - updated world item ${item.name} (${item.id})`);
+			}
+		}
+	}
+
+	static getUniqueActors()
+	{
+		const uniqueActors = new Map();
+		for (const actor of this.getAllActors())
+		{
+			if (!actor)
+				continue;
+
+			const key = actor.uuid ?? `${actor.id}-${actor.name}`;
+			if (!uniqueActors.has(key))
+				uniqueActors.set(key, actor);
+		}
+		return uniqueActors.values();
+	}
+
+	static getActorDataModelUpdate(actor)
+	{
+		const updateData = {};
+		const sourceSystem = actor._source?.system ?? {};
+
+		if ((actor.type === "character" || actor.type === "npc") && sourceSystem["weight "] && !sourceSystem.weight)
+		{
+			updateData["system.weight"] = sourceSystem["weight "];
+			updateData["system.-=weight "] = null;
+		}
+
+		if (actor.type === "vehicle")
+		{
+			const currentWeight = sourceSystem.weight2;
+			if (currentWeight === undefined || currentWeight === null || currentWeight === "")
+				updateData["system.weight2"] = "15t";
+			else if (typeof currentWeight !== "string")
+				updateData["system.weight2"] = String(currentWeight);
+
+			const maneuverabilityValue = sourceSystem.maneuverability?.value;
+			if (maneuverabilityValue != null && typeof maneuverabilityValue !== "string")
+				updateData["system.maneuverability.value"] = String(maneuverabilityValue);
+		}
+
+		return Object.keys(updateData).length > 0 ? updateData : null;
+	}
+
+	static getItemDataModelUpdate(item)
+	{
+		const updateData = {};
+		const sourceSystem = item._source?.system ?? {};
+
+		if (item.type === "vision" && sourceSystem.visionColor === null)
+			updateData["system.visionColor"] = "";
+
+		if (item.type === "currency" && sourceSystem.exchangeValue != null && typeof sourceSystem.exchangeValue !== "string")
+			updateData["system.exchangeValue"] = String(sourceSystem.exchangeValue);
+
+		if (item.system.id === "" && item.name.length > 0 && item.type != "damage" && item.type != "extended_action")
+			updateData["system.id"] = item.createId(item.name);
+
+		//if (item.type === "weapon" && sourceSystem.effectDuration != null && typeof sourceSystem.effectDuration !== "string")
+		//	updateData["system.effectDuration"] = String(sourceSystem.effectDuration);
+
+		return Object.keys(updateData).length > 0 ? updateData : null;
+	}
 
 	static async migrateEffectsForFoundryV11(lastUsedVersion, lastUsedFoundryVersion, isNewWorld)
 	{

@@ -326,9 +326,9 @@
 	{{> "systems/space1889/templates/actor/parts/actor-effects.html"}}
 	</div>
 
-	{{#if (ne system.descriptionLangId (localize system.descriptionLangId))}}
+	{{#if (ne derived.descriptionLangId (localize derived.descriptionLangId))}}
 		<hr />
-		<p>{{{localize system.descriptionLangId}}}</p>
+		<p>{{{localize derived.descriptionLangId}}}</p>
 		<hr />
 	{{/if}}
 

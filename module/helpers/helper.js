@@ -21,7 +21,7 @@ export default class SPACE1889Helper
 		const talent = this.getTalentData(actor, talentId);
 		if (talent != undefined)
 		{
-			return talent.system.level.total;
+			return talent.derived.level.total;
 		}
 		return 0;
 	}
@@ -83,29 +83,6 @@ export default class SPACE1889Helper
 	static isCreature(actor)
 	{
 		return actor.type == 'creature';
-	}
-
-	static getExchangeValue(item)
-	{
-		const exchangeRatio = 20 / item.system.exchangeRateForOnePound;
-		if (exchangeRatio == 0)
-			return "?";
-
-		const sumShilling = Number(item.system.quantity) * exchangeRatio;
-
-		const pound = Math.floor(sumShilling / 20);
-		const shilling = Math.round(sumShilling - (pound * 20));
-
-		let value = "";
-		if (pound > 0)
-			value = pound.toString() + game.i18n.localize("SPACE1889.CurrencyBritishPoundsAbbr") + " ";
-		if (shilling > 0)
-			value += shilling.toString() + game.i18n.localize("SPACE1889.CurrencyBritishShillingAbbr");
-
-		if (value == "")
-			value = "<< 1" + game.i18n.localize("SPACE1889.CurrencyBritishShillingAbbr");
-
-		return value;
 	}
 
 	/**
@@ -298,21 +275,21 @@ export default class SPACE1889Helper
 			const id = dropedActor._id;
 
 			if (selectedOption == "captain" || all)
-				vehicle.update({ 'system.positions.captain.actorId': id, 'system.positions.captain.actorName': actorName });
+				vehicle.update({ 'system.positions.captain.actorId': id, 'derived.positions.captain.actorName': actorName });
 			if (selectedOption == "pilot" || all)
-				vehicle.update({ 'system.positions.pilot.actorId': id, 'system.positions.pilot.actorName': actorName });
+				vehicle.update({ 'system.positions.pilot.actorId': id, 'derived.positions.pilot.actorName': actorName });
 			if (selectedOption == "copilot" || all)
-				vehicle.update({ 'system.positions.copilot.actorId': id, 'system.positions.copilot.actorName': actorName });
+				vehicle.update({ 'system.positions.copilot.actorId': id, 'derived.positions.copilot.actorName': actorName });
 			if (selectedOption == "gunner" || all)
-				vehicle.update({ 'system.positions.gunner.actorId': id, 'system.positions.gunner.actorName': actorName });
+				vehicle.update({ 'system.positions.gunner.actorId': id, 'derived.positions.gunner.actorName': actorName });
 			if (selectedOption == "signaler" || all)
-				vehicle.update({ 'system.positions.signaler.actorId': id, 'system.positions.signaler.actorName': actorName });
+				vehicle.update({ 'system.positions.signaler.actorId': id, 'derived.positions.signaler.actorName': actorName });
 			if (selectedOption == "lookout" || all)
-				vehicle.update({ 'system.positions.lookout.actorId': id, 'system.positions.lookout.actorName': actorName });
+				vehicle.update({ 'system.positions.lookout.actorId': id, 'derived.positions.lookout.actorName': actorName });
 			if (selectedOption == "mechanic" || all)
-				vehicle.update({ 'system.positions.mechanic.actorId': id, 'system.positions.mechanic.actorName': actorName });
+				vehicle.update({ 'system.positions.mechanic.actorId': id, 'derived.positions.mechanic.actorName': actorName });
 			if (selectedOption == "medic" || all)
-				vehicle.update({ 'system.positions.medic.actorId': id, 'system.positions.medic.actorName': actorName });
+				vehicle.update({ 'system.positions.medic.actorId': id, 'derived.positions.medic.actorName': actorName });
 		}
 	}
 
@@ -573,15 +550,15 @@ export default class SPACE1889Helper
 		
 		let isShotgun = item.system.specializationId == "schrotgewehr";
 		let isGun = !isPistol && !isShotgun;
-		let range = item.system.calculatedRange;
+		let range = item.derived.calculatedRange;
 		let shotgunMalus = 0;
 
 		if (isShotgun)
 		{
-			let currentAmmo = item.system.ammunition.ammos.find(x => x._id == item.system.ammunition.currentItemId);
+			let currentAmmo = item.derived.ammunition.ammos.find(x => x._id == item.system.ammunition.currentItemId);
 			if (!currentAmmo || currentAmmo?.system?.isConeAttack)
 			{
-				shotgunMalus = Math.floor(distance / item.system.coneRange) * (-1);
+				shotgunMalus = Math.floor(distance / item.derived.coneRange) * (-1);
 			}
 		}
 
@@ -612,19 +589,6 @@ export default class SPACE1889Helper
 		return (value < 0 ? "" : "+") + value.toString();
 	}
 
-	static isRangeWeapon(weapon)
-	{
-		if (!weapon || weapon.type != "weapon")
-			return false;
-
-		if (weapon.system.skillId != "waffenlos" && weapon.system.skillId != "nahkampf")
-		{
-			const range = parseFloat(this.replaceCommaWithPoint(weapon.system.range));
-			return range > 0.0;
-		}
-		return false;
-	}
-
 	static getAmmunitionCapacityType(weapon)
 	{
 		let type = weapon.system.capacityType;
@@ -639,7 +603,7 @@ export default class SPACE1889Helper
 		if (!item || item.type != "weapon" || item.system.specializationId != "schrotgewehr")
 			return 0;
 
-		const range = item.system.coneRange;
+		const range = item.derived.coneRange;
 		if (range <= 0.0)
 			return 0;
 
@@ -657,7 +621,7 @@ export default class SPACE1889Helper
 
 		if (weapon.system.containerId != null)
 		{
-			const container = actor.system.containers.find(e => e._id == weapon.system.containerId);
+			const container = actor.containers.find(e => e._id == weapon.system.containerId);
 			if (container && !(container.system.portable && container.system.carried) &&
 				weapon.system.skillId != "geschuetze")
 			{
@@ -734,13 +698,13 @@ export default class SPACE1889Helper
 		let primaryHand = [];
 		let offHand = [];
 
-		if (actor.system?.weapons == undefined)
+		if (actor.weapons == undefined)
 			actor.prepareDerivedData();
 
-		if (actor.system?.weapons == undefined || actor?.system?.shields == undefined)
+		if (actor.weapons == undefined || actor.shields == undefined)
 			return { primary: primaryHand, off: offHand };
 
-		let lists = [actor?.system?.weapons, actor?.system?.shields]
+		let lists = [actor.weapons, actor.shields]
 
 		for (const list of lists)
 		{
@@ -762,11 +726,13 @@ export default class SPACE1889Helper
 
 	static getWeapon(actor, weaponId)
 	{
-		let weapon = actor?.system?.weapons?.find(e => e.id == weaponId);
+		if (!actor)
+			return undefined;
+		let weapon = actor.weapons?.find(e => e.id == weaponId);
 		if (weapon)
 			return weapon;
 
-		return actor?.system?.shields?.find(e => e.id == weaponId);
+		return actor.shields?.find(e => e.id == weaponId);
 	}
 
 	static getNextValidHandPosition(weapon, actor, backwardDirection)
@@ -789,16 +755,16 @@ export default class SPACE1889Helper
 
 		if (wanted === "primaryHand")
 		{
-			let itemName = actor.system.weapons.find(e => e._id === weaponInHands.primary[0])?.name;
+			let itemName = actor.weapons.find(e => e._id === weaponInHands.primary[0])?.name;
 			if (!itemName)
-				itemName = actor.system.lightSources.find(e => e._id === lsBlocked.primaryId)?.name;
+				itemName = actor.lightSources.find(e => e._id === lsBlocked.primaryId)?.name;
 			ui.notifications.info(game.i18n.format("SPACE1889.WeaponCanNotReadyPrimaryHand", { weapon: weapon.name, item: itemName}));
 		}
 		else if (wanted === "offHand")
 		{
-			let itemName = actor.system.weapons.find(e => e._id === weaponInHands.off[0])?.name;
+			let itemName = actor.weapons.find(e => e._id === weaponInHands.off[0])?.name;
 			if (!itemName)
-				itemName = actor.system.lightSources.find(e => e._id === lsBlocked.offId)?.name;
+				itemName = actor.lightSources.find(e => e._id === lsBlocked.offId)?.name;
 			ui.notifications.info(game.i18n.format("SPACE1889.WeaponCanNotReadyOffHand", { weapon: weapon.name, item: itemName}));
 		}
 
@@ -856,7 +822,7 @@ export default class SPACE1889Helper
 			return;
 		}
 
-		let currentAmmo = weapon.system.ammunition.ammos.find(x => x._id == weapon.system.ammunition.currentItemId);
+		let currentAmmo = weapon.derived.ammunition.ammos.find(x => x._id == weapon.system.ammunition.currentItemId);
 
 		if (currentAmmo?.system?.quantity == 0)
 		{
@@ -866,7 +832,7 @@ export default class SPACE1889Helper
 
 		if (currentAmmo?.system?.containerId != null)
 		{
-			const container = actor.system.containers.find(e => e._id == currentAmmo.system.containerId);
+			const container = actor.containers.find(e => e._id == currentAmmo.system.containerId);
 			if (container && !(container.system.portable && container.system.carried))
 			{
 				ui.notifications.info(game.i18n.format("SPACE1889.AmmunitionCanNotReloadWrongLocation", { location: container.name } ));
@@ -884,8 +850,8 @@ export default class SPACE1889Helper
 		const infoId = isInstantReload ? "SPACE1889.AmmunitionInstantReload" : "SPACE1889.AmmunitionDefaultReloadAction";
 		let desc = game.i18n.format(infoId, { weaponName: weapon.name });
 
-		let autoReloadNeededLoadActions = Math.round(1 / ((isInstantReload ? 2 : 1) * weapon.system.ammunition.autoReloadRate)) - 1;
-		if (weapon.system.ammunition.autoReloadRate != 0 && autoReloadNeededLoadActions >= 0)
+		let autoReloadNeededLoadActions = Math.round(1 / ((isInstantReload ? 2 : 1) * weapon.derived.ammunition.autoReloadRate)) - 1;
+		if (weapon.derived.ammunition.autoReloadRate != 0 && autoReloadNeededLoadActions >= 0)
 		{
 			if (weapon.system.ammunition.usedLoadingActions >= autoReloadNeededLoadActions)
 			{
@@ -907,7 +873,7 @@ export default class SPACE1889Helper
 
 			if (game.combat?.started)
 			{
-				wantedLoad = Math.min(wantedLoad, actor.system.abilities.dex.total);
+				wantedLoad = Math.min(wantedLoad, actor.derived.abilities.dex.total);
 			}
 			await actor.updateEmbeddedDocuments("Item", [{ _id: weapon._id, "system.ammunition.remainingRounds": currentRounds + wantedLoad }]);
 			await actor.updateEmbeddedDocuments("Item", [{ _id: currentAmmo._id, "system.quantity": currentAmmo.system.quantity - wantedLoad }]);
@@ -923,7 +889,7 @@ export default class SPACE1889Helper
 	
 		const speaker = ChatMessage.getSpeaker({ actor: actor });
 			
-		const label = `<div><h4>${game.i18n.localize("SPACE1889.AmmunitionReload")}<small> (${currentAmmo.system.label})</small></h4></div>`;
+		const label = `<div><h4>${game.i18n.localize("SPACE1889.AmmunitionReload")}<small> (${currentAmmo.derived.label})</small></h4></div>`;
 		desc = label + `<div>${desc}</div>`;
 		ChatMessage.create({
 			speaker: speaker,
@@ -944,7 +910,7 @@ export default class SPACE1889Helper
 			return;
 		}
 
-		let currentAmmo = weapon.system.ammunition.ammos.find(x => x._id == weapon.system.ammunition.currentItemId);
+		let currentAmmo = weapon.derived.ammunition.ammos.find(x => x._id == weapon.system.ammunition.currentItemId);
 
 		if (weapon.system.capacityType == "internal" || weapon.system.capacityType == "revolver")
 		{
@@ -954,7 +920,7 @@ export default class SPACE1889Helper
 
 			if (game.combat?.started && weapon.system.capacityType == "internal")
 			{
-				wantedUnload = Math.min(wantedUnload, actor.system.abilities.dex.total);
+				wantedUnload = Math.min(wantedUnload, actor.derived.abilities.dex.total);
 			}
 			await actor.updateEmbeddedDocuments("Item", [{ _id: weapon._id, "system.ammunition.remainingRounds": currentRounds - wantedUnload , "system.ammunition.usedLoadingActions": 0}]);
 			await actor.updateEmbeddedDocuments("Item", [{ _id: currentAmmo._id, "system.quantity": currentAmmo.system.quantity + wantedUnload }]);
@@ -970,7 +936,7 @@ export default class SPACE1889Helper
 		const infoId = SPACE1889Helper.getTalentLevel(actor, "schnellladen") > 0 ? "SPACE1889.AmmunitionInstantUnload" : "SPACE1889.AmmunitionDefaultUnloadAction";
 			
 		let desc = game.i18n.format(infoId, { weaponName: weapon.name });
-		const label = `<div><h4>${game.i18n.localize("SPACE1889.AmmunitionUnload")}<small> (${currentAmmo.system.label})</small></h4></div>`;
+		const label = `<div><h4>${game.i18n.localize("SPACE1889.AmmunitionUnload")}<small> (${currentAmmo.derived.label})</small></h4></div>`;
 		desc = label + `<div>${desc}</div>`;
 		ChatMessage.create({
 			speaker: speaker,
@@ -1001,19 +967,19 @@ export default class SPACE1889Helper
 
 		const isInstantReload = SPACE1889Helper.getTalentLevel(actor, "schnellladen") > 0
 
-		if (weapon.system.ammunition.autoReloadRate == 0 && !isInstantReload)
+		if (weapon.derived.ammunition.autoReloadRate == 0 && !isInstantReload)
 			return false;
 
 		const neededReloadRounds = (roundsToUse - weapon.system.ammunition.remainingRounds);
 
-		let currentAmmo = weapon.system.ammunition.ammos.find(x => x._id == weapon.system.ammunition.currentItemId);
+		let currentAmmo = weapon.derived.ammunition.ammos.find(x => x._id == weapon.system.ammunition.currentItemId);
 		if (!currentAmmo || currentAmmo.system.quantity < 0 ||
 			(currentAmmo.system.quantity < neededReloadRounds && currentAmmo.system.capacity == 1))
 			return false;
 
-		if (weapon.system.ammunition.autoReloadRate > 0)
+		if (weapon.derived.ammunition.autoReloadRate > 0)
 		{
-			let autoReloadNeededLoadActions = Math.round(1 / ((isInstantReload ? 2 : 1) * weapon.system.ammunition.autoReloadRate)) - 1;
+			let autoReloadNeededLoadActions = Math.round(1 / ((isInstantReload ? 2 : 1) * weapon.derived.ammunition.autoReloadRate)) - 1;
 			if (weapon.system.ammunition.usedLoadingActions >= autoReloadNeededLoadActions)
 				return true;
 		}
@@ -1021,7 +987,7 @@ export default class SPACE1889Helper
 		{
 			let loadRounds = Math.min(neededReloadRounds, currentAmmo.system.quantity);
 			if (game.combat?.started)
-				loadRounds = Math.min(loadRounds, actor.system.abilities.dex.total);
+				loadRounds = Math.min(loadRounds, actor.derived.abilities.dex.total);
 
 			return (roundsToUse <= weapon.system.ammunition.remainingRounds + loadRounds)
 		}
@@ -1127,13 +1093,13 @@ export default class SPACE1889Helper
 		if (!actor)
 			return;
 
-		if ((actor.type == "character" || actor.type == "npc") && actor.system.ammunitions?.length == 0)
+		if ((actor.type == "character" || actor.type == "npc") && actor.ammunitions?.length == 0)
 		{
 			await this.updateActorWeapons(actor, packWeapons);
 
 			let itemsToAdd = [];
 			let weaponsWithAmmo = [];
-			for (const weapon of actor.system.weapons)
+			for (const weapon of actor.weapons)
 			{
 				if (weapon.system.isRangeWeapon)
 				{
@@ -1219,7 +1185,7 @@ export default class SPACE1889Helper
 			return;
 		if (actor.type == "character" || actor.type == "npc")
 		{
-			for (const weapon of actor.system.weapons)
+			for (const weapon of actor.weapons)
 			{
 				if (weapon.system.isRangeWeapon && (weapon.system.ammunition.type == "default" || weapon.system.ammunition.type == ""))
 				{
@@ -1273,7 +1239,7 @@ export default class SPACE1889Helper
 			if (actor.type == 'vehicle')
 				continue;
 
-			if (actor.system.containers.length > 0)
+			if (actor.containers.length > 0)
 			{
 				console.log(actor.name + ": already owns containers => skipped");
 				continue;
@@ -1281,7 +1247,7 @@ export default class SPACE1889Helper
 
 			let bagpackItems = [];
 			let lagerItems = [];
-			const searchLists = [actor.system.gear, actor.system.weapons, actor.system.ammunitions, actor.system.armors];
+			const searchLists = [actor.gear, actor.weapons, actor.ammunitions, actor.armors];
 
 			for (let list of searchLists)
 			{
@@ -1298,14 +1264,14 @@ export default class SPACE1889Helper
 			if (bagpackItems.length > 0)
 			{
 				await actor.createEmbeddedDocuments("Item", [bagpackObject]);
-				const bagpackId = actor.system.containers.find(e => e.system.id == bagpack.system.id)._id;
+				const bagpackId = actor.containers.find(e => e.system.id == bagpack.system.id)._id;
 				for (let item of bagpackItems)
 					updateData.push({ _id: item._id, "system.containerId": bagpackId });
 			}
 			if (lagerItems.length > 0)
 			{
 				await actor.createEmbeddedDocuments("Item", [lagerObject]);
-				const lagerId = actor.system.containers.find(e => e.system.id == lager.system.id)._id;
+				const lagerId = actor.containers.find(e => e.system.id == lager.system.id)._id;
 				for (let item of lagerItems)
 					updateData.push({ _id: item._id, "system.containerId": lagerId });
 			}
@@ -1325,11 +1291,11 @@ export default class SPACE1889Helper
 		const format = 'dd.mm.yyyy hh:ii:ss';
 		for (let actor of actorList)
 		{
-			if (!actor.system.injuries || actor.system.injuries.length == 0)
+			if (!actor.injuries || actor.injuries.length == 0)
 				continue;
 
 			let updateData = [];
-			for (let injury of actor.system.injuries)
+			for (let injury of actor.injuries)
 			{
 				if (injury.system.dataOfTheEvent.length < 10)
 					continue;
@@ -1660,8 +1626,8 @@ export default class SPACE1889Helper
 			if (weaponInHands.primary.length != 0 || weaponInHands.off.length != 0)
 			{
 				let weapon = weaponInHands.primary.length > 0 ?
-					token.actor.system.weapons.find(e => e.id == weaponInHands.primary[0]) :
-					token.actor.system.weapons.find(e => e.id == weaponInHands.off[0]);
+					token.actor.weapons.find(e => e.id == weaponInHands.primary[0]) :
+					token.actor.weapons.find(e => e.id == weaponInHands.off[0]);
 				ui.notifications.info(game.i18n.format("SPACE1889.WeaponIsAlreadyReady", { name: token.name, weapon: weapon?.name }));
 				continue;
 			}
@@ -1953,7 +1919,7 @@ export default class SPACE1889Helper
 		const currentGravity = this.getGravity();
 		const actorHomeZone = CONFIG.SPACE1889.gravityZone[actor.system.homeGravity]?.zone;
 		let homeZones = [actorHomeZone !== undefined ? actorHomeZone : 1.0];
-		for (const talent of actor.system.talents)
+		for (const talent of actor.talents)
 		{
 			if (talent.system.bonusTargetType !== "gravity")
 				continue;
@@ -1974,7 +1940,7 @@ export default class SPACE1889Helper
 
 		const actorHomeZone = CONFIG.SPACE1889.gravityZone[actor.system.homeGravity]?.zone;
 		let homeZones = [actorHomeZone !== undefined ? actorHomeZone : 1.0];
-		for (const talent of actor.system.talents)
+		for (const talent of actor.talents)
 		{
 			if (talent.system.bonusTargetType !== "gravity")
 				continue;
@@ -2058,7 +2024,7 @@ export default class SPACE1889Helper
 		const prefersMelee = preferredWeapon == "melee";
 
 		let best = undefined;
-		for (const weapon of actor.system.weapons)
+		for (const weapon of actor.weapons)
 		{
 			if (prefersMelee && weapon.system.skillId != "nahkampf")
 				continue;
@@ -2066,15 +2032,15 @@ export default class SPACE1889Helper
 			if (prefersRanged && !weapon.system.isRangeWeapon)
 				continue;
 
-			if (!best || best.system.attack < weapon.system.attack)
+			if (!best || best.derived.attack < weapon.derived.attack)
 				best = weapon;
 		}
 
 		if (!best && (prefersRanged || prefersMelee))
 		{
-			for (const weapon of actor.system.weapons)
+			for (const weapon of actor.weapons)
 			{
-				if (!best || best.system.attack < weapon.system.attack)
+				if (!best || best.derived.attack < weapon.derived.attack)
 					best = weapon;
 			}
 		}
@@ -2475,7 +2441,7 @@ export default class SPACE1889Helper
 		{
 			if (a.system.skillGroupName !== b.system.skillGroupName)
 				return a.system.skillGroupName.localeCompare(b.system.skillGroupName);
-			return a.system.label.localeCompare(b.system.label);
+			return a.derived.label.localeCompare(b.derived.label);
 		});
 
 		let skillList = [];
@@ -2485,7 +2451,7 @@ export default class SPACE1889Helper
 				continue;
 
 			const groupLangId = item.system.isSkillGroup ? game.space1889.config.skillGroups[item.system.skillGroupName] : "";
-			let name = item.system.label;
+			let name = item.derived.label;
 			if (item.system.isSkillGroup)
 			{
 				name += ` (${game.i18n.localize(groupLangId + (shortGroupNameAttachment ? "Abbr" : ""))})`;
@@ -2518,12 +2484,12 @@ export default class SPACE1889Helper
 				selection.push(item);
 		}
 
-		selection.sort((a, b) => { return a.system.label.localeCompare(b.system.label); });
+		selection.sort((a, b) => { return a.derived.label.localeCompare(b.derived.label); });
 
 		let list = [];
 		for (const item of selection)
 		{
-			list.push({key: item.system.id, label: item.system.label});
+			list.push({key: item.system.id, label: item.derived.label});
 		}
 		return list;
 	}
@@ -2541,12 +2507,12 @@ export default class SPACE1889Helper
 				packDocs.push(item);
 		}
 
-		packDocs.sort((a, b) => { return a.system.label.localeCompare(b.system.label); });
+		packDocs.sort((a, b) => { return a.derived.label.localeCompare(b.derived.label); });
 
 		let list = [];
 		for (const item of packDocs)
 		{
-			list.push({key: item.system.id, label: item.system.label, skillId: item.system.underlyingSkillId});
+			list.push({key: item.system.id, label: item.derived.label, skillId: item.system.underlyingSkillId});
 		}
 		return list;
 	}
@@ -2563,12 +2529,12 @@ export default class SPACE1889Helper
 				packDocs.push(item);
 		}
 
-		packDocs.sort((a, b) => { return a.system.label.localeCompare(b.system.label); });
+		packDocs.sort((a, b) => { return a.derived.label.localeCompare(b.derived.label); });
 
 		let talentList = [];
 		for (const item of packDocs)
 		{
-			talentList.push({ key: item.system.id, label: item.system.label });
+			talentList.push({ key: item.system.id, label: item.derived.label });
 		}
 		if (withEmptyElement)
 		{
@@ -2589,12 +2555,12 @@ export default class SPACE1889Helper
 				packDocs.push(item);
 		}
 
-		packDocs.sort((a, b) => { return a.system.label.localeCompare(b.system.label); });
+		packDocs.sort((a, b) => { return a.derived.label.localeCompare(b.derived.label); });
 
 		let weaknessList = [];
 		for (const item of packDocs)
 		{
-			weaknessList.push({ key: item.system.id, label: item.system.label });
+			weaknessList.push({ key: item.system.id, label: item.derived.label });
 		}
 		if (withEmptyElement)
 		{

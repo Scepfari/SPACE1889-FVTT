@@ -112,7 +112,7 @@ export default class SPACE1889RollHelper
 		if (item.type == 'specialization')
 			return item.system.rating;
 		if (item.type == 'weapon' || item.type == 'shield')
-			return item.system.attack;
+			return item.derived.attack;
 		if (item.type == 'talent' && item.system.isRollable)
 			return this.getTalentDieCount(item, actor);
 
@@ -124,12 +124,12 @@ export default class SPACE1889RollHelper
 		if (item.type == "talent" && item.system.isRollable)
 		{
 			if (item.system.id == "geschaerfterSinn")
-				return Math.max(actor.system.secondaries.perception.total + Number(item.system.bonus), 0);
+				return Math.max(actor.derived.secondaries.perception.total + Number(item.system.bonus), 0);
 			else if (item.system.id == "paralysierenderSchlag")
 			{
 				const skillItem = actor.items.find(e => e.system.id == "waffenlos");
 				if (skillItem != undefined)
-					return Math.max(0, skillItem.system.rating + ((item.system.level.total - 1) * 2));
+					return Math.max(0, skillItem.system.rating + ((item.derived.level.total - 1) * 2));
 			}
 			else if (item.system.id == "assassine")
 			{
@@ -140,13 +140,13 @@ export default class SPACE1889RollHelper
 					if (!theWeaponInfo.weapon)
 						return 0;
 					const weaponDamage = theWeaponInfo.damage;
-					return Math.max(0, skillItem.system.rating + weaponDamage + ((item.system.level.total - 1) * 2));
+					return Math.max(0, skillItem.system.rating + weaponDamage + ((item.derived.level.total - 1) * 2));
 				}
 			}
 			else if (item.system.id == "eigenartigerKampfstil")
 			{
-				const defense = actor.system.secondaries.defense.total;
-				return (defense + (Number(item.system.level.total) * 2));
+				const defense = actor.derived.secondaries.defense.total;
+				return (defense + (Number(item.derived.level.total) * 2));
 			}
 			return 0;
 		}
@@ -166,7 +166,7 @@ export default class SPACE1889RollHelper
 		{
 			// nimmt die in den Händen gehaltene Nahkampfwaffe, die den meisten Schaden verursacht, beachtet Nebenhandabzug
 
-			for (const weapon of actor.system.weapons)
+			for (const weapon of actor.weapons)
 			{
 				if (weapon.system.usedHands == "none" || weapon.system.skillId != "nahkampf")
 					continue;
@@ -372,7 +372,7 @@ export default class SPACE1889RollHelper
 
 		const isWeapon = item.type == "weapon" || item.type == "shield";
 
-		const extraInfo = withExtraInfo ? game.i18n.localize(item.system.infoLangId) : "";
+		const extraInfo = withExtraInfo ? game.i18n.localize(item.derived.infoLangId) : "";
 		let toolTipInfo = "";
 		const titelPartOne = game.i18n.localize("SPACE1889.ModifiedRoll");
 		const inputDesc = game.i18n.localize("SPACE1889.NumberOfModificationDice");
@@ -388,7 +388,7 @@ export default class SPACE1889RollHelper
 		let firstAid = (item.type == "specialization" && item.system.id == "ersteHilfe") ? "firstAid" : "";
 		if (firstAid == "" && item.type == "skill" && item.system.id == "medizin")
 		{
-			firstAid = (actor.system.speciSkills?.find(entry => entry.system.id == 'ersteHilfe')) ? "medical" : "firstAid";
+			firstAid = (actor.speciSkills?.find(entry => entry.system.id == 'ersteHilfe')) ? "medical" : "firstAid";
 		}
 		if (addAutoDefense && targetId != "")
 		{
@@ -429,7 +429,7 @@ export default class SPACE1889RollHelper
 
 			if (isDying)
 			{
-				firstAidText = game.i18n.format("SPACE1889.FirstAidPersonStabilizing", { targetName: target?.name, skill: item.system.label});
+				firstAidText = game.i18n.format("SPACE1889.FirstAidPersonStabilizing", { targetName: target?.name, skill: item.derived.label});
 				firstAid = "stabilizing";
 				const damage = SPACE1889Helper.getDamageTuple(target?.actor);
 				defaultMod = Math.min(target?.actor.system.health.max - damage.lethal, 0);
@@ -450,7 +450,7 @@ export default class SPACE1889RollHelper
 
 			const diceCount = dieCount - defaultMod;
 			new foundry.applications.api.DialogV2({
-				window: { title: `${titelPartOne}: ${item.system.label} (${diceCount} ${diceDesc})`, resizable: true },
+				window: { title: `${titelPartOne}: ${item.derived.label} (${diceCount} ${diceDesc})`, resizable: true },
 				position: { width: 400 },
 				content: `<p>${inputDesc}: <input type="number" id="anzahlDerWuerfel" value = "${defaultMod}" autofocus></p><hr><p><select id="choices" name="choices">${chatOptions}</select></p>`,
 				buttons: [
@@ -532,22 +532,22 @@ export default class SPACE1889RollHelper
 			let effect = "none";
 			let effectDurationCT = 0;
 			let effectOnly = false;
+			let abbrDamageType = item.system.damageTypeDisplay ? "(" + item.system.damageTypeDisplay + ")" : "";
 			if (item.type == "weapon")
 			{
 				weapon = item;
 				weaponSkill = weapon.system.skillId;
-				weaponDamageType = weapon.system.ammunition.damageType ?? weapon.system.damageType;
+				weaponDamageType = weapon.derived.ammunition?.damageType ?? weapon.system.damageType;
 				effect = weapon.system.effect;
 				effectDurationCT = weapon.system.effectDurationCombatTurns;
 				effectOnly = weapon.system.effectOnly;
+				abbrDamageType = item.derived.damageTypeDisplay ? "(" + item.derived.damageTypeDisplay + ")" : "";
 			}
 
-			let abbrDamageType = item.system.damageTypeDisplay ? "(" + item.system.damageTypeDisplay + ")" : "";
-
-			let messageContent = `<div><h4>${item.system.label} ${abbrDamageType}</h4></div>`;
+			let messageContent = `<div><h4>${item.derived.label} ${abbrDamageType}</h4></div>`;
 
 			if (item.system.ammunition?.name)
-				messageContent += `<small>${item.system.ammunition.name}</small><br>`;
+				messageContent += `<small>${item.derived.ammunition.name}</small><br>`;
 
 			let reducedDefense = "";
 			let areaDamage = "0";
@@ -563,7 +563,7 @@ export default class SPACE1889RollHelper
 				weapon = SPACE1889RollHelper.getWeaponFromTalent(actor, item);
 				messageContent += `<small>${weapon ? weapon.name : game.i18n.localize("SPACE1889.SkillWaffenlos")}</small><br>`;
 				weaponSkill = weapon ? weapon.system.skillId : "waffenlos";
-				weaponDamageType = weapon ? (weapon.system.ammunition.damageType ?? weapon.system.damageType) : "nonLethal";
+				weaponDamageType = weapon ? (weapon.derived.ammunition?.damageType ?? weapon.system.damageType) : "nonLethal";
 				if (weapon && weapon.system.effect != "none")
 				{
 					effect = weapon.system.effect;
@@ -613,7 +613,7 @@ export default class SPACE1889RollHelper
 			messageContent = this.getAttackChatContent(actor, item, rollWithHtml, targetIds, useWeaponChatInfo, extraInfo, isAttackTalent, specialAttack);
 		else
 		{
-			const titel = firstAid === "stabilizing" ? game.i18n.localize("SPACE1889.ChatStabilizing") : `<h4>${item.system.label}</h4>`
+			const titel = firstAid === "stabilizing" ? game.i18n.localize("SPACE1889.ChatStabilizing") : `<h4>${item.derived.label}</h4>`
 			messageContent = `<div>${titel}</div>`;
 			if (extraInfo.length > 0)
 				messageContent += `${extraInfo} <br>`;
@@ -684,7 +684,7 @@ export default class SPACE1889RollHelper
 		{
 			weapon = item;
 			weaponSkill = weapon.system.skillId;
-			weaponDamageType = weapon.system.ammunition.damageType ?? weapon.system.damageType;
+			weaponDamageType = weapon.derived.ammunition?.damageType ?? weapon.system.damageType;
 			effect = weapon.system.effect;
 			effectDurationCT = weapon.system.effectDurationCombatTurns;
 			effectOnly = weapon.system.effectOnly;
@@ -697,6 +697,8 @@ export default class SPACE1889RollHelper
 		}
 
 		let abbrDamageType = item?.system?.damageTypeDisplay ? "(" + item.system.damageTypeDisplay + ")" : "";
+		if (item?.type === "weapon")
+			abbrDamageType = item.derived.damageTypeDisplay ? "(" + item.derived.damageTypeDisplay + ")" : "";
 
 		let specialAttackName = "";
 		if (specialAttack === "grapple")
@@ -707,11 +709,11 @@ export default class SPACE1889RollHelper
 			specialAttackName = game.i18n.localize("SPACE1889.CombatManoeuversTrip");
 
 		let messageContent = "<div><h4>";
-		messageContent += specialAttackName !== "" ? specialAttackName : `${item.system.label} ${abbrDamageType}`;
+		messageContent += specialAttackName !== "" ? specialAttackName : `${item.derived.label} ${abbrDamageType}`;
 		messageContent += "</h4></div>";
 
 		if (item?.system?.ammunition?.name)
-			messageContent += `<small>${item.system.ammunition.name}</small><br>`;
+			messageContent += `<small>${item.derived.ammunition.name}</small><br>`;
 
 		let reducedDefense = "";
 		let areaDamage = "0";
@@ -727,7 +729,7 @@ export default class SPACE1889RollHelper
 			weapon = SPACE1889RollHelper.getWeaponFromTalent(actor, item);
 			messageContent += `<small>${weapon ? weapon.name : game.i18n.localize("SPACE1889.SkillWaffenlos")}</small><br>`;
 			weaponSkill = weapon ? weapon.system.skillId : "waffenlos";
-			weaponDamageType = weapon ? (weapon.system.ammunition.damageType ?? weapon.system.damageType) : "nonLethal";
+			weaponDamageType = weapon ? (weapon.derived.ammunition?.damageType ?? weapon.system.damageType) : "nonLethal";
 			if (weapon && weapon.system.effect != "none")
 			{
 				effect = weapon.system.effect;
@@ -1034,8 +1036,8 @@ export default class SPACE1889RollHelper
 		const isCharakter = actor.type == "character";
 		const isNpcWithCharakterRules = actor.type == "npc" && this.useCharacterRulesForNpc();
 		const isVehicle = actor.type == "vehicle";
-		let stun = isVehicle ? 1000 : actor.system.secondaries.stun.total;
-		let str = isVehicle ? 1000 : actor.system.abilities.str.total;
+		let stun = isVehicle ? 1000 : actor.derived.secondaries.stun.total;
+		let str = isVehicle ? 1000 : actor.derived.abilities.str.total;
 		let recoil = 0;
 		let liegend = false;
 		let stunned = false;
@@ -1279,7 +1281,7 @@ export default class SPACE1889RollHelper
 
 		let isFirst = true;
 
-		for (let item of actor.system.weapons)
+		for (let item of actor.weapons)
 		{
 			if (item.system.location == 'lager')
 				continue;
@@ -1345,10 +1347,10 @@ export default class SPACE1889RollHelper
 			maneuverability = Number(actorSystem.maneuverability.value);
 		}
 
-		if (posKey == "gunner" && actorSystem.weaponLoad.isOverloaded)
+		if (posKey == "gunner" && actor.derived.weaponLoad.isOverloaded)
 		{
 			let text = game.i18n.format("SPACE1889.VehicleExceedingOverloadMax", { name: actor.name });
-			text += "<br>" + game.i18n.format("SPACE1889.VehicleExceedingOverloadMaxInfo", { max: actorSystem.weaponLoad.maxWithOverload, current: actorSystem.weaponLoad.value });
+			text += "<br>" + game.i18n.format("SPACE1889.VehicleExceedingOverloadMaxInfo", { max: actor.derived.weaponLoad.maxWithOverload, current: actorSystem.weaponLoad.value });
 			ui.notifications.info(text);
 			return;
 		}
@@ -1358,11 +1360,11 @@ export default class SPACE1889RollHelper
 			return;
 		}
 
-		const skillValueBase = actorSystem.positions[posKey]?.total + (actorSystem.health.value < 0 ? actorSystem.health.value : 0);
+		const skillValueBase = actor.derived.positions[posKey]?.total + (actorSystem.health.value < 0 ? actorSystem.health.value : 0);
 		let skillValue = skillValueBase;
 
 		if (isDefense)
-			skillValue = actorSystem.secondaries.defense.total + (isTotalDefense ? 4 : 0);
+			skillValue = actor.derived.secondaries.defense.total + (isTotalDefense ? 4 : 0);
 
 		const lablelUnterstuetzung = game.i18n.localize("SPACE1889.Assistance");
 		const labelWurf = game.i18n.localize("SPACE1889.NumberOfDice") + ":";
@@ -1389,7 +1391,7 @@ export default class SPACE1889RollHelper
 			{
 				++loop;
 				let isTemplatePosition = actorSystem.positions[positionKey] != undefined;
-				let canDo = isTemplatePosition ? actorSystem.positions[positionKey].staffed && actorSystem.positions[positionKey].total >= 4 : true;
+				let canDo = isTemplatePosition ? actorSystem.positions[positionKey].staffed && actor.derived.positions[positionKey].total >= 4 : true;
 				const state = canDo ? "" : ' disabled="true"';
 				const active = canDo && isTemplatePosition && !isDefense ? " checked" : "";
 				const positionName = "supporter" + loop.toString();
@@ -1417,7 +1419,7 @@ export default class SPACE1889RollHelper
 
 		const dieType = game.settings.get("space1889", "dice");
 
-		let actorInfo = "[" + labelSkill + " " + actor.system.positions[posKey]?.actorName + "]";
+		let actorInfo = "[" + labelSkill + " " + actor.derived.positions[posKey]?.actorName + "]";
 		let diceInfo = "";
 		if (isDefense)
 			actorInfo = "[" + skillWithSpezAndValue + "]";
@@ -1443,7 +1445,7 @@ export default class SPACE1889RollHelper
 			if (weaponChoiceHtml != '')
 			{
 				const id = $("#choices")[0].value;
-				const weaponItem = actor.system.weapons.find(e => e._id == id);
+				const weaponItem = actor.weapons.find(e => e._id == id);
 				if (weaponItem != undefined)
 				{
 					const gunner = game.actors.get(actor.system.positions.gunner.actorId);
@@ -1451,17 +1453,17 @@ export default class SPACE1889RollHelper
 					
 					if (spezialisation != undefined)
 					{
-						const spezName = game.i18n.localize(spezialisation.system.nameLangId);
+						const spezName = game.i18n.localize(spezialisation.derived.nameLangId);
 						const spezLevel = spezialisation.system.level;
 						skillValue = skillValueBase + spezLevel;
 						skillWithSpezAndValue = labelSkill + " (" + spezName + "): " + skillValue.toString();
-						actorInfo = "[" + spezName + " " + actor.system.positions[posKey]?.actorName + "]";
+						actorInfo = "[" + spezName + " " + actor.derived.positions[posKey]?.actorName + "]";
 					}
 					else
 					{
 						skillValue = skillValueBase;
 						skillWithSpezAndValue = labelSkill + ": " + skillValue.toString();
-						actorInfo = "[" + labelSkill + " " + actor.system.positions[posKey]?.actorName + "]";
+						actorInfo = "[" + labelSkill + " " + actor.derived.positions[posKey]?.actorName + "]";
 					}
 
 					weaponDamage = weaponItem.system.damage;
@@ -1558,7 +1560,8 @@ export default class SPACE1889RollHelper
 					document.getElementsByClassName('supporter3Checkbox')[0].addEventListener("change", recalc, false);
 
 				document.getElementsByClassName('modInput')[0].addEventListener("change", recalc, false);
-				document.getElementsByClassName('choices')[0].addEventListener("change", recalc, false);
+				if (document.getElementsByClassName('choices').length > 0)
+					document.getElementsByClassName('choices')[0].addEventListener("change", recalc, false);
 			}
 		});
 	}
@@ -1698,10 +1701,10 @@ export default class SPACE1889RollHelper
 
 		const multiDefenseMalus = actor.getDefenseMalus(defenseCount + 1);
 
-		let diceCount = Math.max(0, actor.system.secondaries.defense.total);
+		let diceCount = Math.max(0, actor.derived.secondaries.defense.total);
 		if (defenseType == 'onlyPassive')
 		{
-			diceCount = Math.max(0, actor.system.secondaries.defense.passiveTotal + multiDefenseMalus);
+			diceCount = Math.max(0, actor.derived.secondaries.defense.passiveTotal + multiDefenseMalus);
 			return { diceCount: diceCount, defenseType: defenseType };
 		}
 
@@ -1709,44 +1712,40 @@ export default class SPACE1889RollHelper
 		let activeOnly = false;
 		if (defenseType.substring(0,10) == 'onlyActive')
 		{
-			diceCount = Math.max(0, actor.system.secondaries.defense.activeTotal);
+			diceCount = Math.max(0, actor.derived.secondaries.defense.activeTotal);
 			activeOnly = true;
 		}
 
 		let blockValue = 0;
 		let parryValue = 0;
 		let riposteDamageType = "nonLethal";
-		if (actor.system.block)
-			blockValue = activeOnly ? actor.system.block.value - actor.system.secondaries.defense.passiveTotal : actor.system.block.value;
-		if (actor.system.parry)
-		{
-			parryValue = activeOnly ? actor.system.parry.value - actor.system.secondaries.defense.passiveTotal : actor.system.parry.value;
-			riposteDamageType = actor.system.parry.riposteDamageType;
-		}
+		blockValue = activeOnly ? actor.block.value - actor.derived.secondaries.defense.passiveTotal : actor.block.value;
+		parryValue = activeOnly ? actor.parry.value - actor.derived.secondaries.defense.passiveTotal : actor.parry.value;
+		riposteDamageType = actor.parry.riposteDamageType;
 
 		if (combatSkillId == "waffenlos" || combatSkillId == "nahkampf")
 		{
 			if (combatSkillId == "nahkampf")
 			{
-				const waffenloseParade = actor.system.talents.find(t => t.system.id == "waffenloseParade");
+				const waffenloseParade = actor.talents.find(t => t.system.id == "waffenloseParade");
 				if (waffenloseParade)
-					blockValue += (waffenloseParade.system.level.total - 1) * 2;
+					blockValue += (waffenloseParade.derived.level.total - 1) * 2;
 				else
 					blockValue -= 2;					
 			}
 			
 
-			if (blockValue > diceCount && actor.system.block?.instinctive)
+			if (blockValue > diceCount && actor.block.instinctive)
 			{
 				diceCount = blockValue;
-				resultantDefenseType = (activeOnly ? 'onlyActive' : '') + (actor.system.block.riposte ? 'BlockRiposte' : 'Block');
+				resultantDefenseType = (activeOnly ? 'onlyActive' : '') + (actor.block.riposte ? 'BlockRiposte' : 'Block');
 				riposteDamageType = "nonLethal";
 			}
-			if (parryValue > diceCount && actor.system.parry?.instinctive)
+			if (parryValue > diceCount && actor.parry.instinctive)
 			{
 				diceCount = parryValue;
-				resultantDefenseType = (activeOnly ? 'onlyActive' : '') + (actor.system.parry.riposte ? 'ParryRiposte' : 'Parry');
-				riposteDamageType = actor.system.parry.riposteDamageType;
+				resultantDefenseType = (activeOnly ? 'onlyActive' : '') + (actor.parry.riposte ? 'ParryRiposte' : 'Parry');
+				riposteDamageType = actor.parry.riposteDamageType;
 			}
 			// ToDo: Was ist mit Ausweichen!?
 		}
@@ -1864,9 +1863,9 @@ export default class SPACE1889RollHelper
 
 		if (delta > 0 && data.reducedDefense !== "" && data.areaDamage > 0 && target.actor.type !== 'vehicle')
 		{
-			const factor = target.actor.system.secondaries.size.total > 0 ? -1 : 1;
-			let sizeMod = factor * Math.floor(Math.abs(target.actor.system.secondaries.size.total) / 2);
-			let extraDice = Math.abs(target.actor.system.secondaries.size.total % 2);
+			const factor = target.derived.system.secondaries.size.total > 0 ? -1 : 1;
+			let sizeMod = factor * Math.floor(Math.abs(target.derived.system.secondaries.size.total) / 2);
+			let extraDice = Math.abs(target.derived.system.secondaries.size.total % 2);
 
 			if (target.actor.isSwarm())
 			{
@@ -1914,11 +1913,11 @@ export default class SPACE1889RollHelper
 				damageAmount = 1;
 
 			if (data.damageType == 'paralyse')
-				await SPACE1889RollHelper.doParalysisChatMessage(target.actor, data.actorName, damageAmount, target.actor.system.abilities.str.total);
+				await SPACE1889RollHelper.doParalysisChatMessage(target.actor, data.actorName, damageAmount, target.actor.derived.abilities.str.total);
 			else if (data.damageType === "grapple")
-				await SPACE1889RollHelper.doGrappleChatMessage(target.actor, data.actorName, damageAmount, target.actor.system.abilities.str.total);
+				await SPACE1889RollHelper.doGrappleChatMessage(target.actor, data.actorName, damageAmount, target.actor.derived.abilities.str.total);
 			else if (data.damageType === "trip")
-				await SPACE1889RollHelper.doTripChatMessage(target.actor, data.actorName, damageAmount, target.actor.system.abilities.str.total);
+				await SPACE1889RollHelper.doTripChatMessage(target.actor, data.actorName, damageAmount, target.actor.derived.abilities.str.total);
 			else
 			{
 				const itemId = await this.addDamageToActor(target.actor, data.actorName, data.attackName, ((doWeaponEffect && data.effectOnly) ? 0 : damageAmount), data.damageType);
@@ -2253,7 +2252,7 @@ export default class SPACE1889RollHelper
 		if (!actor || !target || !isInCloseCombatRange || !hasFreeHands)
 			return { canDo: false, name: manoeuverName, dice: 0, isInRange: isInCloseCombatRange, sizeMalus: 0, toolTipInfo: ""};
 
-		const sizeMalus = target.actor.system.secondaries.size.total;
+		const sizeMalus = target.derived.system.secondaries.size.total;
 		const rating = actor.getSkillLevel(actor, "waffenlos", "griffe") - sizeMalus;
 		const toolTipInfo = sizeMalus !== 0 ? game.i18n.format("SPACE1889.ChatGrappleSizePenalty", { penalty: sizeMalus }) : "";
 
@@ -2441,7 +2440,7 @@ export default class SPACE1889RollHelper
 		if (data.weapon && data.weaponRating > data.noWeaponRating)
 		{
 			specialAttack = "disarmWithWeapon";
-			chatInfo = game.i18n.format("SPACE1889.DisarmWithWeapon", { weapon: usedWeapon.system.label });
+			chatInfo = game.i18n.format("SPACE1889.DisarmWithWeapon", { weapon: usedWeapon.derived.label });
 			weapon = data.weapon;
 		}
 

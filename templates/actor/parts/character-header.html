@@ -49,14 +49,14 @@
 
 		</div>
 		<div class="resources grid grid-2col">
-			{{#if (ne system.load.dexAndMoveMalus 0)}}
+            {{#if (ne derived.load.dexAndMoveMalus 0)}}
 			<div class="resource flex-group-center">
-				<i class="fas fa-weight-hanging fa-beat" style="--fa-animation-duration: 4s; --fa-beat-scale: 0.8;" data-tooltip="{{localize "SPACE1889.Overloaded"}}! <br/> {{localize system.load.bodyAndBackpackLoadConsequence}}"></i>
+                <i class="fas fa-weight-hanging fa-beat" style="--fa-animation-duration: 4s; --fa-beat-scale: 0.8;" data-tooltip="{{localize "SPACE1889.Overloaded"}}! <br/> {{localize derived.load.bodyAndBackpackLoadConsequence}}"></i>
 			</div>
 			{{/if}}
-			{{#if (ne system.gravity.malus 0)}}
+            {{#if (ne derived.gravity.malus 0)}}
 			<div class="resource flex-group-center">
-				<i class="fas fa-space1889-gravity fa-beat" style="--fa-animation-duration: 4s; --fa-beat-scale: 0.8;" data-tooltip="{{localize "SPACE1889.Gravity"}}: {{localize system.gravity.langId}} <br/> {{localize system.gravity.malusToolTip}}"></i>
+                <i class="fas fa-space1889-gravity fa-beat" style="--fa-animation-duration: 4s; --fa-beat-scale: 0.8;" data-tooltip="{{localize "SPACE1889.Gravity"}}: {{localize derived.gravity.langId}} <br/> {{derived.gravity.malusToolTip}}"></i>
 			</div>
 			{{/if}}
 

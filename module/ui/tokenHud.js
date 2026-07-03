@@ -22,7 +22,7 @@ export default function ()
 		}
 		else if (lightSources.primaryId)
 		{
-			const lightSource = actor.system.lightSources.find(e => e.id === lightSources.primaryId);
+			const lightSource = actor.lightSources.find(e => e.id === lightSources.primaryId);
 			if (lightSource)
 			{
 				const action = {
@@ -46,7 +46,7 @@ export default function ()
 		}
 		else if (lightSources.offId)
 		{
-			const lightSource = actor.system.lightSources.find(e => e.id === lightSources.offId);
+			const lightSource = actor.lightSources.find(e => e.id === lightSources.offId);
 			if (lightSource)
 			{
 				const action = {
@@ -61,7 +61,7 @@ export default function ()
 		}
 		if (actor.type === "creature" && actions.length === 0)
 		{
-			for (let weapon of actor.system.weapons)
+			for (let weapon of actor.weapons)
 			{
 				const action = { name: weapon.name, itemId: weapon.id, image: weapon.img, type: "attack", tooltip: weapon.name };
 				actions.push(action);

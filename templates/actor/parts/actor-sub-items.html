@@ -22,7 +22,7 @@
 	
 	{{> "systems/space1889/templates/actor/parts/actor-sub-items-body.html"}}
 
-	{{#each system.containers as |container cid|}}
+    {{#each derived.containers as |container cid|}}
 	<li class="item flexrow items-header draggable" data-item-id="{{container._id}}">
 		<div data-tooltip="{{fullItemToolTipDescription container}}" data-tooltip-direction="RIGHT" class="item-image-small">
 			<img class="container-image-small" src="{{container.img}}" />
@@ -47,18 +47,18 @@
 		<div class="items-list item-max-with40px"></div>
 
 		<div class="item-controls item-max-with50px">
-			<a class="item-control item-edit" data-tooltip='{{localize "SPACE1889.EditItemWithName" name=container.system.label}}'><i class="fas fa-edit"></i></a>
-			<a class="item-control container-delete" data-tooltip='{{localize "SPACE1889.DeleteItemWithName" name=container.system.label}}'><i class="fas fa-trash"></i></a>
+			<a class="item-control item-edit" data-tooltip='{{localize "SPACE1889.EditItemWithName" name=container.derived.label}}'><i class="fas fa-edit"></i></a>
+			<a class="item-control container-delete" data-tooltip='{{localize "SPACE1889.DeleteItemWithName" name=container.derived.label}}'><i class="fas fa-trash"></i></a>
 		</div>
 	</li>
 	{{#if (eq container.system.compressed false)}}
-		{{#each ../system.gear as |item id|}}
+        {{#each ../derived.gear as |item id|}}
 		{{#if (eq item.system.containerId container._id)}}
 			<li class="item row-section flexrow draggable" data-item-id="{{item._id}}">
 				<div data-tooltip="{{fullItemToolTipDescription item}}" data-tooltip-direction="RIGHT" class="item-name">
 					<img class="item-image-small-fix-ratio" src="{{item.img}}" />
 					<div  class="item-name-name">
-						<label for="" class="rollable" data-roll-type="item" data-label="{{item.name}}">{{item.system.label}}</label>
+						<label for="" class="rollable" data-roll-type="item" data-label="{{item.name}}">{{item.derived.label}}</label>
 					</div>
 				</div>
 				<div class="items-list item-max-with40px">
@@ -66,11 +66,11 @@
 				</div>
 				<label class="items-list item-max-with60px">{{item.system.weight}}kg</label>
 				<div class="items-list item-max-with40px">
-					<a data-tooltip='{{item.system.locationLong}}' class="location-click">{{item.system.display}}</a>
+					<a data-tooltip='{{item.system.locationLong}}' class="location-click">{{item.system.locationShort}}</a>
 				</div>
 				<div class="item-controls item-max-with50px">
-					<a class="item-control item-edit" data-tooltip='{{localize "SPACE1889.EditItemWithName" name=item.system.label}}'><i class="fas fa-edit"></i></a>
-					<a class="item-control item-delete" data-tooltip='{{localize "SPACE1889.DeleteItemWithName" name=item.system.label}}'><i class="fas fa-trash"></i></a>
+					<a class="item-control item-edit" data-tooltip='{{localize "SPACE1889.EditItemWithName" name=item.derived.label}}'><i class="fas fa-edit"></i></a>
+					<a class="item-control item-delete" data-tooltip='{{localize "SPACE1889.DeleteItemWithName" name=item.derived.label}}'><i class="fas fa-trash"></i></a>
 				</div>
 			</li>
 		{{/if}}
