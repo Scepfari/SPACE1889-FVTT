@@ -8,6 +8,18 @@ import SPACE1889Time from "../helpers/time.js";
  */
 export class Space1889Item extends Item {
 
+	get numberOfDice()
+	{
+		let diceCount = 0;
+		if (this.type === "skill" || this.type === "specialization")
+			return this.system.rating;
+		if (this.type === "weapon" || this.type === "shield")
+			return this.derived.attack;
+
+		return diceCount;
+	}
+
+
 	async _preCreate(data, options, user)
 	{
 		if (this.type === "extended_action")
@@ -399,8 +411,8 @@ export class Space1889Item extends Item {
 				let desc = "";
 				if (this.system.noEpFirstLevel && this.system.noEpLevels > 0)
 				{
-					const noEpLevels = Math.min(this.system.level.value, this.system.noEpLevels);
-					const shareOfEffect = game.i18n.format("SPACE1889.NoEpCampaingnShareOfEffect", { part: noEpLevels, level: this.system.level.value });
+					const noEpLevels = Math.min(this.system.level, this.system.noEpLevels);
+					const shareOfEffect = game.i18n.format("SPACE1889.NoEpCampaingnShareOfEffect", { part: noEpLevels, level: this.system.level });
 					desc += `<p><em><strong>${game.i18n.localize("SPACE1889.IsCampaingnEffect")} (${shareOfEffect})</strong></em> [${game.i18n.localize("SPACE1889.Source")}: ${this.system.noEpSource}]</p>`;
 				}						
 

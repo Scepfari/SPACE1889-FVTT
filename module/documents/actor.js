@@ -1543,13 +1543,15 @@ export class Space1889Actor extends Actor
 
 	calculateBlockData(actor)
 	{
+		const label = game.i18n.format("SPACE1889.Block");
 		if (this.HasNoActiveDefense(actor))
 		{
 			return {
 				value: 0,
 				instinctive: false,
 				riposte: false,
-				info: game.i18n.format("SPACE1889.NoBlockParryEvasion", { talentName: game.i18n.format("SPACE1889.Block") })
+				info: game.i18n.format("SPACE1889.NoBlockParryEvasion", { talentName: game.i18n.format("SPACE1889.Block") }),
+				label: label
 			};
 		}
 
@@ -1600,7 +1602,7 @@ export class Space1889Actor extends Actor
 				info = game.i18n.format("SPACE1889.UselessBlockParryEvasion", { defence: (defense + tdb).toString(), talentName: name });
 		}
 
-		return { value: rating, instinctive, riposte, info };
+		return { value: rating, instinctive, riposte, info, label };
 	}
 
 	CalcAndSetParryData(actor)
@@ -1612,6 +1614,7 @@ export class Space1889Actor extends Actor
 
 	calculateParryData(actor)
 	{
+		const label = game.i18n.format("SPACE1889.Parry");
 		if (this.HasNoActiveDefense(actor))
 		{
 			return {
@@ -1619,7 +1622,8 @@ export class Space1889Actor extends Actor
 				instinctive: false,
 				riposte: false,
 				riposteDamageType: "nonLethal",
-				info: game.i18n.format("SPACE1889.NoBlockParryEvasion", { talentName: game.i18n.format("SPACE1889.Parry") })
+				info: game.i18n.format("SPACE1889.NoBlockParryEvasion", { talentName: game.i18n.format("SPACE1889.Parry") }),
+				label: label
 			};
 		}
 
@@ -1702,7 +1706,7 @@ export class Space1889Actor extends Actor
 				info = game.i18n.format("SPACE1889.UselessBlockParryEvasion", { defence: (defense + tdb).toString(), talentName: name });
 		}
 
-		return { value: skillRating, instinctive, riposte, riposteDamageType, info };
+		return { value: skillRating, instinctive, riposte, riposteDamageType, info, label };
 	}
 
 	CalcAndSetEvasionData(actor)
@@ -1714,12 +1718,14 @@ export class Space1889Actor extends Actor
 
 	calculateEvasionData(actor)
 	{
+		const label = game.i18n.format("SPACE1889.Evasion");
 		if (this.HasNoActiveDefense(actor))
 		{
 			return {
 				value: 0,
 				instinctive: false,
-				info: game.i18n.format("SPACE1889.NoBlockParryEvasion", { talentName: game.i18n.format("SPACE1889.Evasion") })
+				info: game.i18n.format("SPACE1889.NoBlockParryEvasion", { talentName: game.i18n.format("SPACE1889.Evasion") }),
+				label: label
 			};
 		}
 
@@ -1766,7 +1772,7 @@ export class Space1889Actor extends Actor
 				info = game.i18n.format("SPACE1889.UselessBlockParryEvasion", { defence: (defense + tdb).toString(), talentName: name });
 		}
 
-		return { value: rating, instinctive, info };
+		return { value: rating, instinctive, info, label };
 	}
 
 	async CalcContainerLoad(actor)
@@ -2324,6 +2330,11 @@ export class Space1889Actor extends Actor
 		return true;
 	}
 
+	getItemDiceCount(item)
+	{
+		return SPACE1889RollHelper.getDieCount(item, this);
+	}
+
 	getAbilityInfoText(key, forChat = false)
 	{
 		const headerClass = forChat ? "" : "class=\"itemTooltipH3\"";
@@ -2524,7 +2535,10 @@ export class Space1889Actor extends Actor
 
 	rollAttack(key, event)
 	{
-		const item = this.weapons.find(e => e.system.id == key);
+		let item = this.weapons.find(e => e.system.id == key);
+		if (item == undefined)
+			item = this.shields.find(e => e.system.id === key);
+
 		if (item != undefined)
 		{
 			if (this.type == "vehicle")
@@ -2539,6 +2553,17 @@ export class Space1889Actor extends Actor
 		const item = this.talents.find(e => e.system.id == key);
 		if (item != undefined)
 			SPACE1889RollHelper.rollItemFromEvent(item, this, event);
+	}
+
+
+	/**
+	 * 
+	 * @param {object} item item
+	 */
+	rollItemInfo(item)
+	{
+		if (item != undefined)
+			SPACE1889RollHelper.rollItemInfo(item, this);
 	}
 
 	rollDefense(key, event)
