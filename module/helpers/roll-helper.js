@@ -1449,7 +1449,7 @@ export default class SPACE1889RollHelper
 				if (weaponItem != undefined)
 				{
 					const gunner = game.actors.get(actor.system.positions.gunner.actorId);
-					const spezialisation = gunner?.system.speciSkills.find(j => j.system.id == weaponItem.system.specializationId);
+					const spezialisation = gunner?.speciSkills.find(j => j.system.id == weaponItem.system.specializationId);
 					
 					if (spezialisation != undefined)
 					{

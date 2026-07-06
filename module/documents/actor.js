@@ -2628,6 +2628,16 @@ export class Space1889Actor extends Actor
 		}
 	}
 
+	rollCrew(key, event)
+	{
+		if (!CONFIG.SPACE1889.vehicleCrewPositions[key] || this.derived?.positions[key]?.total == undefined)
+			return;
+
+		const evaluation = SPACE1889RollHelper.getEventEvaluation(event);
+		const diceCount = this.derived.positions[key].total;
+		this.rollAttribute(diceCount, evaluation.showDialog, key, evaluation.specialDialog)
+	}
+
 	/**
 	 * 
 	 * @param dieCount
