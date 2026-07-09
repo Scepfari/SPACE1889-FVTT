@@ -25,7 +25,7 @@
 		</div>
 	</li>
 	{{#if (not system.visualisation.compressedExtendedActions)}}
-    {{#each derived.extendedRolls as | item |}}
+    {{#each derived.extendedActions as | item |}}
 	{{#if (not (and ../system.visualisation.filterExtendedAction (eq item.system.successes item.system.totalNumberOfSuccesses)))}}
 	<li class="item row-section flexrow" data-item-id="{{item._id}}">
 		<div class="item-name">

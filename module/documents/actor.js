@@ -1,7 +1,7 @@
 import SPACE1889Helper from "../helpers/helper.js";
 import SPACE1889RollHelper from "../helpers/roll-helper.js";
 import SPACE1889Healing from "../helpers/healing.js";
-
+import SPACE1889Time from "../helpers/time.js";
 
 /**
  * Extend the base Actor document by defining a custom roll data structure which is ideal for the Simple system.
@@ -147,9 +147,9 @@ export class Space1889Actor extends Actor
 		return this._getDerivedCollection(this, "weapons");
 	}
 
-	get extendedRolls()
+	get extendedActions()
 	{
-		return this._getDerivedCollection(this, "extendedRolls");
+		return this._getDerivedCollection(this, "extendedActions");
 	}
 
 	get lightSources()
@@ -595,7 +595,7 @@ export class Space1889Actor extends Actor
 		const injuries = [];
 		const money = [];
 		const containers = [];
-		const extendedRolls = [];
+		const extendedActions = [];
 		const lightSources = [];
 		const visions = [];
 
@@ -647,7 +647,7 @@ export class Space1889Actor extends Actor
 			else if (item.type === 'currency')
 				money.push(item);
 			else if (item.type === 'extended_action')
-				extendedRolls.push(item);
+				extendedActions.push(item);
 		}
 
 		SPACE1889Helper.sortByName(skills);
@@ -677,7 +677,7 @@ export class Space1889Actor extends Actor
 		derivedData.ammunitions = ammunitions;
 		derivedData.containers = containers;
 		derivedData.weapons = weapons;
-		derivedData.extendedRolls = extendedRolls;
+		derivedData.extendedActions = extendedActions;
 		derivedData.lightSources = lightSources;
 		derivedData.visions = visions;
 
@@ -2533,6 +2533,11 @@ export class Space1889Actor extends Actor
 		}
 	}
 
+	rollAnySkill()
+	{
+		SPACE1889Helper.rollAnySkill(undefined, this);
+	}
+
 	rollAttack(key, event)
 	{
 		let item = this.weapons.find(e => e.system.id == key);
@@ -2824,6 +2829,151 @@ export class Space1889Actor extends Actor
 			};
 
 			return chatData;
+		}
+	}
+
+	rollExtendedAction(itemId, event)
+	{
+		const item = this.extendedActions.find(e => e.id == itemId);
+		if (!item)
+			return;
+
+		if (item.system.successes >= item.system.totalNumberOfSuccesses)
+		{
+			ui.notifications.info(game.i18n.localize("SPACE1889.ExtendedRollsIsFinished"));
+			return;
+		}
+
+		const evaluation = SPACE1889RollHelper.getEventEvaluation(event);
+		const showDialog = evaluation.showDialog;
+
+		let diceCount = 0;
+		if (item.system.typeKey === "primary")
+			diceCount = 2 * this.derived.abilities[item.system.skillOrAttributeId].total;
+		else if (item.system.typeKey === "secondary")
+			diceCount = this.derived.secondaries[item.system.skillOrAttributeId].total;
+		else if (item.system.typeKey === "skill")
+		{
+			diceCount = this.getSkillLevel(this, item.system.skillOrAttributeId, "", item.system.skillGroupId);
+			if (item.system.useSpezialisation)
+			{
+				const spez = this.speciSkills?.find(t => t.system.id === item.system.spezialisationId);
+				if (spez && spez.system.underlyingSkillId === item.system.skillOrAttributeId)
+					diceCount = spez.system.rating;
+			}
+		}
+		diceCount = Math.max(diceCount, 0);
+
+		const autoDelta = Math.floor(diceCount / 2) - item.system.difficultyRating;
+		const canDoAutoSuccess = autoDelta > 0; 
+		
+		if (showDialog)
+		{
+			const titelPartOne = game.i18n.localize("TYPES.Item.extended_action");
+			const inputDesc = game.i18n.localize("SPACE1889.NumberOfModificationDice");
+			const diceDesc = game.i18n.localize("SPACE1889.ConfigDice");
+			const titel = item.derived.label;
+			const actor = this;
+
+			let check = canDoAutoSuccess ? "<hr>" : "";
+			//check += `<li class="flexrow"><div class="item flexrow flex-group-left"><input type="${canDoAutoSuccess ? "checkbox" : "hidden"}" id="selected" class="einfachCheckbox" text-align="left">`;
+			check += `<div><input type="${canDoAutoSuccess ? "checkbox" : "hidden"}" id="selected" class="einfachCheckbox" text-align="left">`;
+			check += canDoAutoSuccess ? `<label for="selected"> ${game.i18n.localize("SPACE1889.ExtendedRollUseTakingTheAverage")}</label></div>` : "</div>";
+
+			new foundry.applications.api.DialogV2({
+				window: { title: `${titelPartOne}: ${titel} (${diceCount} ${diceDesc})`, resizable: true },
+				position: { width: 400 },
+				content: `<p>${inputDesc}: <input type="number" id="anzahlDerWuerfel" value = "0" autofocus ></p>${check}`,
+				buttons: [
+					{
+						action: "ok",
+						icon: '',
+						label: game.i18n.localize("SPACE1889.Go"),
+						default: true,
+						callback: (event, button, dialog) => myCallback(button)
+					},
+					{
+						action: "abbruch",
+						label: game.i18n.localize("SPACE1889.Cancel"),
+						callback: () => { ui.notifications.info(game.i18n.localize("SPACE1889.CancelRoll")) },
+						icon: `<i class="fas fa-times"></i>`
+					}
+				],
+			}).render({ force: true });
+
+			function myCallback(button)
+			{
+				const useAutoSuccess = button.form.elements.selected.checked;
+				const input = button.form.elements.anzahlDerWuerfel.value;
+				let anzahl = input ? parseInt(input) : 0;
+				const modToolTip = anzahl == 0 ? "" : game.i18n.format("SPACE1889.ChatModifier", { mod: SPACE1889Helper.getSignedStringFromNumber(anzahl) });
+				anzahl = Math.max(0, anzahl + diceCount);
+				doRoll(actor, anzahl, modToolTip, useAutoSuccess);
+			}
+		}
+		else
+		{
+			doRoll(this, diceCount);
+		}
+
+		function doRoll(actor, count, rollToolTipMod = "", useAutoSuccess)
+		{
+			const rollWithHtmlProm = SPACE1889RollHelper.createInlineRollWithHtml(count, "", rollToolTipMod);
+
+			rollWithHtmlProm.then((rollWithHtml) =>
+			{
+				let newSuccess = Number(item.system.successes);
+				const delta = useAutoSuccess ? autoDelta : rollWithHtml.roll.total - item.system.difficultyRating;
+
+				
+				if (delta > 0)
+					newSuccess = Math.min(newSuccess + delta, item.system.totalNumberOfSuccesses);
+				else if (delta < 0 && item.system.useDeductions)
+					newSuccess = Math.max(newSuccess + delta, 0);
+
+				const resDelta = newSuccess - item.system.successes;
+
+				const timestamp = SPACE1889Time.getCurrentTimestamp();
+
+				let desc = "";
+				if (item.system.typeKey === "skill" && item.system.useSpezialisation)
+				{
+					const fullName = `${item.system.spezialisationLabel} (${item.derived.skillOrAttributeLabel})`;
+					desc += item.getTextLine("SPACE1889.Probe", fullName, "", false);
+				}
+				else if (item.system.typeKey === "skill" && item.system.skillGroupId !== "" && CONFIG.SPACE1889.skillGroups.hasOwnProperty(item.system.skillGroupId))
+				{
+					const fullName = `${item.derived.skillOrAttributeLabel} (${game.i18n.localize(CONFIG.SPACE1889.skillGroups[item.system.skillGroupId])})`;
+					desc += item._addLine("SPACE1889.Probe", fullName, "", false);
+				}
+				else
+					desc += item.getTextLine("SPACE1889.Probe", item.derived.skillOrAttributeLabel, "", false);
+
+				desc += item.getTextLine("SPACE1889.DifficultyRating", item.system.difficultyRating);
+				desc += item.getTextLine("SPACE1889.AttemptsMade", item.system.attemptsMade + 1);
+				desc += item.getTextLine("SPACE1889.DataOfTheEventAbbr", SPACE1889Time.formatTimeDate(SPACE1889Time.getTimeAndDate(timestamp)));
+				desc += useAutoSuccess ? `<br>${game.i18n.localize("SPACE1889.ProbeTakingTheAverage")}` : `<br>${rollWithHtml.html}`;
+				desc += resDelta === 0
+					? `<br>${game.i18n.format("SPACE1889.NoChange")}`
+					: item.getTextLine("SPACE1889.Change", `<strong>${SPACE1889Helper.getSignedStringFromNumber(resDelta)}</strong>`);
+				desc += item.getTextLine("SPACE1889.CurrentSuccesses", `<strong>${newSuccess}/${item.system.totalNumberOfSuccesses}</strong>` );
+				desc += newSuccess >= item.system.totalNumberOfSuccesses
+					? `<br>${game.i18n.format("SPACE1889.Finalised")}`
+					: item.getTextLine("SPACE1889.TimeInterval", item.system.timeInterval);
+
+				if (item.system.description !== "")
+					desc += item.system.description;
+
+				item.update({ 'system.attemptsMade': item.system.attemptsMade + 1, 'system.successes': newSuccess, "system.timestampLastTry": timestamp });
+				let messageContent = `<h4><strong>${item.name}</strong> <small>[${game.i18n.localize("TYPES.Item.extended_action")}]</small></h4><div>${desc}</div>`;
+				const speaker = ChatMessage.getSpeaker({ actor: actor });
+
+				ChatMessage.create({
+					user: game.user.id,
+					speaker: speaker,
+					content: messageContent
+				});
+			});
 		}
 	}
 }
