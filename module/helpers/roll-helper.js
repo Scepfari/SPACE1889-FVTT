@@ -105,7 +105,7 @@ export default class SPACE1889RollHelper
 		}
 	}
 
-	static getDieCount(item, actor)
+	static getDieCount(item, actor, forceTalentNotifyOnError = true)
 	{
 		if (item.type == 'skill')
 			return item.system.rating;
@@ -114,12 +114,12 @@ export default class SPACE1889RollHelper
 		if (item.type == 'weapon' || item.type == 'shield')
 			return item.derived.attack;
 		if (item.type == 'talent' && item.system.isRollable)
-			return this.getTalentDieCount(item, actor);
+			return this.getTalentDieCount(item, actor, forceTalentNotifyOnError);
 
 		return 0;
 	}
 
-	static getTalentDieCount(item, actor)
+	static getTalentDieCount(item, actor, forceTalentNotifyOnError = true)
 	{
 		if (item.type == "talent" && item.system.isRollable)
 		{
@@ -136,7 +136,7 @@ export default class SPACE1889RollHelper
 				const skillItem = actor.items.find(e => e.system.id == "heimlichkeit");
 				if (skillItem != undefined)
 				{
-					const theWeaponInfo = SPACE1889RollHelper.getWeaponWithDamageFromTalent(actor, item, true);
+					const theWeaponInfo = SPACE1889RollHelper.getWeaponWithDamageFromTalent(actor, item, forceTalentNotifyOnError);
 					if (!theWeaponInfo.weapon)
 						return 0;
 					const weaponDamage = theWeaponInfo.damage;
@@ -166,21 +166,27 @@ export default class SPACE1889RollHelper
 		{
 			// nimmt die in den Händen gehaltene Nahkampfwaffe, die den meisten Schaden verursacht, beachtet Nebenhandabzug
 
-			for (const weapon of actor.weapons)
-			{
-				if (weapon.system.usedHands == "none" || weapon.system.skillId != "nahkampf")
-					continue;
+			const weapons = SPACE1889Combat.getWeaponInHands(actor);
 
-				let malus = 0;
-				if (weapon.system.usedHands == "offHand")
-					malus = SPACE1889Helper.getTalentLevel(actor, "beidhaendig") == 0 ? -2 : 0
-				let damage = weapon.system.damage + malus;
-				if (damage > maxDamage)
+			if (weapons.primaryWeapon && weapons.primaryWeapon.system.skillId)
+			{
+				maxDamage = weapons.primaryWeapon.system.damage;
+				theWeapon = weapons.primaryWeapon;
+			}
+			if (weapons.offHandWeapon)
+			{
+				if (weapons.offHandWeapon._id != theWeapon?._id)
 				{
-					maxDamage = damage;
-					theWeapon = weapon;
+					const malus = SPACE1889Helper.getTalentLevel(actor, "beidhaendig") == 0 ? -2 : 0;
+					const damage = weapons.offHandWeapon.system.damage + malus;
+					if (damage > maxDamage)
+					{
+						maxDamage = damage;
+						theWeapon = weapons.offHandWeapon;
+					}
 				}
 			}
+
 			if (!theWeapon && notify)
 				ui.notifications.info(game.i18n.localize("SPACE1889.NoMeleeWeaponAssasine"));
 		}

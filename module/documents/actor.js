@@ -2332,7 +2332,7 @@ export class Space1889Actor extends Actor
 
 	getItemDiceCount(item)
 	{
-		return SPACE1889RollHelper.getDieCount(item, this);
+		return SPACE1889RollHelper.getDieCount(item, this, false);
 	}
 
 	getAbilityInfoText(key, forChat = false)
