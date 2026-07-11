@@ -1241,7 +1241,7 @@ export default class SPACE1889Combat
 		let info = game.i18n.localize("SPACE1889.CanNotBlockThisAttackType");
 		let parryValue = 0;
 		let resultantDefenseType = defenseType;
-		const baseParryValue = activeOnly ? actor.parry.value - actor.derived.secondaries.space1889.defense.passiveTotal : actor.parry.value;
+		const baseParryValue = activeOnly ? actor.parry.value - actor.derived.secondaries.defense.passiveTotal : actor.parry.value;
 		let canDoParry = false;
 
 		if (attackCombatSkillId === "nahkampf" || attackCombatSkillId === "waffenlos")

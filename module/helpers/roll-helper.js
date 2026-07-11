@@ -1869,9 +1869,9 @@ export default class SPACE1889RollHelper
 
 		if (delta > 0 && data.reducedDefense !== "" && data.areaDamage > 0 && target.actor.type !== 'vehicle')
 		{
-			const factor = target.derived.system.secondaries.size.total > 0 ? -1 : 1;
-			let sizeMod = factor * Math.floor(Math.abs(target.derived.system.secondaries.size.total) / 2);
-			let extraDice = Math.abs(target.derived.system.secondaries.size.total % 2);
+			const factor = target.derived.secondaries.size.total > 0 ? -1 : 1;
+			let sizeMod = factor * Math.floor(Math.abs(target.derived.secondaries.size.total) / 2);
+			let extraDice = Math.abs(target.derived.secondaries.size.total % 2);
 
 			if (target.actor.isSwarm())
 			{
@@ -2258,7 +2258,7 @@ export default class SPACE1889RollHelper
 		if (!actor || !target || !isInCloseCombatRange || !hasFreeHands)
 			return { canDo: false, name: manoeuverName, dice: 0, isInRange: isInCloseCombatRange, sizeMalus: 0, toolTipInfo: ""};
 
-		const sizeMalus = target.derived.system.secondaries.size.total;
+		const sizeMalus = target.actor.derived.secondaries.size.total;
 		const rating = actor.getSkillLevel(actor, "waffenlos", "griffe") - sizeMalus;
 		const toolTipInfo = sizeMalus !== 0 ? game.i18n.format("SPACE1889.ChatGrappleSizePenalty", { penalty: sizeMalus }) : "";
 
@@ -2539,11 +2539,11 @@ export default class SPACE1889RollHelper
 		}
 		else if (throwAway)
 		{
-			trefferInfo += game.i18n.format("SPACE1889.DisarmFlingAway", {attackerName: attackerName,  targetName: actorName, weaponName: weapon?.system?.label, distance: 1.5*virtualDamage });
+			trefferInfo += game.i18n.format("SPACE1889.DisarmFlingAway", { attackerName: attackerName, targetName: actorName, weaponName: weapon?.derived?.label, distance: 1.5 * virtualDamage });
 		}
 		else
 		{
-			trefferInfo += game.i18n.format("SPACE1889.DisarmStealTheWeapon", { attackerName: attackerName, targetName: actorName, weaponName: weapon?.system?.label });
+			trefferInfo += game.i18n.format("SPACE1889.DisarmStealTheWeapon", { attackerName: attackerName, targetName: actorName, weaponName: weapon?.derived?.label });
 			transferWeapon = weapon;
 		}
 

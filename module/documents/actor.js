@@ -2,6 +2,7 @@ import SPACE1889Helper from "../helpers/helper.js";
 import SPACE1889RollHelper from "../helpers/roll-helper.js";
 import SPACE1889Healing from "../helpers/healing.js";
 import SPACE1889Time from "../helpers/time.js";
+import SPACE1889Combat from "../helpers/combat.js";
 
 /**
  * Extend the base Actor document by defining a custom roll data structure which is ideal for the Simple system.
@@ -2335,6 +2336,22 @@ export class Space1889Actor extends Actor
 		return SPACE1889RollHelper.getDieCount(item, this, false);
 	}
 
+	hasFreeHands()
+	{
+		return SPACE1889Combat.hasFreeHands(this);
+	}
+
+	getWeaponInHands()
+	{
+		return SPACE1889Combat.getWeaponInHands(this);
+	}
+
+	isCloseCombatWeapon(weapon)
+	{
+
+		return SPACE1889Combat.isCloseCombatWeapon(weapon, false);
+	}
+
 	getAbilityInfoText(key, forChat = false)
 	{
 		const headerClass = forChat ? "" : "class=\"itemTooltipH3\"";
@@ -2550,6 +2567,31 @@ export class Space1889Actor extends Actor
 				SPACE1889RollHelper.rollManoeuver("Attack", this, event, item._id);
 			else
 				SPACE1889RollHelper.rollItemFromEvent(item, this, event);
+		}
+	}
+
+	rollCombatManeuver(key, tokenDoc, event)
+	{
+		const showDialog = SPACE1889RollHelper.getEventEvaluation(event).showDialog;
+
+		if (key === "grapple")
+		{
+			SPACE1889RollHelper.rollGrapple(tokenDoc, this, showDialog);
+		}
+
+		if (key === "trip")
+		{
+			SPACE1889RollHelper.rollTrip(tokenDoc, this, showDialog);
+		}
+
+		if (key === "disarm")
+		{
+			const weapons = this.getWeaponInHands();
+			let disarmWeapon = this.isCloseCombatWeapon(weapons.primaryWeapon, false) ? weapons.primaryWeapon : undefined;
+			if (!disarmWeapon)
+				disarmWeapon = this.isCloseCombatWeapon(weapons.offHandWeapon, false) ? weapons.offHandWeapon : undefined;
+
+			SPACE1889RollHelper.rollDisarm(tokenDoc, this, disarmWeapon, showDialog);
 		}
 	}
 
