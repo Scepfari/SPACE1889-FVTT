@@ -43,7 +43,7 @@ export class Space1889Migration
 
 		for (let actor of game.actors.values())
 		{
-			let talent = actor.system?.talents?.find(e => e.system.id === 'volleAbwehr');
+			let talent = actor.talents?.find(e => e.system.id === 'volleAbwehr');
 			if (talent != undefined && talent.system.bonusStartLevel != 2)
 			{
 				await actor.updateEmbeddedDocuments("Item", [{ _id: talent._id, "system.bonusTarget": "defense", "system.bonusTargetType": "secondary", "system.bonus": 2, "system.bonusStartLevel": 2 }]);
@@ -60,7 +60,7 @@ export class Space1889Migration
 
 		for (let actor of game.actors.values())
 		{
-			let talent = actor.system?.talents?.find(e => e.system.id === 'eisenschaedel');
+			let talent = actor.talents?.find(e => e.system.id === 'eisenschaedel');
 			if (talent != undefined && talent.system.bonus != 1)
 			{
 				await actor.updateEmbeddedDocuments("Item", [{ _id: talent._id, "system.bonus": 1 }]);

@@ -2397,6 +2397,23 @@ export class Space1889Actor extends Actor
 		return composition;
 	}
 
+	getCombatManoeuverInfoText(key, forChat = false)
+	{
+		if (!key || key.length < 3)
+			return "";
+
+		const headerClass = forChat ? "" : "class=\"itemTooltipH3\"";
+		const textClass = forChat ? "" : "itemTooltip";
+		const baseLangId = this.getLangId(key);
+		const langId = baseLangId + "Info";
+		const desc = game.i18n.localize(langId) ?? langId;
+		const name = game.i18n.localize(baseLangId) ?? baseLangId;
+
+		const composition =
+			`<h5 ${headerClass}><strong>${name}</strong></h5><div class="${textClass}">${desc}</div>`;
+		return composition;
+	}
+
 	showAttributeInfo(name, key, whisper)
 	{
 		const speaker = ChatMessage.getSpeaker({ actor: this.actor });
@@ -2447,6 +2464,12 @@ export class Space1889Actor extends Actor
 			return "SPACE1889.PassiveDefense";
 		if (key == 'activeDefense')
 			return "SPACE1889.ActiveDefense";
+		if (key == 'grapple')
+			return "SPACE1889.CombatManoeuversGrapple";
+		if (key == 'disarm')
+			return "SPACE1889.CombatManoeuversDisarm";
+		if (key == 'trip')
+			return "SPACE1889.CombatManoeuversTrip";
 		if (langId == "")
 		{
 			langId = "SPACE1889." + key.replace(/^(.)/, function (b) { return b.toUpperCase(); });
@@ -2570,7 +2593,7 @@ export class Space1889Actor extends Actor
 		}
 	}
 
-	rollCombatManeuver(key, tokenDoc, event)
+	rollCombatManoeuver(key, tokenDoc, event)
 	{
 		const showDialog = SPACE1889RollHelper.getEventEvaluation(event).showDialog;
 
@@ -2593,6 +2616,11 @@ export class Space1889Actor extends Actor
 
 			SPACE1889RollHelper.rollDisarm(tokenDoc, this, disarmWeapon, showDialog);
 		}
+	}
+
+	setWeaponHand(item, backward)
+	{
+		SPACE1889Helper.setWeaponHand(item, this, backward);
 	}
 
 	rollTalent(key, event)

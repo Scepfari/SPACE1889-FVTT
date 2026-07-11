@@ -13,7 +13,7 @@ export default class SPACE1889Helper
 
 	static getTalentData(actor, talentId)
 	{
-		return actor?.system?.talents?.find(entry => entry.system.id === talentId);
+		return actor?.talents?.find(entry => entry.system.id === talentId);
 	}
 
 	static getTalentLevel(actor, talentId)
@@ -616,7 +616,7 @@ export default class SPACE1889Helper
 
 	static async setWeaponHand(weapon, actor, backward, silent = false)
 	{
-		if (!weapon || !actor || (weapon.type != "weapon" && weapon.type != "shield"))
+		if (!weapon || !actor || !(["weapon","shield","lightSource"].includes(weapon.type)))
 			return;
 
 		if (weapon.system.containerId != null)
@@ -755,16 +755,12 @@ export default class SPACE1889Helper
 
 		if (wanted === "primaryHand")
 		{
-			let itemName = actor.weapons.find(e => e._id === weaponInHands.primary[0])?.name;
-			if (!itemName)
-				itemName = actor.lightSources.find(e => e._id === lsBlocked.primaryId)?.name;
+			let itemName = actor.items.get(weaponInHands.primary[0])?.name;
 			ui.notifications.info(game.i18n.format("SPACE1889.WeaponCanNotReadyPrimaryHand", { weapon: weapon.name, item: itemName}));
 		}
 		else if (wanted === "offHand")
 		{
-			let itemName = actor.weapons.find(e => e._id === weaponInHands.off[0])?.name;
-			if (!itemName)
-				itemName = actor.lightSources.find(e => e._id === lsBlocked.offId)?.name;
+			let itemName = actor.items.get(weaponInHands.off[0])?.name;
 			ui.notifications.info(game.i18n.format("SPACE1889.WeaponCanNotReadyOffHand", { weapon: weapon.name, item: itemName}));
 		}
 
