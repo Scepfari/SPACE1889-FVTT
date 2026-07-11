@@ -59,10 +59,12 @@ export function getEffectInfoText(effect, forChat = false)
 	desc += `<p>${game.i18n.localize("SPACE1889.EffectStartTime")}: ${SPACE1889Time.formatEffectDuration(effect.start, effect.duration)}</p>`;
 	desc += `<p>${game.i18n.localize("SPACE1889.EffectDuration")}: ${effect.duration.label}</p>`;
 
-	if (effect.changes.length > 0)
+	const effectChanges = (game.release.generation >= 14 ? (effect.system?.changes) : effect.changes) ?? [];
+
+	if (effectChanges.length > 0)
 	{
 		desc += `<div>${game.i18n.localize(effect.disabled ? "SPACE1889.EffectDeactivatedChanges" : "SPACE1889.EffectChanges")}:<ul>`;
-		for (const change of effect.changes)
+		for (const change of effectChanges)
 		{
 			desc += `<li>${getNameFromEffectChange(change.key)}: ${SPACE1889Helper.getSignedStringFromNumber(change.value)}</li>`;
 		}

@@ -2246,29 +2246,35 @@ export default class SPACE1889Helper
 			if (effect.disabled)
 				continue;
 
-			for (let change of effect.changes)
+			const isPreV14 = game.release.generation < 14;
+			const effectChanges = (isPreV14 ? effect.changes : effect.system?.changes) ?? [];
+			for (let change of effectChanges)
 			{
 				if (change.key != searchKey)
 					continue;
 
 				//ToDo: auch die Dauer auswerten
 
+				const mode = isPreV14 ? this.convertChangeDateEffectMode(change.mode) : change.type;
 				const changeValue = this.getAsNumber(change.value)
-				switch (change.mode)
+				switch (mode)
 				{
-					case 1:
+					case "multiply":
 						bonus *= changeValue;
 						break;
-					case 2:
+					case "add":
 						bonus += changeValue;
 						break;
-					case 3:
+					case "subtract":
+						bonus -= changeValue;
+						break;
+					case "downgrade":
 						bonus = Math.min(changeValue, bonus);
 						break;
-					case 4:
+					case "upgrade":
 						bonus = Math.max(changeValue, bonus);
 						break;
-					case 5:
+					case "override":
 						bonus = changeValue;
 						break;
 					default:
@@ -2278,6 +2284,23 @@ export default class SPACE1889Helper
 			}
 		}
 		return bonus;
+	}
+
+	static convertChangeDateEffectMode(oldV13Mode)
+	{
+		if (oldV13Mode == 0)
+			return "custon";
+		if (oldV13Mode == 1)
+			return "multiply";
+		if (oldV13Mode == 2)
+			return "add";
+		if (oldV13Mode == 3)
+			return "downgrade";
+		if (oldV13Mode == 4)
+			return "upgrade";
+		if (oldV13Mode == 5)
+			return "override";
+		return "unknown";
 	}
 
 	static markChatButtonAsDone(event, oldButtonText, additionalChatText = "")
