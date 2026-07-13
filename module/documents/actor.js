@@ -546,6 +546,13 @@ export class Space1889Actor extends Actor
 		const items = actor.items;
 		const derivedData = this._getActorDerivedSpace1889Data(actor);
 
+		// Update effect duration and label
+		if (game.release.generation >= 14)
+		{
+			for (const effect of actor.effects)
+				effect.updateDuration();
+		}
+
 		// Item Effekte der Talente vorbereiten
 		for (let item of items)
 		{
