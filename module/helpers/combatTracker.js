@@ -124,7 +124,7 @@ export class Space1889Combat extends Combat
 			if (actor)
 			{
 				let effectsToRemove = [];
-				let effects = SPACE1889Helper.isFoundryV10Running() ? actor.effects : actor.appliedEffects;
+				let effects = actor.appliedEffects;
 				for (let effect of effects)
 				{
 					if (Space1889Combat.hasStatus(effect, "noActiveDefense") || Space1889Combat.hasStatus(effect, "totalDefense"))
@@ -141,15 +141,6 @@ export class Space1889Combat extends Combat
 
 	static hasStatus(effect, searchKey)
 	{
-		if (SPACE1889Helper.isFoundryV10Running())
-		{
-			const statusId = effect.flags?.core?.statusId;
-			if (statusId && statusId == searchKey)
-				return true;
-			return false;
-		}
-
-		// ab V11 
 		return effect.statuses.has(searchKey);
 	}
 

@@ -6,25 +6,34 @@ export default class SPACE1889Vision
 {
 	static timePasses()
 	{
-		if (!game.user.isGM || !SPACE1889Time.isSimpleCalendarEnabled())
+		if (!game.user.isGM || !SPACE1889Time.isCalendarEnabled())
 			return;
 
 		const currentTimeStamp = SPACE1889Time.getCurrentTimestamp();
 		const list = game.actors.filter(e => e.type === "character");
 		for (const actor of list)
 		{
-			for (const vision of actor.system.visions)
+			for (const vision of actor.visions)
 			{
 				this._checkAndDeactivateVisionByTime(currentTimeStamp, vision, actor, undefined);
 			}
 		}
 
+		if (!game.scenes.viewed)
+			return;
+
 		for (const token of game.scenes.viewed.tokens)
 		{
-			if (token.actorLink && token.actor.type === "character")
+			if (token.actor.type === "vehicle" || (token.actorLink && token.actor.type === "character"))
 				continue;
 
-			for (const vision of token.actor.system.visions)
+			if (!token.actor.system?.visions)
+				token.actor.prepareDerivedData(); // fill actor data
+
+			if (!token.actor.system?.visions)
+				continue;
+
+			for (const vision of token.actor.visions)
 			{
 				this._checkAndDeactivateVisionByTime(currentTimeStamp, vision, token.actor, token);
 			}
@@ -70,7 +79,7 @@ export default class SPACE1889Vision
 
 		if (token)
 			this._resetTokenVision(token, actor?.prototypeToken);
-		else
+		else if (game.scenes.viewed)
 		{
 			const tokens = game.scenes.viewed.tokens.filter(e => e.actorId === actor.id);
 			for (let tok of tokens)
@@ -79,8 +88,8 @@ export default class SPACE1889Vision
 			}
 		}
 
-		const timeAsString = SPACE1889Time.isSimpleCalendarEnabled() ? SPACE1889Time.formatTimeDate(SPACE1889Time.getTimeAndDate(emissionEndTimeStamp)) : "";
-		const messageContent = game.i18n.format("SPACE1889.VisionFades", { "vision": visionItem.system.label, "name": token ? token.name : actor.name, "time": timeAsString });
+		const timeAsString = SPACE1889Time.isCalendarEnabled() ? SPACE1889Time.formatTimeDate(SPACE1889Time.getTimeAndDate(emissionEndTimeStamp)) : "";
+		const messageContent = game.i18n.format("SPACE1889.VisionFades", { "vision": visionItem.derived.label, "name": token ? token.name : actor.name, "time": timeAsString });
 		let chatData =
 		{
 			user: game.user.id,
@@ -93,9 +102,9 @@ export default class SPACE1889Vision
 
 	static async deactivateVision(visionItem, actor)
 	{
-		if (SPACE1889Time.isSimpleCalendarEnabled() && !visionItem.system.interruptible)
+		if (SPACE1889Time.isCalendarEnabled() && !visionItem.system.interruptible)
 		{
-			ui.notifications.info(game.i18n.format("SPACE1889.CanNotDeActivateVision", { "name": visionItem.system.label }));
+			ui.notifications.info(game.i18n.format("SPACE1889.CanNotDeActivateVision", { "name": visionItem.derived.label }));
 			return;
 		}
 
@@ -110,15 +119,18 @@ export default class SPACE1889Vision
 			"system.emissionStartTimestamp": 0
 		});
 
-		let tokens = game.scenes.viewed.tokens.filter(e => e.actorId === actor.id);
-		for (let token of tokens)
+		if (game.scenes.viewed)
 		{
-			if (token)
-				this._resetTokenVision(token, game.actors.get(actor._id)?.prototypeToken);
+			let tokens = game.scenes.viewed.tokens.filter(e => e.actorId === actor.id);
+			for (let token of tokens)
+			{
+				if (token)
+					this._resetTokenVision(token, game.actors.get(actor._id)?.prototypeToken);
+			}
 		}
 
-		const timeAsString = SPACE1889Time.isSimpleCalendarEnabled() ? SPACE1889Time.getCurrentTimeDateString() : "";
-		const messageContent = game.i18n.format("SPACE1889.VisionSwitchOff", { "vision": visionItem.system.label, "name": actor.name, "time": timeAsString });
+		const timeAsString = SPACE1889Time.isCalendarEnabled() ? SPACE1889Time.getCurrentTimeDateString() : "";
+		const messageContent = game.i18n.format("SPACE1889.VisionSwitchOff", { "vision": visionItem.derived.label, "name": actor.name, "time": timeAsString });
 		let chatData =
 		{
 			user: game.user.id,
@@ -169,7 +181,7 @@ export default class SPACE1889Vision
 	{
 		if (visionItem.system.quantity < 1)
 		{
-			ui.notifications.info(game.i18n.format("SPACE1889.CanNotActivateVisionNoItem", { "name": visionItem.system.label }));
+			ui.notifications.info(game.i18n.format("SPACE1889.CanNotActivateVisionNoItem", { "name": visionItem.derived.label }));
 			return;
 		}
 		if (!SPACE1889Light.isPermanentlyUsable(visionItem) && visionItem.system.usedDuration >= visionItem.system.duration)
@@ -180,19 +192,22 @@ export default class SPACE1889Vision
 		if (!SPACE1889Helper.hasTokenConfigurePermission())
 			return;
 
-		if (SPACE1889Time.isSimpleCalendarEnabled())
+		if (SPACE1889Time.isCalendarEnabled())
 			await visionItem.update({ "system.isActive": true, "system.emissionStartTimestamp": SPACE1889Time.getCurrentTimestamp() });
 		else
 			await visionItem.update({ "system.isActive": true });
 
-		let tokens = game.scenes.viewed.tokens.filter(e => e.actorId === actor.id);
-		for (let token of tokens)
+		if (game.scenes.viewed)
 		{
-			await this._setTokenVision(visionItem, token);
+			let tokens = game.scenes.viewed.tokens.filter(e => e.actorId === actor.id);
+			for (let token of tokens)
+			{
+				await this._setTokenVision(visionItem, token);
+			}
 		}
 
-		const timeAsString = SPACE1889Time.isSimpleCalendarEnabled() ? SPACE1889Time.getCurrentTimeDateString() : "";
-		const messageContent = game.i18n.format("SPACE1889.VisionBegins", { "vision": visionItem.system.label, "name": actor.name, "time": timeAsString });
+		const timeAsString = SPACE1889Time.isCalendarEnabled() ? SPACE1889Time.getCurrentTimeDateString() : "";
+		const messageContent = game.i18n.format("SPACE1889.VisionBegins", { "vision": visionItem.derived.label, "name": actor.name, "time": timeAsString });
 		let chatData =
 		{
 			user: game.user.id,
@@ -229,13 +244,13 @@ export default class SPACE1889Vision
 
 		if (visionItem.system.itemUseType === "consumables" || SPACE1889Light.isPermanentlyUsable(visionItem))
 		{
-			ui.notifications.info(game.i18n.format("SPACE1889.VisionCanNotRecharge", { "name": visionItem.system.label }));
+			ui.notifications.info(game.i18n.format("SPACE1889.VisionCanNotRecharge", { "name": visionItem.derived.label }));
 			return;
 		}
 
 		if (visionItem.system.isActive)
 		{
-			ui.notifications.info(game.i18n.format("SPACE1889.VisionCanNotRechargeDuringOperation", { "name": visionItem.system.label }));
+			ui.notifications.info(game.i18n.format("SPACE1889.VisionCanNotRechargeDuringOperation", { "name": visionItem.derived.label }));
 			return;
 		}
 
@@ -252,14 +267,14 @@ export default class SPACE1889Vision
 			user: game.user.id,
 			speaker: ChatMessage.getSpeaker({ actor: actor }),
 			whisper: [],
-			content: game.i18n.format("SPACE1889.VisionRecharge", { "name": visionItem.system.label })
+			content: game.i18n.format("SPACE1889.VisionRecharge", { "name": visionItem.derived.label })
 		};
 		await ChatMessage.create(chatData, {});
 	}
 
 	static async redoTokenVision(event)
 	{
-		if (!SPACE1889Helper.hasTokenConfigurePermission())
+		if (!SPACE1889Helper.hasTokenConfigurePermission() || !game.scenes.viewed)
 			return;
 
 		const resetVision = event?.shiftKey && event?.ctrlKey;
@@ -288,10 +303,10 @@ export default class SPACE1889Vision
 
 	static _getActiveVision(actor)
 	{
-		if (!actor)
+		if (!actor || !actor.system || !actor.visions)
 			return undefined;
 
-		for (const vision of actor.system?.visions)
+		for (const vision of actor.visions)
 		{
 			if (vision.system.isActive)
 				return vision;

@@ -1,6 +1,8 @@
 // Import document classes.
 import { Space1889Actor } from "./documents/actor.js";
 import { Space1889Item } from "./documents/item.js";
+import { SPACE1889_ACTOR_DATA_MODELS } from "./data/actor-models.js";
+import { SPACE1889_ITEM_DATA_MODELS } from "./data/item-models.js";
 // Import sheet classes.
 import { Space1889ActorSheet } from "./sheets/actor-sheet.js";
 import { Space1889ItemSheet } from "./sheets/item-sheet.js";
@@ -20,13 +22,15 @@ import SPACE1889Time from "./helpers/time.js";
 import SPACE1889Light from "./helpers/light.js";
 import DistanceMeasuring from "./helpers/distanceMeasuring.js";
 import { Space1889Combat, Space1889Combatant } from "./helpers/combatTracker.js";
-import TurnMarker from "./helpers/turnMarker.js";
 import * as CleanHeader from "./ui/cleanHeader.js";
 import * as sideBar from "./ui/sidebar.js";
 import * as tokenHud from "./ui/tokenHud.js";
 import { Space1889Menu } from "./ui/spaceMenu.js";
+import Space1889MenuV13 from "./ui/spaceMenu.js";
 import { getEffectInfoText } from "./helpers/effects.js";
-
+import { CalendarWidget } from "./ui/calendarWidget.js";
+import { SPACE1889WorldCalendar } from "./calendar/calendar.js";
+import { CalendarMonthlyViewWidget } from './ui/calendarMonthlyView.js';
 
 
 /* -------------------------------------------- */
@@ -48,6 +52,11 @@ Hooks.once('init', async function() {
 		combat: SPACE1889Combat,
 		healing: SPACE1889Healing,
 		time: SPACE1889Time,
+		calendar: SPACE1889WorldCalendar,
+		apps: {
+			CalendarMonthlyViewWidget,
+			CalendarWidget: new CalendarWidget()
+		}
 	};
 
 	// Add custom constants for configuration.
@@ -56,15 +65,17 @@ Hooks.once('init', async function() {
 	// Define custom Document classes
 	CONFIG.Actor.documentClass = Space1889Actor;
 	CONFIG.Item.documentClass = Space1889Item;
+	CONFIG.Actor.dataModels ??= {};
+	CONFIG.Item.dataModels ??= {};
+	Object.assign(CONFIG.Actor.dataModels, SPACE1889_ACTOR_DATA_MODELS);
+	Object.assign(CONFIG.Item.dataModels, SPACE1889_ITEM_DATA_MODELS);
 	CONFIG.Combat.documentClass = Space1889Combat;
 	CONFIG.Combatant.documentClass = Space1889Combatant;
 	CONFIG.ui.hotbar = SPACE1889Hotbar;
 
 	// Register sheet application classes
-	Actors.unregisterSheet("core", ActorSheet);
-	Actors.registerSheet("space1889", Space1889ActorSheet, { makeDefault: true });
-	Items.unregisterSheet("core", ItemSheet);
-	Items.registerSheet("space1889", Space1889ItemSheet, { makeDefault: true });
+	Space1889ActorSheet.setupSheets();
+	Space1889ItemSheet.setupSheets();
 
 	// Register System Settings
 	registerSystemSettings();
@@ -89,39 +100,31 @@ Hooks.once('init', async function() {
 	CleanHeader.default();
 	CleanHeader.handlePopout();
 
-	if (!SPACE1889Helper.isFoundryV10Running())
+	if (game.release.generation < 14)
 		CONFIG.ActiveEffect.legacyTransferral = false;
+
+	SPACE1889WorldCalendar.init();
 
 	return retVal;
 });
 
 Hooks.on("ready", async function () 
 {
-	const dialog = SPACE1889Helper.getExternalLinksDialogData()
-	let externalLinks = new Dialog(dialog.data, dialog.options);
-
-	var logo = document.getElementById("logo");
-	logo.setAttribute("src", "/systems/space1889/icons/vttLogo.webp");
-	logo.title = game.i18n.localize("SPACE1889.ExternalLinksTitel");
-	logo.addEventListener("click", function ()
-	{
-		externalLinks.render(true)
-	});
-
 	let indent = game.settings.get("space1889", "subfolder-indent");
 	document.documentElement.style.setProperty('--space1889-indent', `${indent}px`);
 
-	if (!SPACE1889Helper.isFoundryV10Running())
-	{
-		document.documentElement.style.setProperty('--space1889-hotbar2path', 'url(../icons/backgrounds/hotbar2v11.webp)');
-		document.documentElement.style.setProperty('--space1889-hotbar2width', '631px');
-	}
+	document.documentElement.style.setProperty('--space1889-hotbar2path', 'url(../icons/backgrounds/hotbar2v11.webp)');
+	document.documentElement.style.setProperty('--space1889-hotbar2width', '631px');
 
 	SPACE1889Time.connectHooks();
+
+	game.space1889.apps.CalendarWidget.render(true);
 });
 
 Hooks.once("setup", () =>
 {
+	Space1889MenuV13.registerButtons();
+
 	game.keybindings.register("space1889", "combatTrackerNext", {
 		name: "COMBAT.TurnNext",
 		hint: game.i18n.localize("SPACE1889.KeyInfoCombatNextTurn"),
@@ -145,7 +148,7 @@ Hooks.once("setup", () =>
 	game.keybindings.register("space1889", "combatToggleMovementLimiter", {
 		name: "SPACE1889.KeyMovementLimiter",
 		hint: game.i18n.localize("SPACE1889.KeyInfoMovementLimiter"),
-		editable: [{ key: "KeyB", modifiers: [KeyboardManager.MODIFIER_KEYS.CONTROL] }],
+		editable: [{ key: "KeyB", modifiers: [foundry.helpers.interaction.KeyboardManager.MODIFIER_KEYS.CONTROL] }],
 		restricted: true,
 		onDown: () =>
 		{
@@ -228,7 +231,7 @@ Hooks.once("setup", () =>
 	game.keybindings.register("space1889", "showCharacterArt", {
 		name: "SPACE1889.KeyShowCharacterArt",
 		hint: game.i18n.localize("SPACE1889.KeyInfoRollAnySkill"),
-		editable: [{ key: "KeyI", modifiers: [KeyboardManager.MODIFIER_KEYS.SHIFT] }],
+		editable: [{ key: "KeyI", modifiers: [foundry.helpers.interaction.KeyboardManager.MODIFIER_KEYS.SHIFT] }],
 		onDown: () =>
 		{
 			SPACE1889Helper.showCharacterArt();
@@ -283,8 +286,9 @@ Hooks.on("chatMessage", (html, content, msg) =>
 	}
 });
 
-Hooks.on("renderChatMessage", (app, html, msg) => 
+Hooks.on("renderChatMessageHTML", (app, html, msg) => 
 {
+	html = $(html);
 	html.on('click', '.autoDefence', ev =>
 	{
 		SPACE1889RollHelper.onAutoDefense(ev);
@@ -340,30 +344,8 @@ Hooks.on("renderChatMessage", (app, html, msg) =>
 
 });
 
-Hooks.on("canvasInit", function ()
-{
-	if (game.release.generation < 12)
-		SquareGrid.prototype.measureDistances = DistanceMeasuring.measureDistances;
-});
-
-Hooks.on("canvasReady", function ()
-{
-	if (game.settings.get("space1889", "useCombatTurnMarker"))
-	{
-		new TurnMarker();
-
-		Hooks.once("renderCombatTracker", function ()
-		{
-			SPACE1889Helper.regenerateMarkers();
-			if (canvas.tokens.Space1889TurnMarker && !canvas.tokens.Space1889TurnMarker.token)
-				canvas.tokens.Space1889TurnMarker.MoveToCombatant();
-		});
-	}
-});
-
 Hooks.on("updateCombat", function () 
 {
-	SPACE1889Helper.regenerateMarkers();
 	if (game.combat)
 	{
 		game.combat.checkEffectLifeTime();
@@ -376,19 +358,6 @@ Hooks.on("preDeleteCombat", function (combat, dummy, id)
 {
 	if (combat)
 		combat.cleanEffectsOnCombatEnd();
-})
-
-Hooks.on("updateToken", function (token, updates)
-{
-	if (token.id === canvas.tokens.Space1889TurnMarker?.token?.id)
-	{
-		if ("texture" in updates)
-			canvas.tokens.Space1889TurnMarker.Update();
-	}
-});
-
-Hooks.on("deleteToken", (token) => {
-	SPACE1889Helper.regenerateMarkers();
 });
 
 Hooks.on('hoverToken', (token, hovered) =>
@@ -416,11 +385,11 @@ Hooks.on('preUpdateToken', (token, update, options, userId) => {
 		(!game.user.isGM || game.settings.get("space1889", "useTokenMovementLimiterForGM") ))
 	{
 		let allow = SPACE1889Helper.canTokenMove(token, true);
-        if (!allow) {
-            delete update.x;
-            delete update.y;
-        }
-    }
+		if (!allow) {
+			delete update.x;
+			delete update.y;
+		}
+	}
 });
 
 Hooks.on("renderPause", () => {
@@ -428,40 +397,152 @@ Hooks.on("renderPause", () => {
 	$("#pause figcaption").attr("class", "pause-space1889");
 });
 
+Hooks.on("getActorContextOptions", (app, menu) =>
+{
+	if (app instanceof foundry.applications.sidebar.apps.Compendium)
+		return;
+
+	if (game.release.generation < 14)
+	{
+		menu.splice(0, 0,
+			{
+				name: game.i18n?.localize?.("TOKEN.TitlePrototype") ?? "Prototype Token...",
+				icon: '<i class="fa-solid fa-user-gear"></i>',
+				condition: li =>
+				{
+					const id = li?.dataset?.entryId || li?.dataset?.documentId;
+					const actor = id && game.actors?.get(id);
+					return !!actor && (game.user?.isGM || actor.isOwner);
+				},
+				callback: li =>
+				{
+					const id = li?.dataset?.entryId || li?.dataset?.documentId;
+					const actor = id && game.actors?.get(id);
+					if (!actor)
+						return ui.notifications?.warn(game.i18n.localize("SPACE1889.TokenMenu.InvalidActor."));
+					const Sheet = CONFIG?.Token?.prototypeSheetClass;
+					if (!Sheet)
+						return ui.notifications?.error(game.i18n.localize("SPACE1889.TokenMenu.NoPrototypeTokenSheetClass"));
+					new Sheet({ prototype: actor.prototypeToken }).render({ force: true });
+				}
+			});
+
+		menu.push(
+			{
+				name: game.i18n?.localize("SPACE1889.TokenMenu.ConvertToNPC") ?? "Convert to NPC...",
+				icon: '<i class="fa-solid fa-user-tag"></i>',
+				condition: li =>
+				{
+					const id = li?.dataset?.entryId || li?.dataset?.documentId;
+					const actor = id && game.actors?.get(id);
+					return !!actor && actor.type === "character" && (game.user?.isGM);
+				},
+				callback: li =>
+				{
+					const id = li?.dataset?.entryId || li?.dataset?.documentId;
+					const actor = id && game.actors?.get(id);
+					if (!actor)
+						return ui.notifications?.warn(game.i18n.localize("SPACE1889.TokenMenu.InvalidActor."));
+
+					actor.update({ type: 'npc', system: actor.system }, { recursive: false });
+					ui.notifications?.warn(game.i18n.format("SPACE1889.TokenMenu.ConvertToNpcInfo", { name: actor.name }));
+				}
+			},
+			{
+				name: game.i18n?.localize("SPACE1889.TokenMenu.ConvertToPC") ?? "Convert to PC...",
+				icon: '<i class="fa-solid fa-user-tag"></i>',
+				condition: li =>
+				{
+					const id = li?.dataset?.entryId || li?.dataset?.documentId;
+					const actor = id && game.actors?.get(id);
+					return !!actor && actor.type === "npc" && (game.user?.isGM);
+				},
+				callback: li =>
+				{
+					const id = li?.dataset?.entryId || li?.dataset?.documentId;
+					const actor = id && game.actors?.get(id);
+					if (!actor)
+						return ui.notifications?.warn(game.i18n.localize("SPACE1889.TokenMenu.InvalidActor."));
+
+					actor.update({ type: 'character', system: actor.system }, { recursive: false });
+					ui.notifications?.warn(game.i18n.format("SPACE1889.TokenMenu.ConvertToPcInfo", { name: actor.name }));
+				}
+			});
+	}
+	else
+	{
+		menu.splice(0, 0,
+			{
+				label: game.i18n?.localize?.("TOKEN.TitlePrototype") ?? "Prototype Token...",
+				icon: '<i class="fa-solid fa-user-gear"></i>',
+				visible: li =>
+				{
+					const id = li?.dataset?.entryId || li?.dataset?.documentId;
+					const actor = id && game.actors?.get(id);
+					return !!actor && (game.user?.isGM || actor.isOwner);
+				},
+				callback: li =>
+				{
+					const id = li?.dataset?.entryId || li?.dataset?.documentId;
+					const actor = id && game.actors?.get(id);
+					if (!actor)
+						return ui.notifications?.warn(game.i18n.localize("SPACE1889.TokenMenu.InvalidActor."));
+					const Sheet = CONFIG?.Token?.prototypeSheetClass;
+					if (!Sheet)
+						return ui.notifications?.error(game.i18n.localize("SPACE1889.TokenMenu.NoPrototypeTokenSheetClass"));
+					new Sheet({ prototype: actor.prototypeToken }).render({ force: true });
+				}
+			});
+
+		menu.push(
+			{
+				label: game.i18n?.localize("SPACE1889.TokenMenu.ConvertToNPC") ?? "Convert to NPC...",
+				icon: '<i class="fa-solid fa-user-tag"></i>',
+				visible: li =>
+				{
+					const id = li?.dataset?.entryId || li?.dataset?.documentId;
+					const actor = id && game.actors?.get(id);
+					return !!actor && actor.type === "character" && (game.user?.isGM);
+				},
+				callback: li =>
+				{
+					const id = li?.dataset?.entryId || li?.dataset?.documentId;
+					const actor = id && game.actors?.get(id);
+					if (!actor)
+						return ui.notifications?.warn(game.i18n.localize("SPACE1889.TokenMenu.InvalidActor."));
+
+					actor.update({ type: 'npc', system: actor.system }, { recursive: false });
+					ui.notifications?.warn(game.i18n.format("SPACE1889.TokenMenu.ConvertToNpcInfo", { name: actor.name }));
+				}
+			},
+			{
+				label: game.i18n?.localize("SPACE1889.TokenMenu.ConvertToPC") ?? "Convert to PC...",
+				icon: '<i class="fa-solid fa-user-tag"></i>',
+				visible: li =>
+				{
+					const id = li?.dataset?.entryId || li?.dataset?.documentId;
+					const actor = id && game.actors?.get(id);
+					return !!actor && actor.type === "npc" && (game.user?.isGM);
+				},
+				callback: li =>
+				{
+					const id = li?.dataset?.entryId || li?.dataset?.documentId;
+					const actor = id && game.actors?.get(id);
+					if (!actor)
+						return ui.notifications?.warn(game.i18n.localize("SPACE1889.TokenMenu.InvalidActor."));
+
+					actor.update({ type: 'character', system: actor.system }, { recursive: false });
+					ui.notifications?.warn(game.i18n.format("SPACE1889.TokenMenu.ConvertToPcInfo", { name: actor.name }));
+				}
+			});
+	}
+});
+
+
 Hooks.on("space1889GravityChanged", (changeInfo) =>
 {
 	if (changeInfo && changeInfo.key && changeInfo.gravity)
 		SPACE1889Helper.doGravityChangeReaktion(changeInfo);
-});
-
-Hooks.on('renderSceneControls', (sceneControls, html, options) =>
-{
-	const tooltip = game.i18n.localize("CONTROLS.Space1889Menu");
-
-	const spaceControl = $(`<li class="scene-control" role="tab" data-tooltip="${tooltip}"><i class="fas fa-space1889"></i></li>`);
-	spaceControl.on('click', () =>
-	{
-		const presetMenu = Object.values(ui.windows).find((app) => app instanceof Space1889Menu);
-		if (presetMenu) {
-			presetMenu.close();
-			return;
-		}
-
-		const savedPos = game.settings.get("space1889", "menuPosition").split("|");
-		let savedLeft = Number(savedPos[0]);
-		let savedTop = Number(savedPos[1]);
-		if (savedLeft < 0 || savedTop < 0)
-		{
-			savedLeft = spaceControl.position().left + (2 * spaceControl.width());
-			savedTop = spaceControl.position().top;
-		}
-
-		new Space1889Menu({
-			left: savedLeft,
-			top: savedTop
-		}).render(true);
-	});
-	html.find('.control-tools').find('.scene-control').last().after(spaceControl);
 });
 
 /* -------------------------------------------- */
@@ -501,9 +582,14 @@ Handlebars.registerHelper('formatTime', function (gameTime)
 	return SPACE1889Time.formatTimeDate(SPACE1889Time.getTimeAndDate(gameTime));
 });
 
-Handlebars.registerHelper('formatEffectDuration', function (effectDuration)
+Handlebars.registerHelper('formatLongDate', function (gameTime)
 {
-	return SPACE1889Time.formatEffectDuration(effectDuration);
+	return SPACE1889WorldCalendar.formatLongDateFromTimeStamp(gameTime);
+});
+
+Handlebars.registerHelper('formatEffectDuration', function (effectStart, effectDuration)
+{
+	return SPACE1889Time.formatEffectDuration(effectStart, effectDuration);
 });
 
 Handlebars.registerHelper('formatNumber', function (number, decimal)
@@ -526,14 +612,19 @@ Handlebars.registerHelper('isNotTrusted', function (str)
 	return !game.user.isTrusted;
 });
 
+Handlebars.registerHelper('hasTimeControl', function (str)
+{
+	return SPACE1889Helper.hasUserTimeControl();
+});
+
 Handlebars.registerHelper('hasTokenConfigurePermission', function ()
 {
 	return SPACE1889Helper.hasTokenConfigurePermission(false);
 });
 
-Handlebars.registerHelper('isFvttV10', function (str)
+Handlebars.registerHelper('isGerman', function ()
 {
-	return SPACE1889Helper.isFoundryV10Running();
+	return SPACE1889Helper.isGerman();
 });
 
 Handlebars.registerHelper('getFvttGeneration', function ()
@@ -545,7 +636,7 @@ Handlebars.registerHelper('getEffectImagePath', function (effect)
 {
 	if (effect)
 	{
-		return game.release.generation >= 12 ? effect.img : effect.icon;
+		return effect.img;
 	}
 	return "";
 });
@@ -630,6 +721,15 @@ Handlebars.registerHelper('remainingEmissionEnergySymbol', function (item)
 
 });
 
+Handlebars.registerHelper('canDoUseItem', function (item, actor) 
+{
+	if (!item || !actor)
+		return false;
+
+	return actor.canDoUseItem(item);
+
+});
+
 /* -------------------------------------------- */
 /*  Ready Hook                                  */
 /* -------------------------------------------- */
@@ -639,7 +739,7 @@ Hooks.once("ready", async function() {
 	Hooks.on("hotbarDrop", (bar, data, slot) => createItemMacro(data, slot));
 
 	await Space1889Translation.runInitTranslationAction();
-	await Space1889Migration.runInitMigrationAction();
+	const refreshCalendar = await Space1889Migration.runInitMigrationAction();
 	Space1889Migration.showNewVersionInfo();
 	// refresh Vehicle Data
 	game.actors.forEach((values, keys) =>
@@ -707,10 +807,23 @@ Hooks.once("ready", async function() {
 						SPACE1889Light.createLightSourceOnScene(data.payload.tokenId, data.payload.lightSourceId, data.payload.sceneId);
 					}
 					break;
+				case "changeTime":
+					{
+						if (game.settings.get("space1889", "trustedPlayerCanChangeTime"))
+							SPACE1889Time.changeDate(data.timeData.offsetInSeconds);
+					}
+					break;
 				default:
 					console.warn(`Unhandled socket data type ${data.type}`);
 			}
 		});
+	}
+
+	if (refreshCalendar)
+	{
+		await new Promise(r => setTimeout(r, 500));
+		CONFIG.time.worldCalendarClass.init();
+		game.space1889.apps.CalendarWidget.render(true);
 	}
 });
 
@@ -767,7 +880,7 @@ function rollItemMacro(itemName) {
 		return item.rollSpecial(item.system.rating, true);
 
 	if (item.type === "weapon")
-		return item.rollSpecial(item.system.attack, true);
+		return item.rollSpecial(item.derived.attack, true);
 
 	// Trigger the item roll
 	return item.roll();

@@ -50,7 +50,14 @@
 <div style="max-height:18px">
 	<b>{{localize "SPACE1889.Biography"}}</b>
 </div>
-<div data-group="primary" data-tab="biography">
-	{{editor enrichedBiography target="system.biography" button=true editable=editable engine="prosemirror"}}
+<div class="editor biography" data-application-part="biography">
+	{{#if editable}}
+		<prose-mirror name="system.biography" value="{{system.biography}}" toggled="true" 
+					  document-uuid="{{document.uuid}}" class="sized">
+			{{{ enrichedBiography }}}
+		</prose-mirror>
+	{{else}}
+		{{{ enrichedBiography }}}
+	{{/if}}
 </div>
 {{> "systems/space1889/templates/actor/parts/sub-notes.html"}}

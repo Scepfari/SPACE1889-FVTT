@@ -1,0 +1,83 @@
+<form class="{{cssClass}} {{actor.type}} flexcol" autocomplete="off">
+	<div align="center">
+		<img class="marginauto profile-img artwork" src="systems/space1889/icons/space1889Logo.webp" height="130" width="130"  />
+	</div>
+	<div class="header-fields" align="center">
+		<h2 style="text-align: center">Version 3.0.2 -<br />Marsianische Dunkle Zeiten</h2>
+	</div>
+
+	<h4><strong>3.0.2</strong></h4>
+	<ul class="space1889list">
+		<li>
+			<p>Bugfix: Fenster lassen sich nicht richtig minimieren (<a href="https://github.com/Scepfari/SPACE1889-FVTT/issues/30">[#30]</a>)</p>
+		</li>
+		<li>
+			<p>fehlende (2px hohe) Kopfzeile bei dem herausgel&ouml;sten Nachrichtenfenster (<a href="https://github.com/Scepfari/SPACE1889-FVTT/issues/31">[#31]</a>)</p>
+		</li>
+	</ul>
+	<hr />
+	<h4><strong>3.0.1</strong></h4>
+	<ul class="space1889list">
+		<li>
+			<p>Zwei Erweiterungen des Akteur Kontext Men&uuml;s: Direkter Zugang zum Prototyp Token und die M&ouml;glichkeit einen NSC in SC bzw. einen SC in NSC umzuwandeln</p>
+		</li>
+		<li>
+			<p>Charaktermerkmale mit Kampagnen Effekt (Talente&comma; Fertigkeiten&comma; Spezialisierungen&comma; Ressourcen) haben jetzt ein zus&auml;tzlichen Parameter f&uuml;r die Stufe des Kampagnen Effektes&comma; d.h. &uuml;ber diesen wird angegeben wie viele Stufen des Merkmals von dem Effekt bez&uuml;glich der EP Kosten abgedeckt wird.</p>
+		</li>
+		<li>
+			<p>Charakterbogen UI Verbesserungen: Filteroptionen</p>
+			<ul>
+				<li>Waffen : Wegfiltern aller nicht verwendbarer Waffen&comma; also jener die nicht beim Charakter sind</li>
+				<li>Munition: Wegfiltern aller Munitionsarten&comma; die der Charakter nicht dabei hat</li>
+				<li>R&uuml;stungen: Wegfiltern aller R&uuml;stungen&comma; die der Charakter nicht dabei hat</li>
+				<li>Verletzungen: Wegfiltern aller schon verheilten Verletzungen</li>
+				<li>Langfristige Proben: Wegfiltern aller schon erledigten langfristigen Proben</li>
+			</ul>
+		</li>
+		<li>
+			<p>Neuer Gegenstandstyp &quot;Schild&quot;:</p>
+			<ul>
+				<li>neue Nahkampf Spezialisierung &quot;Schilde&quot;</li>
+				<li>Schilde liefern nur einen Abwehrbonus wenn sie in der Hand gehalten werden</li>
+				<li>Schilde lassen sich auch als Nahkampfwaffe verwenden</li>
+				<li>Das Parade Man&ouml;ver ist auch mit einem Schild m&ouml;glich</li>
+			</ul>
+		</li>
+		<li>
+			<p>Bugfix: Parade beachtet die Abz&uuml;ge der Nebenhand nicht (<a href="https://github.com/Scepfari/SPACE1889-FVTT/issues/27">[#27]</a>)</p>
+		</li>
+		<li>
+			<p>Bugfix: Ausger&uuml;stete(= gehaltene) Waffen lassen sich in Lager/Beh&auml;lter verschieben (<a href="https://github.com/Scepfari/SPACE1889-FVTT/issues/28">[#28]</a>)</p>
+		</li>
+		<li>
+			<p>Bugfix: Darstellungsprobleme bei Talenten mit Kampagnen Effekt (<a href="https://github.com/Scepfari/SPACE1889-FVTT/issues/29">[#29]</a>)</p>
+		</li>
+	</ul>
+	<hr />
+	<h4 data-anchor="3.0.0"><strong>3.0.0</strong></h4>
+	<ul class="space1889list">
+		<li>
+			<p>Unterst&uuml;tzung von Foundry V13<br />Ein wirklich aufwendiger Prozess der mich ein dreiviertel Jahr besch&auml;ftigt hat und vermutlich auch nicht fehlerfrei &uuml;ber die B&uuml;hne ging. Daher wenn ihr Fehler&comma; verloren gegangene Funktionen oder fehlende Funktionalit&auml;t findet&comma; lasst sie mich wissen. Am besten &uuml;ber einen Bugeintrag auf <a href="https://github.com/Scepfari/SPACE1889-FVTT/issues">GitHub</a>. Der Link findet sich auch in den Spieleinstellungen unter dem Knopf &quot;SPACE 1889 Fehler melden&quot;</p>
+		</li>
+		<li>
+			<p>V12 und &auml;lter bleibt auf Version 2.3.6 und wird nicht mehr weitergepflegt</p>
+		</li>
+		<li>
+			<p>Umstellung auf App V2</p>
+		</li>
+		<li>
+			<p>Einbau eines systemeigenen Kalenders&comma; Zeitsteuerung und Monatsansicht (Dank an den DSA Entwickler Plushtoast f&uuml;r die Inspiration)</p>
+		</li>
+		<li>
+			<p>Kompendium Umstellung auf leveldb und Umstruckturierung der Verzeichnisse</p>
+		</li>
+		<li>
+			<p>Effekte f&uuml;r Fertigkeiten und Spezialisierungen (analog zu denen der Talente), um z.B. das Level zu modifizieren ohne die EP Kosten zu beeinflussen.</p>
+		</li>
+		<li>
+			<p>Kampagnen Effekt f&uuml;r Fertigkeiten und Spezialisierungen&comma; also f&uuml;r das erste Level ohne EP zu verbrauchen&comma; alle weiteren Steigerungen dann regul&auml;r oder &uuml;ber Effekte</p>
+		</li>
+	</ul>
+	
+	<p><a class="content-link" draggable="true" data-link="" data-uuid="Compendium.space1889.help.rfmrhN0wxUKN9SQ6" data-id="rfmrhN0wxUKN9SQ6" data-type="JournalEntry" data-pack="space1889.help"><i class="fas fa-book-open"></i>vollst&auml;ndige Versionsgeschichte</a></p>
+</form>

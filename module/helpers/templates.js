@@ -4,7 +4,7 @@
  * @return {Promise}
  */
  export const preloadHandlebarsTemplates = async function() {
-	return loadTemplates([
+	return foundry.applications.handlebars.loadTemplates([
 
 		// Actor partials.
 		"systems/space1889/templates/actor/parts/actor-talents.html",
@@ -14,6 +14,7 @@
 		"systems/space1889/templates/actor/parts/actor-sub-weapons.html",
 		"systems/space1889/templates/actor/parts/actor-ammunitions.html",
 		"systems/space1889/templates/actor/parts/actor-armors.html",
+		"systems/space1889/templates/actor/parts/actor-shields.html",
 		"systems/space1889/templates/actor/parts/actor-weakness.html",
 		"systems/space1889/templates/actor/parts/actor-language.html",
 		"systems/space1889/templates/actor/parts/actor-effects.html",
@@ -33,13 +34,38 @@
 		"systems/space1889/templates/actor/parts/actor-creature-weapons.html",
 		"systems/space1889/templates/actor/parts/actor-creature-weakness.html",
 		"systems/space1889/templates/actor/parts/actor-creature-damage.html",
+		"systems/space1889/templates/actor/parts/character-header.html",
+		"systems/space1889/templates/actor/parts/character-tab-bio.html",
+		"systems/space1889/templates/actor/parts/character-tab-details.html",
+		"systems/space1889/templates/actor/parts/character-tab-items.html",
+		"systems/space1889/templates/actor/parts/character-tab-skills.html",
+		"systems/space1889/templates/actor/parts/character-tab-talents.html",
+		"systems/space1889/templates/actor/parts/character-tab-weapons.html",
+		"systems/space1889/templates/actor/parts/creature-header.html",
+		"systems/space1889/templates/actor/parts/creature-tab-details.html",
+		"systems/space1889/templates/actor/parts/creature-tab-bio.html",
+		"systems/space1889/templates/actor/parts/npc-header.html",
 		"systems/space1889/templates/actor/parts/npc-resources.html",
 		"systems/space1889/templates/actor/parts/npc-items.html",
-		"systems/space1889/templates/actor/parts/vehicle-weapons.html",
+		"systems/space1889/templates/actor/parts/npc-tab-details.html",
+		"systems/space1889/templates/actor/parts/npc-tab-itemAndWeapons.html",
+		"systems/space1889/templates/actor/parts/npc-tab-bio.html",
 		"systems/space1889/templates/actor/parts/vehicle-biography.html",
 		"systems/space1889/templates/actor/parts/vehicle-damage.html",
+		"systems/space1889/templates/actor/parts/vehicle-header.html",
+		"systems/space1889/templates/actor/parts/vehicle-weapons.html",
+		"systems/space1889/templates/actor/parts/vehicle-tab-bio.html",
+		"systems/space1889/templates/actor/parts/vehicle-tab-details.html",
 		"systems/space1889/templates/item/item-sub-id.html",
-		"systems/space1889/templates/item/item-vision-configuration.html",
-		"systems/space1889/templates/item/item-lightSource-configuration.html"
+		"systems/space1889/templates/item/parts/item-lightSource-details.html",
+		"systems/space1889/templates/item/parts/item-lightSource-basic-configuration.html",
+		"systems/space1889/templates/item/parts/item-lightSource-animation-configuration.html",
+		"systems/space1889/templates/item/parts/item-lightSource-advanced-configuration.html",
+		"systems/space1889/templates/item/parts/item-vision-details.html",
+		"systems/space1889/templates/item/parts/item-vision-basic-configuration.html",
+		"systems/space1889/templates/item/parts/item-vision-advanced-configuration.html",
+		"systems/space1889/templates/item/parts/item-header.html",
+		"systems/space1889/templates/item/parts/item-description.html",
+		"systems/space1889/templates/item/parts/item-emptyBase.html",
 	]);
 };

@@ -1,5 +1,5 @@
 import SPACE1889Helper from "./helpers/helper.js";
-import TurnMarker from "./helpers/turnMarker.js";
+import { SPACE1889WorldCalendar } from "./calendar/calendar.js";
 
 export const registerSystemSettings = function ()
 {
@@ -7,7 +7,19 @@ export const registerSystemSettings = function ()
     for(let key of Object.keys(styles)){
 		styles[key] = game.i18n.localize(styles[key]);
     }
-    game.settings.register("space1889", "globalStyle",
+
+	game.settings.register("space1889", "trustedPlayerCanChangeTime",
+	{
+		name: "SPACE1889.ConfigTrustedPlayerCanChangeTime",
+		hint: "SPACE1889.ConfigTrustedPlayerCanChangeTimeInfo",
+		scope: "world",
+		config: true,
+		default: true,
+		type: Boolean,
+		requiresReload: true
+	});
+
+	game.settings.register("space1889", "globalStyle",
         {
             name: "SPACE1889.ConfigGlobalStyle",
             hint: "SPACE1889.ConfigGlobalStyleInfo",
@@ -153,7 +165,7 @@ export const registerSystemSettings = function ()
 			hint: "space1889 version",
 			scope: "world",
 			config: false,
-			default: "0.7.4",
+			default: "0.0.0",
 			type: String
 		});
 
@@ -176,57 +188,6 @@ export const registerSystemSettings = function ()
 			default: "9.28",
 			type: String
 		});
-
-    game.settings.register("space1889", "useCombatTurnMarker",
-	    {
-            name: "SPACE1889.ConfigUseCombatTurnMarker",
-            hint: "SPACE1889.ConfigUseCombatTurnMarkerInfo",
-		    scope: "world",
-		    config: true,
-		    default: true,
-			type: Boolean,
-			onChange: function (newValue)
-			{
-				if (canvas.tokens.Space1889TurnMarker)
-					SPACE1889Helper.refreshTurnMarker(!newValue);
-				if (newValue)
-					new TurnMarker();
-			}
-		});
-
-	game.settings.register("space1889", "combatMarkerTransparency", {
-		name: "SPACE1889.ConfigUseCombatMarkerTransparency",
-		hint: "SPACE1889.ConfigUseCombatMarkerTransparencyInfo",
-		scope: "client",
-		config: true,
-		type: Number,
-		range: {
-			min: 0.1,
-			max: 1,
-			step: 0.1
-		},
-		default: 1,
-		onChange: function ()
-		{
-			if (game.settings.get("space1889", "useCombatTurnMarker"))
-				SPACE1889Helper.refreshTurnMarker();
-		}
-	});
-
-	game.settings.register("space1889", "combatMarkerImagePath", {
-		name: "SPACE1889.ConfigUseCombatMarkerImagePath",
-		hint: "SPACE1889.ConfigUseCombatMarkerImagePathInfo",
-		scope: "client",
-		config: true,
-		type: String,
-		default: "systems/space1889/icons/turnmarkers/gear_copper.webp",
-		filePicker: "image",
-		onChange: function ()
-		{
-			if (game.settings.get("space1889", "useCombatTurnMarker"))
-				SPACE1889Helper.refreshTurnMarker();
-		}
-	});
 
 	game.settings.register("space1889", "combatAutoTokenSelect",
 	{
@@ -335,4 +296,101 @@ export const registerSystemSettings = function ()
 			default: "false|1970",
 			type: String
 		});
+
+	game.settings.register("space1889", "calendarDayTimes",
+	    {
+		    name: "day time settings",
+		    hint: "Darkness influence in scene configuration",
+		    scope: "world",
+		    config: false,
+			default: {
+				"darknessByDayTime": false,
+				"dawn": 6,
+				"morning": 7,
+				"noon": 11,
+				"afternoon": 16,
+				"sunset": 20,
+				"night": 21,
+				"adjustLevels": {
+					"dawn": 0.55,
+					"morning": 0.2,
+					"noon": 0,
+					"afternoon": 0,
+					"sunset": 0.55,
+					"night": 0.95
+				}
+			},
+		    type: Object
+		});
+
+	const menus = {
+		calendar: {
+			name: "SPACE1889.Config.Calendar",
+			label: "SPACE1889.Config.CalendarInfo",
+			hint: "SPACE1889.Config.CalendarHintInfo",
+			type: ConfigureCalendar,
+			restricted: true
+		}
+	}
+	for (const [key, value] of Object.entries(menus))
+	{
+		game.settings.registerMenu('space1889', key, value);
+	}
+}
+
+const saveYearZero = async (form) =>
+{
+	let yearZero = Number(form.elements[0].value);
+	if (yearZero < 1 || yearZero > 2050)
+	{
+		ui.notifications.warn(game.i18n.format("SPACE1889.Config.CalendarInvalidYearZero", { year: yearZero }));
+		return;
+	}
+
+	const yearZeroInfo = "true|" + yearZero.toString();
+	await game.settings.set("space1889", "yearZero", yearZeroInfo);
+	CONFIG.time.worldCalendarClass.init();
+	game.space1889.apps.CalendarWidget.render(true);	
+};
+
+class ConfigureCalendar extends foundry.applications.api.HandlebarsApplicationMixin(foundry.applications.api.ApplicationV2)
+{
+	async render()
+	{
+		const baseContent = await foundry.applications.handlebars.renderTemplate('systems/space1889/templates/dialog/calendarConfiguration.html', {});
+		const index = baseContent.indexOf("value=") + 7;
+		const content = baseContent.substr(0, index) + SPACE1889WorldCalendar.getYearZero().toString() + baseContent.substr(index + 4);
+
+		new foundry.applications.api.DialogV2({
+			window: {
+				title: game.i18n.localize('SPACE1889.Config.CalendarConfig'),
+			},
+			position: {
+				width: 400,
+				height: 400
+			},
+			content,
+			buttons: [
+				{
+					action: 'save',
+					icon: 'fa fa-check',
+					label: game.i18n.localize("SPACE1889.Save"),
+					callback: (event, button, dialog) =>
+					{
+						saveYearZero(button.form);
+					},
+				},
+				{
+					action: 'cancel',
+					icon: 'fas fa-times',
+					label: game.i18n.localize("SPACE1889.Cancel"),
+					callback: (event, button, dialog) =>
+					{
+
+					},
+				},
+			],
+		}).render(true);
+	}
+
 }

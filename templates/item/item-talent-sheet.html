@@ -1,21 +1,15 @@
-<form class="{{cssClass}}" autocomplete="off">
-    <header class="sheet-header">
-        <img class="profile-img artwork" src="{{item.img}}" data-edit="img" data-tooltip="{{item.name}}" />
-		<div class="header-fields">
-			<h1 class="charname"><input name="name" type="text" value="{{item.name}}" placeholder="Name" /></h1>
-			{{> "systems/space1889/templates/item/item-sub-id.html"}}
-			<li class="item flex-group-center flexrow">
-				<div class="resource item-max-with60px">
-					<label for="system.health.value" class="resource-label">{{localize "SPACE1889.Level"}}</label>
-				</div>
-				<div class="resource-content flexrow flex-center flex-between">
-					<input type="text" name="system.level.value" value="{{system.level.value}}" data-dtype="Number" />
-					<span class="resource flex-group-center item-margin5px"> / </span>
-					<input type="text" name="system.level.max" value="{{system.level.max}}" data-dtype="Number" />
-				</div>
-			</li>
+<section class="{{cssClass}}" autocomplete="off">
+
+	<li class="item flex-group-center flexrow">
+		<div class="resource item-max-with60px">
+			<label for="system.health.value" class="resource-label">{{localize "SPACE1889.Level"}}</label>
 		</div>
-    </header>
+		<div class="resource-content flexrow flex-center flex-between">
+			<input type="text" name="system.level.value" value="{{system.level.value}}" data-dtype="Number" />
+			<span class="resource flex-group-center item-margin5px"> / </span>
+			<input type="text" name="system.level.max" value="{{system.level.max}}" data-dtype="Number" />
+		</div>
+	</li>
 	
 	<div class="item flexrow items-header-left" style="display: grid; grid-template-columns: 32% 58% 10%; margin: 5px 0; ">
 	    <label class="resource-label">1. {{localize "SPACE1889.PreConditionType" }}</label>
@@ -31,63 +25,63 @@
         {{#if (eq system.preconditionType 'nothing')}}
         <div class="resource">
 	        <select name="system.secondPreconditionName" data-dtype="String">
-		        {{selectOptions system.emptyEntry selected=system.preconditionName nameAttr="key" labelAttr="label"}}
+		        {{selectOptions system.emptyEntry selected=system.preconditionName valueAttr="key" labelAttr="label"}}
 	        </select>
         </div>
         {{/if}}
         {{#if (eq system.preconditionType 'actor')}}
         <div class="resource">
 	        <select name="system.preconditionName" data-dtype="String">
-		        {{selectOptions system.actorTypes selected=system.preconditionName nameAttr="key" labelAttr="label"}}
+		        {{selectOptions system.actorTypes selected=system.preconditionName valueAttr="key" labelAttr="label"}}
 	        </select>
         </div>
         {{/if}}
         {{#if (eq system.preconditionType 'primary')}}
         <div class="resource">
 	        <select name="system.preconditionName" data-dtype="String">
-		        {{selectOptions system.primaryAbilityTypes selected=system.preconditionName nameAttr="key" labelAttr="label"}}
+		        {{selectOptions system.primaryAbilityTypes selected=system.preconditionName valueAttr="key" labelAttr="label"}}
 	        </select>
         </div>
         {{/if}}
         {{#if (eq system.preconditionType 'secondary')}}
         <div class="resource">
 	        <select name="system.preconditionName" data-dtype="String">
-		        {{selectOptions system.secondaryAbilityTypes selected=system.preconditionName nameAttr="key" labelAttr="label"}}
+		        {{selectOptions system.secondaryAbilityTypes selected=system.preconditionName valueAttr="key" labelAttr="label"}}
 	        </select>
         </div>
         {{/if}}
         {{#if (eq system.preconditionType 'skill')}}
         <div class="resource">
 	        <select name="system.preconditionName" data-dtype="String">
-		        {{selectOptions system.skills selected=system.preconditionName nameAttr="key" labelAttr="label"}}
+		        {{selectOptions system.skills selected=system.preconditionName valueAttr="key" labelAttr="label"}}
 	        </select>
         </div>
         {{/if}}
         {{#if (eq system.preconditionType 'skillGroup')}}
         <div class="resource">
 	        <select name="system.preconditionName" data-dtype="String">
-		        {{selectOptions system.skillGroups selected=system.preconditionName nameAttr="key" labelAttr="label"}}
+		        {{selectOptions system.skillGroups selected=system.preconditionName valueAttr="key" labelAttr="label"}}
 	        </select>
         </div>
         {{/if}}
         {{#if (eq system.preconditionType 'species')}}
         <div class="resource">
 	        <select name="system.preconditionName" data-dtype="String">
-		        {{selectOptions system.speciesTypes selected=system.preconditionName nameAttr="key" labelAttr="label"}}
+		        {{selectOptions system.speciesTypes selected=system.preconditionName valueAttr="key" labelAttr="label"}}
 	        </select>
         </div>
         {{/if}}
         {{#if (eq system.preconditionType 'talent')}}
         <div class="noOverflow">
 	        <select name="system.preconditionName" data-dtype="String">
-		        {{selectOptions system.talents selected=system.preconditionName nameAttr="key" labelAttr="label"}}
+		        {{selectOptions system.talents selected=system.preconditionName valueAttr="key" labelAttr="label"}}
 	        </select>
         </div>
         {{/if}}
         {{#if (eq system.preconditionType 'weakness')}}
         <div class="resource">
 	        <select name="system.preconditionName" data-dtype="String">
-		        {{selectOptions system.weaknesses selected=system.preconditionName nameAttr="key" labelAttr="label"}}
+		        {{selectOptions system.weaknesses selected=system.preconditionName valueAttr="key" labelAttr="label"}}
 	        </select>
         </div>
         {{/if}}
@@ -116,63 +110,63 @@
         {{#if (eq system.secondPreconditionType 'nothing')}}
         <div class="resource">
 	        <select name="system.secondPreconditionName" data-dtype="String">
-		        {{selectOptions system.emptyEntry selected=system.secondPreconditionName nameAttr="key" labelAttr="label"}}
+		        {{selectOptions system.emptyEntry selected=system.secondPreconditionName valueAttr="key" labelAttr="label"}}
 	        </select>
         </div>
         {{/if}}
         {{#if (eq system.secondPreconditionType 'actor')}}
         <div class="resource">
 	        <select name="system.secondPreconditionName" data-dtype="String">
-		        {{selectOptions system.actorTypes selected=system.secondPreconditionName nameAttr="key" labelAttr="label"}}
+		        {{selectOptions system.actorTypes selected=system.secondPreconditionName valueAttr="key" labelAttr="label"}}
 	        </select>
         </div>
         {{/if}}
         {{#if (eq system.secondPreconditionType 'primary')}}
         <div class="resource">
 	        <select name="system.secondPreconditionName" data-dtype="String">
-		        {{selectOptions system.primaryAbilityTypes selected=system.secondPreconditionName nameAttr="key" labelAttr="label"}}
+		        {{selectOptions system.primaryAbilityTypes selected=system.secondPreconditionName valueAttr="key" labelAttr="label"}}
 	        </select>
         </div>
         {{/if}}
         {{#if (eq system.secondPreconditionType 'secondary')}}
         <div class="resource">
 	        <select name="system.secondPreconditionName" data-dtype="String">
-		        {{selectOptions system.secondaryAbilityTypes selected=system.secondPreconditionName nameAttr="key" labelAttr="label"}}
+		        {{selectOptions system.secondaryAbilityTypes selected=system.secondPreconditionName valueAttr="key" labelAttr="label"}}
 	        </select>
         </div>
         {{/if}}
         {{#if (eq system.secondPreconditionType 'skill')}}
         <div class="resource">
 	        <select name="system.secondPreconditionName" data-dtype="String">
-		        {{selectOptions system.skills selected=system.secondPreconditionName nameAttr="key" labelAttr="label"}}
+		        {{selectOptions system.skills selected=system.secondPreconditionName valueAttr="key" labelAttr="label"}}
 	        </select>
         </div>
         {{/if}}
         {{#if (eq system.secondPreconditionType 'skillGroup')}}
         <div class="resource">
 	        <select name="system.secondPreconditionName" data-dtype="String">
-		        {{selectOptions system.skillGroups selected=system.secondPreconditionName nameAttr="key" labelAttr="label"}}
+		        {{selectOptions system.skillGroups selected=system.secondPreconditionName valueAttr="key" labelAttr="label"}}
 	        </select>
         </div>
         {{/if}}
         {{#if (eq system.secondPreconditionType 'species')}}
         <div class="resource">
 	        <select name="system.secondPreconditionName" data-dtype="String">
-		        {{selectOptions system.speciesTypes selected=system.secondPreconditionName nameAttr="key" labelAttr="label"}}
+		        {{selectOptions system.speciesTypes selected=system.secondPreconditionName valueAttr="key" labelAttr="label"}}
 	        </select>
         </div>
         {{/if}}
         {{#if (eq system.secondPreconditionType 'talent')}}
         <div class="noOverflow">
 	        <select name="system.secondPreconditionName" data-dtype="String">
-		        {{selectOptions system.talents selected=system.secondPreconditionName nameAttr="key" labelAttr="label"}}
+		        {{selectOptions system.talents selected=system.secondPreconditionName valueAttr="key" labelAttr="label"}}
 	        </select>
         </div>
         {{/if}}
         {{#if (eq system.secondPreconditionType 'weakness')}}
         <div class="resource">
 	        <select name="system.secondPreconditionName" data-dtype="String">
-		        {{selectOptions system.weaknesses selected=system.secondPreconditionName nameAttr="key" labelAttr="label"}}
+		        {{selectOptions system.weaknesses selected=system.secondPreconditionName valueAttr="key" labelAttr="label"}}
 	        </select>
         </div>
         {{/if}}
@@ -196,13 +190,13 @@
     <div class="form-group">
 	    <label>{{ localize "SPACE1889.ChangedSkill" }}</label>
 	    <select name="system.changedSkill" data-dtype="String">
-		    {{selectOptions system.skills selected=system.changedSkill nameAttr="key" labelAttr="label"}}
+		    {{selectOptions system.skills selected=system.changedSkill valueAttr="key" labelAttr="label"}}
 	    </select>
     </div>
     <div class="form-group">
 	    <label>{{ localize "SPACE1889.NewBase" }}</label>
 	    <select name="system.newBase" data-dtype="String">
-		    {{selectOptions system.primaryAbilityTypes selected=system.newBase nameAttr="key" labelAttr="label"}}
+		    {{selectOptions system.primaryAbilityTypes selected=system.newBase valueAttr="key" labelAttr="label"}}
 	    </select>
     </div>
     <hr>
@@ -218,55 +212,55 @@
     <div class="item" style="display: grid; grid-template-columns: 35% 41% 12% 12%; margin: 5px 0; ">
 		<div class="resource">
 			<select name="system.bonusTargetType" data-dtype="String">
-				{{selectOptions system.bonusTypes selected=system.bonusTargetType nameAttr="key" labelAttr="label"}}
+				{{selectOptions system.bonusTypes selected=system.bonusTargetType valueAttr="key" labelAttr="label"}}
 			</select>
 		</div>
 		{{#if (eq system.bonusTargetType '')}}
 		<div class="resource">
 			<select name="system.bonusTarget" data-dtype="String">
-				{{selectOptions system.emptyEntry selected=system.bonusTarget nameAttr="key" labelAttr="label"}}
+				{{selectOptions system.emptyEntry selected=system.bonusTarget valueAttr="key" labelAttr="label"}}
 			</select>
 		</div>
 		{{/if}}
 		{{#if (eq system.bonusTargetType 'ability')}}
 		<div class="resource">
 			<select name="system.bonusTarget" data-dtype="String">
-				{{selectOptions system.primaryAbilityTypes selected=system.bonusTarget nameAttr="key" labelAttr="label"}}
+				{{selectOptions system.primaryAbilityTypes selected=system.bonusTarget valueAttr="key" labelAttr="label"}}
 			</select>
 		</div>
 		{{/if}}
 		{{#if (eq system.bonusTargetType 'secondary')}}
 		<div class="resource">
 			<select name="system.bonusTarget" data-dtype="String">
-				{{selectOptions system.secondaryAbilityTypes selected=system.bonusTarget nameAttr="key" labelAttr="label"}}
+				{{selectOptions system.secondaryAbilityTypes selected=system.bonusTarget valueAttr="key" labelAttr="label"}}
 			</select>
 		</div>
 		{{/if}}
 		{{#if (eq system.bonusTargetType 'skill')}}
 		<div class="resource">
 			<select name="system.bonusTarget" data-dtype="String">
-				{{selectOptions system.skillsWithGroups selected=system.bonusTarget nameAttr="key" labelAttr="label"}}
+				{{selectOptions system.skillsWithGroups selected=system.bonusTarget valueAttr="key" labelAttr="label"}}
 			</select>
 		</div>
 		{{/if}}
 		{{#if (eq system.bonusTargetType 'specialization')}}
 		<div class="resource">
 			<select name="system.bonusTarget" data-dtype="String">
-				{{selectOptions system.specializations selected=system.bonusTarget nameAttr="key" labelAttr="label"}}
+				{{selectOptions system.specializations selected=system.bonusTarget valueAttr="key" labelAttr="label"}}
 			</select>
 		</div>
 		{{/if}}
 		{{#if (eq system.bonusTargetType 'health')}}
 		<div class="resource">
 			<select name="system.bonusTarget" data-dtype="String">
-				{{selectOptions system.emptyEntry selected=system.bonusTarget nameAttr="key" labelAttr="label"}}
+				{{selectOptions system.healthType selected=system.bonusTarget valueAttr="key" labelAttr="label"}}
 			</select>
 		</div>
 		{{/if}}
 		{{#if (eq system.bonusTargetType 'sense')}}
 		<div class="resource">
 			<select name="system.bonusTarget" data-dtype="String">
-				{{selectOptions system.senseTypes selected=system.bonusTarget nameAttr="key" labelAttr="label"}}
+				{{selectOptions system.senseTypes selected=system.bonusTarget valueAttr="key" labelAttr="label"}}
 			</select>
 			<!--<input type="text" name="system.bonusTarget" value="{{system.bonusTarget}}" />-->
 		</div>
@@ -309,43 +303,35 @@
 	    <input type="text" name="system.info" value="{{system.info}}" />
     </div>
     <hr>
-    <div>
-    <li class="item flexrow items-header">
-	    <label class="resource-label">{{ localize "SPACE1889.IsCampaingnEffect"}}</label>
-	    <label class="resource-label">{{ localize "SPACE1889.Source"}}</label>
-    </li>
-    <li class="item flex-group-center flexrow">
-	    <div class="resource-content flex-center flex-between">
-		    <input data-tooltip="{{localize "SPACE1889.NoEpCauseTempCampaingnEffect"}}" type="checkbox" name="system.noEp" {{checked system.noEp}} />
-	    </div>
-	    <div class="resource-content flex-center flex-between">
-		    <input type="text" name="system.noEpSource" value="{{system.noEpSource}}" />
-	    </div>
-    </li>
+	<div>
+		<li class="item flexrow items-header" style="display: grid; grid-template-columns: 35% 15% 50%; ">
+			<label class="resource-label">{{ localize "SPACE1889.IsCampaingnEffect"}}</label>
+			<label class="resource-label">{{ localize "SPACE1889.LevelPl"}}</label>
+			<label class="resource-label">{{ localize "SPACE1889.Source"}}</label>
+		</li>
+		<li class="item flex-group-center flexrow" style="display: grid; grid-template-columns: 35% 15% 50%; ">
+			<div class="resource-content flex-center flex-between">
+				<input data-tooltip="{{localize "SPACE1889.NoEpCauseCampaingnEffect"}}" type="checkbox" name="system.noEp" {{checked system.noEp}} />
+			</div>
+			<div class="resource-content flex-center flex-between" data-tooltip="{{localize "SPACE1889.NoEpCampaingnEffectLevel"}}">
+				<input type="number" name="system.noEpLevels" value="{{system.noEpLevels}}" data-dtype="Number" min="0" max="{{system.level.max}}" />
+			</div>
+			<div class="resource-content flex-center flex-between">
+				<input type="text" name="system.noEpSource" value="{{system.noEpSource}}" />
+			</div>
+		</li>
 	</div>
 
 	<div>
 	{{> "systems/space1889/templates/actor/parts/actor-effects.html"}}
 	</div>
 
-    {{!-- Sheet Tab Navigation --}}
-    <nav class="sheet-tabs tabs" data-group="primary">
-        <a class="item" data-tab="description">{{localize "SPACE1889.Description"}}</a>
-    </nav>
+	{{#if (ne derived.descriptionLangId (localize derived.descriptionLangId))}}
+		<hr />
+		<p>{{{localize derived.descriptionLangId}}}</p>
+		<hr />
+	{{/if}}
 
-    {{!-- Sheet Body --}}
-    <section class="sheet-body">
+	{{> "systems/space1889/templates/item/parts/item-description.html"}}
 
-        {{!-- Description Tab --}}
-        <div class="tab" data-group="primary" data-tab="description">
-			{{#if (ne system.descriptionLangId (localize system.descriptionLangId))}}
-				<p>{{{localize system.descriptionLangId}}}</p>
-				<hr />
-			{{/if}}
-		<div class="edit-special">
-			{{editor enrichedDescription target="system.description" button=true editable=editable}}
-		</div>
-		</div>
-    </section>
-
-</form>
+</section>

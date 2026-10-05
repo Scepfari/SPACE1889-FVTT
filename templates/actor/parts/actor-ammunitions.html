@@ -1,11 +1,20 @@
 <ol class="items-list ">
 	<li class="item flexrow items-header">
 		<div class="item-name ">{{localize "SPACE1889.Ammunition"}}&#160;
-			<a class="open-compendium" data-tooltip="{{localize 'SPACE1889.OpenCompendium'}}" data-pack="space1889.munition"><i class="far fa-external-link-square"></i></a>&ensp;
+			<a class="open-compendium" data-tooltip="{{localize 'SPACE1889.OpenCompendium'}}" data-pack="space1889.ausrustung"><i class="far fa-external-link-square"></i></a>&ensp;
 			{{#if system.visualisation.compressedAmmunition}}
 			<a class="compressed-ammunition-toggle" data-tooltip="{{localize 'SPACE1889.ContainerExpand'}}" data-tooltip-direction="DOWN"><i class="fal fa-expand-arrows-alt"></i></a>
 			{{else}}
 			<a class="compressed-ammunition-toggle" data-tooltip="{{localize 'SPACE1889.ContainerCompress'}}" data-tooltip-direction="DOWN"><i class="fal fa-compress-arrows-alt" ></i></a>
+			&#160;
+			{{#if system.visualisation.filterAmmunition}}
+				<a class="fa-stack filter-ammunition-toggle" data-tooltip="{{localize 'SPACE1889.ItemsDisableFilter'}}" data-tooltip-direction="DOWN">
+					<i class="fa fa-filter fa-stack-1x"></i>
+					<i class="fa fa-ban fa-stack-1x"></i>
+				</a>
+			{{else}}
+				<a class="filter-ammunition-toggle" data-tooltip="{{localize 'SPACE1889.ItemsFilter'}}" data-tooltip-direction="DOWN"><i class="fal fa-filter"></i></a>
+			{{/if}}
 			{{/if}}
 		</div>
 		<div class="items-name item-max-with40px">{{localize "SPACE1889.Quantity"}}</div>
@@ -17,11 +26,12 @@
 		</div>
 	</li>
 	{{#if (not system.visualisation.compressedAmmunition)}}
-	{{#each system.ammunitions as |item id|}}
+    {{#each derived.ammunitions as |item id|}}
+	{{#if (or (not ../system.visualisation.filterAmmunition) (canDoUseItem item ../document))}}
 	<li class="item row-section flexrow" data-item-id="{{item._id}}">
 		<div class="item-name">
-			<div data-tooltip="{{fullItemToolTipDescription item}}" data-tooltip-direction="RIGHT" class="item-name">
-				<h4 for="" class="rollable" data-roll-type="item" data-label="{{item.name}}">{{item.system.label}}</h4>
+			<div data-tooltip="{{fullItemToolTipDescription item}}" data-tooltip-direction="RIGHT" class="item-name-name">
+				<label for="" class="rollable" data-roll-type="item" data-label="{{item.name}}">{{item.derived.label}}</label>
 			</div>
 		</div>
 		<div class="items-list item-max-with40px">
@@ -30,14 +40,15 @@
 
 		<label class="items-list item-max-with75px">{{item.system.typeDisplay}}</label>
 		<label class="items-list item-max-with75px">{{item.system.capacityTypeDisplay}}</label>
-		<div class="items-list item-max-with40px" data-tooltip="{{item.system.locationDisplayLong}}">
-			<a class="location-click">{{item.system.locationDisplay}}</a>
+		<div class="items-list item-max-with40px" data-tooltip="{{item.system.locationLong}}">
+			<a class="location-click">{{item.system.locationShort}}</a>
 		</div>
 		<div class="item-controls item-max-with50px">
-			<a class="item-control item-edit" data-tooltip='{{localize "SPACE1889.EditItemWithName" name=item.system.label}}'><i class="fas fa-edit"></i></a>
-			<a class="item-control item-delete" data-tooltip='{{localize "SPACE1889.DeleteItemWithName" name=item.system.label}}'><i class="fas fa-trash"></i></a>
+			<a class="item-control item-edit" data-tooltip='{{localize "SPACE1889.EditItemWithName" name=item.derived.label}}'><i class="fas fa-edit"></i></a>
+			<a class="item-control item-delete" data-tooltip='{{localize "SPACE1889.DeleteItemWithName" name=item.derived.label}}'><i class="fas fa-trash"></i></a>
 		</div>
 	</li>
+	{{/if}}
 	{{/each}}
 	{{/if}}
 </ol>

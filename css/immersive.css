@@ -1,4 +1,19 @@
-@import url("https://fonts.googleapis.com/css2?family=Times:wght@400;700&display=swap");
+.space1889-immersive {
+	font-family: 'Times New Roman', Times, serif;
+}
+
+.space1889-immersive .chat-message button {
+	font-family: 'Times New Roman', Times, serif;
+}
+
+.space1889-immersive .main button {
+	font-family: 'Times New Roman', Times, serif;
+		
+}
+
+.space1889-immersive .settings-sidebar button, a.button {
+	font-family: 'Times New Roman', Times, serif;
+}
 
 .space1889-immersive .window-app {
 	font-family: 'Times New Roman', Times, serif;
@@ -6,6 +21,14 @@
 
 .space1889-immersive .window-content {
 	font-family: 'Times New Roman', Times, serif;
+}
+	
+.space1889-immersive .standard-form button{
+	font-family: 'Times New Roman', Times, serif;
+}
+
+.space1889-immersive button.icon, a.button.icon {
+		font-family: var(--font-awesome);
 }
 
 .space1889-immersive .chat-message {
@@ -37,7 +60,7 @@
 	font-family: 'Times New Roman', Times, serif;
 }
 
-.space1889-immersive body.system-space1889, .space1889-immersive .sidebar-tab button, .space1889-immersive .sidebar-tab .window-content, .space1889-immersive .sidebar-tab .encounters, .space1889-immersive .sidebar-tab .directory-list .folder, .space1889-immersive .sidebar-tab .chat-message, .space1889-immersive .sidebar-tab .message {
+.space1889-immersive body.system-space1889, .space1889-immersive .sidebar-tab .window-content, .space1889-immersive .sidebar-tab .encounters, .space1889-immersive .sidebar-tab .directory-list .folder, .space1889-immersive .sidebar-tab .chat-message, .space1889-immersive .sidebar-tab .message {
 	font-family: 'Times New Roman', Times, serif;
 }
 
@@ -49,9 +72,9 @@
 	font-family: 'Times New Roman', Times, serif;
 }
 
-.space1889-immersive button {
+/*.space1889-immersive button {
 	font-family: 'Times New Roman', Times, serif;
-}
+}*/
 
 .space1889-immersive #tah-character-name {
 	font-family: 'Times New Roman', Times, serif;
@@ -64,18 +87,23 @@
 	font-family: 'Times New Roman', Times, serif;
 }
 
-.space1889-immersive #players:after {
-	background-image: url("../icons/backgrounds/space1889PlayerBotT.webp");
-	background-size: 100% 15px;
-	background-repeat: no-repeat;
-	content: "";
-	height: 15px;
-	width: 215px;
-	position: absolute;
-	left: 3px;
-	bottom: 4px;
-	z-index: -1;
-}
+	/*.space1889-immersive #players #players-active:after {
+		background-image: url("../icons/backgrounds/space1889PlayerBotT.webp");
+		background-size: 100% 15px;
+		background-repeat: no-repeat;
+		content: "";
+		height: 15px;
+		width: 214px;
+		position: absolute;
+		left: 8px;
+		bottom: 12px;*/
+		/*	left: -2px;*/
+		/*		right: -2px;
+		bottom: -5px;
+		top: calc(100% -2px);*/
+		/*z-index: -1;
+		background-position: center 100%;
+	}
 
 .space1889-immersive #players h3 {
 	border: none;
@@ -83,19 +111,24 @@
 	overflow: visible
 }
 
-.space1889-immersive #players h3:before {
-	background-image: url("../icons/backgrounds/space1889PlayerHeadT.webp"),url("../icons/backgrounds/space1889PlayerMidT.webp");
-	background-size: 100% 30px,100% calc(100% - 30px);
+.space1889-immersive #players #players-active:before {
+	background-image: url("../icons/backgrounds/space1889PlayerHeadT.webp");
+	background-size: 100% 30px;
 	background-repeat: no-repeat;
 	content: "";
 	position: absolute;
-	left: -15px;
+	width: 214px;
+	height: 15px;
+	top: calc(100% - 40px);*/
+/*	bottom: 30px;*/
+	/*left: 8px;*/
+/*	left: 8px;
 	right: -5px;
-	bottom: 0px;
-	top: -20px;
-	z-index: -1;
-	background-position: center 0px,center 30px
-}
+	bottom: calc(100% - 5px);
+	top: -25px;*/
+	/*z-index: -1;
+	background-position: center 0px;
+}*/
 
 .space1889-immersive #players #player-list {
 	border: none;
@@ -103,21 +136,26 @@
 	overflow: visible
 }
 
-.space1889-immersive #players #player-list:before {
+/*.space1889-immersive #players #player-active {
+	border: none;
+	box-shadow: none;
 	background-image: url("../icons/backgrounds/space1889PlayerMidT.webp");
 	background-size: 100% 50px;
 	background-repeat: repeat-y;
 	content: "";
-	position: absolute;
-	left: -12px;
-	right: -2px;
+	position: relative;
+	width: 214px;
+	top: -25px;*/
+/*	height: 40px;*/
+	/*left: 8px;*/
+/*	right: -2px;
 	bottom: 5px;
-	top: -3px;
-	z-index: -1;
-	background-position: center 0px
-}
+	top: -3px;*/
+	/*z-index: -1;*/
+/*	background-position: center 0px*/
+/*}*/
 
-.space1889-immersive #hotbar {
+/*.space1889-immersive #hotbar {
 	position: relative;
 	left: 10px;
 	top: -3px;
@@ -146,7 +184,7 @@
 	position: absolute;
 	left: -8px;
 	bottom: -11px;
-}
+}*/
 
 .space1889-immersive .actor form {
 	border-color: black;
@@ -164,15 +202,24 @@
 	margin-left: 15%;
 }
 
-.space1889-immersive .window-app .window-header {
-	background-image: url("../icons/backgrounds/headerLeft.webp"), url("../icons/backgrounds/headerRight.webp");
-	background-size: 40px 100%, 40px 100%;
-	background-repeat: no-repeat;
-	border-radius: 5px;
-	z-index: -1;
-	background-position: left 0px, right 0px;
-	padding-right: 16px;
-}
+	.space1889-immersive .application:not(.minimized, .sidebar-popout) .window-header {
+		background-image: url("../icons/backgrounds/headerLeft.webp"), url("../icons/backgrounds/headerRight.webp");
+		background-size: 33px 100%, 33px 100%;
+		background-repeat: no-repeat;
+		z-index: -1;
+		background-position: left 0px, right 0px;
+		padding-right: 16px;
+		--header-height: 26;
+	}
+
+	.space1889-immersive .window-header {
+		background-image: url("../icons/backgrounds/headerLeft.webp"), url("../icons/backgrounds/headerRight.webp");
+		background-size: 46px 100%, 46px 100%;
+		background-repeat: no-repeat;
+		z-index: -1;
+		background-position: left 0px, right 0px;
+		padding-right: 16px;
+	}
 
 .space1889-immersive .journal-entry-pages {
 	border-color: black;
@@ -180,7 +227,8 @@
 	border-width: 8px;
 	border-image: url('../icons/backgrounds/border.webp') 8 8 8 8;
 	border-image-repeat: stretch;
-	border-image-outset: 3px;
+	border-image-outset: 0px;
 	padding: 3px;
 	margin: 0px;
 }
+

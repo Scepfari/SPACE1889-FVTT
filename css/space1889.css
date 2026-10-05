@@ -25,7 +25,7 @@
 	grid-column: span 2 / span 2;
 	grid-template-columns: repeat(2, minmax(0, 1fr));
 	gap: 10px;
-	margin: 10px 0;
+	margin: 5px 0;
 	padding: 0;
 }
 
@@ -297,7 +297,8 @@
 	-webkit-box-pack: start;
 	-ms-flex-pack: start;
 	justify-content: flex-start;
-	margin-bottom: 10px;
+	margin-bottom: 5px;
+	min-height: 108px;
 }
 
 .space1889 .sheet-header .profile-img {
@@ -323,6 +324,19 @@
 }
 
 .space1889 .sheet-header h1.charname input {
+	width: 100%;
+	height: 100%;
+	margin: 0;
+}
+
+.space1889 .sheet-header h2.charname {
+	height: 38px;
+	padding: 0px;
+	margin: 0px 0;
+	border-bottom: 0;
+}
+
+.space1889 .sheet-header h2.charname input {
 	width: 100%;
 	height: 100%;
 	margin: 0;
@@ -431,7 +445,7 @@
 }
 
 .space1889 .items-header-center {
-	height: 28px;
+	height: 1.25rem;
 	margin: 2px 0;
 	padding: 0;
 	-webkit-box-align: center;
@@ -463,7 +477,7 @@
 	padding: 0;
 	overflow-y: auto;
 	scrollbar-width: thin;
-	color: #444;
+/*	color: #444;*/
 }
 
 .space1889 .items-list .item-list {
@@ -549,7 +563,7 @@
 }
 
 .space1889 .item-max-with50px {
-	max-width: 50px;
+	max-width: 52px;
 	text-align: center;
 	vertical-align: center;
 }
@@ -649,9 +663,9 @@ font-size: 12px;
 	border-bottom: none;
 }
 
-.space1889 .items-list .item .item-name {
+/*.space1889 .items-list .item .item-name {
 	color: #191813;
-}
+}*/
 
 .space1889 .items-list .item .item-name .item-image {
 	-webkit-box-flex: 0;
@@ -702,7 +716,7 @@ font-size: 12px;
 }
 
 .space1889 .items-list .items-header {
-	height: 28px;
+	height: 1.25rem;
 	margin: 2px 0;
 	padding: 0;
 	-webkit-box-align: center;
@@ -808,6 +822,55 @@ font-size: 12px;
 	bottom: 0;
 }
 
+.fa-mouseLeftClick {
+	position: relative;
+	width: 20px;
+	height: 18px;
+	top: 2px;
+}
+
+.fa-mouseLeftClick:before {
+	content: '';
+	background-image: url('../icons/svg/mouseLeftClick.svg');
+	background-size: contain;
+	background-repeat: no-repeat;
+	background-position: center;
+	position: absolute;
+	left: 0;
+	right: 0;
+	top: 2px;
+	bottom: 0;
+}
+
+.fa-mouseRightClick {
+	position: relative;
+	width: 20px;
+	height: 18px;
+	top: 2px;
+}
+
+.fa-mouseRightClick:before {
+	content: '';
+	background-image: url('../icons/svg/mouseRightClick.svg');
+	background-size: contain;
+	background-repeat: no-repeat;
+	background-position: center;
+	position: absolute;
+	left: 0;
+	right: 0;
+	top: 2px;
+	bottom: 0;
+}
+
+.fa-stack {
+	width: 1em;
+	height: 1em;
+}
+
+.fa-stack-1x {
+	line-height: normal;
+}
+
 #pause img {
 	content: url('../icons/spacepause.webp');
 	height: 150px;
@@ -815,6 +878,7 @@ font-size: 12px;
 	top: -85px;
 	left: calc(50% - 125px);
 	opacity: 0.9;
+	animation-duration: 0s;
 }
 
 #pause .pause-space1889 {
@@ -900,6 +964,8 @@ font-size: 12px;
 	-ms-flex-align: center;
 	align-items: center;
 	margin: 1px 1px 5px 1px;
+	width: 30px;
+	height: 30px;
 }
 
 .space1889-menu-window-header {
@@ -924,7 +990,353 @@ font-size: 12px;
 	flex-wrap: wrap;
 	align-items: baseline;
 	justify-content: space-evenly;
-	top: calc(100% + 55px);
+	top: calc(100% + 60px);
+	left: -58px;
 	height: auto;
 	position: absolute;
+}
+
+.space1889-tokenHudButton {
+	-webkit-box-flex: 0;
+	-ms-flex: 0 0 35px;
+	flex: 0 0 35px;
+	height: 35px;
+	object-fit: scale-down;
+	margin-top: -5px;
+}
+
+.space1889-dialogFieldset {
+	row-gap: 0.5rem;
+	padding-top: 0.5rem;
+	padding-bottom: 0.5rem;
+}
+
+.space1889-dialogViertelMargin {
+	margin-top: 0.25rem;
+	margin-bottom: 0.25rem;
+}
+
+
+.space1889-formGroup{
+	display: flex;
+	flex-direction: row;
+	flex-wrap: wrap;
+	align-items: center;
+	margin: 0;
+	gap: 0.5rem;
+}
+
+.space1889-formGroup .form-fields {
+	flex: 1;
+}
+
+/* calendar */
+
+.space1889-ToolTipMouse {
+	position: relative;
+/*	width: 16px;*/
+	height: 16px;
+	left: 0;
+	right: 0;
+	top: 3px;
+/*	bottom: 0;*/
+	/*position: absolute;*/
+}
+
+.space1889-WidgetTimeButton {
+	border: 1px solid var(--border-color);
+	padding: 0px 2px 2px 2px;
+	border-radius: 5px;
+	box-shadow: 0 0 12px #444 inset;
+	display: inline-block;
+	-webkit-box-align: center;
+	-ms-flex-align: center;
+	align-items: center;
+	margin: 0px 1px 1px 1px;
+	position: relative;
+	width: 23px;
+	height: 23px;
+}
+
+.space1889-TimeButtonIcon {
+	position: relative;
+	top: 1px;
+	align-items: center;
+	height: 20px;
+	width: 20px;
+}
+
+.space1889CalendarWidget {
+	position: fixed;
+	top: 5px;
+	left: 50%;
+	height: 40px;
+	transform: translateX(-50%)
+}
+
+.space1889CalendarWidget button {
+	--control-size: 24px
+}
+
+.space1889CalendarWidget .calendar-widget-content {
+	position: relative;
+	background-repeat: no-repeat;
+	background-position: bottom center;
+	background-size: 100% 20px;
+	align-items: start;
+	height: 40px;
+	--icon-size: 20px;
+	position: relative
+}
+
+.space1889CalendarWidget .calendar-widget-content .dayProgress {
+	position: relative;
+	box-sizing: border-box;
+	--control-size: 24px;
+	--button-size: 24px;
+	font-size: 16px;
+	padding: 2px;
+	border-radius: 5px;
+	background-color: black;
+	color: white;
+	cursor: var(--cursor-pointer)
+}
+
+.space1889CalendarWidget .calendar-widget-content .dayProgress .slideIndicator {
+	position: absolute;
+	top: 0;
+	width: 12px;
+	bottom: 0;
+	left: calc(var(--p, 0) - 6px);
+	cursor: var(--cursor-grab)
+}
+
+.space1889CalendarWidget .calendar-widget-content .dayProgress .slideIndicator:after {
+	position: absolute;
+	content: "";
+	inset: 0;
+	background: #ca0606;
+	clip-path: polygon(0% 0%, 100% 0%, 50% 20%, 50% 80%, 100% 100%, 0% 100%, 50% 80%, 50% 20%)
+}
+
+.space1889CalendarWidget .calendar-widget-content:hover .visibilitynone {
+	opacity: 1
+}
+
+.space1889CalendarWidget .calendar-widget-content .visibilitynone {
+	opacity: 0;
+	transition: opacity .15s ease-in-out
+}
+
+.space1889CalendarWidget .shiftToRight {
+	left: 100%;
+}
+
+.center {
+	text-align: center
+}
+
+.calendar-day {
+	position: relative;
+	background: hsla(0,0%,100%,.05);
+	border: none;
+	border-radius: 4px;
+	min-height: 36px;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	font-size: 13px;
+	color: var(--color-text-primary);
+	transition: background-color .15s ease
+}
+
+.space1889CalendarMonthlyView .calendar-grid .calendar-week {
+	display: grid;
+	grid-template-columns: repeat(var(--weekday-count, 7), 1fr);
+	gap: 2px;
+	margin-bottom: 2px;
+}
+
+.space1889CalendarMonthlyView .weekday-headers {
+	display: grid;
+	grid-template-columns: repeat(var(--weekday-count, 7), 1fr);
+	gap: 1px;
+	margin-bottom: 4px;
+}
+
+.space1889CalendarMonthlyView .weekday-headers .weekday-header {
+	background: var(--color-bg-secondary);
+	border: 1px solid var(--color-border-light);
+	padding: 6px 4px;
+	text-align: center;
+	font-weight: bold;
+	font-size: 11px;
+	color: var(--color-text-secondary);
+	cursor: help;
+}
+
+.space1889CalendarMonthlyView .weekday-headers .weekday-header .weekday-name {
+	display: block;
+}
+
+.space1889CalendarMonthlyView .calendar-grid .calendar-day.empty {
+	background: rgba(0,0,0,0)
+}
+
+.space1889CalendarMonthlyView .calendar-grid .calendar-day.clickable {
+	cursor: pointer
+}
+
+.space1889CalendarMonthlyView .calendar-grid .calendar-day.clickable:hover {
+	background: hsla(0,0%,100%,.1)
+}
+
+.space1889CalendarMonthlyView .calendar-grid .calendar-day.clickable:active {
+	background: hsla(0,0%,100%,.15)
+}
+
+.space1889CalendarMonthlyView .calendar-grid .calendar-day.today {
+	background: var(--color-primary);
+	color: var(--color-text-light);
+	font-weight: bold;
+	position: relative
+}
+
+.space1889CalendarMonthlyView .calendar-grid .calendar-day.today.clickable:hover {
+	background: var(--color-primary-hover)
+}
+
+.space1889CalendarMonthlyView .calendar-grid .calendar-day.today::before {
+	content: "TODAY";
+	position: absolute;
+	top: 2px;
+	left: 2px;
+	right: 2px;
+	font-size: 8px;
+	font-weight: 600;
+	text-align: center;
+	color: var(--color-text-light);
+	line-height: 1;
+	pointer-events: none
+}
+
+.space1889CalendarMonthlyView .calendar-grid .calendar-day.today .day-number {
+	margin-top: 8px;
+	font-size: 14px;
+	font-weight: bold
+}
+
+.space1889CalendarMonthlyView .calendar-grid .calendar-day.selected {
+	background: hsla(0,0%,100%,.25);
+	color: var(--color-text-primary);
+	font-weight: bold;
+	border: 1px solid hsla(0,0%,100%,.3)
+}
+
+.space1889CalendarMonthlyView .calendar-grid .calendar-day .day-number {
+	position: relative;
+	z-index: 2
+}
+
+
+.calendar-day.empty {
+	background: rgba(0,0,0,0)
+}
+
+.calendar-day.today {
+	background: var(--color-primary);
+	color: var(--color-text-light)
+}
+
+.calendar-day.today.clickable:hover {
+	background: var(--color-primary-hover)
+}
+
+.space1889CalendarMonthlyView .calendar-grid .calendar-day .moon-indicator {
+	position: absolute;
+	top: 2px;
+	left: 2px;
+	z-index: 2;
+	display: flex;
+	align-items: center;
+	font-size: 8px;
+	color: #f0f0f0;
+	filter: drop-shadow(0 0 1px rgba(0, 0, 0, 0.7));
+	pointer-events: none;
+	text-shadow: 0 0 3px hsla(0,0%,100%,.8);
+}
+
+.space1889CalendarMonthlyView .calendar-grid .calendar-day .moon-indicator .moon-phase-new {
+	color: #333 !important;
+	text-shadow: 0 0 2px hsla(0,0%,100%,.4);
+	opacity: .6
+}
+
+.space1889CalendarMonthlyView .calendar-grid .calendar-day .moon-indicator .moon-phase-full {
+	color: #fff !important;
+	filter: drop-shadow(0 0 3px rgba(255, 255, 255, 0.9));
+	text-shadow: 0 0 3px hsla(0,0%,100%,.8)
+}
+
+.space1889CalendarMonthlyView .calendar-grid .calendar-day .moon-indicator .moon-phase-first-quarter {
+	color: #333 !important;
+	text-shadow: 0 0 2px hsla(0,0%,100%,.8);
+}
+
+.space1889CalendarMonthlyView .calendar-grid .calendar-day .moon-indicator .moon-phase-last-quarter {
+	color: #333 !important;
+	text-shadow: 0 0 rgba(255, 255, 255, 0.9);
+	filter: drop-shadow(0 0 1px rgba(255, 255, 255, 0.9));
+}
+
+.marginauto{
+	margin: 5px auto 5px;
+	display: block;
+}
+
+/*foundry werte überschreiben*/
+.window-content {
+	padding: 0.5rem;
+}
+
+.standard-form {
+	row-gap: 0.5rem;
+}
+
+nav.tabs {
+	line-height: 1.3;
+	margin-bottom: 0.25rem;
+	min-height: 2.7rem;
+}
+
+ul,
+ol,
+hr {
+	margin-top: 0.5rem;
+	margin-bottom: 0.5rem;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+	margin: 0.25rem 0 0.25rem;
+	line-height: 1;
+	font-family: var(--font-serif);
+}
+
+body {
+	--font-h1: var(--font-serif);
+	--font-h2: var(--font-serif);
+	--font-h3: var(--font-serif);
+	--font-h4: var(--font-serif);
+	--font-h5: var(--font-serif);
+	--font-h6: var(--font-serif);
+}
+
+
+#ui-left{
+	--control-size:35
 }

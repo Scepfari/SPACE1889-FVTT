@@ -32,25 +32,26 @@ SPACE1889.secondaries = {
 };
 
 SPACE1889.itemTypes = {
-	"ammunition": "ITEM.TypeAmmunition",
-	"archetype": "ITEM.TypeArchetype",
-	"armor": "ITEM.TypeArmor",
-	"container": "ITEM.TypeContainer",
-	"currency": "ITEM.TypeCurrency",
-	"extended_action": "ITEM.TypeExtended_action",
-	"damage": "ITEM.TypeDamage",
-	"item": "ITEM.TypeItem",
-	"language": "ITEM.TypeLanguage",
-	"lightSource": "ITEM.TypeLightsource",
-	"motivation": "ITEM.TypeMotivation",
-	"resource": "ITEM.TypeResource",
-	"skill": "ITEM.TypeSkill",
-	"specialization": "ITEM.TypeSpecialization",
-	"species": "ITEM.TypeSpecies",
-	"talent": "ITEM.TypeTalent",
-	"vision": "ITEM.TypeVision",
-	"weakness": "ITEM.TypeWeakness",
-	"weapon": "ITEM.TypeWeapon"
+	"ammunition": "TYPES.Item.ammunition",
+	"archetype": "TYPES.Item.archetype",
+	"armor": "TYPES.Item.armor",
+	"container": "TYPES.Item.container",
+	"currency": "TYPES.Item.currency",
+	"extended_action": "TYPES.Item.extended_action",
+	"damage": "TYPES.Item.damage",
+	"item": "TYPES.Item.item",
+	"language": "TYPES.Item.language",
+	"lightSource": "TYPES.Item.lightSource",
+	"motivation": "TYPES.Item.motivation",
+	"resource": "TYPES.Item.resource",
+	"skill": "TYPES.Item.skill",
+	"shield": "TYPES.Item.shield",
+	"specialization": "TYPES.Item.specialization",
+	"species": "TYPES.Item.species",
+	"talent": "TYPES.Item.talent",
+	"vision": "TYPES.Item.vision",
+	"weakness": "TYPES.Item.weakness",
+	"weapon": "TYPES.Item.weapon"
 }
 
 SPACE1889.skillUnderlyingAttribute = [
@@ -223,6 +224,7 @@ SPACE1889.combatSpecializations ={
 	"messer": "SPACE1889.SpeciSkillMesser",
 	"pistole": "SPACE1889.SpeciSkillPistole",
 	"raketen": "SPACE1889.SpeciSkillRaketen",
+	"schilde": "SPACE1889.SpeciSkillSchilde",
 	"schlaege": "SPACE1889.SpeciSkillSchlaege",
 	"schleuder": "SPACE1889.SpeciSkillSchleuder",
 	"schrotgewehr": "SPACE1889.SpeciSkillSchrotgewehr",

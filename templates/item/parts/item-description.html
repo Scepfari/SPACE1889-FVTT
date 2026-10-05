@@ -1,0 +1,14 @@
+{{! Description Part }}
+<div class="item flexrow items-header">
+	<label class="resource-label">{{ localize "SPACE1889.Description"}}</label>
+</div>
+<div class="editor description" data-application-part="description">
+	{{#if editable}}
+		<prose-mirror name="system.description" value="{{system.description}}" toggled="true" 
+					  document-uuid="{{item.uuid}}" class="sized">
+			{{{ enrichedDescription }}}
+		</prose-mirror>
+	{{else}}
+		{{{ enrichedDescription }}}
+	{{/if}}
+</div>

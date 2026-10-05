@@ -11,42 +11,106 @@ import SPACE1889Vision from "../helpers/vision.js";
  * Extend the basic ActorSheet with some very simple modifications
  * @extends {ActorSheet}
  */
-export class Space1889ActorSheet extends ActorSheet {
-
-	/** @override */
-	static get defaultOptions() {
-		return foundry.utils.mergeObject(super.defaultOptions, {
-			classes: ["space1889", "sheet", "actor"],
-			template: "systems/space1889/templates/actor/actor-sheet.html",
+export class Space1889ActorSheet extends foundry.applications.api.HandlebarsApplicationMixin(
+	foundry.applications.sheets.ActorSheetV2)
+{ 
+	static DEFAULT_OPTIONS = {
+		tag: 'form',
+		form: {
+			submitOnChange: true,
+			closeOnSubmit: false
+		},
+		window: {
+			minimizable: true,
+			resizable: true
+		},
+		position: {
 			width: 500,
-			height: 620,
-			tabs: [{ navSelector: ".sheet-tabs", contentSelector: ".sheet-body", initial: "abilities" }]
-		});
+			height: 620
+		},
+		classes: ["space1889", "sheet", "actor"],
+		actions: {
+			itemCreate: this._onItemCreate,
+			editForeignNotes: this._openKeepFieldEditpage,
+		}
+	};
+	get title()
+	{
+		return this.actor.name;
+	}
+
+	static LIMITEDPARTS = {
+		header: {
+			template: 'systems/space1889/templates/actor/actor-limited-sheet.html',
+		},
 	}
 
 	/** @override */
-	get template()
+	get space1889ActorTemplate()
 	{
 		if (!game.user.isGM && this.actor.limited)
 			return "systems/space1889/templates/actor/actor-limited-sheet.html";
 		return `systems/space1889/templates/actor/actor-${this.actor.type}-sheet.html`;
 	}
 
+	_configureRenderParts(options)
+	{
+		if (this.constructor.LIMITEDPARTS && !game.user.isGM && this.actor.limited)
+			return foundry.utils.deepClone(this.constructor.LIMITEDPARTS);
+
+		const parts = super._configureRenderParts(options);
+		if (!parts.details)
+			parts.details = { template: this.space1889ActorTemplate, scrollable: [''] };
+		return parts;
+	}
+
+
+	/**
+	* Returns if this sheet is only available in editMode?
+	* @type {boolean}
+	*/
+	static get onlyEdit()
+	{
+		return true;
+	}
+
+	static setupSheets()
+	{
+		foundry.documents.collections.Actors.unregisterSheet("core", foundry.appv1.sheets.ActorSheet);
+		foundry.documents.collections.Actors.registerSheet("space1889", Space1889ActorSheet, { makeDefault: true });
+
+		const sheets = [
+			{ sheetClass: Space1889CharacterSheet, types: ['character'] },
+			{ sheetClass: Space1889NpcSheet, types: ['npc'] },
+			{ sheetClass: Space1889CreatureSheet, types: ['creature'] },
+			{ sheetClass: Space1889VehicleSheet, types: ['vehicle'] },
+		];
+
+		sheets.forEach(({ sheetClass, types }) =>
+		{
+			foundry.documents.collections.Actors.registerSheet('space1889', sheetClass, { makeDefault: true, types });
+		});
+		foundry.documents.collections.Actors.unregisterSheet('space1889', Space1889ActorSheet, { types: sheets.map((x) => x.types).flat() });
+	}
+
+
 	/* -------------------------------------------- */
 
 	/** @override */
-	async getData(options) {
+	async _prepareContext(options) {
 		// Retrieve the data structure from the base sheet. You can inspect or log
 		// the context variable to see the structure, but some key properties for
 		// sheets are the actor object, the data object, whether or not it's
 		// editable, the items array, and the effects array.
-		const context = await super.getData(options);
+		const context = await super._prepareContext(options);
 
 		// Use a safe clone of the actor data for further operations.
 		const actor = this.actor.toObject(false);
+		const derivedSpace1889 = foundry.utils.deepClone(this.actor.derived ?? {});
 
 		// Add the actor's data to context.data for easier access, as well as flags.
 		context.system = actor.system;
+		context.derived = derivedSpace1889;
 		context.flags = actor.flags;
 
 		// Prepare character data and items.
@@ -74,16 +138,52 @@ export class Space1889ActorSheet extends ActorSheet {
 		}
 
 		// Add roll data for TinyMCE editors.
-		context.rollData = context.actor.getRollData();
+		context.rollData = this.actor.getRollData();
 
 		// Prepare active effects
 		context.effects = this.actor.effects;
 
 		//TextEditor
-		context.enrichedBiography = await TextEditor.enrichHTML(this.object.system.biography, { async: true });
-		context.enrichedDescription = await TextEditor.enrichHTML(this.object.system.description, {async: true});
-		context.enrichedNotes = await TextEditor.enrichHTML(this.object.system.notes.value, { async: true });
-		context.enrichedGmNotes = await TextEditor.enrichHTML(this.object.system.notes.gmInfo, { async: true });
+		context.enrichedBiography =
+			await foundry.applications.ux.TextEditor.implementation.enrichHTML(
+				this.actor.system.biography,
+				{
+					// Whether to show secret blocks in the finished html
+					secrets: this.document.isOwner,
+					// Data to fill in for inline rolls
+					rollData: this.actor.getRollData(),
+					// Relative UUID resolution
+					relativeTo: this.actor,
+				},
+			);
+		context.enrichedDescription =
+			await foundry.applications.ux.TextEditor.implementation.enrichHTML(
+				this.actor.system.description,
+				{
+					secrets: this.document.isOwner,
+					rollData: this.actor.getRollData(),
+					relativeTo: this.actor,
+				},
+			);
+		context.enrichedNotes =
+			await foundry.applications.ux.TextEditor.implementation.enrichHTML(
+				this.actor.system.notes.value,
+				{
+					secrets: this.document.isOwner,
+					rollData: this.actor.getRollData(),
+					relativeTo: this.actor,
+				},
+			);
+		context.enrichedGmNotes =
+			await foundry.applications.ux.TextEditor.implementation.enrichHTML(
+				this.actor.system.notes.gmInfo,
+				{
+					secrets: this.document.isOwner,
+					rollData: this.actor.getRollData(),
+					relativeTo: this.actor,
+				},
+			);
+
 		return context;
 	}
 
@@ -124,18 +224,14 @@ export class Space1889ActorSheet extends ActorSheet {
 
 	_prepareAttributes(context)
 	{
-		let primaereAttribute = [];
-
-		for (let [k, v] of Object.entries(context.system.abilities)) 
+		for (let [k, v] of Object.entries(context.derived.abilities)) 
 		{
-			primaereAttribute.push(k);
 			v.label = game.i18n.localize(CONFIG.SPACE1889.abilities[k]) ?? k;
 		}
-		for (let [key, element] of Object.entries(context.system.secondaries)) 
+		for (let [key, element] of Object.entries(context.derived.secondaries)) 
 		{
 			element.label = game.i18n.localize(CONFIG.SPACE1889.secondaries[key]) ?? key;
 		}
-		context.system['primaereAttribute'] = primaereAttribute;
 	}
 
 	/**
@@ -147,76 +243,61 @@ export class Space1889ActorSheet extends ActorSheet {
 	 */
 	_prepareItems(context) {
 
-		// Iterate through items, set default image
-		for (let i of context.items) {
-			i.img = i.img || DEFAULT_TOKEN;
-		}
+		//// Iterate through items, set default image
+		//for (let i of context.items) {
+		//	i.img = i.img || DEFAULT_TOKEN;
+		//}
 
 		let weaknessLeft = [];
 		let weaknessRight = [];
-		for (let i = 0; i < this.actor.system.weakness.length; ++i)
+		for (let i = 0; i < this.actor.weakness.length; ++i)
 		{
 			if (i%2 == 0)
-				weaknessLeft.push(this.actor.system.weakness[i]);
+				weaknessLeft.push(this.actor.weakness[i]);
 			else 
-				weaknessRight.push(this.actor.system.weakness[i]);
+				weaknessRight.push(this.actor.weakness[i]);
 		}
 
 		let languageLeft = [];
 		let languageRight = [];
-		for (let i = 0; i < this.actor.system.language.length; ++i)
+		for (let i = 0; i < this.actor.language.length; ++i)
 		{
 			if (i%2 == 0)
-				languageLeft.push(this.actor.system.language[i]);
+				languageLeft.push(this.actor.language[i]);
 			else 
-				languageRight.push(this.actor.system.language[i]);
-		}
-
-		for (let lightSource of this.actor.system.gear)
-		{
-			if (lightSource.type === "lightSource")
-			{
-				if (lightSource.system.requiredHands > 0)
-				{
-					lightSource.system.usedHandsIcon = CONFIG.SPACE1889.weaponHandIcon[lightSource.system.usedHands];
-					lightSource.system.usedHandsInfo = game.i18n.localize(CONFIG.SPACE1889.weaponHand[lightSource.system.usedHands]);
-				}
-				else
-				{
-					lightSource.system.usedHandsIcon = "far fa-thumb-tack";
-					lightSource.system.usedHandsInfo = game.i18n.localize("SPACE1889.Ready");
-				}
-			}
+				languageRight.push(this.actor.language[i]);
 		}
 
 		// Assign and return
-		context.system.gear = this.actor.system.gear;
-		context.system.talents = this.actor.system.talents;
-		context.system.skills = this.actor.system.skills;
-		context.system.speciSkills = this.actor.system.speciSkills;
-		context.system.resources = this.actor.system.resources;
-		context.system.weapons = this.actor.system.weapons;
-		context.system.armors = this.actor.system.armors;
-		context.system.weakness = this.actor.system.weakness;
-		context.system.weaknessLeft = weaknessLeft;
-		context.system.weaknessRight = weaknessRight;
-		context.system.language = this.actor.system.language;
-		context.system.languageLeft = languageLeft;
-		context.system.languageRight = languageRight;
-		context.system.injuries = this.actor.system.injuries;
-		context.system.money = this.actor.system.money;
+		context.derived.gear = this.actor.gear;
+		context.derived.talents = this.actor.talents;
+		context.derived.skills = this.actor.skills;
+		context.derived.speciSkills = this.actor.speciSkills;
+		context.derived.resources = this.actor.resources;
+		context.derived.weapons = this.actor.weapons;
+		context.derived.armors = this.actor.armors;
+		context.derived.weakness = this.actor.weakness;
+		context.derived.weaknessLeft = weaknessLeft;
+		context.derived.weaknessRight = weaknessRight;
+		context.derived.language = this.actor.language;
+		context.derived.languageLeft = languageLeft;
+		context.derived.languageRight = languageRight;
+		context.derived.injuries = this.actor.injuries;
+		context.derived.money = this.actor.money;
 	}
 
 
 	_prepareVehicleItems(context)
 	{
-		// Iterate through items, set default image
-		for (let i of context.items)
-		{
-			i.img = i.img || DEFAULT_TOKEN;
-		}
-		context.weapons = this.actor.system.weapons;
-		context.injuries = this.actor.system.injuries;
+		//// Iterate through items, set default image
+		//for (let i of context.items)
+		//{
+		//	i.img = i.img || DEFAULT_TOKEN;
+		//}
+		context.derived.weapons = this.actor.weapons;
+		context.derived.injuries = this.actor.injuries;
+		context.weapons = this.actor.weapons;
+		context.injuries = this.actor.injuries;
 	}
 
 	GetMaxSkillLevel()
@@ -258,18 +339,20 @@ export class Space1889ActorSheet extends ActorSheet {
 	/* -------------------------------------------- */
 
 	/** @override */
-	activateListeners(html) {
-		super.activateListeners(html);
+	async _onRender(context, options)
+	{
+		await super._onRender(context, options);
+		const html = $(this.element);
 
 		// Artwork
-		html.find('.artwork').mousedown(ev =>
+		html.find('.artwork').on('mousedown', (ev) =>
 		{
 			if (ev.button == 2)
 				SPACE1889Helper.showArtwork(this.actor, true)
 		});
 
 		// Render the item sheet for viewing/editing prior to the editable check.
-		html.find('.item-edit').click(ev =>
+		html.find('.item-edit').click(event =>
 		{
 			event.preventDefault();
 			const idToEdit = event.currentTarget.closest("[data-item-id]")?.dataset.itemId;
@@ -292,14 +375,26 @@ export class Space1889ActorSheet extends ActorSheet {
 			return;
 
 		// Add Inventory Item
-		html.find('.item-create').click(this._onItemCreate.bind(this));
+		html.find('.item-create').on('click', (ev) =>
+		{
+			this._onItemCreate(ev);
+		});
 
 		// Delete Inventory Item
-		html.find('.item-delete').click(this._onItemDelete.bind(this));
-		html.find('.container-delete').click(this._onContainerDelete.bind(this));
+		html.find('.item-delete').on('click', (ev) =>
+		{
+			const itemId = this._getItemId(ev);
+			this._onItemDelete(ev, itemId);
+		});
+		html.find('.container-delete').on('click', (ev) =>
+		{
+			const itemId = this._getItemId(ev);
+			this._onContainerDelete.bind(ev, itemId);
+		});
 
 		// sub Skill update
-		html.find('.skill-level').change(async ev => {
+		html.find('.skill-level').on('change', async (ev) =>
+		{
 			const itemId = this._getItemId(ev);
 			const item = this.actor.items.get(itemId);
 			const newValue = Math.max( Math.min(5, Number(ev.target.value)), 0);
@@ -307,7 +402,8 @@ export class Space1889ActorSheet extends ActorSheet {
 			this.currentFocus = $(document.activeElement).closest('.row-section').attr('system-item-id');
 		});
 
-		html.find('.talent-level').change(async ev => {
+		html.find('.talent-level').on('change', async (ev) =>
+		{
 			const itemId = this._getItemId(ev);
 			const item = this.actor.items.get(itemId);
 			const newValue = Math.max( Math.min(item.system.level.max, Number(ev.target.value)), item.system.level.min);
@@ -316,7 +412,7 @@ export class Space1889ActorSheet extends ActorSheet {
 		//	this.currentFocus = $(document.activeElement); //.closest('.item-name').attr('data-item-id');
 		});
 
-		html.find('.increment-click').mousedown(ev =>
+		html.find('.increment-click').on('mousedown', (ev) =>
 		{
 			const itemId = this._getItemId(ev);
 			const item = this.actor.items.get(itemId);
@@ -371,26 +467,23 @@ export class Space1889ActorSheet extends ActorSheet {
 			}
 		});
 
-		html.find('.doExtendedRoll').mousedown(ev =>
+		html.find('.doExtendedRoll').on('mousedown', (ev) =>
 		{
 			const itemId = this._getItemId(ev);
-			const item = this.actor.items.get(itemId);
-			const showDialog = ev?.shiftKey || ev?.ctrlKey;
-
-			this._rollAndUpdateExtendedRolls(item, showDialog);
+			this._rollAndUpdateExtendedRolls(itemId, ev);
 		});
 
-		html.find('.doAnySkillRoll').mousedown(ev =>
+		html.find('.doAnySkillRoll').on('mousedown', (ev) =>
 		{
 			SPACE1889Helper.rollAnySkill(undefined, this.actor);
 		});
 
-		html.find('.effectBonus-click').mousedown(ev =>
+		html.find('.effectBonus-click').on('mousedown', (ev) =>
 		{
 			this._addRemoveTempTalentImprovement(ev);
 		});
 
-		html.find('.healingFactor-click').mousedown(ev =>
+		html.find('.healingFactor-click').on('mousedown', (ev) =>
 		{
 			const itemId = this._getItemId(ev);
 			const item = this.actor.items.get(itemId);
@@ -398,13 +491,13 @@ export class Space1889ActorSheet extends ActorSheet {
 			SPACE1889Healing.changeHealingFactor(this.actor, itemId, newHealingFactor);
 		});
 
-		html.find('.rerender-click').mousedown(ev =>
+		html.find('.rerender-click').on('mousedown', (ev) =>
 		{
 			this.actor.prepareDerivedData();
 			this.render();
 		});
 
-		html.find('.location-click').mousedown(ev =>
+		html.find('.location-click').on('mousedown', (ev) =>
 		{
 			const itemId = this._getItemId(ev);
 			const item = this.actor.items.get(itemId);
@@ -424,12 +517,23 @@ export class Space1889ActorSheet extends ActorSheet {
 				ui.notifications.info(game.i18n.localize("SPACE1889.CanNotMoveActivateVision"));
 				return;
 			}
+			if (item.type === "weapon" && item.system.usedHands != "none")
+			{
+				ui.notifications.info(game.i18n.format("SPACE1889.WeaponCanNotMoveReadyForActionWeapon", { name: item.name }));
+				return;
+			}
+			if (item.type === "shield" && item.system.usedHands != "none")
+			{
+				ui.notifications.info(game.i18n.format("SPACE1889.WeaponCanNotMoveReadyForActionShield", { name: item.name }));
+				return;
+			}
+
 			const newId = this.incrementLocation(ev, item.system.containerId, this.actor);
 			item.update({ 'system.containerId': newId });
 
 		});
 
-		html.find('.light-emit-toggle-click').mousedown(ev =>
+		html.find('.light-emit-toggle-click').on('mousedown', (ev) =>
 		{
 			const itemId = this._getItemId(ev);
 			const item = this.actor.items.get(itemId);
@@ -443,7 +547,7 @@ export class Space1889ActorSheet extends ActorSheet {
 			}
 		});
 
-		html.find('.vision-toggle-click').mousedown(ev =>
+		html.find('.vision-toggle-click').on('mousedown', (ev) =>
 		{
 			const itemId = this._getItemId(ev);
 			const item = this.actor.items.get(itemId);
@@ -457,7 +561,7 @@ export class Space1889ActorSheet extends ActorSheet {
 			}
 		});
 
-		html.find('.lighthand-click').mousedown(ev =>
+		html.find('.lighthand-click').on('mousedown', (ev) =>
 		{
 			const itemId = this._getItemId(ev);
 			const item = this.actor.items.get(itemId);
@@ -465,21 +569,21 @@ export class Space1889ActorSheet extends ActorSheet {
 			SPACE1889Light.setLightSourceHand(item, this.actor, backward);
 		});
 
-		html.find('.lightEnergy-click').mousedown(ev =>
+		html.find('.lightEnergy-click').on('mousedown', (ev) =>
 		{
 			const itemId = this._getItemId(ev);
 			const item = this.actor.items.get(itemId);
 			SPACE1889Light.refillLightSource(item, this.actor);
 		});
 
-		html.find('.visionEnergy-click').mousedown(ev =>
+		html.find('.visionEnergy-click').on('mousedown', (ev) =>
 		{
 			const itemId = this._getItemId(ev);
 			const item = this.actor.items.get(itemId);
 			SPACE1889Vision.refillVision(item, this.actor);
 		});
 
-		html.find('.weaponhand-click').mousedown(ev =>
+		html.find('.weaponhand-click').on('mousedown', (ev) =>
 		{
 			const itemId = this._getItemId(ev);
 			const item = this.actor.items.get(itemId);
@@ -487,7 +591,7 @@ export class Space1889ActorSheet extends ActorSheet {
 			SPACE1889Helper.setWeaponHand(item, this.actor, backward);
 		});
 
-		html.find('.reload-click').mousedown(ev =>
+		html.find('.reload-click').on('mousedown', (ev) =>
 		{
 			const itemId = this._getItemId(ev);
 			const item = this.actor.items.get(itemId);
@@ -497,7 +601,7 @@ export class Space1889ActorSheet extends ActorSheet {
 				SPACE1889Helper.reloadWeapon(item, this.actor);
 		});
 
-		html.find('.swivelingRange-click').mousedown(ev =>
+		html.find('.swivelingRange-click').on('mousedown', (ev) =>
 		{
 			const itemId = this._getItemId(ev);
 			const item = this.actor.items.get(itemId);
@@ -519,206 +623,207 @@ export class Space1889ActorSheet extends ActorSheet {
 		const primaryMin = (isCharacter || isNpc) ? 1 : 0;
 		const primaryMax = isCharacter ? this.GetMaxPrimaryAttributeLevel() : undefined;
 
-		html.find('.increment-con-click').mousedown(ev =>
+		html.find('.increment-con-click').on('mousedown', (ev) =>
 		{
 			const newValue = this.incrementValue(ev, this.actor.system.abilities.con.value, primaryMin, primaryMax, true);
 			this.actor.update({ 'system.abilities.con.value': newValue });
 		});
 
-		html.find('.increment-dex-click').mousedown(ev =>
+		html.find('.increment-dex-click').on('mousedown', (ev) =>
 		{
 			const newValue = this.incrementValue(ev, this.actor.system.abilities.dex.value, primaryMin, primaryMax, true);
 			this.actor.update({ 'system.abilities.dex.value': newValue });
 		});
-		html.find('.increment-str-click').mousedown(ev =>
+		html.find('.increment-str-click').on('mousedown', (ev) =>
 		{
 			const newValue = this.incrementValue(ev, this.actor.system.abilities.str.value, primaryMin, primaryMax, true);
 			this.actor.update({ 'system.abilities.str.value': newValue });
 		});
-		html.find('.increment-cha-click').mousedown(ev =>
+		html.find('.increment-cha-click').on('mousedown', (ev) =>
 		{
 			const newValue = this.incrementValue(ev, this.actor.system.abilities.cha.value, primaryMin, primaryMax, true);
 			this.actor.update({ 'system.abilities.cha.value': newValue });
 		});
-		html.find('.increment-int-click').mousedown(ev =>
+		html.find('.increment-int-click').on('mousedown', (ev) =>
 		{
 			const newValue = this.incrementValue(ev, this.actor.system.abilities.int.value, primaryMin, primaryMax, true);
 			this.actor.update({ 'system.abilities.int.value': newValue });
 		});
-		html.find('.increment-wil-click').mousedown(ev =>
+		html.find('.increment-wil-click').on('mousedown', (ev) =>
 		{
 			const newValue = this.incrementValue(ev, this.actor.system.abilities.wil.value, primaryMin, primaryMax, true);
 			this.actor.update({ 'system.abilities.wil.value': newValue });
 		});
 
-		html.find('.increment-style-click').mousedown(ev =>
+		html.find('.increment-style-click').on('mousedown', (ev) =>
 		{
 			const newValue = this.incrementValue(ev, this.actor.system.style.value, 0, undefined);
 			this.actor.update({ 'system.style.value': newValue });
 		});
 
-		html.find('.increment-xp-click').mousedown(ev =>
+		html.find('.increment-xp-click').on('mousedown', (ev) =>
 		{
 			const newValue = this.incrementValue(ev, this.actor.system.attributes.xp.value, 0, undefined);
 			this.actor.update({ 'system.attributes.xp.value': newValue });
 		});
 
-        html.find('.ammo-selector').change(async(ev) => {
+		html.find('.ammo-selector').on('change', async (ev) => 
+		{
             ev.preventDefault()
 			const itemId = this._getItemId(ev);
 			const ammuId = $(ev.currentTarget).val();
 
-			const weapon = this.actor.system.weapons.find(e => e._id == itemId);
+			const weapon = this.actor.weapons.find(e => e._id == itemId);
 			if (weapon && weapon.system.ammunition.remainingRounds > 0)
 				SPACE1889Helper.unloadWeapon(weapon, this.actor);
 
 			await this.actor.updateEmbeddedDocuments("Item", [{ _id: itemId, "system.ammunition.currentItemId": ammuId }]);
         })
 
-		html.find('.increment-animalcompanionlevel-click').mousedown(ev =>
+		html.find('.increment-animalcompanionlevel-click').on('mousedown', (ev) =>
 		{
 			const newValue = this.incrementValue(ev, this.actor.system.animalCompanionLevel, 0, 5);
 			this.actor.update({ 'system.animalCompanionLevel': newValue });
 		});
 
-		html.find('.increment-creaturesize-click').mousedown(ev =>
+		html.find('.increment-creaturesize-click').on('mousedown', (ev) =>
 		{
 			const newValue = this.incrementValue(ev, this.actor.system.secondaries.size.value, -5, 20);
 			this.actor.update({ 'system.secondaries.size.value': newValue });
 		});
 
-		html.find('.increment-structure-max-click').mousedown(ev =>
+		html.find('.increment-structure-max-click').on('mousedown', (ev) =>
 		{
 			const newValue = this.incrementValue(ev, this.actor.system.health.max, 0, undefined);
 			this.actor.update({ 'system.health.max': newValue });
 		});
-		html.find('.increment-speed-max-click').mousedown(ev =>
+		html.find('.increment-speed-max-click').on('mousedown', (ev) =>
 		{
 			const newValue = this.incrementValue(ev, this.actor.system.speed.max, 0, undefined);
 			this.actor.update({ 'system.speed.max': newValue });
 		});
-		html.find('.increment-maneuverability-max-click').mousedown(ev =>
+		html.find('.increment-maneuverability-max-click').on('mousedown', (ev) =>
 		{
 			const newValue = this.incrementValue(ev, this.actor.system.maneuverability.max, -5, 5);
 			this.actor.update({ 'system.maneuverability.max': newValue });
 		});
-		html.find('.increment-passiveDefense-click').mousedown(ev =>
+		html.find('.increment-passiveDefense-click').on('mousedown', (ev) =>
 		{
 			const newValue = this.incrementValue(ev, this.actor.system.passiveDefense, 0, undefined);
 			this.actor.update({ 'system.passiveDefense': newValue });
 		});
-		html.find('.increment-vehicleSize-click').mousedown(ev =>
+		html.find('.increment-vehicleSize-click').on('mousedown', (ev) =>
 		{
 			const newValue = SPACE1889Helper.incrementVehicleSizeValue(ev, this.actor.system.size);
 			this.actor.update({ 'system.size': newValue });
 		});
 
-		html.find('.increment-captain-click').mousedown(ev =>
+		html.find('.increment-captain-click').on('mousedown', (ev) =>
 		{
 			const newValue = this.incrementValue(ev, this.actor.system.positions.captain.value, 0, undefined);
 			this.actor.update({ 'system.positions.captain.value': newValue });
 		});
-		html.find('.increment-copilot-click').mousedown(ev =>
+		html.find('.increment-copilot-click').on('mousedown', (ev) =>
 		{
 			const newValue = this.incrementValue(ev, this.actor.system.positions.copilot.value, 0, undefined);
 			this.actor.update({ 'system.positions.copilot.value': newValue });
 		});
-		html.find('.increment-gunner-click').mousedown(ev =>
+		html.find('.increment-gunner-click').on('mousedown', (ev) =>
 		{
 			const newValue = this.incrementValue(ev, this.actor.system.positions.gunner.value, 0, undefined);
 			this.actor.update({ 'system.positions.gunner.value': newValue });
 		});
-		html.find('.increment-signaler-click').mousedown(ev =>
+		html.find('.increment-signaler-click').on('mousedown', (ev) =>
 		{
 			const newValue = this.incrementValue(ev, this.actor.system.positions.signaler.value, 0, undefined);
 			this.actor.update({ 'system.positions.signaler.value': newValue });
 		});
-		html.find('.increment-lookout-click').mousedown(ev =>
+		html.find('.increment-lookout-click').on('mousedown', (ev) =>
 		{
 			const newValue = this.incrementValue(ev, this.actor.system.positions.lookout.value, 0, undefined);
 			this.actor.update({ 'system.positions.lookout.value': newValue });
 		});
-		html.find('.increment-mechanic-click').mousedown(ev =>
+		html.find('.increment-mechanic-click').on('mousedown', (ev) =>
 		{
 			const newValue = this.incrementValue(ev, this.actor.system.positions.mechanic.value, 0, undefined);
 			this.actor.update({ 'system.positions.mechanic.value': newValue });
 		});
-		html.find('.increment-medic-click').mousedown(ev =>
+		html.find('.increment-medic-click').on('mousedown', (ev) =>
 		{
 			const newValue = this.incrementValue(ev, this.actor.system.positions.medic.value, 0, undefined);
 			this.actor.update({ 'system.positions.medic.value': newValue });
 		});
-		html.find('.increment-crew-max-click').mousedown(ev =>
+		html.find('.increment-crew-max-click').on('mousedown', (ev) =>
 		{
 			const newValue = this.incrementValue(ev, this.actor.system.crew.max, 1, undefined);
 			this.actor.update({ 'system.crew.max': newValue });
 		});
-		html.find('.increment-crew-current-click').mousedown(ev =>
+		html.find('.increment-crew-current-click').on('mousedown', (ev) =>
 		{
 			const newValue = this.incrementValue(ev, this.actor.system.crew.value, 0, this.actor.system.crew.max);
 			this.actor.update({ 'system.crew.value': newValue });
 		});
-		html.find('.increment-passenger-max-click').mousedown(ev =>
+		html.find('.increment-passenger-max-click').on('mousedown', (ev) =>
 		{
 			const newValue = this.incrementValue(ev, this.actor.system.passenger.max, 0, undefined);
 			this.actor.update({ 'system.passenger.max': newValue });
 		});
-		html.find('.increment-passenger-current-click').mousedown(ev =>
+		html.find('.increment-passenger-current-click').on('mousedown', (ev) =>
 		{
 			const newValue = this.incrementValue(ev, this.actor.system.passenger.value, 0, this.actor.system.passenger.max);
 			this.actor.update({ 'system.passenger.value': newValue });
 		});
-		html.find('.increment-strengthTempoFactor-click').mousedown(ev =>
+		html.find('.increment-strengthTempoFactor-click').on('mousedown', (ev) =>
 		{
 			const newValue = this.incrementValue(ev, this.actor.system.strengthTempoFactor.value, 0, this.actor.system.strengthTempoFactor.max);
 			this.actor.update({ 'system.strengthTempoFactor.value': newValue });
 		});
-		html.find('.increment-vehicle-size-click').mousedown(ev =>
+		html.find('.increment-vehicle-size-click').on('mousedown', (ev) =>
 		{
 			const newValue = this.incrementValue(ev, this.actor.system.size, 0, undefined);
 			this.actor.update({ 'system.size': newValue });
 		});
-		html.find('.do-vehicle-captain-click').mousedown(ev =>
+		html.find('.do-vehicle-captain-click').on('mousedown', (ev) =>
 		{
 			this._doVehiclePositionClick(ev, 'captain');
 		});
-		html.find('.do-vehicle-pilot-click').mousedown(ev =>
+		html.find('.do-vehicle-pilot-click').on('mousedown', (ev) =>
 		{
 			this._doVehiclePositionClick(ev, 'pilot');
 		});
-		html.find('.do-vehicle-copilot-click').mousedown(ev =>
+		html.find('.do-vehicle-copilot-click').on('mousedown', (ev) =>
 		{
 			this._doVehiclePositionClick(ev, 'copilot');
 		});
-		html.find('.do-vehicle-gunner-click').mousedown(ev =>
+		html.find('.do-vehicle-gunner-click').on('mousedown', (ev) =>
 		{
 			this._doVehiclePositionClick(ev, 'gunner');
 		});
-		html.find('.do-vehicle-signaler-click').mousedown(ev =>
+		html.find('.do-vehicle-signaler-click').on('mousedown', (ev) =>
 		{
 			this._doVehiclePositionClick(ev, 'signaler');
 		});
-		html.find('.do-vehicle-lookout-click').mousedown(ev =>
+		html.find('.do-vehicle-lookout-click').on('mousedown', (ev) =>
 		{
 			this._doVehiclePositionClick(ev, 'lookout');
 		});
-		html.find('.do-vehicle-mechanic-click').mousedown(ev =>
+		html.find('.do-vehicle-mechanic-click').on('mousedown', (ev) =>
 		{
 			this._doVehiclePositionClick(ev, 'mechanic');
 		});
-		html.find('.do-vehicle-medic-click').mousedown(ev =>
+		html.find('.do-vehicle-medic-click').on('mousedown', (ev) =>
 		{
 			this._doVehiclePositionClick(ev, 'medic');
 		});
-		html.find('.do-pilot-maneuver-click').mousedown(ev =>
+		html.find('.do-pilot-maneuver-click').on('mousedown', (ev) =>
 		{
 			this._doVehicleMovementManeuverClick(ev);
 		});
-		html.find('.do-gunner-maneuver-click').mousedown(ev =>
+		html.find('.do-gunner-maneuver-click').on('mousedown', (ev) =>
 		{
 			this._doVehicleAttackManeuverClick(ev);
 		});
-		html.find('.roll-vehicle-attack-click').mousedown(ev =>
+		html.find('.roll-vehicle-attack-click').on('mousedown', (ev) =>
 		{
 			const itemId = this._getItemId(ev);
 			if (this.actor.type == 'vehicle')
@@ -726,12 +831,12 @@ export class Space1889ActorSheet extends ActorSheet {
 				SPACE1889RollHelper.rollManoeuver('Attack', this.actor, ev, itemId);
 			}
 		});
-		html.find('.roll-vehicle-defense-click').mousedown(ev =>
+		html.find('.roll-vehicle-defense-click').on('mousedown', (ev) =>
 		{
 			if (this.actor.type == 'vehicle')
 				SPACE1889RollHelper.rollManoeuver('defense', this.actor, ev);
 		});
-		html.find('.condition-toggle').mousedown(ev =>
+		html.find('.condition-toggle').on('mousedown', (ev) =>
 		{
 			const positionId = this._getDataId(ev);
 			const toggledValue = !this.actor.system.positions[positionId].staffed;
@@ -740,55 +845,104 @@ export class Space1889ActorSheet extends ActorSheet {
 			updateObject[key] = toggledValue;
 			this.actor.update(updateObject);
 		});
-		html.find('.carried-toggle').mousedown(ev =>
+		html.find('.carried-toggle').on('mousedown', (ev) =>
 		{
 			const itemId = this._getDataId(ev);
 			const toggledValue = !this.actor.items.get(itemId).system.carried;
 			this.actor.updateEmbeddedDocuments("Item", [{ _id: itemId, "system.carried": toggledValue }]);
 		});
-		html.find('.compressed-toggle').mousedown(ev =>
+		html.find('.compressed-toggle').on('mousedown', (ev) =>
 		{
 			const itemId = this._getDataId(ev);
 			const toggledValue = !this.actor.items.get(itemId).system.compressed;
 			this.actor.updateEmbeddedDocuments("Item", [{ _id: itemId, "system.compressed": toggledValue }]);
 		});
-		html.find('.open-compendium').mousedown(ev =>
+		html.find('.open-compendium').on('mousedown', (ev) =>
 		{
 			let packName = $(ev.currentTarget).attr("data-pack");
 			game.packs.get(packName).render(true);
 		});
-		html.find('.compressed-lights-toggle').mousedown(ev =>
+		html.find('.compressed-lights-toggle').on('mousedown', (ev) =>
 		{
 			const newValue = !this.actor.system.visualisation.compressedLightSources;
 			this.actor.update({ 'system.visualisation.compressedLightSources': newValue });
 		});
-		html.find('.compressed-vision-toggle').mousedown(ev =>
+		html.find('.compressed-vision-toggle').on('mousedown', (ev) =>
 		{
 			const newValue = !this.actor.system.visualisation.compressedVisions;
 			this.actor.update({ 'system.visualisation.compressedVisions': newValue });
 		});
-		html.find('.compressed-items-toggle').mousedown(ev =>
+		html.find('.compressed-items-toggle').on('mousedown', (ev) =>
 		{
 			const newValue = !this.actor.system.visualisation.compressedItems;
 			this.actor.update({ 'system.visualisation.compressedItems': newValue });
 		});
-		html.find('.compressed-ammunition-toggle').mousedown(ev =>
+		html.find('.compressed-ammunition-toggle').on('mousedown', (ev) =>
 		{
 			const newValue = !this.actor.system.visualisation.compressedAmmunition;
 			this.actor.update({ 'system.visualisation.compressedAmmunition': newValue });
 		});
-		html.find('.compressed-weapons-toggle').mousedown(ev =>
+		html.find('.compressed-weapons-toggle').on('mousedown', (ev) =>
 		{
 			const newValue = !this.actor.system.visualisation.compressedWeapons;
 			this.actor.update({ 'system.visualisation.compressedWeapons': newValue });
 		});
-
+		html.find('.compressed-armors-toggle').on('mousedown', (ev) =>
+		{
+			const newValue = !this.actor.system.visualisation.compressedArmors;
+			this.actor.update({ 'system.visualisation.compressedArmors': newValue });
+		});
+		html.find('.compressed-shields-toggle').on('mousedown', (ev) =>
+		{
+			const newValue = !this.actor.system.visualisation.compressedShields;
+			this.actor.update({ 'system.visualisation.compressedShields': newValue });
+		});
+		html.find('.compressed-extendedActions-toggle').on('mousedown', (ev) =>
+		{
+			const newValue = !this.actor.system.visualisation.compressedExtendedActions;
+			this.actor.update({ 'system.visualisation.compressedExtendedActions': newValue });
+		});
+		html.find('.filter-weapons-toggle').on('mousedown', (ev) =>
+		{
+			const newValue = !this.actor.system.visualisation.filterWeapons;
+			this.actor.update({ 'system.visualisation.filterWeapons': newValue });
+		});
+		html.find('.filter-extendedAction-toggle').on('mousedown', (ev) =>
+		{
+			const newValue = !this.actor.system.visualisation.filterExtendedAction;
+			this.actor.update({ 'system.visualisation.filterExtendedAction': newValue });
+		});
+		html.find('.filter-ammunition-toggle').on('mousedown', (ev) =>
+		{
+			const newValue = !this.actor.system.visualisation.filterAmmunition;
+			this.actor.update({ 'system.visualisation.filterAmmunition': newValue });
+		});
+		html.find('.filter-armors-toggle').on('mousedown', (ev) =>
+		{
+			const newValue = !this.actor.system.visualisation.filterArmors;
+			this.actor.update({ 'system.visualisation.filterArmors': newValue });
+		});
+		html.find('.filter-shields-toggle').on('mousedown', (ev) =>
+		{
+			const newValue = !this.actor.system.visualisation.filterShields;
+			this.actor.update({ 'system.visualisation.filterShields': newValue });
+		});
+		html.find('.filter-damage-toggle').on('mousedown', (ev) =>
+		{
+			const newValue = !this.actor.system.visualisation.filterDamage;
+			this.actor.update({ 'system.visualisation.filterDamage': newValue });
+		});
+		
 
 		// Active Effect management
-		html.find(".effect-control").click(ev => onManageActiveEffect(ev, this.actor));
+		html.find(".effect-control").on('click', (ev) =>
+		{
+			onManageActiveEffect(ev, this.actor);
+		});
 
 		// Drag events for macros.
-		if (this.actor.isOwner) {
+		if (this.actor.isOwner) 
+		{
 			let handler = ev => this._onDragStart(ev);
 			html.find('li.item').each((i, li) => {
 				if (li.classList.contains("inventory-header")) return;
@@ -805,7 +959,8 @@ export class Space1889ActorSheet extends ActorSheet {
                 const attr = k.dataset.attr
                 const name = k.dataset.name
                 $(k).find('.editor').append(`<a data-attr="${attr}" data-name="${name}" class="editor-edit"><i class="fas fa-edit"></i></a>`)
-                $(k).find('.editor-edit').click(ev => this._openKeepFieldEditpage(ev))
+				$(k)
+					.find('.editor-edit').on('click', (ev) => this._openKeepFieldEditpage(ev))
             }
         }
     }
@@ -819,11 +974,6 @@ export class Space1889ActorSheet extends ActorSheet {
 
 	_addRemoveTempTalentImprovement(ev)
 	{
-		if (SPACE1889Helper.isFoundryV10Running())
-		{
-			ui.notifications.info(game.i18n.localize("SPACE1889.NotSupportedInFoundryV10"));
-			return;
-		}
 		const itemId = this._getItemId(ev);
 		const item = this.actor.items.get(itemId);
 		if (item.type == "talent")
@@ -840,7 +990,7 @@ export class Space1889ActorSheet extends ActorSheet {
 
 				return;
 			}
-			if (item.system.level.total == item.system.level.max)
+			if (item.derived.level.total == item.system.level.max)
 			{
 				ui.notifications.info(game.i18n.localize("SPACE1889.TalentEffectBoostNotPossible"));
 				return;
@@ -868,145 +1018,9 @@ export class Space1889ActorSheet extends ActorSheet {
 		}
 	}
 
-	_rollAndUpdateExtendedRolls(item, showDialog)
+	_rollAndUpdateExtendedRolls(itemId, event)
 	{
-		if (item.type !== "extended_action")
-			return;
-
-		if (item.system.successes >= item.system.totalNumberOfSuccesses)
-		{
-			ui.notifications.info(game.i18n.localize("SPACE1889.ExtendedRollsIsFinished"));
-			return;
-		}
-
-		let diceCount = 0;
-		if (item.system.typeKey === "primary")
-			diceCount = 2 * this.actor.system.abilities[item.system.skillOrAttributeId].total;
-		else if (item.system.typeKey === "secondary")
-			diceCount = this.actor.system.secondaries[item.system.skillOrAttributeId].total;
-		else if (item.system.typeKey === "skill")
-		{
-			diceCount = this.actor.getSkillLevel(this.actor, item.system.skillOrAttributeId, "", item.system.skillGroupId);
-			if (item.system.useSpezialisation)
-			{
-				const spez = this.actor.system.speciSkills?.find(t => t.system.id === item.system.spezialisationId);
-				if (spez && spez.system.underlyingSkillId === item.system.skillOrAttributeId)
-					diceCount = spez.system.rating;
-			}
-		}
-		diceCount = Math.max(diceCount, 0);
-
-		const autoDelta = Math.floor(diceCount / 2) - item.system.difficultyRating;
-		const canDoAutoSuccess = autoDelta > 0; 
-		
-		if (showDialog)
-		{
-			const titelPartOne = game.i18n.localize("ITEM.TypeExtended_action");
-			const inputDesc = game.i18n.localize("SPACE1889.NumberOfModificationDice");
-			const diceDesc = game.i18n.localize("SPACE1889.ConfigDice");
-			const titel = item.system.label;
-			const actor = this.actor;
-
-			let check = canDoAutoSuccess ? "<hr></hr>" : "";
-			check += `<li class="flexrow"><div class="item flexrow flex-group-left"><input type="${canDoAutoSuccess ? "checkbox" : "hidden"}" id="selected" class="einfachCheckbox" text-align="left">`;
-			check += canDoAutoSuccess ? `<div class="item-name"> ${game.i18n.localize("SPACE1889.ExtendedRollUseTakingTheAverage")}</div ></div></li><br>` : "</div></li>";
-
-			new Dialog(
-				{ 
-					title: `${titelPartOne}: ${titel} (${diceCount} ${diceDesc})`,
-					content: `<p>${inputDesc}: <input type="number" id="anzahlDerWuerfel" value = "0" autofocus ></p>${check}`,
-					buttons:
-					{
-						ok:
-						{
-							icon: '',
-							label: game.i18n.localize("SPACE1889.Go"),
-							callback: (html) => myCallback(html)
-						},
-						abbruch:
-						{
-							label: game.i18n.localize("SPACE1889.Cancel"),
-							callback: () => { ui.notifications.info(game.i18n.localize("SPACE1889.CancelRoll")) },
-							icon: `<i class="fas fa-times"></i>`
-						}
-					},
-					default: "ok"
-				}).render(true);
-
-			function myCallback(html)
-			{
-				const useAutoSuccess = html.find('#selected').is(":checked");
-				const input = html.find('#anzahlDerWuerfel').val();
-				let anzahl = input ? parseInt(input) : 0;
-				const modToolTip = anzahl == 0 ? "" : game.i18n.format("SPACE1889.ChatModifier", { mod: SPACE1889Helper.getSignedStringFromNumber(anzahl) });
-				anzahl = Math.max(0, anzahl + diceCount);
-				doRoll(actor, anzahl, modToolTip, useAutoSuccess);
-			}
-		}
-		else
-		{
-			doRoll(this.actor, diceCount);
-		}
-
-		function doRoll(actor, count, rollToolTipMod = "", useAutoSuccess)
-		{
-			const rollWithHtmlProm = SPACE1889RollHelper.createInlineRollWithHtml(count, "", rollToolTipMod);
-
-			rollWithHtmlProm.then((rollWithHtml) =>
-			{
-				let newSuccess = Number(item.system.successes);
-				const delta = useAutoSuccess ? autoDelta : rollWithHtml.roll.total - item.system.difficultyRating;
-
-				
-				if (delta > 0)
-					newSuccess = Math.min(newSuccess + delta, item.system.totalNumberOfSuccesses);
-				else if (delta < 0 && item.system.useDeductions)
-					newSuccess = Math.max(newSuccess + delta, 0);
-
-				const resDelta = newSuccess - item.system.successes;
-
-				const timestamp = SPACE1889Time.getCurrentTimestamp();
-
-				let desc = "";
-				if (item.system.typeKey === "skill" && item.system.useSpezialisation)
-				{
-					const fullName = `${item.system.spezialisationLabel} (${item.system.skillOrAttributeLabel})`;
-					desc += item.getTextLine("SPACE1889.Probe", fullName, "", false);
-				}
-				else if (item.system.typeKey === "skill" && item.system.skillGroupId !== "" && CONFIG.SPACE1889.skillGroups.hasOwnProperty(item.system.skillGroupId))
-				{
-					const fullName = `${item.system.skillOrAttributeLabel} (${game.i18n.localize(CONFIG.SPACE1889.skillGroups[item.system.skillGroupId])})`;
-					desc += item._addLine("SPACE1889.Probe", fullName, "", false);
-				}
-				else
-					desc += item.getTextLine("SPACE1889.Probe", item.system.skillOrAttributeLabel, "", false);
-
-				desc += item.getTextLine("SPACE1889.DifficultyRating", item.system.difficultyRating);
-				desc += item.getTextLine("SPACE1889.AttemptsMade", item.system.attemptsMade + 1);
-				desc += item.getTextLine("SPACE1889.DataOfTheEventAbbr", SPACE1889Time.formatTimeDate(SPACE1889Time.getTimeAndDate(timestamp)));
-				desc += useAutoSuccess ? `<br>${game.i18n.localize("SPACE1889.ProbeTakingTheAverage")}` : `<br>${rollWithHtml.html}`;
-				desc += resDelta === 0
-					? `<br>${game.i18n.format("SPACE1889.NoChange")}`
-					: item.getTextLine("SPACE1889.Change", `<strong>${SPACE1889Helper.getSignedStringFromNumber(resDelta)}</strong>`);
-				desc += item.getTextLine("SPACE1889.CurrentSuccesses", `<strong>${newSuccess}/${item.system.totalNumberOfSuccesses}</strong>` );
-				desc += newSuccess >= item.system.totalNumberOfSuccesses
-					? `<br>${game.i18n.format("SPACE1889.Finalised")}`
-					: item.getTextLine("SPACE1889.TimeInterval", item.system.timeInterval);
-
-				if (item.system.description !== "")
-					desc += item.system.description;
-
-				item.update({ 'system.attemptsMade': item.system.attemptsMade + 1, 'system.successes': newSuccess, "system.timestampLastTry": timestamp });
-				let messageContent = `<h3><strong>${item.name}</strong> <small>[${game.i18n.localize("ITEM.TypeExtended_action")}]</small></h3><div>${desc}</div>`;
-				const speaker = ChatMessage.getSpeaker({ actor: actor });
-
-				ChatMessage.create({
-					user: game.user.id,
-					speaker: speaker,
-					content: messageContent
-				});
-			});
-		}
+		this.actor.rollExtendedAction(itemId, event);
 	}
 
 	_doVehiclePositionClick(event, positionKey)
@@ -1038,42 +1052,40 @@ export class Space1889ActorSheet extends ActorSheet {
 
 		const userId = game.user.id;
 
-		let dialogue = new Dialog(
-		{
-		  title: `${titleName}`,
-		  content: `<p><select id="manoeverauswahl" name="manoeverauswahl">${optionen}</select></p>`,
-		  buttons: 
-		  {
-			ok: 
-			{
-			  icon: '',
-			  label: game.i18n.localize("SPACE1889.Go"),
-			  callback: (html) => 
-			  {
-				const selectedOption = html.find('#manoeverauswahl').val();
-				if (selectedOption == "eins")
-				  this.actor.rollManoeuvre("ApproachDistance", event);
-				else if (selectedOption == "zwei")
-				  this.actor.rollManoeuvre("UtmostPower", event);
-				else if (selectedOption == "drei")
-				  this.actor.rollManoeuvre("Turnaround", event);
-				else if (selectedOption == "vier")
-				  this.actor.rollManoeuvre("AbruptBrakingAcceleration", event);
-				else if (selectedOption == "funf")
-				  this.actor.rollManoeuvre("Ramming", event);
-			  }
-			},
-			abbruch:
-			{
-			  label: game.i18n.localize("SPACE1889.Cancel"),
-			  callback: ()=> {ui.notifications.info(game.i18n.localize("SPACE1889.CancelRoll"))},
-			  icon: `<i class="fas fa-times"></i>`
-			}
-		  },
-		  default: "ok"
-		})
+		new foundry.applications.api.DialogV2({
+			window: { title: `${titleName}`, resizable: true },
+			position: { width:310 },
+			content: `<p><select id="manoeverauswahl" name="manoeverauswahl">${optionen}</select></p>`,
+			buttons: [
+				{
+					action: "ok",
+					icon: '',
+					label: game.i18n.localize("SPACE1889.Go"),
+					default: true,
+					callback: (event, button, dialog) => 
+					{
+						const selectedOption = button.form.elements.manoeverauswahl.value;
+						if (selectedOption == "eins")
+							this.actor.rollManoeuvre("ApproachDistance", event);
+						else if (selectedOption == "zwei")
+							this.actor.rollManoeuvre("UtmostPower", event);
+						else if (selectedOption == "drei")
+							this.actor.rollManoeuvre("Turnaround", event);
+						else if (selectedOption == "vier")
+							this.actor.rollManoeuvre("AbruptBrakingAcceleration", event);
+						else if (selectedOption == "funf")
+							this.actor.rollManoeuvre("Ramming", event);
+					}
+				},
+				{
+					action: "abbruch",
+					label: game.i18n.localize("SPACE1889.Cancel"),
+					callback: () => { ui.notifications.info(game.i18n.localize("SPACE1889.CancelRoll")) },
+					icon: `<i class="fas fa-times"></i>`
+				}
+			]
 
-		dialogue.render(true)
+		}).render({ force: true });
 	}
 
 	_doVehicleAttackManeuverClick(event)
@@ -1088,42 +1100,39 @@ export class Space1889ActorSheet extends ActorSheet {
 
 		const userId = game.user.id;
 
-		let dialogue = new Dialog(
-			{
-				title: `${titleName}`,
-				content: `<p><select id="manoeverauswahl" name="manoeverauswahl">${optionen}</select></p>`,
-				buttons:
+		new foundry.applications.api.DialogV2({
+			window: { title: `${titleName}`, resizable: true },
+			position: { width:310 },
+			content: `<p><select id="manoeverauswahl" name="manoeverauswahl">${optionen}</select></p>`,
+			buttons: [
 				{
-					ok:
+					action: "ok",
+					icon: '',
+					label: game.i18n.localize("SPACE1889.Go"),
+					default: true,
+					callback: (event, button, dialog) =>
 					{
-						icon: '',
-						label: game.i18n.localize("SPACE1889.Go"),
-						callback: (html) =>
-						{
-							const selectedOption = html.find('#manoeverauswahl').val();
-							if (selectedOption == "one")
-								this.actor.rollManoeuvre("Attack", event);
-							else if (selectedOption == "two")
-								this.actor.rollManoeuvre("TotalAttack", event);
-							else if (selectedOption == "three")
-								this.actor.rollManoeuvre("DoubleShot", event);
-							else if (selectedOption == "four")
-								this.actor.rollManoeuvre("ContinuousFire", event);
-							else if (selectedOption == "five")
-								this.actor.rollManoeuvre("AimedShot", event);
-						}
-					},
-					abbruch:
-					{
-						label: game.i18n.localize("SPACE1889.Cancel"),
-						callback: () => { ui.notifications.info(game.i18n.localize("SPACE1889.CancelRoll")) },
-						icon: `<i class="fas fa-times"></i>`
+						const selectedOption = button.form.elements.manoeverauswahl.value;
+						if (selectedOption == "one")
+							this.actor.rollManoeuvre("Attack", event);
+						else if (selectedOption == "two")
+							this.actor.rollManoeuvre("TotalAttack", event);
+						else if (selectedOption == "three")
+							this.actor.rollManoeuvre("DoubleShot", event);
+						else if (selectedOption == "four")
+							this.actor.rollManoeuvre("ContinuousFire", event);
+						else if (selectedOption == "five")
+							this.actor.rollManoeuvre("AimedShot", event);
 					}
 				},
-				default: "ok"
-			});
-
-		dialogue.render(true);
+				{
+					action: "abbruch",
+					label: game.i18n.localize("SPACE1889.Cancel"),
+					callback: () => { ui.notifications.info(game.i18n.localize("SPACE1889.CancelRoll")) },
+					icon: `<i class="fas fa-times"></i>`
+				}
+			]
+		}).render({ force: true });
 	}
 
 /*  async _onDrop(event) {
@@ -1179,6 +1188,7 @@ export class Space1889ActorSheet extends ActorSheet {
 				targetContainerId = (target.type == "container" ? target._id : target.system.containerId);
 		}
 
+		itemData.id = item._id;
 		if (itemData.system.containerId != targetContainerId)
 		{
 			if (item.type === "lightSource" && item.system.isActive)
@@ -1206,7 +1216,7 @@ export class Space1889ActorSheet extends ActorSheet {
 		if (this.isItemDropAllowed(itemData))
 		{
 			// Create the owned item
-			return this._onDropItemCreate(itemData);
+			return super._onDropItem(event, data);
 		}
 		return false;
 	}
@@ -1235,11 +1245,19 @@ export class Space1889ActorSheet extends ActorSheet {
 					return false;
 				}
 			}
-			else if (item.system.strengthThreshold > actor.system.abilities["str"].total)
+			else if (item.system.strengthThreshold > actor.derived.abilities["str"].total)
 			{
 				ui.notifications.error(game.i18n.format("SPACE1889.canNotBeAdded", { item: item.name }))
 				return false;
 			}	
+		}
+		if (item.type == "shield")
+		{
+			if (item.system.strengthThreshold > actor.derived.abilities["str"].total)
+			{
+				ui.notifications.error(game.i18n.format("SPACE1889.canNotBeAdded", { item: item.name }))
+				return false;
+			}			
 		}
 		if (item.type == "specialization")
 		{
@@ -1274,17 +1292,18 @@ export class Space1889ActorSheet extends ActorSheet {
 		let optionen = '';
 		let actor = this.actor;
 
-		for (let item of actor.system.skills)
+		for (let itemElement of actor.skills)
 		{
-			optionen += '<option value="' + item.system.id + '" selected="selected">' + item.system.label + '</option>';
+			optionen += '<option value="' + itemElement.system.id + '" selected="selected">' + itemElement.derived.label + '</option>';
 		}
 
 		let talentName = item.name;
 		let text = game.i18n.localize("SPACE1889.ChooseSkill") + " " + talentName;
 		let choices = game.i18n.localize("SPACE1889.Choices");
 		let selectedOption;
-		let dialog = new Dialog({
-			title: `${actor.name} : ${talentName}`,
+		new foundry.applications.api.DialogV2({
+			window: { title: `${actor.name} : ${talentName}`, resizable: true },
+			position: { width: 400 },
 			content: `
 				<form>
 				  <p>${text}:</p>
@@ -1296,39 +1315,45 @@ export class Space1889ActorSheet extends ActorSheet {
 				  </div>
 				</form>
 			`,
-			buttons: {
-				yes: {
+			buttons: [
+				{
+					action: "yes",
 					icon: '<i class="fas fa-check"></i>',
-					label: "Submit",
-					callback: (html) =>
+					label: game.i18n.localize("SPACE1889.Submit"),
+					default: true,
+					callback: (event, button, dialog) =>
 					{
-						selectedOption = html.find('#choices').val();
+						selectedOption = button.form.elements.choices.value;
 					},
 				},
-				no: {
-					icon: '<i class="fas fa-times"></i>',
-					label: "Cancel",
-				}
-			},
-			default: "yes",
-			close: () =>
-			{
-				if (selectedOption) 
 				{
-					let newTalent = actor.system.talents.find(e => e.system.id == item.system.id && e.system.bonusTarget == "");
-					if (newTalent != undefined)
+					action: "no",
+					icon: '<i class="fas fa-times"></i>',
+					label: game.i18n.localize("SPACE1889.Cancel")
+				}
+			],
+			submit: result =>
+			{
+				let newTalent = actor.talents.findLast(e => e.system.id == item.system.id && e.system.bonusTarget == "");
+				if (newTalent != undefined)
+				{
+					if (result === "yes" && selectedOption) 
+					{
 						this.actor.updateEmbeddedDocuments("Item", [{ _id: newTalent._id, "system.bonusTarget": selectedOption }]);
-
-					console.log("set system.bonusTarget to: " + selectedOption);
+						console.log("set system.bonusTarget to: " + selectedOption);
+					}
+					else
+					{
+						actor.deleteEmbeddedDocuments("Item", [newTalent._id]);
+						ui.notifications.info(game.i18n.format("SPACE1889.ChatInfoUndoAddTalent", { talentName: newTalent.derived.label,  name: actor.name }));
+					}
 				}
 			}
-		});
-		dialog.render(true);
+		}).render({ force: true });
 	}
 
 	showGeschaerfterSinnDialog(item)
 	{
-		
 		let actor = this.actor;
 
 		let optionen = '<option value="hearing" selected="selected">' + game.i18n.localize("SPACE1889.SenseHearing") + '</option>';
@@ -1341,8 +1366,9 @@ export class Space1889ActorSheet extends ActorSheet {
 		let text = game.i18n.localize("SPACE1889.ChooseSense") + " " + sense;
 		let choices = game.i18n.localize("SPACE1889.Choices");
 		let selectedOption;
-		let dialog = new Dialog({
-			title: `${actor.name} : ${sense}`,
+		new foundry.applications.api.DialogV2({
+			window: { title: `${actor.name} : ${sense}`, resizable: true },
+			position: { width: 400 },
 			content: `
 				<form>
 				  <p>${text}:</p>
@@ -1354,34 +1380,41 @@ export class Space1889ActorSheet extends ActorSheet {
 				  </div>
 				</form>
 			`,
-			buttons: {
-				yes: {
-					icon: '<i class="fas fa-check"></i>',
-					label: "Submit",
-					callback: (html) =>
-					{
-						selectedOption = html.find('#choices').val();
-					}
-				},
-				no: {
-					icon: '<i class="fas fa-times"></i>',
-					label: "Cancel"
-				}
-			},
-			default: "yes",
-			close: () =>
-			{
-				if (selectedOption) 
+			buttons: [
 				{
-					let newTalent = actor.system.talents.find(e => e.system.id === "geschaerfterSinn" && e.system.bonusTarget === "");
-					if (newTalent != undefined)
+					action: "yes",
+					icon: '<i class="fas fa-check"></i>',
+					label: game.i18n.localize("SPACE1889.Submit"),
+					default: true,
+					callback: (event, button, dialog) =>
+					{
+						selectedOption = button.form.elements.choices.value;
+					},
+				},
+				{
+					action: "no",
+					icon: '<i class="fas fa-times"></i>',
+					label: game.i18n.localize("SPACE1889.Cancel")
+				}
+			],
+			submit: result =>
+			{
+				let newTalent = actor.talents.findLast(e => e.system.id === "geschaerfterSinn" && e.system.bonusTarget == "");
+				if (newTalent != undefined)
+				{
+					if (result === "yes" && selectedOption) 
+					{
 						this.actor.updateEmbeddedDocuments("Item", [{ _id: newTalent._id, "system.bonusTarget": selectedOption, "system.bonusTargetType": "sense" }]);
-
-					console.log("set system.bonusTarget to: " + selectedOption);
+						console.log("set system.bonusTarget to: " + selectedOption);
+					}
+					else
+					{
+						actor.deleteEmbeddedDocuments("Item", [newTalent._id]);
+						ui.notifications.info(game.i18n.format("SPACE1889.ChatInfoUndoAddTalent", { talentName: newTalent.derived.label, name: actor.name }));
+					}
 				}
 			}
-		});
-		dialog.render(true);
+		}).render({ force: true });
 	}
 
 	showSchwerkraftadaptionDialog(item)
@@ -1402,14 +1435,13 @@ export class Space1889ActorSheet extends ActorSheet {
 			optionen += `<option value="${k}"${selected}>${game.i18n.localize(v)} (${gravText} )</option>`;
 		}
 
-
-
 		let gravityAdaptation = game.i18n.localize("SPACE1889.TalentSchwerkraftadaption");
 		let text = game.i18n.localize("SPACE1889.ChooseGravity") + " " + gravityAdaptation;
 		let choices = game.i18n.localize("SPACE1889.Choices");
 		let selectedOption;
-		let dialog = new Dialog({
-			title: `${actor.name} : ${gravityAdaptation}`,
+		new foundry.applications.api.DialogV2({
+			window: { title: `${actor.name} : ${gravityAdaptation}`, resizable: true },
+			position: { width: 400 },
 			content: `
 				<form>
 				  <p>${text}:</p>
@@ -1421,34 +1453,41 @@ export class Space1889ActorSheet extends ActorSheet {
 				  </div>
 				</form>
 			`,
-			buttons: {
-				yes: {
-					icon: '<i class="fas fa-check"></i>',
-					label: "Submit",
-					callback: (html) =>
-					{
-						selectedOption = html.find('#choices').val();
-					}
-				},
-				no: {
-					icon: '<i class="fas fa-times"></i>',
-					label: "Cancel"
-				}
-			},
-			default: "yes",
-			close: () =>
-			{
-				if (selectedOption) 
+			buttons: [
 				{
-					let newTalent = actor.system.talents.find(e => e.system.id === "schwerkraftadaption" && e.system.bonusTarget === "");
-					if (newTalent != undefined)
+					action: "yes",
+					icon: '<i class="fas fa-check"></i>',
+					label: game.i18n.localize("SPACE1889.Submit"),
+					default: true,
+					callback: (event, button, dialog) =>
+					{
+						selectedOption = button.form.elements.choices.value;
+					},
+				},
+				{
+					action: "no",
+					icon: '<i class="fas fa-times"></i>',
+					label: game.i18n.localize("SPACE1889.Cancel")
+				}
+			],
+			submit: result =>
+			{
+				let newTalent = actor.talents.findLast(e => e.system.id === "schwerkraftadaption" && e.system.bonusTarget === "");
+				if (newTalent != undefined)
+				{
+					if (result === "yes" && selectedOption) 
+					{
 						this.actor.updateEmbeddedDocuments("Item", [{ _id: newTalent._id, "system.bonusTarget": selectedOption, "system.bonusTargetType": "gravity" }]);
-
-					console.log("set system.bonusTarget to: " + selectedOption);
+						console.log("set system.bonusTarget to: " + selectedOption);
+					}
+					else
+					{
+						actor.deleteEmbeddedDocuments("Item", [newTalent._id]);
+						ui.notifications.info(game.i18n.format("SPACE1889.ChatInfoUndoAddTalent", { talentName: newTalent.derived.label, name: actor.name }));
+					}
 				}
 			}
-		});
-		dialog.render(true);
+		}).render({ force: true });
 	}
 
 /**
@@ -1473,12 +1512,12 @@ export class Space1889ActorSheet extends ActorSheet {
 		}
 		else if (type == "primary")
 		{
-			if (threshold <= actor.system.abilities[id].total)
+			if (threshold <= actor.derived.abilities[id].total)
 				return true;
 		}
 		else if (type == "secondary")
 		{
-			if (threshold <= actor.system.secondaries[id].total)
+			if (threshold <= actor.derived.secondaries[id].total)
 				return true;
 		}
 		else if (type == "skill" && id == "nichtkampffertigkeit")
@@ -1670,25 +1709,25 @@ export class Space1889ActorSheet extends ActorSheet {
 	 */
 	incrementLocation(ev, currentId, actor)
 	{
-		if (actor.system.containers.length == 0)
+		if (actor.containers.length == 0)
 			return null;
 
 		const backward = ev.button == 2;
 		if (currentId == null)
 		{
-			return backward ? actor.system.containers[actor.system.containers.length - 1].id : actor.system.containers[0].id;
+			return backward ? actor.containers[actor.containers.length - 1].id : actor.containers[0].id;
 		}
 
 		let pre = null;
 		let post = null;
-		const length = actor.system.containers.length;
+		const length = actor.containers.length;
 		for (let i = 0; i < length; ++i)
 		{
-			const container = actor.system.containers[i];
+			const container = actor.containers[i];
 			if (container._id == currentId)
 			{
 				if (i + 1 < length)
-					post = actor.system.containers[i + 1]._id;
+					post = actor.containers[i + 1]._id;
 				break;
 			}
 			else
@@ -1742,7 +1781,7 @@ export class Space1889ActorSheet extends ActorSheet {
 			return undefined;
 
 		// Grab any data associated with this control.
-		const data = duplicate(header.dataset);
+		const data = foundry.utils.duplicate(header.dataset);
 		// Initialize a default name.
 		const name = CONFIG.SPACE1889.itemTypes.hasOwnProperty(type)
 			? `${game.i18n.localize(CONFIG.SPACE1889.itemTypes[type])} (${this.actor.items.size})`
@@ -1775,9 +1814,9 @@ export class Space1889ActorSheet extends ActorSheet {
 	 * @returns {Promise<Item5e>}  The promise for the updated parent Item which resolves after the application re-renders
 	 * @private
 	 */
-	async _onItemDelete(event) {
+	async _onItemDelete(event, idToDelete) {
 		event.preventDefault();
-		const idToDelete = event.currentTarget.closest("[data-item-id]")?.dataset.itemId;
+
 		if (!idToDelete)
 			return;
 
@@ -1788,22 +1827,19 @@ export class Space1889ActorSheet extends ActorSheet {
 		if (isInjury)
 			await SPACE1889Healing.refreshTheInjuryToBeHealed(this.actor)
 
-//		li.slideUp(200, () => this.render(false));
 		this.render();
 	}
 
-	async _onContainerDelete(event) {
+	async _onContainerDelete(event, idToDelete) {
 		event.preventDefault();
-		const idToDelete = event.currentTarget.closest("[data-item-id]")?.dataset.itemId;
 		if (!idToDelete)
 			return;
 
-
 		let updateData = [];
-		let lists = [this.actor.system.gear, this.actor.system.weapons, this.actor.system.ammunitions, this.actor.system.armors];
+		let lists = [this.actor.gear, this.actor.weapons, this.actor.ammunitions, this.actor.armors];
 		for (let list of lists)
 		{
-			for (let item of this.actor.system.gear)
+			for (let item of this.actor.gear)
 			{
 				if (item.system.containerId == idToDelete)
 					updateData.push({ _id: item._id, "system.containerId": null });
@@ -1912,4 +1948,155 @@ export class Space1889ActorSheet extends ActorSheet {
 
 }
 
+class Space1889CharacterSheet extends Space1889ActorSheet
+{
+	static PARTS = {
+		header: {
+			template: "systems/space1889/templates/actor/parts/character-header.html"
+		},
+		tabs: {
+			// Foundry-provided generic template
+			template: "templates/generic/tab-navigation.hbs",
+		},
+		details: {
+			template: 'systems/space1889/templates/actor/parts/character-tab-details.html'
+		},
+		skills: {
+			template: 'systems/space1889/templates/actor/parts/character-tab-skills.html'
+		},
+		talents: {
+			template: 'systems/space1889/templates/actor/parts/character-tab-talents.html'
+		},
+		items: {
+			template: 'systems/space1889/templates/actor/parts/character-tab-items.html'
+		},
+		weapons: {
+			template: 'systems/space1889/templates/actor/parts/character-tab-weapons.html'
+		},
+		bio: {
+			template: 'systems/space1889/templates/actor/parts/character-tab-bio.html'
+		}
+	}
 
+	static TABS = {
+		primary: {
+			tabs: [
+				{ id: 'details', group: 'primary', label: 'SPACE1889.AbilityPl' },
+				{ id: 'skills', group: 'primary', label: 'SPACE1889.SkillPl' },
+				{ id: 'talents', group: 'primary', label: 'SPACE1889.TalentPl' },
+				{ id: 'items', group: 'primary', label: 'SPACE1889.ItemPl' },
+				{ id: 'weapons', group: 'primary', label: 'SPACE1889.WeaponPl' },
+				{ id: 'bio', group: 'primary', label: 'SPACE1889.BiographyAbbr' },
+			],
+			initial: 'details',
+		}
+	}
+
+	//async _preparePartContext(partId, context)
+	//{
+	//	switch (partId)
+	//	{
+	//		case "header":
+	//			break;
+	//		case "details":
+	//		case "basic":
+	//		case "animation":
+	//		case "advanced":
+	//			context.tab = context.tabs[partId];
+	//			break;
+	//	}
+	//	return context;
+	//}
+}
+
+
+class Space1889NpcSheet extends Space1889ActorSheet
+{
+	static PARTS = {
+		header: {
+			template: "systems/space1889/templates/actor/parts/npc-header.html"
+		},
+		tabs: {
+			// Foundry-provided generic template
+			template: "templates/generic/tab-navigation.hbs",
+		},
+		details: {
+			template: 'systems/space1889/templates/actor/parts/npc-tab-details.html'
+		},
+		itemsAndWeapons: {
+			template: 'systems/space1889/templates/actor/parts/npc-tab-itemAndWeapons.html'
+		},
+		bio: {
+			template: 'systems/space1889/templates/actor/parts/npc-tab-bio.html'
+		}
+	}
+
+	static TABS = {
+		primary: {
+			tabs: [
+				{ id: 'details', group: 'primary', label: 'SPACE1889.AbilityPl' },
+				{ id: 'itemsAndWeapons', group: 'primary', label: 'SPACE1889.ItemsAndWeapons' },
+				{ id: 'bio', group: 'primary', label: 'SPACE1889.BiographyAbbr' },
+			],
+			initial: 'details',
+		}
+	}
+}
+
+class Space1889CreatureSheet extends Space1889ActorSheet
+{
+	static PARTS = {
+		header: {
+			template: "systems/space1889/templates/actor/parts/creature-header.html"
+		},
+		tabs: {
+			// Foundry-provided generic template
+			template: "templates/generic/tab-navigation.hbs",
+		},
+		details: {
+			template: 'systems/space1889/templates/actor/parts/creature-tab-details.html'
+		},
+		bio: {
+			template: 'systems/space1889/templates/actor/parts/creature-tab-bio.html'
+		}
+	}
+
+	static TABS = {
+		primary: {
+			tabs: [
+				{ id: 'details', group: 'primary', label: 'SPACE1889.AbilityPl' },
+				{ id: 'bio', group: 'primary', label: 'SPACE1889.BiographyAbbr' },
+			],
+			initial: 'details',
+		}
+	}
+}
+
+class Space1889VehicleSheet extends Space1889ActorSheet
+{
+	static PARTS = {
+		header: {
+			template: "systems/space1889/templates/actor/parts/vehicle-header.html"
+		},
+		tabs: {
+			// Foundry-provided generic template
+			template: "templates/generic/tab-navigation.hbs",
+		},
+		details: {
+			template: 'systems/space1889/templates/actor/parts/vehicle-tab-details.html'
+		},
+		bio: {
+			template: 'systems/space1889/templates/actor/parts/vehicle-tab-bio.html'
+		}
+	}
+
+	static TABS = {
+		primary: {
+			tabs: [
+				{ id: 'details', group: 'primary', label: 'SPACE1889.AbilityPl' },
+				{ id: 'bio', group: 'primary', label: 'SPACE1889.BiographyAbbr' },
+			],
+			initial: 'details',
+		}
+	}
+}

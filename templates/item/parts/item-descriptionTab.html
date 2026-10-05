@@ -1,0 +1,11 @@
+{{! Description Part }}
+<div class="editor description tab scrollable {{tab.cssClass}}" data-tab="description" data-group="{{tabs.description.group}}" data-application-part="description">
+	{{#if editable}}
+		<prose-mirror name="system.description" value="{{system.description}}" toggled="true" 
+					  document-uuid="{{item.uuid}}" class="sized">
+			{{{ enrichedDescription }}}
+		</prose-mirror>
+	{{else}}
+		{{{ enrichedDescription }}}
+	{{/if}}
+</div>

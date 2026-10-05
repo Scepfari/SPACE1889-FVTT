@@ -64,7 +64,7 @@ export default class SPACE1889Healing
 		let nonLethalInjuries = [];
 		let lethalInjuries = [];
 
-		for (let injury of actor.system.injuries)
+		for (let injury of actor.injuries)
 		{
 			if (!SPACE1889Time.isLessThenOneHour(injury.system.eventTimestamp, timestamp))
 				continue;
@@ -266,33 +266,33 @@ export default class SPACE1889Healing
 			reductionOptions += `<option value="${i}"> ${i} ${damageLocalized} (${i * 2} ${stylePointsLocalized})</option>`;
 		}
 
-		const inputDesc = game.i18n.localize("SPACE1889.ChooseDamageReduction") + ":";
+		const inputDesc = game.i18n.localize("SPACE1889.ChooseDamageReduction");
 
-		let dialogue = new Dialog(
+		new foundry.applications.api.DialogV2(
 			{
-				title: `${game.i18n.localize("SPACE1889.UseStylePoints")}: (${actorStylePoints})`,
-				content: `<p>${inputDesc}:</p><p><select id="choices" name="choices">${reductionOptions}</select></p>`,
-				buttons:
-				{
-					ok:
+				window: { title: `${game.i18n.localize("SPACE1889.UseStylePoints")}: (${actorStylePoints})` },
+				content: `<div>${inputDesc}:</div><div><select id="choices" name="choices">${reductionOptions}</select></div>`,
+				buttons: [
 					{
+						action: "ok",
 						icon: '',
 						label: game.i18n.localize("SPACE1889.Apply"),
-						callback: (html) => myCallback(html)
+						default: true,
+						callback: (event, button, dialog) => myCallback(event, button, dialog)
 					},
-					abbruch:
 					{
+						action: "abbruch",
 						label: game.i18n.localize("SPACE1889.Cancel"),
 						callback: () => { },
 						icon: `<i class="fas fa-times"></i>`
 					}
-				},
-				default: "ok"
-			}).render(true);
+				],
+				
+			}).render({ force: true });
 
-		async function myCallback(html)
+		async function myCallback(event, button, dialog)
 		{
-			const input = html.find('#choices').val();
+			const input = button.form.elements.choices.value;
 			const damageReduction = input ? Number(input) : 0;
 
 			if (damageReduction == 0 || actorStylePoints != actor.system.style.value)
@@ -321,7 +321,7 @@ export default class SPACE1889Healing
 
 	static isSameTime(injury)
 	{
-		const checkTimestamps = SPACE1889Time.isSimpleCalendarEnabled();
+		const checkTimestamps = SPACE1889Time.isCalendarEnabled();
 
 		let isSame = checkTimestamps ? injury.system.eventTimestamp == SPACE1889Time.getCurrentTimestamp() : true;
 		const isCombat = game.combat?.active && game.combat?.started;
@@ -337,7 +337,7 @@ export default class SPACE1889Healing
 
 	static findInjuryToHeal(actor, overrideStartHealingTimeStamp = Infinity)
 	{
-		if (!actor || SPACE1889Helper.isDead(actor))
+		if (!actor || SPACE1889Helper.isDead(actor) || actor.system.type == "vehicle")
 			return undefined;
 
 		const injuryInHealingId = actor.system.healing.currentHealingDamageId;
@@ -345,7 +345,7 @@ export default class SPACE1889Healing
 		let wantedInjury = undefined;
 		const healingStartTimeStamp = overrideStartHealingTimeStamp == Infinity ? actor.system.healing.startOfHealingTimeStamp : overrideStartHealingTimeStamp;
 
-		for (const injury of actor.system.injuries)
+		for (const injury of actor.injuries)
 		{
 			if (injury.system.remainingDamage == 0 || injury.system.damageType != "nonLethal")
 				continue;
@@ -362,7 +362,7 @@ export default class SPACE1889Healing
 		if (minTime < Infinity && wantedInjury != undefined)
 			return wantedInjury;
 
-		for (const injury of actor.system.injuries)
+		for (const injury of actor.injuries)
 		{
 			if (injury.system.remainingDamage == 0 || injury.system.damageType == "nonLethal")
 				continue;
@@ -390,7 +390,7 @@ export default class SPACE1889Healing
 
 		let healingTime = neededSecondsToHeal / injury.system.healingFactor;
 
-		if (injury.id == injuryInHealingId && SPACE1889Time.isSimpleCalendarEnabled())
+		if (injury.id == injuryInHealingId && SPACE1889Time.isCalendarEnabled())
 			healingTime -= this.getPastTimeInSeconds(healingStartTimeStamp)
 
 		return healingTime;
@@ -404,7 +404,7 @@ export default class SPACE1889Healing
 
 	static getPastTimeInSeconds(healingStartTimeStamp)
 	{
-		if (healingStartTimeStamp == 0 || healingStartTimeStamp == Infinity || !SPACE1889Time.isSimpleCalendarEnabled())
+		if (healingStartTimeStamp == 0 || healingStartTimeStamp == Infinity || !SPACE1889Time.isCalendarEnabled())
 			return 0;
 
 		// nur wenn der aktuelle Zeitpunkt nach dem Heilstart liegt, wird ein Wert != 0 zurückgeliefert
@@ -466,7 +466,7 @@ export default class SPACE1889Healing
 
 		if (actor.system.healing.currentHealingDamageId == injury.id)
 		{
-			actor.prepareData();
+			actor.prepareDerivedData();
 			return;
 		}
 
@@ -654,7 +654,7 @@ export default class SPACE1889Healing
 			const combatTokenId = game.combat?.combatant?.token?.id;
 			const token = canvas.tokens.get(combatTokenId);
 			const actor = token?.actor;
-			await this.stabilize(actor, token.name);
+			await this.stabilize(actor, token?.name);
 		}
 	}
 
@@ -665,7 +665,7 @@ export default class SPACE1889Healing
 
 		const damage = SPACE1889Helper.getDamageTuple(actor);
 		const penalty = Math.min(actor.system.health.max - damage.lethal, 0);
-		const dice = (2 * actor.system.abilities.con.total) + penalty;
+		const dice = (2 * actor.derived.abilities.con.total) + penalty;
 
 		let messageContent = game.i18n.localize("SPACE1889.ChatStabilizing");
 		const info = game.i18n.localize("SPACE1889.ChatReflexiveBodyRoll");

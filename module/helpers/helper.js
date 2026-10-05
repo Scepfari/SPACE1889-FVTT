@@ -1,4 +1,3 @@
-import TurnMarker from "../helpers/turnMarker.js";
 import SPACE1889RollHelper from "./roll-helper.js";
 import SPACE1889Time from "./time.js";
 import SPACE1889Healing from "../helpers/healing.js";
@@ -14,7 +13,7 @@ export default class SPACE1889Helper
 
 	static getTalentData(actor, talentId)
 	{
-		return actor?.system?.talents?.find(entry => entry.system.id === talentId);
+		return actor?.talents?.find(entry => entry.system.id === talentId);
 	}
 
 	static getTalentLevel(actor, talentId)
@@ -22,7 +21,7 @@ export default class SPACE1889Helper
 		const talent = this.getTalentData(actor, talentId);
 		if (talent != undefined)
 		{
-			return talent.system.level.total;
+			return talent.derived.level.total;
 		}
 		return 0;
 	}
@@ -84,29 +83,6 @@ export default class SPACE1889Helper
 	static isCreature(actor)
 	{
 		return actor.type == 'creature';
-	}
-
-	static getExchangeValue(item)
-	{
-		const exchangeRatio = 20 / item.system.exchangeRateForOnePound;
-		if (exchangeRatio == 0)
-			return "?";
-
-		const sumShilling = Number(item.system.quantity) * exchangeRatio;
-
-		const pound = Math.floor(sumShilling / 20);
-		const shilling = Math.round(sumShilling - (pound * 20));
-
-		let value = "";
-		if (pound > 0)
-			value = pound.toString() + game.i18n.localize("SPACE1889.CurrencyBritishPoundsAbbr") + " ";
-		if (shilling > 0)
-			value += shilling.toString() + game.i18n.localize("SPACE1889.CurrencyBritishShillingAbbr");
-
-		if (value == "")
-			value = "<< 1" + game.i18n.localize("SPACE1889.CurrencyBritishShillingAbbr");
-
-		return value;
 	}
 
 	/**
@@ -258,15 +234,14 @@ export default class SPACE1889Helper
 		let positionLabel = game.i18n.localize("SPACE1889.VehicleCrewPosition");
 		let submit = game.i18n.localize("SPACE1889.Submit")
 		let cancel = game.i18n.localize("SPACE1889.Cancel")
-		let selectedOption;
-		let userInputName;
 
-
-		let dialog = new Dialog({
-			title: `${vehicle.name} : ${dropedActor.name}`,
-			content: `
-				<form class="flexcol">
-					<p>${text}</p>
+		new foundry.applications.api.DialogV2(
+			{
+				window: { title: `${vehicle.name} : ${dropedActor.name}`, resizable: true },
+				position: { width: 400 },
+				content: `
+					<form>
+						<div>${text}</div>
 						<div>
 							<label>${positionLabel}:</label>
 							<div>
@@ -275,50 +250,47 @@ export default class SPACE1889Helper
 								</select>
 							</div>
 						</div>
-				</form>
-			`,
-			buttons: {
-				yes: {
-					icon: '<i class="fas fa-check"></i>',
-					label: `${submit}`,
-					callback: (html) =>
+					</form>
+				`,
+				buttons: [
 					{
-						selectedOption = html.find('#position').val();
+						action: "yes",
+						icon: '<i class="fas fa-check"></i>',
+						label: `${submit}`,
+						default: true,
+						callback: (event, button, dialog) => myCallback(button)
 					},
-				},
-				no: {
-					icon: '<i class="fas fa-times"></i>',
-					label: `${cancel}`,
-				}
-			},
-			default: "yes",
-			close: () =>
-			{
-				if (selectedOption)
-				{
-					let all = selectedOption == "all";
-					const id = dropedActor._id;
+					{
+						action: "no",
+						icon: '<i class="fas fa-times"></i>',
+						label: `${cancel}`
+					}
+				]
+			}).render({ force: true });
 
-					if (selectedOption == "captain" || all)
-						vehicle.update({ 'system.positions.captain.actorId': id, 'system.positions.captain.actorName': actorName });
-					if (selectedOption == "pilot" || all)
-						vehicle.update({ 'system.positions.pilot.actorId': id, 'system.positions.pilot.actorName': actorName });
-					if (selectedOption == "copilot" || all)
-						vehicle.update({ 'system.positions.copilot.actorId': id, 'system.positions.copilot.actorName': actorName });
-					if (selectedOption == "gunner" || all)
-						vehicle.update({ 'system.positions.gunner.actorId': id, 'system.positions.gunner.actorName': actorName });
-					if (selectedOption == "signaler" || all)
-						vehicle.update({ 'system.positions.signaler.actorId': id, 'system.positions.signaler.actorName': actorName });
-					if (selectedOption == "lookout" || all)
-						vehicle.update({ 'system.positions.lookout.actorId': id, 'system.positions.lookout.actorName': actorName });
-					if (selectedOption == "mechanic" || all)
-						vehicle.update({ 'system.positions.mechanic.actorId': id, 'system.positions.mechanic.actorName': actorName });
-					if (selectedOption == "medic" || all)
-						vehicle.update({ 'system.positions.medic.actorId': id, 'system.positions.medic.actorName': actorName });
-				}
-			}
-		});
-		dialog.render(true);
+		async function myCallback(button)
+		{
+			const selectedOption = button.form.elements.position.value;
+			let all = selectedOption == "all";
+			const id = dropedActor._id;
+
+			if (selectedOption == "captain" || all)
+				vehicle.update({ 'system.positions.captain.actorId': id, 'derived.positions.captain.actorName': actorName });
+			if (selectedOption == "pilot" || all)
+				vehicle.update({ 'system.positions.pilot.actorId': id, 'derived.positions.pilot.actorName': actorName });
+			if (selectedOption == "copilot" || all)
+				vehicle.update({ 'system.positions.copilot.actorId': id, 'derived.positions.copilot.actorName': actorName });
+			if (selectedOption == "gunner" || all)
+				vehicle.update({ 'system.positions.gunner.actorId': id, 'derived.positions.gunner.actorName': actorName });
+			if (selectedOption == "signaler" || all)
+				vehicle.update({ 'system.positions.signaler.actorId': id, 'derived.positions.signaler.actorName': actorName });
+			if (selectedOption == "lookout" || all)
+				vehicle.update({ 'system.positions.lookout.actorId': id, 'derived.positions.lookout.actorName': actorName });
+			if (selectedOption == "mechanic" || all)
+				vehicle.update({ 'system.positions.mechanic.actorId': id, 'derived.positions.mechanic.actorName': actorName });
+			if (selectedOption == "medic" || all)
+				vehicle.update({ 'system.positions.medic.actorId': id, 'derived.positions.medic.actorName': actorName });
+		}
 	}
 
 	static showActorSheet(id)
@@ -407,7 +379,7 @@ export default class SPACE1889Helper
 			{ combat: game.combat._id, rounds: effect.rounds, seconds: 6 * effect.rounds, startRound: 0, startTime: game.time.worldTime, startTurn: 0 } :
 			{ seconds: 6, startTime: game.time.worldTime };
 
-		return this.isFoundryV10Running() ? this.getFlagEffectData(effect, duration) : this.getStatusesEffectData(effect, duration);
+		return this.getStatusesEffectData(effect, duration);
 	}
 
 	static getFlagEffectData(effect, duration)
@@ -541,28 +513,12 @@ export default class SPACE1889Helper
 		return list[speed - 1];
 	}
 
-//function refreshSpaceCombatMarker()
-	static regenerateMarkers()
-	{
-		if (!game.combat?.started)
-			return;
-		if (!game.settings.get("space1889", "useCombatTurnMarker"))
-			return;
-		if (!canvas.tokens.Space1889TurnMarker)
-			new TurnMarker();
-		canvas.tokens.Space1889TurnMarker?.MoveToCombatant();
-	}
-
-	static refreshTurnMarker(reallyDestroy)
-	{
-		canvas.tokens?.Space1889TurnMarker?.Destroy(reallyDestroy);
-	}
-
 	static async showArtwork({ img, name, uuid, isOwner }, hide = false) 
 	{
-		new ImagePopout(img,
+		return new foundry.applications.apps.ImagePopout(
 			{
-				title: hide ? (isOwner ? name : "-") : name,
+				src: img,
+				window: { title: hide ? (isOwner ? name : "-") : name },
 				shareable: true,
 				uuid
 			}).render(true);
@@ -594,15 +550,15 @@ export default class SPACE1889Helper
 		
 		let isShotgun = item.system.specializationId == "schrotgewehr";
 		let isGun = !isPistol && !isShotgun;
-		let range = item.system.calculatedRange;
+		let range = item.derived.calculatedRange;
 		let shotgunMalus = 0;
 
 		if (isShotgun)
 		{
-			let currentAmmo = item.system.ammunition.ammos.find(x => x._id == item.system.ammunition.currentItemId);
+			let currentAmmo = item.derived.ammunition.ammos.find(x => x._id == item.system.ammunition.currentItemId);
 			if (!currentAmmo || currentAmmo?.system?.isConeAttack)
 			{
-				shotgunMalus = Math.floor(distance / item.system.coneRange) * (-1);
+				shotgunMalus = Math.floor(distance / item.derived.coneRange) * (-1);
 			}
 		}
 
@@ -633,19 +589,6 @@ export default class SPACE1889Helper
 		return (value < 0 ? "" : "+") + value.toString();
 	}
 
-	static isRangeWeapon(weapon)
-	{
-		if (!weapon || weapon.type != "weapon")
-			return false;
-
-		if (weapon.system.skillId != "waffenlos" && weapon.system.skillId != "nahkampf")
-		{
-			const range = parseFloat(this.replaceCommaWithPoint(weapon.system.range));
-			return range > 0.0;
-		}
-		return false;
-	}
-
 	static getAmmunitionCapacityType(weapon)
 	{
 		let type = weapon.system.capacityType;
@@ -660,7 +603,7 @@ export default class SPACE1889Helper
 		if (!item || item.type != "weapon" || item.system.specializationId != "schrotgewehr")
 			return 0;
 
-		const range = item.system.coneRange;
+		const range = item.derived.coneRange;
 		if (range <= 0.0)
 			return 0;
 
@@ -673,12 +616,12 @@ export default class SPACE1889Helper
 
 	static async setWeaponHand(weapon, actor, backward, silent = false)
 	{
-		if (!weapon || !actor || weapon.type != "weapon")
+		if (!weapon || !actor || !(["weapon","shield","lightSource"].includes(weapon.type)))
 			return;
 
 		if (weapon.system.containerId != null)
 		{
-			const container = actor.system.containers.find(e => e._id == weapon.system.containerId);
+			const container = actor.containers.find(e => e._id == weapon.system.containerId);
 			if (container && !(container.system.portable && container.system.carried) &&
 				weapon.system.skillId != "geschuetze")
 			{
@@ -704,9 +647,10 @@ export default class SPACE1889Helper
 		let title = "";
 		let isWaffenlos = weapon.system.skillId == "waffenlos";
 
+		const isShield = weapon.type == "shield";
 		if (newHand == "none")
 		{
-			title = game.i18n.localize("SPACE1889.WeaponUnReadyWeapon");
+			title = game.i18n.localize(isShield ? "SPACE1889.WeaponUnReadyShield" : "SPACE1889.WeaponUnReadyWeapon");
 			if (isWaffenlos)
 				desc = game.i18n.format("SPACE1889.WeaponDrawBrawl", { weapon: weapon.name });
 			else
@@ -716,7 +660,7 @@ export default class SPACE1889Helper
 		}
 		else
 		{
-			title = game.i18n.localize("SPACE1889.WeaponReadyWeapon");
+			title = game.i18n.localize(isShield ? "SPACE1889.WeaponReadyShield" : "SPACE1889.WeaponReadyWeapon");
 			const handname = game.i18n.localize(CONFIG.SPACE1889.weaponHand[newHand]);
 			if (isWaffenlos)
 			{
@@ -740,7 +684,7 @@ export default class SPACE1889Helper
 		}
 
 		const speaker = ChatMessage.getSpeaker({ actor: actor });
-		const label = `<div><h2>${title}</h2></div>`;
+		const label = `<div><h4>${title}</h4></div>`;
 		desc = label + `<div>${desc}</div>`;
 		ChatMessage.create({
 			speaker: speaker,
@@ -753,24 +697,42 @@ export default class SPACE1889Helper
 	{
 		let primaryHand = [];
 		let offHand = [];
-		for (const weapon of actor?.system?.weapons)
+
+		if (actor.weapons == undefined)
+			actor.prepareDerivedData();
+
+		if (actor.weapons == undefined || actor.shields == undefined)
+			return { primary: primaryHand, off: offHand };
+
+		let lists = [actor.weapons, actor.shields]
+
+		for (const list of lists)
 		{
-			if (weapon.system.usedHands === "bothHands")
+			for (const weapon of list)
 			{
-				primaryHand.push(weapon._id);
-				offHand.push(weapon._id);
+				if (weapon.system.usedHands === "bothHands")
+				{
+					primaryHand.push(weapon._id);
+					offHand.push(weapon._id);
+				}
+				else if (weapon.system.usedHands === "primaryHand")
+					primaryHand.push(weapon._id);
+				else if (weapon.system.usedHands === "offHand")
+					offHand.push(weapon._id);
 			}
-			else if (weapon.system.usedHands === "primaryHand")
-				primaryHand.push(weapon._id);
-			else if (weapon.system.usedHands === "offHand")
-				offHand.push(weapon._id);
 		}
 		return { primary: primaryHand, off: offHand };
 	}
 
 	static getWeapon(actor, weaponId)
 	{
-		return actor?.system?.weapons?.find(e => e.id == weaponId);
+		if (!actor)
+			return undefined;
+		let weapon = actor.weapons?.find(e => e.id == weaponId);
+		if (weapon)
+			return weapon;
+
+		return actor.shields?.find(e => e.id == weaponId);
 	}
 
 	static getNextValidHandPosition(weapon, actor, backwardDirection)
@@ -793,16 +755,12 @@ export default class SPACE1889Helper
 
 		if (wanted === "primaryHand")
 		{
-			let itemName = actor.system.weapons.find(e => e._id === weaponInHands.primary[0])?.name;
-			if (!itemName)
-				itemName = actor.system.lightSources.find(e => e._id === lsBlocked.primaryId)?.name;
+			let itemName = actor.items.get(weaponInHands.primary[0])?.name;
 			ui.notifications.info(game.i18n.format("SPACE1889.WeaponCanNotReadyPrimaryHand", { weapon: weapon.name, item: itemName}));
 		}
 		else if (wanted === "offHand")
 		{
-			let itemName = actor.system.weapons.find(e => e._id === weaponInHands.off[0])?.name;
-			if (!itemName)
-				itemName = actor.system.lightSources.find(e => e._id === lsBlocked.offId)?.name;
+			let itemName = actor.items.get(weaponInHands.off[0])?.name;
 			ui.notifications.info(game.i18n.format("SPACE1889.WeaponCanNotReadyOffHand", { weapon: weapon.name, item: itemName}));
 		}
 
@@ -860,7 +818,7 @@ export default class SPACE1889Helper
 			return;
 		}
 
-		let currentAmmo = weapon.system.ammunition.ammos.find(x => x._id == weapon.system.ammunition.currentItemId);
+		let currentAmmo = weapon.derived.ammunition.ammos.find(x => x._id == weapon.system.ammunition.currentItemId);
 
 		if (currentAmmo?.system?.quantity == 0)
 		{
@@ -870,7 +828,7 @@ export default class SPACE1889Helper
 
 		if (currentAmmo?.system?.containerId != null)
 		{
-			const container = actor.system.containers.find(e => e._id == currentAmmo.system.containerId);
+			const container = actor.containers.find(e => e._id == currentAmmo.system.containerId);
 			if (container && !(container.system.portable && container.system.carried))
 			{
 				ui.notifications.info(game.i18n.format("SPACE1889.AmmunitionCanNotReloadWrongLocation", { location: container.name } ));
@@ -888,8 +846,8 @@ export default class SPACE1889Helper
 		const infoId = isInstantReload ? "SPACE1889.AmmunitionInstantReload" : "SPACE1889.AmmunitionDefaultReloadAction";
 		let desc = game.i18n.format(infoId, { weaponName: weapon.name });
 
-		let autoReloadNeededLoadActions = Math.round(1 / ((isInstantReload ? 2 : 1) * weapon.system.ammunition.autoReloadRate)) - 1;
-		if (weapon.system.ammunition.autoReloadRate != 0 && autoReloadNeededLoadActions >= 0)
+		let autoReloadNeededLoadActions = Math.round(1 / ((isInstantReload ? 2 : 1) * weapon.derived.ammunition.autoReloadRate)) - 1;
+		if (weapon.derived.ammunition.autoReloadRate != 0 && autoReloadNeededLoadActions >= 0)
 		{
 			if (weapon.system.ammunition.usedLoadingActions >= autoReloadNeededLoadActions)
 			{
@@ -911,7 +869,7 @@ export default class SPACE1889Helper
 
 			if (game.combat?.started)
 			{
-				wantedLoad = Math.min(wantedLoad, actor.system.abilities.dex.total);
+				wantedLoad = Math.min(wantedLoad, actor.derived.abilities.dex.total);
 			}
 			await actor.updateEmbeddedDocuments("Item", [{ _id: weapon._id, "system.ammunition.remainingRounds": currentRounds + wantedLoad }]);
 			await actor.updateEmbeddedDocuments("Item", [{ _id: currentAmmo._id, "system.quantity": currentAmmo.system.quantity - wantedLoad }]);
@@ -927,7 +885,7 @@ export default class SPACE1889Helper
 	
 		const speaker = ChatMessage.getSpeaker({ actor: actor });
 			
-		const label = `<div><h2>${game.i18n.localize("SPACE1889.AmmunitionReload")}<small> (${currentAmmo.system.label})</small></h2></div>`;
+		const label = `<div><h4>${game.i18n.localize("SPACE1889.AmmunitionReload")}<small> (${currentAmmo.derived.label})</small></h4></div>`;
 		desc = label + `<div>${desc}</div>`;
 		ChatMessage.create({
 			speaker: speaker,
@@ -948,7 +906,7 @@ export default class SPACE1889Helper
 			return;
 		}
 
-		let currentAmmo = weapon.system.ammunition.ammos.find(x => x._id == weapon.system.ammunition.currentItemId);
+		let currentAmmo = weapon.derived.ammunition.ammos.find(x => x._id == weapon.system.ammunition.currentItemId);
 
 		if (weapon.system.capacityType == "internal" || weapon.system.capacityType == "revolver")
 		{
@@ -958,7 +916,7 @@ export default class SPACE1889Helper
 
 			if (game.combat?.started && weapon.system.capacityType == "internal")
 			{
-				wantedUnload = Math.min(wantedUnload, actor.system.abilities.dex.total);
+				wantedUnload = Math.min(wantedUnload, actor.derived.abilities.dex.total);
 			}
 			await actor.updateEmbeddedDocuments("Item", [{ _id: weapon._id, "system.ammunition.remainingRounds": currentRounds - wantedUnload , "system.ammunition.usedLoadingActions": 0}]);
 			await actor.updateEmbeddedDocuments("Item", [{ _id: currentAmmo._id, "system.quantity": currentAmmo.system.quantity + wantedUnload }]);
@@ -974,7 +932,7 @@ export default class SPACE1889Helper
 		const infoId = SPACE1889Helper.getTalentLevel(actor, "schnellladen") > 0 ? "SPACE1889.AmmunitionInstantUnload" : "SPACE1889.AmmunitionDefaultUnloadAction";
 			
 		let desc = game.i18n.format(infoId, { weaponName: weapon.name });
-		const label = `<div><h2>${game.i18n.localize("SPACE1889.AmmunitionUnload")}<small> (${currentAmmo.system.label})</small></h2></div>`;
+		const label = `<div><h4>${game.i18n.localize("SPACE1889.AmmunitionUnload")}<small> (${currentAmmo.derived.label})</small></h4></div>`;
 		desc = label + `<div>${desc}</div>`;
 		ChatMessage.create({
 			speaker: speaker,
@@ -1005,19 +963,19 @@ export default class SPACE1889Helper
 
 		const isInstantReload = SPACE1889Helper.getTalentLevel(actor, "schnellladen") > 0
 
-		if (weapon.system.ammunition.autoReloadRate == 0 && !isInstantReload)
+		if (weapon.derived.ammunition.autoReloadRate == 0 && !isInstantReload)
 			return false;
 
 		const neededReloadRounds = (roundsToUse - weapon.system.ammunition.remainingRounds);
 
-		let currentAmmo = weapon.system.ammunition.ammos.find(x => x._id == weapon.system.ammunition.currentItemId);
+		let currentAmmo = weapon.derived.ammunition.ammos.find(x => x._id == weapon.system.ammunition.currentItemId);
 		if (!currentAmmo || currentAmmo.system.quantity < 0 ||
 			(currentAmmo.system.quantity < neededReloadRounds && currentAmmo.system.capacity == 1))
 			return false;
 
-		if (weapon.system.ammunition.autoReloadRate > 0)
+		if (weapon.derived.ammunition.autoReloadRate > 0)
 		{
-			let autoReloadNeededLoadActions = Math.round(1 / ((isInstantReload ? 2 : 1) * weapon.system.ammunition.autoReloadRate)) - 1;
+			let autoReloadNeededLoadActions = Math.round(1 / ((isInstantReload ? 2 : 1) * weapon.derived.ammunition.autoReloadRate)) - 1;
 			if (weapon.system.ammunition.usedLoadingActions >= autoReloadNeededLoadActions)
 				return true;
 		}
@@ -1025,7 +983,7 @@ export default class SPACE1889Helper
 		{
 			let loadRounds = Math.min(neededReloadRounds, currentAmmo.system.quantity);
 			if (game.combat?.started)
-				loadRounds = Math.min(loadRounds, actor.system.abilities.dex.total);
+				loadRounds = Math.min(loadRounds, actor.derived.abilities.dex.total);
 
 			return (roundsToUse <= weapon.system.ammunition.remainingRounds + loadRounds)
 		}
@@ -1116,11 +1074,9 @@ export default class SPACE1889Helper
 		if (!actorList || actorList.length == 0)
 			return;
 	
-		const pack = game.packs.get("space1889.waffen");
-		let packWeapons = await pack.getDocuments();
+		let packWeapons = await SPACE1889Helper.getPackItemsFromFolder("space1889.ausrustung", "eCWp8f1yb90AJvM8")
 
-		const muPack = game.packs.get("space1889.munition");
-		const packAmmunition = await muPack.getDocuments();
+		const packAmmunition = await SPACE1889Helper.getPackItemsFromFolder("space1889.ausrustung", "YV0RkjySg2zfkPuI")
 
 		for (const actor of actorList)
 		{
@@ -1133,13 +1089,13 @@ export default class SPACE1889Helper
 		if (!actor)
 			return;
 
-		if ((actor.type == "character" || actor.type == "npc") && actor.system.ammunitions?.length == 0)
+		if ((actor.type == "character" || actor.type == "npc") && actor.ammunitions?.length == 0)
 		{
 			await this.updateActorWeapons(actor, packWeapons);
 
 			let itemsToAdd = [];
 			let weaponsWithAmmo = [];
-			for (const weapon of actor.system.weapons)
+			for (const weapon of actor.weapons)
 			{
 				if (weapon.system.isRangeWeapon)
 				{
@@ -1225,7 +1181,7 @@ export default class SPACE1889Helper
 			return;
 		if (actor.type == "character" || actor.type == "npc")
 		{
-			for (const weapon of actor.system.weapons)
+			for (const weapon of actor.weapons)
 			{
 				if (weapon.system.isRangeWeapon && (weapon.system.ammunition.type == "default" || weapon.system.ammunition.type == ""))
 				{
@@ -1279,7 +1235,7 @@ export default class SPACE1889Helper
 			if (actor.type == 'vehicle')
 				continue;
 
-			if (actor.system.containers.length > 0)
+			if (actor.containers.length > 0)
 			{
 				console.log(actor.name + ": already owns containers => skipped");
 				continue;
@@ -1287,7 +1243,7 @@ export default class SPACE1889Helper
 
 			let bagpackItems = [];
 			let lagerItems = [];
-			const searchLists = [actor.system.gear, actor.system.weapons, actor.system.ammunitions, actor.system.armors];
+			const searchLists = [actor.gear, actor.weapons, actor.ammunitions, actor.armors];
 
 			for (let list of searchLists)
 			{
@@ -1304,14 +1260,14 @@ export default class SPACE1889Helper
 			if (bagpackItems.length > 0)
 			{
 				await actor.createEmbeddedDocuments("Item", [bagpackObject]);
-				const bagpackId = actor.system.containers.find(e => e.system.id == bagpack.system.id)._id;
+				const bagpackId = actor.containers.find(e => e.system.id == bagpack.system.id)._id;
 				for (let item of bagpackItems)
 					updateData.push({ _id: item._id, "system.containerId": bagpackId });
 			}
 			if (lagerItems.length > 0)
 			{
 				await actor.createEmbeddedDocuments("Item", [lagerObject]);
-				const lagerId = actor.system.containers.find(e => e.system.id == lager.system.id)._id;
+				const lagerId = actor.containers.find(e => e.system.id == lager.system.id)._id;
 				for (let item of lagerItems)
 					updateData.push({ _id: item._id, "system.containerId": lagerId });
 			}
@@ -1325,17 +1281,17 @@ export default class SPACE1889Helper
 
 	static async createDamageTimestamps(actorList)
 	{
-		if (!SPACE1889Time.isSimpleCalendarEnabled())
+		if (!SPACE1889Time.isCalendarEnabled())
 			return;
 
 		const format = 'dd.mm.yyyy hh:ii:ss';
 		for (let actor of actorList)
 		{
-			if (!actor.system.injuries || actor.system.injuries.length == 0)
+			if (!actor.injuries || actor.injuries.length == 0)
 				continue;
 
 			let updateData = [];
-			for (let injury of actor.system.injuries)
+			for (let injury of actor.injuries)
 			{
 				if (injury.system.dataOfTheEvent.length < 10)
 					continue;
@@ -1372,6 +1328,12 @@ export default class SPACE1889Helper
 		return game.i18n.localize(langId);
 	}
 
+	static hasUserTimeControl()
+	{
+		const accepptTrusted = game.settings.get("space1889", "trustedPlayerCanChangeTime");
+		return game.user.isGM || (accepptTrusted && game.user.isTrusted);
+	}
+
 	static hasTokenConfigurePermission(displayNotificationOnFail = true)
 	{
 		if (game.user.hasPermission("TOKEN_CONFIGURE"))
@@ -1401,19 +1363,17 @@ export default class SPACE1889Helper
 	static hasOwnership(actor, notifyIfNot = false)
 	{
 		const permissions = actor?.ownership;
-		if ((permissions["default"] && permissions["default"] == 3) || (permissions[game.userId] && permissions[game.userId] == 3))
-			return true;
+		const hasOwnership = actor?.isOwner || game.user.isGM
+		if (hasOwnership || !notifyIfNot || !permissions)
+			return hasOwnership;
 
-		if (notifyIfNot)
+		let namensliste = "";
+		for (let user of game.users)
 		{
-			let namensliste = "";
-			for (let user of game.users)
-			{
-				if (permissions[user._id] == 3)
-					namensliste += (namensliste.length > 0 ? ", " : "") + user.name;
-			}
-			ui.notifications.info(game.i18n.format("SPACE1889.NoTokenPermission", { player: namensliste }));
+			if (permissions[user._id] == 3)
+				namensliste += (namensliste.length > 0 ? ", " : "") + user.name;
 		}
+		ui.notifications.info(game.i18n.format("SPACE1889.NoTokenPermission", { player: namensliste }));
 		return false;
 	}
 
@@ -1487,25 +1447,25 @@ export default class SPACE1889Helper
 			if (askUser)
 			{
 				update["flags.space1889.PreCreation"] = 101;
-				new Dialog({
-					title: `${game.i18n.localize("SPACE1889.AddLinkedTokenTitle")}: ${token.name} `,
+				new foundry.applications.api.DialogV2({
+					window: { title: `${game.i18n.localize("SPACE1889.AddLinkedTokenTitle")}: ${token.name} ` },
+					position: { width: 400 },
 					content: `<p>${game.i18n.localize("SPACE1889.AddLinkedTokenContent")}: </p>`,
-					buttons:
-					{
-						ok:
+					buttons: [
 						{
+							action: "ok",
 							icon: '',
-							label: game.i18n.localize("SPACE1889.AddLinkedTokenDoIt"),
+							label: game.i18n.localize("SPACE1889.AddLinkedTokenDoIt")
 						},
-						nein:
 						{
+							action: "nein",
+							default: true,
 							label: game.i18n.localize("SPACE1889.AddLinkedTokenUnlink"),
 							callback: () => changeIt(),
 							icon: ''
 						}
-					},
-					default: "nein"
-				}).render(true);
+					]
+				}).render({ force: true });
 
 				function changeIt()
 				{
@@ -1570,55 +1530,54 @@ export default class SPACE1889Helper
 			checkbox += ">";
 		checkbox += '</div></li></ul>'
 
-		let dialogue = new Dialog(
-		{
-			title: `${game.i18n.localize("SPACE1889.WeaponReadyWeapon")}`,
-			content: `
-				<form>
-					${checkbox}
-					<fieldset>
-						<legend>${game.i18n.localize("SPACE1889.PreferredWeaponType")}</legend>
-            
-						<input type="radio" id="ranged" name="type" value="R" checked>
-						<label for="ranged">${game.i18n.localize("SPACE1889.RangedAttack")}</label><br>
-            
-						<input type="radio" id="melee" name="type" value="M">
-						<label for="melee">${game.i18n.localize("SPACE1889.SkillNahkampf")}</label><br>
-            
-						<input type="radio" id="noMatter" name="type" value="N">
-						<label for="noMatter">${game.i18n.localize("SPACE1889.NoMatter")}</label>
-					</fieldset><br>
-				</form>`,
-			buttons:
+		new foundry.applications.api.DialogV2(
 			{
-				ok:
-				{
-					icon: '',
-					label: game.i18n.localize("SPACE1889.Go"),
-					callback: (html) => 
+				window: { title: `${game.i18n.localize("SPACE1889.WeaponReadyWeapon")}` },
+				position: { width: 400 },
+				content: `
+					<form>
+						${checkbox}
+						<fieldset class="space1889-dialogFieldset">
+							<legend>${game.i18n.localize("SPACE1889.PreferredWeaponType")}</legend>
+            
+							<div><input type="radio" id="ranged" name="type" value="R" checked>
+							<label for="ranged">${game.i18n.localize("SPACE1889.RangedAttack")}</label></div>
+            
+							<div><input type="radio" id="melee" name="type" value="M">
+							<label for="melee">${game.i18n.localize("SPACE1889.SkillNahkampf")}</label></div>
+            
+							<div><input type="radio" id="noMatter" name="type" value="N">
+							<label for="noMatter">${game.i18n.localize("SPACE1889.NoMatter")}</label></div>
+						</fieldset>
+					</form>`,
+				buttons: [
 					{
-						const rangedWeapon = html.find('#ranged')[0].checked;
-						const meleeWeapon = html.find('#melee')[0].checked;
-						const selectedOnly = html.find('#selected')[0].checked;
-						if (rangedWeapon)
-							this.npcsDrawWeapons("ranged", selectedOnly);
-						else if (meleeWeapon)
-							this.npcsDrawWeapons("melee", selectedOnly);
-						else
-							this.npcsDrawWeapons("", selectedOnly);
+						action: "ok",
+						icon: '',
+						label: game.i18n.localize("SPACE1889.Go"),
+						default: true,
+						callback: (event, button, dialog) => 
+						{
+							const rangedWeapon = button.form.elements.ranged.checked;
+							const meleeWeapon = button.form.elements.melee.checked;
+							const selectedOnly = button.form.elements.selected.checked;
+							if (rangedWeapon)
+								this.npcsDrawWeapons("ranged", selectedOnly);
+							else if (meleeWeapon)
+								this.npcsDrawWeapons("melee", selectedOnly);
+							else
+								this.npcsDrawWeapons("", selectedOnly);
+						}
+					},
+					{
+						action: "abbruch",
+						label: game.i18n.localize("SPACE1889.Cancel"),
+						callback: () => { ui.notifications.info(game.i18n.localize("SPACE1889.FunctionCanceled")) },
+						icon: `<i class="fas fa-times"></i>`
 					}
-				},
-				abbruch:
-				{
-					label: game.i18n.localize("SPACE1889.Cancel"),
-					callback: () => { ui.notifications.info(game.i18n.localize("SPACE1889.FunctionCanceled")) },
-					icon: `<i class="fas fa-times"></i>`
-				}
-			},
-			default: "ok"
-		});
-    
-		dialogue.render(true);		
+				],
+			}
+		).render({ force: true });
 	}
 
 	static async npcsDrawWeapons(preferredWeapon, selectedOnly)
@@ -1663,8 +1622,8 @@ export default class SPACE1889Helper
 			if (weaponInHands.primary.length != 0 || weaponInHands.off.length != 0)
 			{
 				let weapon = weaponInHands.primary.length > 0 ?
-					token.actor.system.weapons.find(e => e.id == weaponInHands.primary[0]) :
-					token.actor.system.weapons.find(e => e.id == weaponInHands.off[0]);
+					token.actor.weapons.find(e => e.id == weaponInHands.primary[0]) :
+					token.actor.weapons.find(e => e.id == weaponInHands.off[0]);
 				ui.notifications.info(game.i18n.format("SPACE1889.WeaponIsAlreadyReady", { name: token.name, weapon: weapon?.name }));
 				continue;
 			}
@@ -1685,40 +1644,35 @@ export default class SPACE1889Helper
 			return;
 		}
 
-		let dialogue = new Dialog(
+		new foundry.applications.api.DialogV2(
 		{
-			title: `${game.i18n.localize("SPACE1889.RenameTokens")}`,
-			content: `
-					${game.i18n.localize("SPACE1889.HideTokenNamesSelectedOnly")}
-					<br>
-				`,
-			buttons:
-			{
-				yes:
+			window: { title: `${game.i18n.localize("SPACE1889.RenameTokens")}` },
+			position: { width: 400 },
+			content: `${game.i18n.localize("SPACE1889.HideTokenNamesSelectedOnly")}`,
+			buttons: [
 				{
+					action: "yes",
 					icon: '',
 					label: game.i18n.localize("SPACE1889.SelectedOnly"),
+					default: true,
 					callback: () => 
 					{
 						this.hideNameOfNonCharacters(true);
 					}
 				},
-				all:
 				{
+					action: "all",
 					label: game.i18n.localize("SPACE1889.All"),
 					callback: () => { this.hideNameOfNonCharacters(false); },
 				},
-				abbruch:
 				{
+					action: "abbruch",
 					label: game.i18n.localize("SPACE1889.Cancel"),
 					callback: () => { ui.notifications.info(game.i18n.localize("SPACE1889.FunctionCanceled")) },
 					icon: `<i class="fas fa-times"></i>`
 				}
-			},
-			default: "ok"
-		});
-    
-		dialogue.render(true);		
+			]
+		}).render({ force: true });
 	}
 
 	static async hideNameOfNonCharacters(selectedOnly)
@@ -1771,49 +1725,50 @@ export default class SPACE1889Helper
 		}
 
 		let options = { force: false, displayBars: 30, displayName: 30 };
-		const barHtml = this.getTokenDisplayOptions("bar-select", game.i18n.localize("SPACE1889.TokenLifebarDisplayType"));
-		const nameHtml = this.getTokenDisplayOptions("name-select", game.i18n.localize("SPACE1889.TokenNameDisplayType"));
+		const barHtml = this.getTokenDisplayOptions("barSelect", game.i18n.localize("SPACE1889.TokenLifebarDisplayType"));
+		const nameHtml = this.getTokenDisplayOptions("nameSelect", game.i18n.localize("SPACE1889.TokenNameDisplayType"));
 
-		const dialogue = new Dialog({
-			title: `${game.i18n.localize("SPACE1889.TokenChangeDisplay")}`,
-			content: `
-				<form>
-				${barHtml}
-				<hr>
-				${nameHtml}
-				<hr>
-				<fieldset>
-					<legend>${game.i18n.localize("SPACE1889.TokenForceChange")}</legend>
-					<input type="radio" id="force" name="yesno" value="yes">
-					<label for="force">${game.i18n.localize("Yes")}</label><br>
-					<input type="radio" id="noforce" name="yesno" value="no" checked>
-					<label for="noforce">${game.i18n.localize("No")}</label><br>
-				</fieldset><br>
-				</form>`,
-			buttons:
+		new foundry.applications.api.DialogV2(
 			{
-				ok:
-				{
-					icon: '',
-					label: game.i18n.localize("SPACE1889.Go"),
-					callback: (html) => 
+				window: { title: `${game.i18n.localize("SPACE1889.TokenChangeDisplay")}` },
+				position: { width: 400 },
+				content: `
+					<form>
+					<div>${barHtml}</div>
+					<hr>
+					<div>${nameHtml}</div>
+					<hr>
+					<fieldset class="space1889-dialogFieldset">
+						<legend>${game.i18n.localize("SPACE1889.TokenForceChange")}</legend>
+						<div><input type="radio" id="force" name="yesno" value="yes">
+						<label for="force">${game.i18n.localize("Yes")}</label><br>
+						<input type="radio" id="noforce" name="yesno" value="no" checked>
+						<label for="noforce">${game.i18n.localize("No")}</label></div>
+					</fieldset><br>
+					</form>`,
+				buttons: [
 					{
-						options.force = html.find('#force')[0].checked;
-						options.displayBars = Number(html.find('#bar-select')[0].value);
-						options.displayName = Number(html.find('#name-select')[0].value);
-						this.showTokenNameAndBar(options);
+						action: "ok",
+						icon: '',
+						label: game.i18n.localize("SPACE1889.Go"),
+						default: true,
+						callback: (event, button, dialog) => 
+						{
+							options.force = button.form.elements.force.checked;
+							options.displayBars = button.form.elements.barSelect.value;
+							options.displayName = Number(button.form.elements.nameSelect.value);
+							this.showTokenNameAndBar(options);
+						}
+					},
+					{
+						action: "abbruch",
+						label: game.i18n.localize("SPACE1889.Cancel"),
+						callback: () => { ui.notifications.info(game.i18n.localize("SPACE1889.FunctionCanceled")) },
+						icon: `<i class="fas fa-times"></i>`
 					}
-				},
-				abbruch:
-				{
-					label: game.i18n.localize("SPACE1889.Cancel"),
-					callback: () => { ui.notifications.info(game.i18n.localize("SPACE1889.FunctionCanceled")) },
-					icon: `<i class="fas fa-times"></i>`
-				}
-			},
-			default: "ok"
-		});
-		dialogue.render(true);	
+				]
+			}
+		).render({ force: true });
 	}
 
 	static getTokenDisplayOptions(id, labelName)
@@ -1854,8 +1809,8 @@ export default class SPACE1889Helper
 			return;
 		}
 
-		let opt = `<div class="flexrow"><label class="align-center" for="grav-select">${game.i18n.localize("SPACE1889.Gravity")}: </label>`;
-		opt += '<select class="align-center" id="grav-select">';
+		let opt = `<div class="flexrow"><label class="align-center" for="gravSelect">${game.i18n.localize("SPACE1889.Gravity")}: </label>`;
+		opt += '<select class="align-center" id="gravSelect">';
 		const currentZone = game.settings.get("space1889", "gravityZone");
 
 		for (let [k, v] of Object.entries(CONFIG.SPACE1889.gravity)) 
@@ -1867,41 +1822,40 @@ export default class SPACE1889Helper
 		}
 		opt += '</select></div>';
 
-		const dialogue = new Dialog({
-			title: `${game.i18n.localize("SPACE1889.SetGravityDialogTitle")}`,
+		new foundry.applications.api.DialogV2({
+			window: { title: `${game.i18n.localize("SPACE1889.SetGravityDialogTitle")}` },
+			position: { width: 450 },
 			content: `
 				<form>
 				${opt}
 				<hr>
 				</form>`,
-			buttons:
-			{
-				ok:
+			buttons: [
 				{
+					action: "ok",
 					icon: '',
 					label: game.i18n.localize("SPACE1889.Submit"),
-					callback: (html) => theCallback(html)
+					default: true,
+					callback: (event, button, dialog) => theCallback(button)
 				},
-				abbruch:
 				{
+					action: "abbruch",
 					label: game.i18n.localize("SPACE1889.Cancel"),
 					callback: () => { ui.notifications.info(game.i18n.localize("SPACE1889.FunctionCanceled")) },
 					icon: `<i class="fas fa-times"></i>`
 				}
-			},
-			default: "ok"
-		});
-		dialogue.render(true);
+			]
+		}).render({ force: true });
 
-		async function theCallback(html)
+		async function theCallback(button)
 		{
-			const newKey = html.find('#grav-select')[0].value;
+			const newKey = button.form.elements.gravSelect.value;
 			const newGravity = CONFIG.SPACE1889.gravityZone[newKey]?.value;
 			if (CONFIG.SPACE1889.gravity[newKey] && newGravity)
 			{
 				if (newKey !== game.settings.get("space1889", "gravityZone"))
 				{
-					const time = SPACE1889Time.isSimpleCalendarEnabled() ? SPACE1889Time.getCurrentTimestamp().toString() : "";
+					const time = SPACE1889Time.isCalendarEnabled() ? SPACE1889Time.getCurrentTimestamp().toString() : "";
 					await game.settings.set("space1889", "gravityChangeTime", time);
 					await game.settings.set("space1889", "gravityZone", newKey);
 				}
@@ -1917,7 +1871,7 @@ export default class SPACE1889Helper
 				let theContent = game.i18n.format("SPACE1889.GravitySetTooltip", {planet: name, zone:  newZone.toFixed(1), value: (newGravity < 0.2 ? newGravity.toFixed(2) : newGravity.toFixed(2)), malus: malus });
 				ChatMessage.create({
 					content: `${theContent}`,
-					type: CONST.CHAT_MESSAGE_TYPES.OTHER
+					style: CONST.CHAT_MESSAGE_STYLES.OTHER
 				});
 			}
 		}
@@ -1947,7 +1901,7 @@ export default class SPACE1889Helper
 	static getTimePassedSinceLastGravityChange()
 	{
 		const timeStamp = this.getGravityChangeTimestamp();
-		if (!timeStamp || !SPACE1889Time.isSimpleCalendarEnabled())
+		if (!timeStamp || !SPACE1889Time.isCalendarEnabled())
 			return undefined;
 
 		return SPACE1889Time.getTimeDifInSeconds(SPACE1889Time.getCurrentTimestamp(), timeStamp);
@@ -1961,7 +1915,7 @@ export default class SPACE1889Helper
 		const currentGravity = this.getGravity();
 		const actorHomeZone = CONFIG.SPACE1889.gravityZone[actor.system.homeGravity]?.zone;
 		let homeZones = [actorHomeZone !== undefined ? actorHomeZone : 1.0];
-		for (const talent of actor.system.talents)
+		for (const talent of actor.talents)
 		{
 			if (talent.system.bonusTargetType !== "gravity")
 				continue;
@@ -1982,7 +1936,7 @@ export default class SPACE1889Helper
 
 		const actorHomeZone = CONFIG.SPACE1889.gravityZone[actor.system.homeGravity]?.zone;
 		let homeZones = [actorHomeZone !== undefined ? actorHomeZone : 1.0];
-		for (const talent of actor.system.talents)
+		for (const talent of actor.talents)
 		{
 			if (talent.system.bonusTargetType !== "gravity")
 				continue;
@@ -2015,7 +1969,7 @@ export default class SPACE1889Helper
 
 	static doGravityChangeReaktion(changeInfo)
 	{
-		const spaceMenu = Object.values(ui.windows).find((app) => app instanceof Space1889Menu);
+		const spaceMenu = foundry.applications.instances.get("space1889-menu");
 		if (spaceMenu)
 			spaceMenu.render();
 
@@ -2044,15 +1998,16 @@ export default class SPACE1889Helper
 
 	static refreshAllOpenCharacterSheets(doDataUpdate = true)
 	{
-		for (let app of Object.values(ui.windows))
+		foundry.applications.instances.forEach((app, key) =>
 		{
-			if (app instanceof Space1889ActorSheet && app.actor)
+			if (app instanceof Space1889ActorSheet)
 			{
 				if (doDataUpdate)
 					app.actor.prepareDerivedData();
 				app.render();
+
 			}
-		}
+		});
 	}
 
 
@@ -2065,7 +2020,7 @@ export default class SPACE1889Helper
 		const prefersMelee = preferredWeapon == "melee";
 
 		let best = undefined;
-		for (const weapon of actor.system.weapons)
+		for (const weapon of actor.weapons)
 		{
 			if (prefersMelee && weapon.system.skillId != "nahkampf")
 				continue;
@@ -2073,15 +2028,15 @@ export default class SPACE1889Helper
 			if (prefersRanged && !weapon.system.isRangeWeapon)
 				continue;
 
-			if (!best || best.system.attack < weapon.system.attack)
+			if (!best || best.derived.attack < weapon.derived.attack)
 				best = weapon;
 		}
 
 		if (!best && (prefersRanged || prefersMelee))
 		{
-			for (const weapon of actor.system.weapons)
+			for (const weapon of actor.weapons)
 			{
-				if (!best || best.system.attack < weapon.system.attack)
+				if (!best || best.derived.attack < weapon.derived.attack)
 					best = weapon;
 			}
 		}
@@ -2116,13 +2071,13 @@ export default class SPACE1889Helper
             speaker: ChatMessage.getSpeaker(),
             content: `${theContent}`,
 			whisper: whisper ? [game.user.id] : [],
-            type: CONST.CHAT_MESSAGE_TYPES.OTHER
+            style: CONST.CHAT_MESSAGE_STYLES.OTHER
           });
 	}
 
 	static async filePickerImageToChat(whisper)
 	{
-		await new FilePicker({type: "image", current: "",callback: picked}).render(true);
+		await new foundry.applications.apps.FilePicker({type: "image", current: "",callback: picked}).render(true);
 		async function picked(imagepath) {
 			SPACE1889Helper.addImageToChat(imagepath, whisper);
 		}
@@ -2166,106 +2121,24 @@ export default class SPACE1889Helper
 		return game.settings.get('core', 'language') == "de";
 	}
 
-	static getExternalLinksDialogData()
-	{
-		const isGerman= this.isGerman();
-		let dialogData = {
-			title: game.i18n.localize("SPACE1889.ExternalLinksTitel"),
-			content: game.i18n.localize("SPACE1889.ExternalLinksContent"),
-			buttons: {
-				one: {
-					icon: '<i class="fad fa-bug" style="font-size:40px"></i>',
-					label: game.i18n.localize("SPACE1889.ExternalLinksBugReport"),
-					callback: () => {
-						var windowObjectReference = window.open("https://github.com/Scepfari/SPACE1889-FVTT/issues/new", "_blank");
-
-					}
-				},
-				two: {
-					icon: '<i class="fad fa-cogs" style="font-size:40px"></i>',
-					label: '<div>' + game.i18n.localize("SPACE1889.ExternalLinksModules") + '</div>',
-					callback: () => {
-						this.showRecommendedModules();
-					}
-				},
-				three: {
-					icon: '<img src="systems/space1889/icons/foundryDiscord.webp" alt="logo foundry discord" height="50px">',
-					label: game.i18n.localize("SPACE1889.ExternalLinksDiscordFoundry"),
-					callback: () => {
-						var windowObjectReference = window.open("https://discord.gg/foundryvtt", "_blank");
-					}
-				}
-			}
-		};
-
-		if (isGerman)
-		{
-			dialogData.buttons.four = {
-				icon: '<img src="systems/space1889/icons/dieGiessereiDiscord.webp" alt="logo foundry discord" height="50px">',
-				label: game.i18n.localize("SPACE1889.ExternalLinksDiscordDieGiesserei"),
-				callback: () =>
-				{
-					var windowObjectReference = window.open("https://discord.gg/XrKAZ5J", "_blank");
-				}
-			}
-		}
-
-		dialogData.buttons.five = {
-			icon: '<img src="systems/space1889/icons/zeughaus1889.png" alt="logo zeughaus" height="50px">',
-			label: game.i18n.localize("SPACE1889.ExternalLinksZeughaus"),
-			callback: () =>
-			{
-				var windowObjectReference = window.open("https://gitlab.com/ProjectAvalanche/space1889", "_blank");
-
-			}
-		}
-
-//		dialogData.buttons.six = {
-//			icon: '<img src="systems/space1889/icons/uhrwerkLogo.png" alt="logo uhrwerk" height="50px">',
-//			label: game.i18n.localize("SPACE1889.ExternalLinksPublisher"),
-//			callback: () =>
-//			{
-//				var windowObjectReference = window.open("https://www.uhrwerk-verlag.de/", "_blank");
-//
-//			}
-//		}
-
-		const add = game.data?.addresses?.remote?.substr(8, 27) == 'freunde-der-oper.moltenhost';
-		if (add)
-		{
-			dialogData.buttons.zero =  {
-				icon: '<img src="systems/space1889/icons/space1889Logo.webp" alt="logo SPACE 1889" height="50px">',
-				label: "<div data-tooltip=\"Freunde des gepflegten Rollenspiels\">privates Forum</div>",
-				callback: () => {
-					var windowObjectReference = window.open("http://www.space1889.shadowbroker.de/", "_blank");
-				}
-			}
-		}
-
-		let dialogOptions = {
-			width: 'auto',
-			height: '180',
-			left: 100,
-			top: 20
-		};
-		return { data: dialogData, options: dialogOptions };
-	}
-
 	static async showRecommendedModules()
 	{
 		const isGerman = game.settings.get('core', 'language') == "de";
-		let content = await renderTemplate("systems/space1889/change/" + (isGerman ? "de" : "en") + "_modules.html");
+		let content = await foundry.applications.handlebars.renderTemplate("systems/space1889/change/" + (isGerman ? "de" : "en") + "_modules.html");
 
-		new Dialog({
-			title: `${game.i18n.localize("SPACE1889.ExternalLinksModules")}`,
-			content,
-			buttons: {
-				ok: {
+		new foundry.applications.api.DialogV2({
+			window: { title: `${game.i18n.localize("SPACE1889.ExternalLinksModules")}`, resizable: true },
+			position: {width: 1000, height: 750 },
+			content: `${content}`,
+			buttons: [
+				{
+					action: "ok",
+					default: true,
 					icon: '<i class="fas fa-check"></i>',
 					label: `${game.i18n.localize("Close")}`
 				}
-			}
-		}).render(true, { resizable: true, width: 1000, height: 750 });
+			]
+		}).render({ force: true });
 	}
 
 	static getCombatSupportTargetInfo()
@@ -2303,11 +2176,6 @@ export default class SPACE1889Helper
 			return true;
 
 		return false;
-	}
-
-	static isFoundryV10Running()
-	{
-		return game.release.generation === 10;
 	}
 
 	static getCombatTurnsInSeconds(combatTurns)
@@ -2378,29 +2246,35 @@ export default class SPACE1889Helper
 			if (effect.disabled)
 				continue;
 
-			for (let change of effect.changes)
+			const isPreV14 = game.release.generation < 14;
+			const effectChanges = (isPreV14 ? effect.changes : effect.system?.changes) ?? [];
+			for (let change of effectChanges)
 			{
 				if (change.key != searchKey)
 					continue;
 
 				//ToDo: auch die Dauer auswerten
 
+				const mode = isPreV14 ? this.convertChangeDateEffectMode(change.mode) : change.type;
 				const changeValue = this.getAsNumber(change.value)
-				switch (change.mode)
+				switch (mode)
 				{
-					case 1:
+					case "multiply":
 						bonus *= changeValue;
 						break;
-					case 2:
+					case "add":
 						bonus += changeValue;
 						break;
-					case 3:
+					case "subtract":
+						bonus -= changeValue;
+						break;
+					case "downgrade":
 						bonus = Math.min(changeValue, bonus);
 						break;
-					case 4:
+					case "upgrade":
 						bonus = Math.max(changeValue, bonus);
 						break;
-					case 5:
+					case "override":
 						bonus = changeValue;
 						break;
 					default:
@@ -2410,6 +2284,23 @@ export default class SPACE1889Helper
 			}
 		}
 		return bonus;
+	}
+
+	static convertChangeDateEffectMode(oldV13Mode)
+	{
+		if (oldV13Mode == 0)
+			return "custon";
+		if (oldV13Mode == 1)
+			return "multiply";
+		if (oldV13Mode == 2)
+			return "add";
+		if (oldV13Mode == 3)
+			return "downgrade";
+		if (oldV13Mode == 4)
+			return "upgrade";
+		if (oldV13Mode == 5)
+			return "override";
+		return "unknown";
 	}
 
 	static markChatButtonAsDone(event, oldButtonText, additionalChatText = "")
@@ -2552,8 +2443,7 @@ export default class SPACE1889Helper
 
 	static async getSortedSkillIdsWithLocalizedName(withSkillGroups = true, withEmptyElement = false, shortGroupNameAttachment = false)
 	{
-		let pack = game.packs.get("space1889.fertigkeiten");
-		let packDocs = await pack.getDocuments();
+		let packDocs = await SPACE1889Helper.getPackItemsFromFolder("space1889.charaktermerkmale", "PQcq8W9wotfKFWOf")
 
 		// um lokale Fertigkeiten erweitern
 		let local = game.items.filter((x) => x.type === "skill");
@@ -2570,7 +2460,7 @@ export default class SPACE1889Helper
 		{
 			if (a.system.skillGroupName !== b.system.skillGroupName)
 				return a.system.skillGroupName.localeCompare(b.system.skillGroupName);
-			return a.system.label.localeCompare(b.system.label);
+			return a.derived.label.localeCompare(b.derived.label);
 		});
 
 		let skillList = [];
@@ -2580,7 +2470,7 @@ export default class SPACE1889Helper
 				continue;
 
 			const groupLangId = item.system.isSkillGroup ? game.space1889.config.skillGroups[item.system.skillGroupName] : "";
-			let name = item.system.label;
+			let name = item.derived.label;
 			if (item.system.isSkillGroup)
 			{
 				name += ` (${game.i18n.localize(groupLangId + (shortGroupNameAttachment ? "Abbr" : ""))})`;
@@ -2600,8 +2490,8 @@ export default class SPACE1889Helper
 		if (!skillSpaceId)
 			return [];
 
-		let pack = game.packs.get("space1889.spezialisierungen");
-		let packDocs = await pack.getDocuments();
+		let packDocs = await SPACE1889Helper.getPackItemsFromFolder("space1889.charaktermerkmale", "daqWjLZKN0LVolN0");
+
 		let selection = packDocs.filter((x) => x.system.underlyingSkillId === skillSpaceId);
 
 		// um lokale Spezialisierungen erweitern
@@ -2613,20 +2503,19 @@ export default class SPACE1889Helper
 				selection.push(item);
 		}
 
-		selection.sort((a, b) => { return a.system.label.localeCompare(b.system.label); });
+		selection.sort((a, b) => { return a.derived.label.localeCompare(b.derived.label); });
 
 		let list = [];
 		for (const item of selection)
 		{
-			list.push({key: item.system.id, label: item.system.label});
+			list.push({key: item.system.id, label: item.derived.label});
 		}
 		return list;
 	}
 
 	static async getSortedSpecializations()
 	{
-		let pack = game.packs.get("space1889.spezialisierungen");
-		let packDocs = await pack.getDocuments();
+		let packDocs = await SPACE1889Helper.getPackItemsFromFolder("space1889.charaktermerkmale", "daqWjLZKN0LVolN0");
 
 		// um lokale Spezialisierungen erweitern
 		let local = game.items.filter((x) => x.type === "specialization");
@@ -2637,20 +2526,19 @@ export default class SPACE1889Helper
 				packDocs.push(item);
 		}
 
-		packDocs.sort((a, b) => { return a.system.label.localeCompare(b.system.label); });
+		packDocs.sort((a, b) => { return a.derived.label.localeCompare(b.derived.label); });
 
 		let list = [];
 		for (const item of packDocs)
 		{
-			list.push({key: item.system.id, label: item.system.label, skillId: item.system.underlyingSkillId});
+			list.push({key: item.system.id, label: item.derived.label, skillId: item.system.underlyingSkillId});
 		}
 		return list;
 	}
 
 	static async getSortedTalents(withEmptyElement = false)
 	{
-		let pack = game.packs.get("space1889.talente");
-		let packDocs = await pack.getDocuments();
+		let packDocs = await this.getPackItemsFromFolder("space1889.charaktermerkmale", "JELbjvpvG4vQTRU6")
 
 		// um lokale Talente erweitern
 		let local = game.items.filter((x) => x.type === "talent");
@@ -2660,12 +2548,12 @@ export default class SPACE1889Helper
 				packDocs.push(item);
 		}
 
-		packDocs.sort((a, b) => { return a.system.label.localeCompare(b.system.label); });
+		packDocs.sort((a, b) => { return a.derived.label.localeCompare(b.derived.label); });
 
 		let talentList = [];
 		for (const item of packDocs)
 		{
-			talentList.push({ key: item.system.id, label: item.system.label });
+			talentList.push({ key: item.system.id, label: item.derived.label });
 		}
 		if (withEmptyElement)
 		{
@@ -2676,8 +2564,7 @@ export default class SPACE1889Helper
 
 	static async getSortedWeaknesses(withEmptyElement = false)
 	{
-		let pack = game.packs.get("space1889.schwachen");
-		let packDocs = await pack.getDocuments();
+		let packDocs = await SPACE1889Helper.getPackItemsFromFolder("space1889.charaktermerkmale", "TPvH5YQ3iztXQ7jF");
 
 		// um lokale Schwäche erweitern
 		let local = game.items.filter((x) => x.type === "weakness");
@@ -2687,18 +2574,34 @@ export default class SPACE1889Helper
 				packDocs.push(item);
 		}
 
-		packDocs.sort((a, b) => { return a.system.label.localeCompare(b.system.label); });
+		packDocs.sort((a, b) => { return a.derived.label.localeCompare(b.derived.label); });
 
 		let weaknessList = [];
 		for (const item of packDocs)
 		{
-			weaknessList.push({ key: item.system.id, label: item.system.label });
+			weaknessList.push({ key: item.system.id, label: item.derived.label });
 		}
 		if (withEmptyElement)
 		{
 			weaknessList.splice(0, 0, { key: "", label: "-" });
 		}
 		return weaknessList;
+	}
+
+	static async getPackItemsFromFolder(packKey, folderId)
+	{
+		let pack = game.packs.get(packKey);
+		const folder = pack.folders.get(folderId);
+		let items = [];
+		const folderContent = folder?.contents;
+
+		for (const element of folderContent)
+		{
+			const item = await pack.getDocument(element._id);
+			if (item)
+				items.push(item);
+		}
+		return items;
 	}
 
 	static getSortedTalentBonusTypes()
@@ -2901,9 +2804,9 @@ export default class SPACE1889Helper
 
 		async function recalc()
 		{
-			skillId = $("#choices")[0].value;
+			skillId = document.getElementsByClassName('choices')[0].value;
 			await RefreshSpecialization(skillId);
-			$("#speciChoice")[0].innerHTML = specializationOptions;
+			document.getElementsByClassName('speciChoice')[0].innerHTML = specializationOptions;
 			refreshSpeziId();
 			const element = skills.find(e => e.key === skillId);
 			skillGroupId = element ? element.groupId : "";
@@ -2912,7 +2815,7 @@ export default class SPACE1889Helper
 
 		function refreshSpeziId()
 		{
-			spezId = $("#speciChoice")[0].value;
+			spezId = document.getElementsByClassName('speciChoice')[0].value;
 			recalcDiceCount();
 		}
 
@@ -2923,77 +2826,66 @@ export default class SPACE1889Helper
 			$("#anzahlDerWuerfel")[0].value = (diceCount + mod).toString();
 		}
 
-		function handleRender(html)
+		let dialogue = foundry.applications.api.DialogV2.wait(
 		{
-			html.on('input', '.choices', () =>
-			{
-				recalc();
-			});
-			html.on('change', '.speciChoice', () =>
-			{
-				refreshSpeziId();
-			});
-			html.on('change', '.modInput', () =>
-			{
-				recalc();
-			});
-
-			recalc();
-		}
-
-		let dialogue = new Dialog(
-		{
-			title: `${titelPartOne}: ${game.i18n.localize("SPACE1889.Probe")}`,
-				content: `
-				<div style="display: grid; grid-template-columns: 30%  70%; grid-template-rows: 100%;">
-					<label style="margin-top:4px; margin-left: 5px">${game.i18n.localize("SPACE1889.Skill")}:</label>
-					<div>
-						<select id="choices" class="choices" name="choices" autofocus>${options}</select>
-					</div>
+			window: { title: `${titelPartOne}: ${game.i18n.localize("SPACE1889.Probe")}`}, 
+			position: { width: 480 },
+			content: `
+			<div style="display: grid; grid-template-columns: 30%  70%; grid-template-rows: 100%;">
+				<label style="margin-top:4px; margin-left: 5px">${game.i18n.localize("SPACE1889.Skill")}:</label>
+				<div>
+					<select id="choices" class="choices" name="choices" autofocus>${options}</select>
 				</div>
-				<div style="display: grid; grid-template-columns: 30%  70%; grid-template-rows: 100%;">
-					<label style="margin-top:4px; margin-left: 5px">${game.i18n.localize("SPACE1889.Specialization")}:</label>
-					<div>
-						<select id="speciChoice" class="speciChoice" name="speciChoice">${specializationOptions}</select>
-					</div>
+			</div>
+			<div style="display: grid; grid-template-columns: 30%  70%; grid-template-rows: 100%;">
+				<label style="margin-top:4px; margin-left: 5px">${game.i18n.localize("SPACE1889.Specialization")}:</label>
+				<div>
+					<select id="speciChoice" class="speciChoice" name="speciChoice">${specializationOptions}</select>
 				</div>
-				<div style="display: grid; grid-template-columns: 30%  70%; grid-template-rows: 100%;">
-					<div style="margin-top:4px; margin-left: 5px">${game.i18n.localize("SPACE1889.Modifier")}:</div> 
-					<div>
-						<input type="number" class="modInput" id="modifier" value = "0">
-					</div>
+			</div>
+			<div style="display: grid; grid-template-columns: 30%  70%; grid-template-rows: 100%;">
+				<div style="margin-top:4px; margin-left: 5px">${game.i18n.localize("SPACE1889.Modifier")}:</div> 
+				<div>
+					<input type="number" class="modInput" id="modifier" value = "0">
 				</div>
-				<hr>
-				<div class="space1889 sheet actor">
-					<h2 class="item flexrow flex-group-left ">
-						<label for="zusammensetzung">${game.i18n.localize("SPACE1889.NumberOfDice")}</label>
-						<input class="h2input" id="anzahlDerWuerfel" value="10" disabled="true" visible="false">
-					</h2>
-				</div>
-				<hr>
-				<p><select id="chatChoices" name="chatChoices">${SPACE1889Helper.getHtmlChatOptions()}</select></p>
-				`,
-			buttons:
-			{
-				ok:
+			</div>
+			<hr>
+			<div class="space1889 sheet actor">
+				<h4 class="item flexrow flex-group-left ">
+					<label for="zusammensetzung">${game.i18n.localize("SPACE1889.NumberOfDice")}</label>
+					<input id="anzahlDerWuerfel" value="10" disabled="true" visible="false">
+				</h4>
+			</div>
+			<hr>
+			<p><select id="chatChoices" name="chatChoices">${SPACE1889Helper.getHtmlChatOptions()}</select></p>
+			`,
+			buttons: [
 				{
+					action: "ok",
 					icon: '',
 					label: game.i18n.localize("SPACE1889.Go"),
-					callback: (html) => theCallback(html)
+					default: true,
+					callback: (event, button, dialog) => theCallback(event, button, dialog)
 				},
-				abbruch:
 				{
+					action: "abbruch",
 					label: game.i18n.localize("SPACE1889.Cancel"),
 					callback: () => { ui.notifications.info(game.i18n.localize("SPACE1889.CancelRoll")) },
 					icon: `<i class="fas fa-times"></i>`
 				}
-			},
-			default: "ok",
-			render: handleRender
-		});
-		dialogue.render(true);
+			],
+			form: { closeOnSbmit: false},
+			render: (_event, _dialog) =>
+			{
+				recalc();
 
-		async function theCallback(html)
+				document.getElementsByClassName('choices')[0].addEventListener("change", recalc, false);
+				document.getElementsByClassName('modInput')[0].addEventListener("change", recalc, false);
+				document.getElementsByClassName('speciChoice')[0].addEventListener("change", refreshSpeziId, false);
+			}
+		});
+
+		async function theCallback(event, button, dialog)
 		{
 			const skillName = skills.find(e => e.key === skillId)?.label;
 			let titelName = "";
@@ -3005,7 +2897,7 @@ export default class SPACE1889Helper
 
 			const mod = Number($("#modifier")[0].value);
 			const toolTipInfo = mod == 0 ? "" : game.i18n.format("SPACE1889.ChatModifier", { mod: SPACE1889Helper.getSignedStringFromNumber(mod) });
-			const input = html.find('#anzahlDerWuerfel').val();
+			const input = button.form.elements.anzahlDerWuerfel.value;
 			const diceSum = input ? parseInt(input) : 0;
 			const rollWithHtml = await SPACE1889RollHelper.createInlineRollWithHtml(Math.max(0, diceSum), "", toolTipInfo);
 
@@ -3013,8 +2905,8 @@ export default class SPACE1889Helper
 				{
 					user: game.user.id,
 					speaker: ChatMessage.getSpeaker({ actor: actor }),
-					whisper: SPACE1889RollHelper.getChatIds(html.find('#chatChoices').val()),
-					content: `<h2>${titelName}</h2>${rollWithHtml.html}`
+					whisper: SPACE1889RollHelper.getChatIds(button.form.elements.chatChoices.value),
+					content: `<h4>${titelName}</h4>${rollWithHtml.html}`
 				},
 				{}
 			);
@@ -3024,6 +2916,7 @@ export default class SPACE1889Helper
 	static getHtmlChatOptions()
 	{
 		let options = '<option value="selfAndGm">' + game.i18n.localize("CHAT.RollPrivate") + '</option>';
+		options += '<option value="blind">' + game.i18n.localize("CHAT.RollBlind") + '</option>';
 		options += '<option value="self">' + game.i18n.localize("CHAT.RollSelf") + '</option>';
 		options += '<option value="public" selected="selected">' + game.i18n.localize("CHAT.RollPublic") + '</option>';
 		return options;
