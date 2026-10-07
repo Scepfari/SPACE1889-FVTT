@@ -500,7 +500,7 @@ export default class SPACE1889Helper
 		if (!this.isDiceSoNiceEnabled())
 			return 0;
 
-		const speed = game.dice3d.box?.speed;
+		let speed = game.dice3d.box?.config?.speed ? game.dice3d.box.config.speed : game.dice3d.box?.speed ;
 		if (!speed)
 			speed = 3;
 
