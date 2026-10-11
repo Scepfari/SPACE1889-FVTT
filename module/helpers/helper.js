@@ -376,8 +376,8 @@ export default class SPACE1889Helper
 	static getEffectData(effect)
 	{
 		let duration = game.combat ?
-			{ combat: game.combat._id, rounds: effect.rounds, seconds: 6 * effect.rounds, startRound: 0, startTime: game.time.worldTime, startTurn: 0 } :
-			{ seconds: 6, startTime: game.time.worldTime };
+			{ combat: game.combat._id, rounds: effect.rounds, seconds: SPACE1889Helper.getRoundTime() * effect.rounds, startRound: 0, startTime: game.time.worldTime, startTurn: 0 } :
+			{ seconds: SPACE1889Helper.getRoundTime(), startTime: game.time.worldTime };
 
 		return this.getStatusesEffectData(effect, duration);
 	}
@@ -394,7 +394,8 @@ export default class SPACE1889Helper
 				element = {
 					name: key,
 					label: game.i18n.localize(CONFIG.SPACE1889.effects[key]),
-					icon: iconPath,
+					img: iconPath,
+					showIcon: 2, 
 					flags: { core: { statusId: key, overlay: true } },
 				}
 			}
@@ -403,7 +404,7 @@ export default class SPACE1889Helper
 				element = {
 					name: key,
 					label: game.i18n.localize(CONFIG.SPACE1889.effects[key]),
-					icon: iconPath,
+					img: iconPath,
 					flags: { core: { statusId: key } },
 					duration: duration,
 				}
@@ -425,7 +426,8 @@ export default class SPACE1889Helper
 				element = {
 					name: game.i18n.localize(CONFIG.SPACE1889.effects[key]),
 					statuses: [key],
-					icon: iconPath,
+					img: iconPath,
+					showIcon: 2, 
 					flags: { core: { overlay: true } },
 				};
 			}
@@ -434,7 +436,7 @@ export default class SPACE1889Helper
 				element = {
 					name: game.i18n.localize(CONFIG.SPACE1889.effects[key]),
 					statuses: [key],
-					icon: iconPath,
+					img: iconPath,
 					duration: duration,
 				};
 			}
@@ -2913,13 +2915,33 @@ export default class SPACE1889Helper
 		}
 	}
 
+	static getMessageMode()
+	{
+		if (game.release.generation < 14)
+			return game.settings.get('core', 'rollMode');
+
+		return game.settings.get('core', 'messageMode');
+	}
+
 	static getHtmlChatOptions()
 	{
-		let options = '<option value="selfAndGm">' + game.i18n.localize("CHAT.RollPrivate") + '</option>';
-		options += '<option value="blind">' + game.i18n.localize("CHAT.RollBlind") + '</option>';
-		options += '<option value="self">' + game.i18n.localize("CHAT.RollSelf") + '</option>';
-		options += '<option value="public" selected="selected">' + game.i18n.localize("CHAT.RollPublic") + '</option>';
-		return options;
+		if (game.release.generation >= 14)
+		{
+			let options = '<option value="blind">' + game.i18n.localize("CHAT.MODES.blind") + '</option>';
+			options += '<option value="gm">' + game.i18n.localize("CHAT.MODES.gm") + '</option>';
+			options += '<option value="self">' + game.i18n.localize("CHAT.MODES.self") + '</option>';
+			options += '<option value="public">' + game.i18n.localize("CHAT.MODES.public") + '</option>';
+			options += '<option value="ic" selected="selected">' + game.i18n.localize("CHAT.MODES.ic") + '</option>';
+			return options;
+		}
+		else
+		{
+			let options = '<option value="selfAndGm">' + game.i18n.localize("CHAT.RollPrivate") + '</option>';
+			options += '<option value="blind">' + game.i18n.localize("CHAT.RollBlind") + '</option>';
+			options += '<option value="self">' + game.i18n.localize("CHAT.RollSelf") + '</option>';
+			options += '<option value="public" selected="selected">' + game.i18n.localize("CHAT.RollPublic") + '</option>';
+			return options;
+		}
 	}
 
 	static getHtmlCoverOptions()
@@ -2930,5 +2952,10 @@ export default class SPACE1889Helper
 		options += '<option value="4">' + game.i18n.localize("SPACE1889.MajorCover") + ' (+4) </option>';
 		options += '<option value="8">' + game.i18n.localize("SPACE1889.FullCover") + ' (+8) </option>';
 		return options;
+	}
+
+	static getRoundTime()
+	{
+		return 6; //seconds
 	}
 }

@@ -1922,7 +1922,7 @@ export class Space1889ActorSheet extends foundry.applications.api.HandlebarsAppl
 			roll.toMessage({
 				speaker: ChatMessage.getSpeaker({ actor: this.actor }),
 				flavor: label,
-				rollMode: game.settings.get('core', 'rollMode'),
+				rollMode: SPACE1889Helper.getMessageMode(),
 				emote: true
 			});
 			return roll;

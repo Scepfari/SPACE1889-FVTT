@@ -2424,7 +2424,7 @@ export class Space1889Actor extends Actor
 	showAttributeInfo(name, key, whisper)
 	{
 		const speaker = ChatMessage.getSpeaker({ actor: this.actor });
-		const rollMode = game.settings.get('core', 'rollMode');
+		const rollMode = SPACE1889Helper.getMessageMode();
 		const langId = this.getLangId(key) + "Desc";
 
 		let desc = `<h5><strong>${name}</strong></h5><p>${game.i18n.localize(langId) ?? langId}</p>`;

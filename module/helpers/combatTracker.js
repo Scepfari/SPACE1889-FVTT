@@ -33,7 +33,7 @@ export class Space1889Combat extends Combat
 		if (this.active && this.scene === null && game.user.isGM)
 		{
 			// wenn mit der Begegnung keine Szene verknüpft ist, stellt der simple calendar die Zeit nicht vor
-			SPACE1889Time.changeDate(6); 
+			SPACE1889Time.changeDate(SPACE1889Helper.getRoundTime()); 
 		}
 
 		return dummy;
@@ -46,7 +46,7 @@ export class Space1889Combat extends Combat
 		if (this.active && this.scene === null && game.user.isGM)
 		{
 			// wenn mit der Begegnung keine Szene verknüpft ist, stellt der simple calendar die Zeit nicht zurück
-			SPACE1889Time.changeDate(-6); 
+			SPACE1889Time.changeDate(-1 * SPACE1889Helper.getRoundTime()); 
 		}
 
 		return dummy;
@@ -94,15 +94,27 @@ export class Space1889Combat extends Combat
 					let effectsToRemove = [];
 					for (let effect of actor.effects)
 					{
-						if (!effect.duration || !effect.duration.startRound || !effect.duration.rounds)
-							continue;
-
-						if ((effect.duration.startRound + effect.duration.rounds < round) ||
-							(effect.duration.startRound + effect.duration.rounds == round && effect.duration.startTurn < turn))
+						if (game.release.generation < 14)
 						{
-							effectsToRemove.push(effect._id);
-						}
+							if (!effect.duration || !effect.duration.startRound || !effect.duration.rounds)
+								continue;
 
+							if ((effect.duration.startRound + effect.duration.rounds < round) ||
+								(effect.duration.startRound + effect.duration.rounds == round && effect.duration.startTurn < turn))
+							{
+								effectsToRemove.push(effect._id);
+							}
+						}
+						else
+						{
+							if (effect.start?.round == undefined || effect.duration?.secondsRemaining == undefined)
+								continue;
+							if (effect.duration.expiry == "roundStart" && effect.duration.secondsRemaining <= 0)
+								effectsToRemove.push(effect._id);
+							if (effect.duration.expiry == "turnStart" &&
+								(effect.duration.secondsRemaining <= 0 && effect.start.turn < turn) || effect.duration.secondsRemaining <= (-1 * SPACE1889Helper.getRoundTime()))
+								effectsToRemove.push(effect._id);
+						}
 					}
 					if (effectsToRemove.length > 0)
 						await actor.deleteEmbeddedDocuments("ActiveEffect", effectsToRemove);

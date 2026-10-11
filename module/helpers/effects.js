@@ -18,10 +18,10 @@ export function onManageActiveEffect(event, owner) {
 			const gameTurn = game.combat ? game.combat.turn : 0;
 			return owner.createEmbeddedDocuments("ActiveEffect", [{
 				name: game.i18n.localize("SPACE1889.EffectNew"),
-				icon: "icons/svg/aura.svg",
+				img: "icons/svg/aura.svg",
 				origin: owner.uuid,
 				"duration.rounds": 1,
-				"duration.seconds": 6,
+				"duration.seconds": SPACE1889Helper.getRoundTime(),
 				"duration.startRound": gameRound,
 				"duration.startTurn": gameTurn,
 				"duration.startTime": game.time.worldTime,

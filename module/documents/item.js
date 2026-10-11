@@ -361,7 +361,7 @@ export class Space1889Item extends Item {
 		{
 			// Initialize chat data.
 			const speaker = ChatMessage.getSpeaker({ actor: this.actor });
-			const rollMode = game.settings.get('core', 'rollMode');
+			const rollMode = SPACE1889Helper.getMessageMode();
 			let flavorText = `[${item.type}] ${item.name}`;
 			let desc = item.system.description;
 			// Retrieve roll data.

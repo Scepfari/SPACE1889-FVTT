@@ -817,12 +817,12 @@ export default class SPACE1889RollHelper
 	static getChatIds(chatOption)
 	{
 		let ids = [];
-		if (chatOption == "public" || chatOption === "publicroll")
+		if (chatOption == "public" || chatOption === "publicroll" || chatOption === "ic")
 			return ids;
 
 		const gmId = SPACE1889Helper.getGmId();
 		const userId = game.user.id;
-		if (chatOption == "selfAndGm" || chatOption === "gmroll")
+		if (chatOption == "selfAndGm" || chatOption === "gmroll" || "gm")
 			ids = gmId != userId ? [gmId, userId] : [userId];
 		else if (chatOption == "self" || chatOption === "selfroll")
 			ids = [userId];
@@ -841,7 +841,7 @@ export default class SPACE1889RollHelper
 	static rollItemInfo(item, actor, whisper)
 	{
 		const speaker = ChatMessage.getSpeaker({ actor: actor });
-		const rollMode = game.settings.get('core', 'rollMode');
+		const rollMode = SPACE1889Helper.getMessageMode();
 		const desc = item.getInfoText(true);
 		ChatMessage.create({
 			speaker: speaker,
@@ -1575,7 +1575,7 @@ export default class SPACE1889RollHelper
 	static showManoeuverInfo(key, actor, whisper)
 	{
 		const speaker = ChatMessage.getSpeaker({ actor: actor });
-		const rollMode = game.settings.get('core', 'rollMode');
+		const rollMode = SPACE1889Helper.getMessageMode();
 		const manoeuvreName = game.i18n.localize(CONFIG.SPACE1889.vehicleManoeuvres[key]);
 		const infoKey = CONFIG.SPACE1889.vehicleManoeuvres[key];
 		const desc = game.i18n.localize( infoKey + "Desc");
@@ -1855,7 +1855,7 @@ export default class SPACE1889RollHelper
 		{
 			user: game.user.id,
 			speaker: ChatMessage.getSpeaker({ actor: target.actor }),
-			whisper: this.getChatIds(game.settings.get("core", "rollMode")),
+			whisper: this.getChatIds(SPACE1889Helper.getMessageMode()),
 			content: content
 		};
 		await ChatMessage.create(chatData, {});
@@ -1901,7 +1901,7 @@ export default class SPACE1889RollHelper
 				{
 					user: game.user.id,
 					speaker: ChatMessage.getSpeaker({ actor: target.actor }),
-					whisper: this.getChatIds(game.settings.get("core", "rollMode")),
+					whisper: this.getChatIds(SPACE1889Helper.getMessageMode()),
 					content: game.i18n.format("SPACE1889.AutoDefenseAttackNoDamage", { attackerName: data.actorName, skill: combatSkill })
 				};
 				ChatMessage.create(chatData, {});
@@ -1943,7 +1943,7 @@ export default class SPACE1889RollHelper
 			{
 				user: game.user.id,
 				speaker: ChatMessage.getSpeaker({ actor: target.actor }),
-				whisper: this.getChatIds(game.settings.get("core", "rollMode")),
+				whisper: this.getChatIds(SPACE1889Helper.getMessageMode()),
 				content: game.i18n.format("SPACE1889.AutoDefenseAttackBlockRiposte", { attackerName: data.actorName, skill: combatSkill, damage: damage })
 			};
 			ChatMessage.create(chatData, {});
@@ -1959,7 +1959,7 @@ export default class SPACE1889RollHelper
 			{
 				user: game.user.id,
 				speaker: ChatMessage.getSpeaker({ actor: target.actor }),
-				whisper: this.getChatIds(game.settings.get("core", "rollMode")),
+				whisper: this.getChatIds(SPACE1889Helper.getMessageMode()),
 				content: game.i18n.format("SPACE1889.AutoDefenseAttackParryRiposte", { attackerName: data.actorName, skill: combatSkill, damage: damage, type: SPACE1889Helper.getDamageTypeAbbr(data.riposteDamageType) })
 			};
 			ChatMessage.create(chatData, {});
@@ -1975,7 +1975,7 @@ export default class SPACE1889RollHelper
 			{
 				user: game.user.id,
 				speaker: ChatMessage.getSpeaker({ actor: target.actor }),
-				whisper: this.getChatIds(game.settings.get("core", "rollMode")),
+				whisper: this.getChatIds(SPACE1889Helper.getMessageMode()),
 				content: game.i18n.format("SPACE1889.AutoDefenseAttackParryBrawl", { attackerName: data.actorName, skill: combatSkill, damage: damage, type: SPACE1889Helper.getDamageTypeAbbr(data.riposteDamageType) })
 			};
 			ChatMessage.create(chatData, {});
@@ -1987,7 +1987,7 @@ export default class SPACE1889RollHelper
 			{
 				user: game.user.id,
 				speaker: ChatMessage.getSpeaker({ actor: target.actor }),
-				whisper: this.getChatIds(game.settings.get("core", "rollMode")),
+				whisper: this.getChatIds(SPACE1889Helper.getMessageMode()),
 				content: game.i18n.format("SPACE1889.AutoDefenseAttackMiss", { attackerName: data.actorName, skill: combatSkill })
 			};
 			ChatMessage.create(chatData, {});
