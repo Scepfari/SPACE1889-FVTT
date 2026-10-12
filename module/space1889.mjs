@@ -261,7 +261,9 @@ Hooks.on('preCreateChatMessage', (doc, message, options, userid) =>
 
 Hooks.on("chatMessage", (html, content, msg) =>
 {
-	let cmd = content.match(/^\/(help|version|space1889|ammo|addContainer|image)/)
+	const regex = /^\/(help|version|space1889|ammo|addContainer|image)/;
+	const theContent = game.release.generation < 14 ? content : content.replace(/^<p>|<\/p>$/g, "");
+	let cmd = theContent.match(regex);
 	cmd = cmd ? cmd[0] : ""
 	switch (cmd)
 	{
@@ -281,7 +283,7 @@ Hooks.on("chatMessage", (html, content, msg) =>
 			SPACE1889Helper.createContainerFromLocation();
 			return false;
 		case "/image":
-			SPACE1889Helper.addImageToChat(content.substr(7));
+			SPACE1889Helper.addImageToChat(theContent.substr(7));
 			return false;
 	}
 });

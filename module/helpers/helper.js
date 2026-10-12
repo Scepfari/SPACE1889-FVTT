@@ -1226,9 +1226,10 @@ export default class SPACE1889Helper
 
 	static async createContainersFromLocation(actorList)
 	{
-		const lager = await fromUuid('Compendium.space1889.gegenstaende.ZT8C06YwGrWYj86l');
+		
+		const lager = await fromUuid('Compendium.space1889.ausrustung.Item.ZT8C06YwGrWYj86l');
 		const lagerObject = lager.toObject();
-		const bagpack = await fromUuid('Compendium.space1889.gegenstaende.VeFmZKB2sIWCWFNT');
+		const bagpack = await fromUuid('Compendium.space1889.ausrustung.Item.VeFmZKB2sIWCWFNT');
 		const bagpackObject = bagpack.toObject();
 
 
