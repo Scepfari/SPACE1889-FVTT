@@ -88,6 +88,7 @@ Hooks.once('init', async function() {
 		formula: "(@secondaries.initiative.total)" + game.settings.get("space1889", "dice") + " + @secondaries.initiative.total / 100",
 		decimals: 2
 	};
+	CONFIG.time.roundTime = SPACE1889Helper.getRoundTime();
 
 	// Preload Handlebars templates.
 	let retVal = preloadHandlebarsTemplates();

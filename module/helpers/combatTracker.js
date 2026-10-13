@@ -30,12 +30,6 @@ export class Space1889Combat extends Combat
 			await this.removeNoActiveDefence(k);
 		}
 
-		if (this.active && this.scene === null && game.user.isGM)
-		{
-			// wenn mit der Begegnung keine Szene verknüpft ist, stellt der simple calendar die Zeit nicht vor
-			SPACE1889Time.changeDate(SPACE1889Helper.getRoundTime()); 
-		}
-
 		return dummy;
 	}
 
@@ -43,18 +37,15 @@ export class Space1889Combat extends Combat
 	{
 		const dummy = await super.previousRound();
 
-		if (this.active && this.scene === null && game.user.isGM)
-		{
-			// wenn mit der Begegnung keine Szene verknüpft ist, stellt der simple calendar die Zeit nicht zurück
-			SPACE1889Time.changeDate(-1 * SPACE1889Helper.getRoundTime()); 
-		}
-
 		return dummy;
 	}
 
 	async removeNoActiveDefence(combatant)
 	{
 		if (!combatant)
+			return;
+
+		if (game.release.generation >= 14)
 			return;
 
 		const actor = game.scenes.get(combatant.sceneId)?.tokens?.get(combatant.tokenId)?.actor;

@@ -439,6 +439,8 @@ export default class SPACE1889Helper
 					img: iconPath,
 					duration: duration,
 				};
+				if (key === "noActiveDefense" || key === "totalDefense")
+					element.duration.expiry = "roundStart";
 			}
 			infos.push(element);
 		}
@@ -1542,13 +1544,13 @@ export default class SPACE1889Helper
 						${checkbox}
 						<fieldset class="space1889-dialogFieldset">
 							<legend>${game.i18n.localize("SPACE1889.PreferredWeaponType")}</legend>
-            
+			
 							<div><input type="radio" id="ranged" name="type" value="R" checked>
 							<label for="ranged">${game.i18n.localize("SPACE1889.RangedAttack")}</label></div>
-            
+			
 							<div><input type="radio" id="melee" name="type" value="M">
 							<label for="melee">${game.i18n.localize("SPACE1889.SkillNahkampf")}</label></div>
-            
+			
 							<div><input type="radio" id="noMatter" name="type" value="N">
 							<label for="noMatter">${game.i18n.localize("SPACE1889.NoMatter")}</label></div>
 						</fieldset>
@@ -2070,12 +2072,12 @@ export default class SPACE1889Helper
 	static addImageToChat(imagepath, whisper = false)
 	{
 		let theContent = this.getItemChatImageHtml(imagepath);
-          ChatMessage.create({
-            speaker: ChatMessage.getSpeaker(),
-            content: `${theContent}`,
+		  ChatMessage.create({
+			speaker: ChatMessage.getSpeaker(),
+			content: `${theContent}`,
 			whisper: whisper ? [game.user.id] : [],
-            style: CONST.CHAT_MESSAGE_STYLES.OTHER
-          });
+			style: CONST.CHAT_MESSAGE_STYLES.OTHER
+		  });
 	}
 
 	static async filePickerImageToChat(whisper)
