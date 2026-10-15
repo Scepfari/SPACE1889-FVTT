@@ -264,7 +264,7 @@ export class Space1889LightSourceItemDataModel extends Space1889PhysicalItemData
 
 	get requiredHandsTooltip()
 	{
-		const infoObject = CONFIG.SPACE1889.lightSourceHands[item.system.requiredHands];
+		const infoObject = CONFIG.SPACE1889.lightSourceHands[this.requiredHands];
 		return infoObject ? game.i18n.localize(infoObject.infoId) : "";
 	}
 }
@@ -486,7 +486,6 @@ export class Space1889LanguageItemDataModel extends Space1889BaseItemDataModel {
 	get family()
 	{
 		return game.i18n.localize(CONFIG.SPACE1889.familyOflanguages[this.familyId]);
-		item.derived.oldInfo = item.system.old ? game.i18n.localize('SPACE1889.OldLanguageInfo') : "";
 	}
 
 	get dialect()
