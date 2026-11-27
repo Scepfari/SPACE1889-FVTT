@@ -1,5 +1,12 @@
 # Changelog 
 
+## Ehrwürdige Föderation der dreifach geheiligten Einheit
+
+### v3.1.0
+- Unterstützung von Foundry V14 Da solche umfangreichen Umbauten nicht ohne Fehler ablaufen, wie immer die Bitte: wenn ihr Fehler, verloren gegangene Funktionen oder fehlende Funktionalität findet, lasst sie mich wissen. Insbesondere da ich diesmal die Version vorzeitig in die Welt entlassen, um allen SPACE Spielenden, die Möglichkeit zu geben, den gefundenen Sicherheitslöchern in den Foundry Versionen kleiner 14.371 entkommen zu können. Das echte Leben hält mich aktuell im Bann, also müsst ihr mich auf die Fehler stoßen.Am besten über einen Bugeintrag auf GitHub (https://github.com/Scepfari/SPACE1889-FVTT/issues). Der Link findet sich auch in den Spieleinstellungen unter dem Knopf "SPACE 1889 Fehler melden"
+- Da das alte Modul Token Action HUD Classic nicht V14 fähig ist, wird es nicht mehr unterstützt und durch die moderne Variante Token Action HUD Core ersetzt. Im Gegensatz zu der Classic Version benötigt die Core Variante zusätzlich noch ein auf das jeweilige System zugeschnittene Modul, für SPACE ist das Token Action HUD SPACE 1889 System. Das HUD wurde dank der neuen Möglichkeiten komplett überarbeitet. Manifest: https://github.com/Scepfari/token-action-hud-space1889/releases/latest/download/module.json
+- Einige kleinere Bugfixes
+
 ## Marsianische Dunkle Zeiten
 
 ### v3.0.2
